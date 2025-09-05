@@ -1,0 +1,34 @@
+{
+  "site": {
+    "title": "PlayGround",
+    "tagline": "Welcome to the world of hypercasual mini games!",
+    "description": "Enjoy various hypercasual mini web games!"
+  },
+  "navigation": {
+    "home": "Home",
+    "games": "Games",
+    "search": "Search"
+  },
+  "hero": {
+    "title": "Choose and enjoy games!",
+    "subtitle": "Each game runs independently and you can switch to other games anytime."
+  },
+  "games": {
+    "title": "Game List",
+    "search_placeholder": "Search games...",
+    "no_results": "No search results found.",
+    "play_button": "Play Game",
+    "coming_soon": "Coming soon!"
+  },
+  "game_info": {
+    "genre": "Genre",
+    "play_time": "Play Time",
+    "difficulty": "Difficulty"
+  },
+  "footer": {
+    "copyright": "© 2024 PlayGround. Creating the world of hypercasual mini games."
+  },
+  "ads": {
+    "advertisement": "Advertisement"
+  }
+}

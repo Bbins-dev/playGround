@@ -7,64 +7,109 @@
     <meta name="description" content="다양한 하이퍼캐주얼 미니 웹게임들을 즐겨보세요!">
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <select id="languageSelect">
+            <option value="ko">한국어</option>
+            <option value="en">English</option>
+            <option value="ja">日本語</option>
+        </select>
+    </div>
+
+    <!-- Left Sidebar Ad -->
+    <aside class="sidebar-ad left-ad">
+        <div class="ad-placeholder" data-ad-slot="left-sidebar">
+            <span class="ad-label">광고</span>
+            <div class="ad-content">728x90</div>
+        </div>
+    </aside>
+
+    <!-- Right Sidebar Ad -->
+    <aside class="sidebar-ad right-ad">
+        <div class="ad-placeholder" data-ad-slot="right-sidebar">
+            <span class="ad-label">광고</span>
+            <div class="ad-content">728x90</div>
+        </div>
+    </aside>
+
     <header class="header">
         <div class="container">
-            <h1 class="logo">🎮 PlayGround</h1>
-            <p class="tagline">하이퍼캐주얼 미니 게임의 세계로 오세요!</p>
+            <h1 class="logo" data-i18n="site.title">🎮 PlayGround</h1>
+            <p class="tagline" data-i18n="site.tagline">하이퍼캐주얼 미니 게임의 세계로 오세요!</p>
         </div>
     </header>
 
     <main class="main">
         <div class="container">
             <section class="hero">
-                <h2>게임을 선택하고 즐겨보세요!</h2>
-                <p>각 게임은 독립적으로 실행되며, 언제든지 다른 게임으로 전환할 수 있습니다.</p>
+                <h2 data-i18n="hero.title">게임을 선택하고 즐겨보세요!</h2>
+                <p data-i18n="hero.subtitle">각 게임은 독립적으로 실행되며, 언제든지 다른 게임으로 전환할 수 있습니다.</p>
             </section>
 
-            <section class="games-grid">
-                <h3>🎯 게임 목록</h3>
-                <div class="games-container">
-                    <!-- 게임들이 여기에 추가될 예정 -->
-                    <div class="game-card coming-soon">
-                        <div class="game-icon">🎲</div>
-                        <h4>첫 번째 게임</h4>
-                        <p>곧 추가될 예정입니다!</p>
-                        <button class="btn btn-disabled" disabled>준비 중</button>
-                    </div>
-                    
-                    <div class="game-card coming-soon">
-                        <div class="game-icon">🎯</div>
-                        <h4>두 번째 게임</h4>
-                        <p>곧 추가될 예정입니다!</p>
-                        <button class="btn btn-disabled" disabled>준비 중</button>
-                    </div>
-                    
-                    <div class="game-card coming-soon">
-                        <div class="game-icon">🚀</div>
-                        <h4>세 번째 게임</h4>
-                        <p>곧 추가될 예정입니다!</p>
-                        <button class="btn btn-disabled" disabled>준비 중</button>
-                    </div>
+            <!-- Search Section -->
+            <section class="search-section">
+                <div class="search-container">
+                    <input type="text" id="gameSearch" class="search-input" placeholder="게임 검색..." data-i18n-placeholder="games.search_placeholder">
+                    <div class="search-icon">🔍</div>
                 </div>
             </section>
 
-            <section class="info">
-                <h3>ℹ️ 프로젝트 정보</h3>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <h4>🎮 게임 추가</h4>
-                        <p>새로운 게임을 만들 때마다 이 웹사이트에 추가됩니다.</p>
+            <section class="games-grid">
+                <h3 data-i18n="games.title">🎯 게임 목록</h3>
+                <div class="games-container" id="gamesContainer">
+                    <!-- 게임들이 여기에 추가될 예정 -->
+                    <div class="game-card coming-soon" data-genre="puzzle" data-difficulty="easy">
+                        <div class="game-thumbnail">
+                            <div class="game-icon">🎲</div>
+                        </div>
+                        <div class="game-info">
+                            <h4>첫 번째 게임</h4>
+                            <p class="game-description">곧 추가될 예정입니다!</p>
+                            <div class="game-meta">
+                                <span class="genre" data-i18n="game_info.genre">장르</span>: 퍼즐
+                            </div>
+                        </div>
+                        <button class="btn btn-disabled" disabled data-i18n="games.play_button">게임 시작</button>
                     </div>
-                    <div class="info-item">
-                        <h4>🌐 웹 표준</h4>
-                        <p>HTML5, CSS3, JavaScript를 사용하여 모든 브라우저에서 실행됩니다.</p>
+                    
+                    <div class="game-card coming-soon" data-genre="action" data-difficulty="medium">
+                        <div class="game-thumbnail">
+                            <div class="game-icon">🎯</div>
+                        </div>
+                        <div class="game-info">
+                            <h4>두 번째 게임</h4>
+                            <p class="game-description">곧 추가될 예정입니다!</p>
+                            <div class="game-meta">
+                                <span class="genre" data-i18n="game_info.genre">장르</span>: 액션
+                            </div>
+                        </div>
+                        <button class="btn btn-disabled" disabled data-i18n="games.play_button">게임 시작</button>
                     </div>
-                    <div class="info-item">
-                        <h4>📱 반응형</h4>
-                        <p>모바일과 데스크톱 모두에서 최적화된 경험을 제공합니다.</p>
+                    
+                    <div class="game-card coming-soon" data-genre="puzzle" data-difficulty="hard">
+                        <div class="game-thumbnail">
+                            <div class="game-icon">🚀</div>
+                        </div>
+                        <div class="game-info">
+                            <h4>세 번째 게임</h4>
+                            <p class="game-description">곧 추가될 예정입니다!</p>
+                            <div class="game-meta">
+                                <span class="genre" data-i18n="game_info.genre">장르</span>: 퍼즐
+                            </div>
+                        </div>
+                        <button class="btn btn-disabled" disabled data-i18n="games.play_button">게임 시작</button>
                     </div>
+                </div>
+                
+                <!-- No Results Message -->
+                <div class="no-results" id="noResults" style="display: none;">
+                    <p data-i18n="games.no_results">검색 결과가 없습니다.</p>
                 </div>
             </section>
         </div>
@@ -72,10 +117,12 @@
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2024 PlayGround. 하이퍼캐주얼 미니 게임의 세계를 만들어갑니다.</p>
+            <p data-i18n="footer.copyright">&copy; 2024 PlayGround. 하이퍼캐주얼 미니 게임의 세계를 만들어갑니다.</p>
         </div>
     </footer>
 
+    <!-- Scripts -->
+    <script src="js/i18n.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
