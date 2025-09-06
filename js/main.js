@@ -237,7 +237,7 @@ function setupScrollEffects() {
     
     function updateScrollEffects() {
         const scrolled = window.pageYOffset;
-        const parallaxElements = document.querySelectorAll('.hero, .info-item');
+        const parallaxElements = document.querySelectorAll('.info-item');
         
         parallaxElements.forEach(element => {
             const speed = 0.5;
