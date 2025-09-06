@@ -205,23 +205,44 @@ body {
 
 /* 게임 오버 화면 */
 .game-over-screen {
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.98);
     padding: 40px;
     border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
     pointer-events: auto;
     opacity: 0;
+    z-index: 9999;
     transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(139, 69, 19, 0.3);
+    
+    /* 강력한 중앙 정렬 보장 */
+    margin: 0;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    
+    /* 모든 브라우저에서 중앙 정렬 보장 */
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
 }
 
 .game-over-screen.show {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
+    
+    /* 모든 브라우저에서 중앙 정렬 보장 */
+    -webkit-transform: translate(-50%, -50%) scale(1);
+    -moz-transform: translate(-50%, -50%) scale(1);
+    -ms-transform: translate(-50%, -50%) scale(1);
+    -o-transform: translate(-50%, -50%) scale(1);
 }
 
 .game-over-screen h2 {
@@ -369,6 +390,16 @@ body {
         width: 95%;
         padding: 20px 15px;
         margin: 0;
+        
+        /* 모바일에서 강력한 중앙 정렬 보장 */
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        -webkit-transform: translate(-50%, -50%) !important;
+        -moz-transform: translate(-50%, -50%) !important;
+        -ms-transform: translate(-50%, -50%) !important;
+        -o-transform: translate(-50%, -50%) !important;
     }
     
     .start-screen h1, .game-over-screen h1 {
