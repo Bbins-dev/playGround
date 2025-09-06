@@ -368,9 +368,61 @@ class BaristaGame {
     }
     
     restartGame() {
+        console.log('🔄 게임 다시 시작 - 초기화 시작');
+        
+        // 게임 상태를 start로 설정
         this.gameState = 'start';
+        
+        // 모든 게임 변수 초기화
+        this.gameStartTime = 0;
+        this.gameTime = this.maxTime;
+        this.lives = 3;
+        this.setScore(0);
+        this.combo = 0;
+        this.maxCombo = 0;
+        this.currentCup = null;
+        this.isHolding = false;
+        
+        // 게임 통계 초기화
+        this.gameStats = {
+            totalCups: 0,
+            perfectCups: 0,
+            successCups: 0,
+            failedCups: 0,
+            totalPlayTime: 0,
+            startTime: Date.now()
+        };
+        
+        console.log('✅ 게임 변수 초기화 완료');
+        
+        // 모든 매니저들 초기화
+        this.cupSystem.reset();
+        console.log('✅ 컵 시스템 초기화 완료');
+        
+        this.inputManager.reset();
+        console.log('✅ 입력 매니저 초기화 완료');
+        
+        this.visualEffects.reset();
+        console.log('✅ 시각적 효과 초기화 완료');
+        
+        this.soundManager.reset();
+        console.log('✅ 사운드 매니저 초기화 완료');
+        
+        this.uiManager.reset();
+        console.log('✅ UI 매니저 초기화 완료');
+        
+        // UI 상태 초기화
         document.getElementById('gameOverScreen').style.display = 'none';
         document.getElementById('startScreen').style.display = 'block';
+        console.log('✅ UI 상태 초기화 완료');
+        
+        // 게임 루프가 계속 실행되고 있는지 확인
+        if (!this.animationId) {
+            console.log('🔄 게임 루프 재시작');
+            this.gameLoop();
+        }
+        
+        console.log('🎮 게임 다시 시작 - 모든 초기화 완료');
     }
     
     generateNewCup() {
