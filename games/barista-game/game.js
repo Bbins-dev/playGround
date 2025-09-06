@@ -526,13 +526,13 @@ class BaristaGame {
         // 콤보 유지 (성공도 콤보에 포함)
         this.combo++;
         
-        // 시간 연장 (2초)
-        this.gameTime += 2;
+        // 시간 패널티 (10초 감소)
+        this.gameTime = Math.max(0, this.gameTime - 10);
         
         // 통계 업데이트
         this.gameStats.successCups++;
         
-        console.log(`성공: +${baseScore}점, 콤보 ${this.combo}, 시간 +2초`);
+        console.log(`성공: +${baseScore}점, 콤보 ${this.combo}, 시간 -10초`);
     }
     
     /**
@@ -568,13 +568,13 @@ class BaristaGame {
         // 생명 감소
         this.lives--;
         
-        // 시간 감소 (10초)
-        this.gameTime = Math.max(0, this.gameTime - 10);
+        // 시간 패널티 없음 (넘침 구간에서는 시간 변화 없음)
+        // this.gameTime = Math.max(0, this.gameTime - 10);
         
         // 통계 업데이트
         this.gameStats.failedCups++;
         
-        console.log(`넘침: 생명 -1, 시간 -10초, 콤보 리셋`);
+        console.log(`넘침: 생명 -1, 시간 변화 없음, 콤보 리셋`);
     }
     
     /**
