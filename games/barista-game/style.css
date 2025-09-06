@@ -1,0 +1,251 @@
+/* 바리스타 게임 스타일 */
+
+body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #8B4513 0%, #D2691E 50%, #CD853F 100%);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameCanvas {
+    border: 2px solid #654321;
+    background: #F5DEB3;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* UI 오버레이 */
+.ui-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* 하트 (기회) */
+.hearts-container {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.heart {
+    font-size: 30px;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.heart.lost {
+    opacity: 0.3;
+}
+
+/* 시간 바 */
+.time-bar-container {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 600px;
+    pointer-events: none;
+}
+
+.time-bar {
+    width: 100%;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid #654321;
+}
+
+.time-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #FF6B6B 0%, #4ECDC4 50%, #45B7D1 100%);
+    width: 100%;
+    transition: width 0.1s linear;
+    border-radius: 8px;
+}
+
+/* 게임 시작 화면 */
+.start-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    pointer-events: auto;
+}
+
+.start-screen h1 {
+    color: #8B4513;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.start-screen p {
+    color: #654321;
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.start-btn, .restart-btn {
+    background: linear-gradient(45deg, #8B4513, #D2691E);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.start-btn:hover, .restart-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* 게임 오버 화면 */
+.game-over-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    pointer-events: auto;
+}
+
+.game-over-screen h2 {
+    color: #8B4513;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.score-display {
+    margin-bottom: 30px;
+}
+
+.score-display p {
+    color: #654321;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.score-display span {
+    font-weight: 700;
+    color: #8B4513;
+}
+
+/* 뒤로가기 버튼 */
+.back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 20;
+    pointer-events: auto;
+}
+
+.back-btn a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.back-btn a:hover {
+    background: rgba(0, 0, 0, 0.7);
+    transform: translateY(-2px);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    #gameCanvas {
+        width: 95vw;
+        height: 60vh;
+        border: none;
+        border-radius: 0;
+    }
+    
+    .start-screen, .game-over-screen {
+        width: 90%;
+        padding: 30px 20px;
+    }
+    
+    .start-screen h1 {
+        font-size: 2rem;
+    }
+    
+    .hearts-container {
+        top: 10px;
+    }
+    
+    .heart {
+        font-size: 25px;
+    }
+    
+    .time-bar-container {
+        bottom: 10px;
+        width: 90%;
+    }
+    
+    .back-btn {
+        top: 10px;
+        left: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .start-screen h1 {
+        font-size: 1.8rem;
+    }
+    
+    .start-screen p {
+        font-size: 1rem;
+    }
+    
+    .start-btn, .restart-btn {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
+    
+    .heart {
+        font-size: 20px;
+    }
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>바리스타 게임 - PlayGround</title>
+    <meta name="description" content="정확한 타이밍으로 커피를 따라보세요!">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 게임 캔버스 -->
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- UI 오버레이 -->
+        <div class="ui-overlay">
+            <!-- 상단: 하트 (기회) -->
+            <div class="hearts-container">
+                <div class="heart" id="heart1">❤️</div>
+                <div class="heart" id="heart2">❤️</div>
+                <div class="heart" id="heart3">❤️</div>
+            </div>
+            
+            <!-- 하단: 시간 바 -->
+            <div class="time-bar-container">
+                <div class="time-bar" id="timeBar">
+                    <div class="time-fill" id="timeFill"></div>
+                </div>
+            </div>
+            
+            <!-- 게임 시작 화면 -->
+            <div class="start-screen" id="startScreen">
+                <h1>☕ 바리스타 게임</h1>
+                <p>정확한 타이밍으로 커피를 따라보세요!</p>
+                <button class="start-btn" id="startBtn">게임 시작</button>
+            </div>
+            
+            <!-- 게임 오버 화면 -->
+            <div class="game-over-screen" id="gameOverScreen" style="display: none;">
+                <h2>게임 오버</h2>
+                <div class="score-display">
+                    <p>최종 점수: <span id="finalScore">0</span></p>
+                    <p>최고 점수: <span id="highScore">0</span></p>
+                </div>
+                <button class="restart-btn" id="restartBtn">다시 시작</button>
+            </div>
+        </div>
+        
+        <!-- 뒤로가기 버튼 -->
+        <div class="back-btn">
+            <a href="../index.html">← 메인으로 돌아가기</a>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>
