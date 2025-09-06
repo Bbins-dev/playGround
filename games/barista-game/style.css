@@ -10,6 +10,15 @@ body {
     align-items: center;
     min-height: 100vh;
     overflow: hidden;
+    
+    /* 모바일 최적화 */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
 }
 
 .game-container {
@@ -26,6 +35,17 @@ body {
     background: #F5DEB3;
     border-radius: 10px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    
+    /* 모바일 최적화 */
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    
+    /* 반응형 크기 조정 */
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
 
 /* UI 오버레이 */
@@ -48,12 +68,19 @@ body {
     display: flex;
     gap: 10px;
     pointer-events: none;
+    
+    /* 모바일 반응형 */
+    top: 10px;
+    gap: 8px;
 }
 
 .heart {
     font-size: 30px;
     opacity: 1;
     transition: opacity 0.3s ease;
+    
+    /* 모바일 반응형 */
+    font-size: 24px;
 }
 
 .heart.lost {
@@ -84,6 +111,10 @@ body {
     width: 80%;
     max-width: 600px;
     pointer-events: none;
+    
+    /* 모바일 반응형 */
+    bottom: 10px;
+    width: 90%;
 }
 
 .time-bar {
@@ -291,5 +322,156 @@ body {
     
     .heart {
         font-size: 20px;
+    }
+}
+
+/* 모바일 최적화 추가 스타일 */
+@media (max-width: 480px) {
+    body {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .game-container {
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+    
+    #gameCanvas {
+        width: 100vw !important;
+        height: 100vh !important;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+    }
+    
+    .hearts-container {
+        top: 5px;
+        gap: 5px;
+    }
+    
+    .heart {
+        font-size: 18px;
+    }
+    
+    .time-bar-container {
+        bottom: 5px;
+        width: 95%;
+        height: 14px;
+    }
+    
+    .start-screen, .game-over-screen {
+        width: 95%;
+        padding: 20px 15px;
+        margin: 0;
+    }
+    
+    .start-screen h1, .game-over-screen h1 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .start-screen p, .game-over-screen p {
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+    }
+    
+    .start-btn, .restart-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        width: 100%;
+        max-width: 200px;
+    }
+    
+    .back-btn {
+        top: 5px;
+        left: 5px;
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+}
+
+/* 태블릿 최적화 */
+@media (min-width: 481px) and (max-width: 1024px) {
+    .game-container {
+        padding: 10px;
+    }
+    
+    #gameCanvas {
+        max-width: 100%;
+        max-height: 100%;
+    }
+    
+    .hearts-container {
+        top: 15px;
+        gap: 8px;
+    }
+    
+    .heart {
+        font-size: 26px;
+    }
+    
+    .time-bar-container {
+        bottom: 15px;
+        width: 85%;
+    }
+    
+    .start-screen, .game-over-screen {
+        width: 80%;
+        padding: 35px 25px;
+    }
+    
+    .start-screen h1, .game-over-screen h1 {
+        font-size: 2.2rem;
+    }
+    
+    .start-btn, .restart-btn {
+        padding: 14px 28px;
+        font-size: 1.1rem;
+    }
+}
+
+/* 터치 디바이스 최적화 */
+@media (hover: none) and (pointer: coarse) {
+    .start-btn, .restart-btn, .back-btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .heart {
+        font-size: 28px;
+    }
+    
+    .time-bar-container {
+        height: 18px;
+    }
+}
+
+/* 고해상도 디스플레이 최적화 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    #gameCanvas {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* 다크 모드 지원 */
+@media (prefers-color-scheme: dark) {
+    .start-screen, .game-over-screen {
+        background: rgba(30, 30, 30, 0.95);
+        color: #ffffff;
+    }
+    
+    .start-screen h1, .game-over-screen h1 {
+        color: #ffffff;
+    }
+    
+    .start-screen p, .game-over-screen p {
+        color: #cccccc;
     }
 }

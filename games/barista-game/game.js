@@ -31,6 +31,9 @@ class BaristaGame {
         // 사운드 매니저
         this.soundManager = new SoundManager();
         
+        // 모바일 최적화 매니저
+        this.mobileOptimizer = new MobileOptimizer(this);
+        
         // 애니메이션
         this.animationId = null;
         this.lastTime = 0;
@@ -46,13 +49,88 @@ class BaristaGame {
     }
     
     setupCanvas() {
-        // 캔버스 크기 설정
-        this.canvas.width = Math.min(800, window.innerWidth - 40);
-        this.canvas.height = Math.min(600, window.innerHeight - 40);
+        // 모바일 최적화된 캔버스 크기 설정
+        this.setupResponsiveCanvas();
         
         // 캔버스 중심점 계산
         this.centerX = this.canvas.width / 2;
         this.centerY = this.canvas.height / 2;
+    }
+    
+    /**
+     * 반응형 캔버스 크기 설정
+     */
+    setupResponsiveCanvas() {
+        const isMobile = this.isMobileDevice();
+        const isTablet = this.isTabletDevice();
+        
+        if (isMobile) {
+            // 모바일: 전체 화면 활용
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+            this.canvas.style.width = '100vw';
+            this.canvas.style.height = '100vh';
+        } else if (isTablet) {
+            // 태블릿: 중간 크기
+            this.canvas.width = Math.min(1024, window.innerWidth - 20);
+            this.canvas.height = Math.min(768, window.innerHeight - 20);
+            this.canvas.style.width = `${this.canvas.width}px`;
+            this.canvas.style.height = `${this.canvas.height}px`;
+        } else {
+            // 데스크톱: 고정 크기
+            this.canvas.width = Math.min(800, window.innerWidth - 40);
+            this.canvas.height = Math.min(600, window.innerHeight - 40);
+            this.canvas.style.width = `${this.canvas.width}px`;
+            this.canvas.style.height = `${this.canvas.height}px`;
+        }
+        
+        // 캔버스 스타일 최적화
+        this.canvas.style.display = 'block';
+        this.canvas.style.margin = '0 auto';
+        this.canvas.style.border = 'none';
+        this.canvas.style.background = '#1a1a1a';
+        
+        console.log(`캔버스 크기 설정: ${this.canvas.width}x${this.canvas.height} (${isMobile ? '모바일' : isTablet ? '태블릿' : '데스크톱'})`);
+    }
+    
+    /**
+     * 모바일 디바이스 감지
+     */
+    isMobileDevice() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) && window.innerWidth <= 768;
+    }
+    
+    /**
+     * 태블릿 디바이스 감지
+     */
+    isTabletDevice() {
+        return window.innerWidth > 768 && window.innerWidth <= 1024;
+    }
+    
+    /**
+     * 화면 크기 변경 처리
+     */
+    handleResize() {
+        this.setupCanvas();
+        this.resizeGame();
+    }
+    
+    /**
+     * 게임 요소 크기 조정
+     */
+    resizeGame() {
+        // 게임 요소들의 크기를 새로운 캔버스 크기에 맞게 조정
+        if (this.currentCup) {
+            this.currentCup.x = this.centerX;
+            this.currentCup.y = this.centerY;
+        }
+        
+        // UI 매니저에 크기 변경 알림
+        if (this.uiManager && this.uiManager.handleResize) {
+            this.uiManager.handleResize(this.canvas.width, this.canvas.height);
+        }
+        
+        console.log('게임 요소 크기 조정 완료');
     }
     
     bindEvents() {
@@ -69,9 +147,20 @@ class BaristaGame {
         // InputManager가 모든 입력 이벤트를 처리합니다
         console.log('입력 이벤트는 InputManager에서 처리됩니다.');
         
-        // 윈도우 리사이즈
+        // 윈도우 리사이즈 (디바운싱 적용)
+        let resizeTimeout;
         window.addEventListener('resize', () => {
-            this.setupCanvas();
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                this.handleResize();
+            }, 250);
+        });
+        
+        // 오리엔테이션 변경 (모바일)
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                this.handleResize();
+            }, 100);
         });
     }
     
@@ -2479,5 +2568,339 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('getGameStats() - 게임 통계 조회');
     console.log('getFinalStats() - 최종 통계 조회');
     console.log('debugGameLogic() - 게임 로직 디버그 정보');
+    console.log('getMobileStats() - 모바일 최적화 통계 조회');
+    console.log('debugMobile() - 모바일 디버그 정보');
     console.log('예시: addNewCupType("D", [4.0, 5.0], [4.9, 5.0], {name: "Mega Cup", difficulty: "hard"})');
 });
+
+/**
+ * 모바일 최적화 매니저 클래스
+ */
+class MobileOptimizer {
+    constructor(game) {
+        this.game = game;
+        this.touchStartTime = 0;
+        this.lastTouchTime = 0;
+        this.performanceStats = {
+            frameCount: 0,
+            lastTime: 0,
+            avgFPS: 60,
+            minFPS: 60,
+            maxFPS: 60
+        };
+        this.optimizationSettings = {
+            enableTouchOptimization: true,
+            enablePerformanceMonitoring: true,
+            enableBatteryOptimization: true,
+            targetFPS: 60
+        };
+        
+        this.setupMobileOptimizations();
+    }
+    
+    /**
+     * 모바일 최적화 설정
+     */
+    setupMobileOptimizations() {
+        console.log('모바일 최적화 설정 시작...');
+        
+        // 터치 최적화
+        this.optimizeTouchEvents();
+        
+        // 뷰포트 메타 태그 확인
+        this.ensureViewportMeta();
+        
+        // 성능 모니터링
+        if (this.optimizationSettings.enablePerformanceMonitoring) {
+            this.setupPerformanceMonitoring();
+        }
+        
+        // 배터리 최적화
+        if (this.optimizationSettings.enableBatteryOptimization) {
+            this.setupBatteryOptimization();
+        }
+        
+        // 터치 영역 확대
+        this.expandTouchArea();
+        
+        console.log('모바일 최적화 설정 완료');
+    }
+    
+    /**
+     * 터치 이벤트 최적화
+     */
+    optimizeTouchEvents() {
+        const canvas = this.game.canvas;
+        
+        // 터치 액션 최적화
+        canvas.style.touchAction = 'none';
+        canvas.style.webkitTouchCallout = 'none';
+        canvas.style.webkitUserSelect = 'none';
+        canvas.style.userSelect = 'none';
+        
+        // 터치 이벤트 최적화
+        canvas.addEventListener('touchstart', this.handleOptimizedTouchStart.bind(this), {
+            passive: false
+        });
+        
+        canvas.addEventListener('touchend', this.handleOptimizedTouchEnd.bind(this), {
+            passive: false
+        });
+        
+        canvas.addEventListener('touchmove', this.handleOptimizedTouchMove.bind(this), {
+            passive: false
+        });
+        
+        console.log('터치 이벤트 최적화 완료');
+    }
+    
+    /**
+     * 최적화된 터치 시작 처리
+     */
+    handleOptimizedTouchStart(e) {
+        e.preventDefault();
+        this.touchStartTime = performance.now();
+        
+        // 중복 터치 방지 (100ms 쿨다운)
+        if (this.touchStartTime - this.lastTouchTime < 100) {
+            return;
+        }
+        
+        this.lastTouchTime = this.touchStartTime;
+        
+        // 게임 시작 처리
+        if (this.game.inputManager) {
+            this.game.inputManager.handleTouchStart(e);
+        }
+    }
+    
+    /**
+     * 최적화된 터치 종료 처리
+     */
+    handleOptimizedTouchEnd(e) {
+        e.preventDefault();
+        
+        // 게임 종료 처리
+        if (this.game.inputManager) {
+            this.game.inputManager.handleTouchEnd(e);
+        }
+    }
+    
+    /**
+     * 최적화된 터치 이동 처리
+     */
+    handleOptimizedTouchMove(e) {
+        e.preventDefault();
+        
+        // 터치 이동 처리
+        if (this.game.inputManager) {
+            this.game.inputManager.handleTouchMove(e);
+        }
+    }
+    
+    /**
+     * 뷰포트 메타 태그 확인 및 설정
+     */
+    ensureViewportMeta() {
+        let viewportMeta = document.querySelector('meta[name="viewport"]');
+        
+        if (!viewportMeta) {
+            viewportMeta = document.createElement('meta');
+            viewportMeta.name = 'viewport';
+            document.head.appendChild(viewportMeta);
+        }
+        
+        // 모바일 최적화된 뷰포트 설정
+        viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
+        
+        console.log('뷰포트 메타 태그 설정 완료');
+    }
+    
+    /**
+     * 성능 모니터링 설정
+     */
+    setupPerformanceMonitoring() {
+        let frameCount = 0;
+        let lastTime = performance.now();
+        
+        const monitor = () => {
+            frameCount++;
+            const currentTime = performance.now();
+            
+            if (currentTime - lastTime >= 1000) {
+                const fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+                
+                // 성능 통계 업데이트
+                this.performanceStats.avgFPS = fps;
+                this.performanceStats.minFPS = Math.min(this.performanceStats.minFPS, fps);
+                this.performanceStats.maxFPS = Math.max(this.performanceStats.maxFPS, fps);
+                
+                // 성능 경고
+                if (fps < 50) {
+                    console.warn(`성능 경고: FPS ${fps} (목표: ${this.optimizationSettings.targetFPS})`);
+                    this.optimizePerformance();
+                }
+                
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+            
+            if (this.optimizationSettings.enablePerformanceMonitoring) {
+                requestAnimationFrame(monitor);
+            }
+        };
+        
+        monitor();
+        console.log('성능 모니터링 시작');
+    }
+    
+    /**
+     * 성능 최적화 실행
+     */
+    optimizePerformance() {
+        console.log('성능 최적화 실행...');
+        
+        // 시각적 효과 최적화
+        if (this.game.visualEffects) {
+            this.game.visualEffects.optimizeForPerformance();
+        }
+        
+        // 사운드 최적화
+        if (this.game.soundManager) {
+            this.game.soundManager.optimizeForPerformance();
+        }
+        
+        // UI 최적화
+        if (this.game.uiManager) {
+            this.game.uiManager.optimizeForPerformance();
+        }
+        
+        console.log('성능 최적화 완료');
+    }
+    
+    /**
+     * 배터리 최적화 설정
+     */
+    setupBatteryOptimization() {
+        // 배터리 API 지원 확인
+        if ('getBattery' in navigator) {
+            navigator.getBattery().then((battery) => {
+                this.batteryOptimization(battery);
+            });
+        }
+        
+        // 페이지 가시성 API
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                this.pauseOptimizations();
+            } else {
+                this.resumeOptimizations();
+            }
+        });
+        
+        console.log('배터리 최적화 설정 완료');
+    }
+    
+    /**
+     * 배터리 최적화 실행
+     */
+    batteryOptimization(battery) {
+        // 배터리 잔량이 낮을 때 최적화
+        if (battery.level < 0.2) {
+            console.log('배터리 잔량 부족 - 최적화 모드 활성화');
+            this.optimizationSettings.targetFPS = 30;
+            this.optimizationSettings.enableBatteryOptimization = true;
+        }
+        
+        // 배터리 충전 상태에 따른 최적화
+        if (battery.charging) {
+            this.optimizationSettings.targetFPS = 60;
+        }
+    }
+    
+    /**
+     * 터치 영역 확대
+     */
+    expandTouchArea() {
+        const canvas = this.game.canvas;
+        const touchArea = document.createElement('div');
+        
+        touchArea.style.position = 'absolute';
+        touchArea.style.top = '0';
+        touchArea.style.left = '0';
+        touchArea.style.width = '100%';
+        touchArea.style.height = '100%';
+        touchArea.style.zIndex = '1';
+        touchArea.style.background = 'transparent';
+        
+        // 터치 영역을 캔버스 부모에 추가
+        canvas.parentNode.appendChild(touchArea);
+        
+        console.log('터치 영역 확대 완료');
+    }
+    
+    /**
+     * 최적화 일시정지
+     */
+    pauseOptimizations() {
+        this.optimizationSettings.enablePerformanceMonitoring = false;
+        console.log('모바일 최적화 일시정지');
+    }
+    
+    /**
+     * 최적화 재개
+     */
+    resumeOptimizations() {
+        this.optimizationSettings.enablePerformanceMonitoring = true;
+        this.setupPerformanceMonitoring();
+        console.log('모바일 최적화 재개');
+    }
+    
+    /**
+     * 모바일 통계 조회
+     */
+    getMobileStats() {
+        return {
+            performance: this.performanceStats,
+            settings: this.optimizationSettings,
+            deviceInfo: {
+                isMobile: this.game.isMobileDevice(),
+                isTablet: this.game.isTabletDevice(),
+                screenWidth: window.innerWidth,
+                screenHeight: window.innerHeight,
+                userAgent: navigator.userAgent
+            },
+            touchStats: {
+                touchStartTime: this.touchStartTime,
+                lastTouchTime: this.lastTouchTime,
+                touchCooldown: 100
+            }
+        };
+    }
+    
+    /**
+     * 모바일 디버그 정보
+     */
+    debugInfo() {
+        const stats = this.getMobileStats();
+        console.log('=== 모바일 최적화 디버그 정보 ===');
+        console.log(`평균 FPS: ${stats.performance.avgFPS}`);
+        console.log(`최소 FPS: ${stats.performance.minFPS}`);
+        console.log(`최대 FPS: ${stats.performance.maxFPS}`);
+        console.log(`디바이스: ${stats.deviceInfo.isMobile ? '모바일' : stats.deviceInfo.isTablet ? '태블릿' : '데스크톱'}`);
+        console.log(`화면 크기: ${stats.deviceInfo.screenWidth}x${stats.deviceInfo.screenHeight}`);
+        console.log(`성능 모니터링: ${stats.settings.enablePerformanceMonitoring ? '활성화' : '비활성화'}`);
+        console.log(`배터리 최적화: ${stats.settings.enableBatteryOptimization ? '활성화' : '비활성화'}`);
+        console.log(`목표 FPS: ${stats.settings.targetFPS}`);
+        console.log('=====================================');
+    }
+}
+
+// 모바일 최적화 디버그 함수들
+window.getMobileStats = () => {
+    return window.baristaGame.mobileOptimizer.getMobileStats();
+};
+
+window.debugMobile = () => {
+    window.baristaGame.mobileOptimizer.debugInfo();
+};

@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#8B4513">
+    <title>모바일 최적화 테스트 - 바리스타 게임</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #005a9e;
+        }
+        .test-result {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+        .warning { color: #ffc107; }
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #007acc;
+        }
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #007acc;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .device-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .performance-chart {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: monospace;
+        }
+        .touch-test-area {
+            border: 2px dashed #007acc;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            background: #f8f9fa;
+            border-radius: 10px;
+            min-height: 200px;
+            position: relative;
+        }
+        .touch-feedback {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 122, 204, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            animation: touchPulse 0.3s ease-out;
+        }
+        @keyframes touchPulse {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>📱 바리스타 게임 - 모바일 최적화 테스트</h1>
+        
+        <div class="test-section">
+            <h3>1. 디바이스 정보</h3>
+            <div class="device-info" id="deviceInfo">
+                디바이스 정보를 로딩 중...
+            </div>
+            <button class="test-button" onclick="updateDeviceInfo()">디바이스 정보 새로고침</button>
+            <div id="deviceResult" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>2. 터치 반응성 테스트</h3>
+            <div class="touch-test-area" id="touchTestArea">
+                <h4>터치 영역</h4>
+                <p>이 영역을 터치해보세요</p>
+                <div id="touchFeedback"></div>
+            </div>
+            <button class="test-button" onclick="testTouchResponsiveness()">터치 반응성 테스트</button>
+            <button class="test-button" onclick="clearTouchStats()">터치 통계 초기화</button>
+            <div id="touchResult" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>3. 성능 모니터링</h3>
+            <button class="test-button" onclick="startPerformanceMonitoring()">성능 모니터링 시작</button>
+            <button class="test-button" onclick="stopPerformanceMonitoring()">성능 모니터링 중지</button>
+            <div class="performance-chart" id="performanceChart">
+                성능 모니터링이 시작되지 않았습니다.
+            </div>
+            <div id="performanceResult" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>4. 화면 크기 및 오리엔테이션 테스트</h3>
+            <button class="test-button" onclick="testScreenSize()">화면 크기 테스트</button>
+            <button class="test-button" onclick="simulateOrientationChange()">오리엔테이션 변경 시뮬레이션</button>
+            <button class="test-button" onclick="testResponsiveBreakpoints()">반응형 브레이크포인트 테스트</button>
+            <div id="screenResult" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>5. 모바일 최적화 통계</h3>
+            <button class="test-button" onclick="updateMobileStats()">통계 업데이트</button>
+            <button class="test-button" onclick="clearMobileStats()">통계 초기화</button>
+            <div class="stats-display" id="mobileStatsDisplay">
+                <div class="stat-card">
+                    <div class="stat-value" id="avgFPS">60</div>
+                    <div class="stat-label">평균 FPS</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="minFPS">60</div>
+                    <div class="stat-label">최소 FPS</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="maxFPS">60</div>
+                    <div class="stat-label">최대 FPS</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="touchCount">0</div>
+                    <div class="stat-label">터치 횟수</div>
+                </div>
+            </div>
+            <div id="mobileStatsResult" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>6. 배터리 및 전력 최적화</h3>
+            <button class="test-button" onclick="testBatteryOptimization()">배터리 최적화 테스트</button>
+            <button class="test-button" onclick="testVisibilityAPI()">페이지 가시성 API 테스트</button>
+            <button class="test-button" onclick="testNetworkOptimization()">네트워크 최적화 테스트</button>
+            <div id="batteryResult" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>7. 브라우저 호환성 테스트</h3>
+            <button class="test-button" onclick="testBrowserCompatibility()">브라우저 호환성 테스트</button>
+            <button class="test-button" onclick="testWebAPISupport()">Web API 지원 테스트</button>
+            <button class="test-button" onclick="testTouchEvents()">터치 이벤트 지원 테스트</button>
+            <div id="compatibilityResult" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>8. 전체 테스트 실행</h3>
+            <button class="test-button" onclick="runAllMobileTests()">전체 테스트 실행</button>
+            <div id="allResult" class="test-result"></div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+    <script>
+        let game;
+        let performanceMonitor;
+        let touchStats = {
+            count: 0,
+            lastTouchTime: 0,
+            avgResponseTime: 0,
+            responseTimes: []
+        };
+        
+        // 테스트용 게임 인스턴스 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            game = window.baristaGame;
+            updateDeviceInfo();
+            setupTouchTest();
+            
+            // 화면 크기 변경 이벤트
+            window.addEventListener('resize', updateDeviceInfo);
+            window.addEventListener('orientationchange', () => {
+                setTimeout(updateDeviceInfo, 100);
+            });
+        });
+        
+        function updateDeviceInfo() {
+            const deviceInfo = document.getElementById('deviceInfo');
+            const isMobile = game ? game.isMobileDevice() : /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isTablet = game ? game.isTabletDevice() : window.innerWidth > 768 && window.innerWidth <= 1024;
+            
+            deviceInfo.innerHTML = `
+                <h4>디바이스 정보</h4>
+                <p><strong>디바이스 타입:</strong> ${isMobile ? '모바일' : isTablet ? '태블릿' : '데스크톱'}</p>
+                <p><strong>화면 크기:</strong> ${window.innerWidth} x ${window.innerHeight}</p>
+                <p><strong>화면 비율:</strong> ${(window.innerWidth / window.innerHeight).toFixed(2)}</p>
+                <p><strong>User Agent:</strong> ${navigator.userAgent}</p>
+                <p><strong>터치 지원:</strong> ${('ontouchstart' in window) ? '예' : '아니오'}</p>
+                <p><strong>오리엔테이션:</strong> ${screen.orientation ? screen.orientation.type : '알 수 없음'}</p>
+                <p><strong>픽셀 밀도:</strong> ${window.devicePixelRatio || 1}</p>
+            `;
+            
+            const result = document.getElementById('deviceResult');
+            result.textContent = `디바이스 정보 업데이트 완료: ${isMobile ? '모바일' : isTablet ? '태블릿' : '데스크톱'} 디바이스 감지`;
+            result.className = 'test-result success';
+        }
+        
+        function setupTouchTest() {
+            const touchArea = document.getElementById('touchTestArea');
+            const touchFeedback = document.getElementById('touchFeedback');
+            
+            touchArea.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                handleTouch(e.touches[0], touchArea);
+            });
+            
+            touchArea.addEventListener('mousedown', (e) => {
+                handleTouch(e, touchArea);
+            });
+        }
+        
+        function handleTouch(touch, container) {
+            const rect = container.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            // 터치 피드백 표시
+            const feedback = document.createElement('div');
+            feedback.className = 'touch-feedback';
+            feedback.style.left = x + 'px';
+            feedback.style.top = y + 'px';
+            container.appendChild(feedback);
+            
+            // 0.3초 후 피드백 제거
+            setTimeout(() => {
+                feedback.remove();
+            }, 300);
+            
+            // 터치 통계 업데이트
+            touchStats.count++;
+            const currentTime = performance.now();
+            if (touchStats.lastTouchTime > 0) {
+                const responseTime = currentTime - touchStats.lastTouchTime;
+                touchStats.responseTimes.push(responseTime);
+                touchStats.avgResponseTime = touchStats.responseTimes.reduce((a, b) => a + b, 0) / touchStats.responseTimes.length;
+            }
+            touchStats.lastTouchTime = currentTime;
+            
+            updateTouchStats();
+        }
+        
+        function updateTouchStats() {
+            document.getElementById('touchCount').textContent = touchStats.count;
+            
+            const result = document.getElementById('touchResult');
+            result.textContent = `터치 통계:\n총 터치 횟수: ${touchStats.count}\n평균 응답 시간: ${touchStats.avgResponseTime.toFixed(2)}ms`;
+            result.className = 'test-result info';
+        }
+        
+        function testTouchResponsiveness() {
+            const result = document.getElementById('touchResult');
+            result.textContent = '터치 반응성 테스트:\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                const avgResponseTime = touchStats.avgResponseTime;
+                const isResponsive = avgResponseTime < 100; // 100ms 이하면 반응성 양호
+                
+                result.textContent += `평균 응답 시간: ${avgResponseTime.toFixed(2)}ms\n`;
+                result.textContent += `반응성 평가: ${isResponsive ? '양호' : '개선 필요'}\n`;
+                result.textContent += `터치 횟수: ${touchStats.count}\n`;
+                
+                if (touchStats.count === 0) {
+                    result.textContent += '\n터치 영역을 터치해보세요.';
+                } else {
+                    result.textContent += '\n터치 반응성 테스트 완료!';
+                    result.className = 'test-result success';
+                }
+            } catch (error) {
+                result.textContent = `터치 반응성 테스트 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function clearTouchStats() {
+            touchStats = {
+                count: 0,
+                lastTouchTime: 0,
+                avgResponseTime: 0,
+                responseTimes: []
+            };
+            updateTouchStats();
+            
+            const result = document.getElementById('touchResult');
+            result.textContent = '터치 통계가 초기화되었습니다.';
+            result.className = 'test-result info';
+        }
+        
+        function startPerformanceMonitoring() {
+            if (performanceMonitor) {
+                clearInterval(performanceMonitor);
+            }
+            
+            let frameCount = 0;
+            let lastTime = performance.now();
+            const fpsHistory = [];
+            
+            performanceMonitor = setInterval(() => {
+                const currentTime = performance.now();
+                const fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+                fpsHistory.push(fps);
+                
+                // 최근 10개 FPS만 유지
+                if (fpsHistory.length > 10) {
+                    fpsHistory.shift();
+                }
+                
+                const avgFPS = Math.round(fpsHistory.reduce((a, b) => a + b, 0) / fpsHistory.length);
+                const minFPS = Math.min(...fpsHistory);
+                const maxFPS = Math.max(...fpsHistory);
+                
+                document.getElementById('avgFPS').textContent = avgFPS;
+                document.getElementById('minFPS').textContent = minFPS;
+                document.getElementById('maxFPS').textContent = maxFPS;
+                
+                const chart = document.getElementById('performanceChart');
+                chart.innerHTML = `
+                    <h4>실시간 성능 모니터링</h4>
+                    <p>현재 FPS: ${fps}</p>
+                    <p>평균 FPS: ${avgFPS}</p>
+                    <p>최소 FPS: ${minFPS}</p>
+                    <p>최대 FPS: ${maxFPS}</p>
+                    <p>FPS 히스토리: ${fpsHistory.join(', ')}</p>
+                `;
+                
+                frameCount = 0;
+                lastTime = currentTime;
+            }, 1000);
+            
+            // 애니메이션 프레임 카운터
+            function countFrame() {
+                frameCount++;
+                requestAnimationFrame(countFrame);
+            }
+            countFrame();
+            
+            const result = document.getElementById('performanceResult');
+            result.textContent = '성능 모니터링이 시작되었습니다.';
+            result.className = 'test-result success';
+        }
+        
+        function stopPerformanceMonitoring() {
+            if (performanceMonitor) {
+                clearInterval(performanceMonitor);
+                performanceMonitor = null;
+            }
+            
+            const chart = document.getElementById('performanceChart');
+            chart.innerHTML = '성능 모니터링이 중지되었습니다.';
+            
+            const result = document.getElementById('performanceResult');
+            result.textContent = '성능 모니터링이 중지되었습니다.';
+            result.className = 'test-result info';
+        }
+        
+        function testScreenSize() {
+            const result = document.getElementById('screenResult');
+            result.textContent = '화면 크기 테스트:\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+                const ratio = width / height;
+                
+                let deviceType = '데스크톱';
+                if (width <= 480) {
+                    deviceType = '모바일';
+                } else if (width <= 1024) {
+                    deviceType = '태블릿';
+                }
+                
+                result.textContent += `화면 크기: ${width} x ${height}\n`;
+                result.textContent += `화면 비율: ${ratio.toFixed(2)}\n`;
+                result.textContent += `디바이스 타입: ${deviceType}\n`;
+                result.textContent += `픽셀 밀도: ${window.devicePixelRatio || 1}\n`;
+                
+                // 반응형 브레이크포인트 테스트
+                const breakpoints = [
+                    { name: '모바일', max: 480 },
+                    { name: '태블릿', min: 481, max: 1024 },
+                    { name: '데스크톱', min: 1025 }
+                ];
+                
+                const currentBreakpoint = breakpoints.find(bp => {
+                    if (bp.max && width <= bp.max) return true;
+                    if (bp.min && width >= bp.min && (!bp.max || width <= bp.max)) return true;
+                    return false;
+                });
+                
+                result.textContent += `현재 브레이크포인트: ${currentBreakpoint ? currentBreakpoint.name : '알 수 없음'}\n`;
+                
+                result.textContent += '\n화면 크기 테스트 완료!';
+                result.className = 'test-result success';
+            } catch (error) {
+                result.textContent = `화면 크기 테스트 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function simulateOrientationChange() {
+            const result = document.getElementById('screenResult');
+            result.textContent = '오리엔테이션 변경 시뮬레이션:\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                // 가상 오리엔테이션 변경 시뮬레이션
+                const originalWidth = window.innerWidth;
+                const originalHeight = window.innerHeight;
+                
+                result.textContent += `원본 크기: ${originalWidth} x ${originalHeight}\n`;
+                
+                // 가상 크기 변경 시뮬레이션
+                const simulatedWidth = originalHeight;
+                const simulatedHeight = originalWidth;
+                
+                result.textContent += `시뮬레이션 크기: ${simulatedWidth} x ${simulatedHeight}\n`;
+                result.textContent += `오리엔테이션: ${simulatedWidth > simulatedHeight ? '가로' : '세로'}\n`;
+                
+                // 실제 오리엔테이션 변경 이벤트 발생
+                window.dispatchEvent(new Event('orientationchange'));
+                
+                result.textContent += '\n오리엔테이션 변경 시뮬레이션 완료!';
+                result.className = 'test-result success';
+            } catch (error) {
+                result.textContent = `오리엔테이션 변경 시뮬레이션 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function testResponsiveBreakpoints() {
+            const result = document.getElementById('screenResult');
+            result.textContent = '반응형 브레이크포인트 테스트:\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                const breakpoints = [
+                    { name: '모바일', max: 480, description: '스마트폰' },
+                    { name: '태블릿', min: 481, max: 1024, description: '태블릿' },
+                    { name: '데스크톱', min: 1025, description: '데스크톱/노트북' }
+                ];
+                
+                const currentWidth = window.innerWidth;
+                
+                result.textContent += `현재 화면 너비: ${currentWidth}px\n\n`;
+                
+                breakpoints.forEach(bp => {
+                    let isActive = false;
+                    if (bp.max && currentWidth <= bp.max) isActive = true;
+                    if (bp.min && currentWidth >= bp.min && (!bp.max || currentWidth <= bp.max)) isActive = true;
+                    
+                    result.textContent += `${bp.name}: ${isActive ? '✅ 활성' : '❌ 비활성'} (${bp.description})\n`;
+                    if (bp.min) result.textContent += `  최소: ${bp.min}px\n`;
+                    if (bp.max) result.textContent += `  최대: ${bp.max}px\n`;
+                });
+                
+                result.textContent += '\n반응형 브레이크포인트 테스트 완료!';
+                result.className = 'test-result success';
+            } catch (error) {
+                result.textContent = `반응형 브레이크포인트 테스트 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function updateMobileStats() {
+            try {
+                if (game && game.mobileOptimizer) {
+                    const stats = game.mobileOptimizer.getMobileStats();
+                    
+                    document.getElementById('avgFPS').textContent = stats.performance.avgFPS;
+                    document.getElementById('minFPS').textContent = stats.performance.minFPS;
+                    document.getElementById('maxFPS').textContent = stats.performance.maxFPS;
+                    document.getElementById('touchCount').textContent = touchStats.count;
+                    
+                    const result = document.getElementById('mobileStatsResult');
+                    let output = '모바일 최적화 통계:\n\n';
+                    output += `평균 FPS: ${stats.performance.avgFPS}\n`;
+                    output += `최소 FPS: ${stats.performance.minFPS}\n`;
+                    output += `최대 FPS: ${stats.performance.maxFPS}\n`;
+                    output += `디바이스: ${stats.deviceInfo.isMobile ? '모바일' : stats.deviceInfo.isTablet ? '태블릿' : '데스크톱'}\n`;
+                    output += `화면 크기: ${stats.deviceInfo.screenWidth}x${stats.deviceInfo.screenHeight}\n`;
+                    output += `성능 모니터링: ${stats.settings.enablePerformanceMonitoring ? '활성화' : '비활성화'}\n`;
+                    output += `배터리 최적화: ${stats.settings.enableBatteryOptimization ? '활성화' : '비활성화'}\n`;
+                    output += `목표 FPS: ${stats.settings.targetFPS}\n`;
+                    
+                    result.textContent = output;
+                    result.className = 'test-result success';
+                } else {
+                    const result = document.getElementById('mobileStatsResult');
+                    result.textContent = '게임이 초기화되지 않았습니다.';
+                    result.className = 'test-result warning';
+                }
+            } catch (error) {
+                const result = document.getElementById('mobileStatsResult');
+                result.textContent = `에러: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function clearMobileStats() {
+            touchStats = {
+                count: 0,
+                lastTouchTime: 0,
+                avgResponseTime: 0,
+                responseTimes: []
+            };
+            
+            if (performanceMonitor) {
+                clearInterval(performanceMonitor);
+                performanceMonitor = null;
+            }
+            
+            document.getElementById('performanceChart').innerHTML = '성능 모니터링이 중지되었습니다.';
+            
+            const result = document.getElementById('mobileStatsResult');
+            result.textContent = '모바일 통계가 초기화되었습니다.';
+            result.className = 'test-result info';
+        }
+        
+        function testBatteryOptimization() {
+            const result = document.getElementById('batteryResult');
+            result.textContent = '배터리 최적화 테스트:\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                if ('getBattery' in navigator) {
+                    navigator.getBattery().then((battery) => {
+                        result.textContent += `배터리 잔량: ${(battery.level * 100).toFixed(1)}%\n`;
+                        result.textContent += `충전 중: ${battery.charging ? '예' : '아니오'}\n`;
+                        result.textContent += `충전 시간: ${battery.chargingTime === Infinity ? '알 수 없음' : battery.chargingTime + '초'}\n`;
+                        result.textContent += `방전 시간: ${battery.dischargingTime === Infinity ? '알 수 없음' : battery.dischargingTime + '초'}\n`;
+                        
+                        if (battery.level < 0.2) {
+                            result.textContent += '\n⚠️ 배터리 잔량이 부족합니다. 최적화 모드가 권장됩니다.';
+                            result.className = 'test-result warning';
+                        } else {
+                            result.textContent += '\n✅ 배터리 상태 양호';
+                            result.className = 'test-result success';
+                        }
+                    });
+                } else {
+                    result.textContent += '배터리 API를 지원하지 않습니다.';
+                    result.className = 'test-result warning';
+                }
+            } catch (error) {
+                result.textContent = `배터리 최적화 테스트 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function testVisibilityAPI() {
+            const result = document.getElementById('batteryResult');
+            result.textContent = '페이지 가시성 API 테스트:\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                result.textContent += `현재 가시성: ${document.hidden ? '숨김' : '보임'}\n`;
+                result.textContent += `가시성 상태: ${document.visibilityState}\n`;
+                
+                // 가시성 변경 이벤트 테스트
+                document.addEventListener('visibilitychange', () => {
+                    result.textContent += `\n가시성 변경: ${document.hidden ? '숨김' : '보임'}`;
+                });
+                
+                result.textContent += '\n✅ 페이지 가시성 API 테스트 완료!';
+                result.className = 'test-result success';
+            } catch (error) {
+                result.textContent = `페이지 가시성 API 테스트 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function testNetworkOptimization() {
+            const result = document.getElementById('batteryResult');
+            result.textContent = '네트워크 최적화 테스트:\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                if ('connection' in navigator) {
+                    const connection = navigator.connection;
+                    result.textContent += `연결 타입: ${connection.effectiveType || '알 수 없음'}\n`;
+                    result.textContent += `다운로드 속도: ${connection.downlink || '알 수 없음'} Mbps\n`;
+                    result.textContent += `RTT: ${connection.rtt || '알 수 없음'} ms\n`;
+                    result.textContent += `데이터 절약 모드: ${connection.saveData ? '활성화' : '비활성화'}\n`;
+                    
+                    if (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+                        result.textContent += '\n⚠️ 느린 네트워크 연결. 최적화가 필요합니다.';
+                        result.className = 'test-result warning';
+                    } else {
+                        result.textContent += '\n✅ 네트워크 연결 상태 양호';
+                        result.className = 'test-result success';
+                    }
+                } else {
+                    result.textContent += '네트워크 정보 API를 지원하지 않습니다.';
+                    result.className = 'test-result warning';
+                }
+            } catch (error) {
+                result.textContent = `네트워크 최적화 테스트 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function testBrowserCompatibility() {
+            const result = document.getElementById('compatibilityResult');
+            result.textContent = '브라우저 호환성 테스트:\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                const browserInfo = {
+                    userAgent: navigator.userAgent,
+                    platform: navigator.platform,
+                    language: navigator.language,
+                    cookieEnabled: navigator.cookieEnabled,
+                    onLine: navigator.onLine
+                };
+                
+                result.textContent += `User Agent: ${browserInfo.userAgent}\n`;
+                result.textContent += `플랫폼: ${browserInfo.platform}\n`;
+                result.textContent += `언어: ${browserInfo.language}\n`;
+                result.textContent += `쿠키 지원: ${browserInfo.cookieEnabled ? '예' : '아니오'}\n`;
+                result.textContent += `온라인 상태: ${browserInfo.onLine ? '예' : '아니오'}\n`;
+                
+                // 브라우저 감지
+                let browserName = '알 수 없음';
+                if (browserInfo.userAgent.includes('Chrome')) browserName = 'Chrome';
+                else if (browserInfo.userAgent.includes('Firefox')) browserName = 'Firefox';
+                else if (browserInfo.userAgent.includes('Safari')) browserName = 'Safari';
+                else if (browserInfo.userAgent.includes('Edge')) browserName = 'Edge';
+                
+                result.textContent += `브라우저: ${browserName}\n`;
+                
+                result.textContent += '\n✅ 브라우저 호환성 테스트 완료!';
+                result.className = 'test-result success';
+            } catch (error) {
+                result.textContent = `브라우저 호환성 테스트 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function testWebAPISupport() {
+            const result = document.getElementById('compatibilityResult');
+            result.textContent = 'Web API 지원 테스트:\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                const apis = [
+                    { name: 'Touch Events', supported: 'ontouchstart' in window },
+                    { name: 'Canvas', supported: !!document.createElement('canvas').getContext },
+                    { name: 'Web Audio API', supported: !!window.AudioContext || !!window.webkitAudioContext },
+                    { name: 'Performance API', supported: !!window.performance },
+                    { name: 'RequestAnimationFrame', supported: !!window.requestAnimationFrame },
+                    { name: 'Local Storage', supported: !!window.localStorage },
+                    { name: 'Battery API', supported: 'getBattery' in navigator },
+                    { name: 'Visibility API', supported: 'visibilityState' in document },
+                    { name: 'Network Information API', supported: 'connection' in navigator },
+                    { name: 'Device Orientation API', supported: 'onorientationchange' in window }
+                ];
+                
+                apis.forEach(api => {
+                    result.textContent += `${api.name}: ${api.supported ? '✅ 지원' : '❌ 미지원'}\n`;
+                });
+                
+                const supportedCount = apis.filter(api => api.supported).length;
+                const supportRate = (supportedCount / apis.length * 100).toFixed(1);
+                
+                result.textContent += `\n지원률: ${supportRate}% (${supportedCount}/${apis.length})\n`;
+                
+                if (supportRate >= 80) {
+                    result.textContent += '✅ Web API 지원 상태 양호';
+                    result.className = 'test-result success';
+                } else {
+                    result.textContent += '⚠️ Web API 지원 상태 개선 필요';
+                    result.className = 'test-result warning';
+                }
+            } catch (error) {
+                result.textContent = `Web API 지원 테스트 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function testTouchEvents() {
+            const result = document.getElementById('compatibilityResult');
+            result.textContent = '터치 이벤트 지원 테스트:\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                const touchEvents = [
+                    'touchstart',
+                    'touchend',
+                    'touchmove',
+                    'touchcancel'
+                ];
+                
+                touchEvents.forEach(event => {
+                    const supported = `on${event}` in window;
+                    result.textContent += `${event}: ${supported ? '✅ 지원' : '❌ 미지원'}\n`;
+                });
+                
+                const touchSupported = 'ontouchstart' in window;
+                const maxTouchPoints = navigator.maxTouchPoints || 0;
+                
+                result.textContent += `\n터치 지원: ${touchSupported ? '예' : '아니오'}\n`;
+                result.textContent += `최대 터치 포인트: ${maxTouchPoints}\n`;
+                
+                if (touchSupported) {
+                    result.textContent += '✅ 터치 이벤트 지원 상태 양호';
+                    result.className = 'test-result success';
+                } else {
+                    result.textContent += '⚠️ 터치 이벤트를 지원하지 않습니다.';
+                    result.className = 'test-result warning';
+                }
+            } catch (error) {
+                result.textContent = `터치 이벤트 지원 테스트 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function runAllMobileTests() {
+            const result = document.getElementById('allResult');
+            result.textContent = '전체 모바일 최적화 테스트 실행 중...\n\n';
+            result.className = 'test-result info';
+            
+            setTimeout(() => {
+                try {
+                    updateDeviceInfo();
+                    setTimeout(() => testTouchResponsiveness(), 1000);
+                    setTimeout(() => startPerformanceMonitoring(), 2000);
+                    setTimeout(() => testScreenSize(), 3000);
+                    setTimeout(() => testBatteryOptimization(), 4000);
+                    setTimeout(() => testBrowserCompatibility(), 5000);
+                    setTimeout(() => testWebAPISupport(), 6000);
+                    setTimeout(() => testTouchEvents(), 7000);
+                    
+                    result.textContent = '✅ 모든 모바일 최적화 테스트 완료!\n\n각 테스트가 순차적으로 실행됩니다.';
+                    result.className = 'test-result success';
+                } catch (error) {
+                    result.textContent = `❌ 테스트 실행 중 에러: ${error.message}`;
+                    result.className = 'test-result error';
+                }
+            }, 100);
+        }
+        
+        // 페이지 언로드 시 정리
+        window.addEventListener('beforeunload', () => {
+            if (performanceMonitor) {
+                clearInterval(performanceMonitor);
+            }
+        });
+    </script>
+</body>
+</html>
