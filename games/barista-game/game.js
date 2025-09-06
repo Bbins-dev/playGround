@@ -91,6 +91,9 @@ class BaristaGame {
         // 시각적 효과 초기화
         this.visualEffects.reset();
         
+        // 사운드 매니저 초기화
+        this.soundManager.reset();
+        
         document.getElementById('startScreen').style.display = 'none';
         this.updateUI();
         
@@ -418,79 +421,366 @@ class BaristaGame {
 // 사운드 매니저 클래스
 class SoundManager {
     constructor() {
+        this.audioContext = null;
+        this.sounds = {};
         this.currentHoldSound = null;
         this.isHolding = false;
-        this.audioContext = null;
+        this.isInitialized = false;
+        this.masterVolume = 0.7;
+        this.volumeSettings = {
+            hold: 0.6,
+            release: 0.8,
+            ambient: 0.4
+        };
         
-        this.init();
+        // 사운드 통계
+        this.soundStats = {
+            soundsLoaded: 0,
+            soundsPlayed: 0,
+            holdSoundsPlayed: 0,
+            releaseSoundsPlayed: 0
+        };
+        
+        this.initializeAudioContext();
+        this.loadSounds();
     }
     
-    init() {
+    /**
+     * 오디오 컨텍스트 초기화
+     */
+    async initializeAudioContext() {
         try {
             this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        } catch (e) {
-            console.warn('Web Audio API를 지원하지 않는 브라우저입니다.');
+            
+            // 사용자 상호작용 후 오디오 컨텍스트 활성화
+            if (this.audioContext.state === 'suspended') {
+                await this.audioContext.resume();
+            }
+            
+            this.isInitialized = true;
+            console.log('오디오 컨텍스트 초기화 완료');
+        } catch (error) {
+            console.error('오디오 컨텍스트 초기화 실패:', error);
+            this.createFallbackSystem();
         }
     }
     
+    /**
+     * 폴백 시스템 (오디오 파일이 없을 때)
+     */
+    createFallbackSystem() {
+        console.log('폴백 사운드 시스템 활성화');
+        this.isInitialized = false;
+    }
+    
+    /**
+     * 사운드 파일 로딩
+     */
+    async loadSounds() {
+        const soundFiles = {
+            'hold-basic': 'assets/sounds/hold-basic.mp3',
+            'hold-passing': 'assets/sounds/hold-passing.mp3',
+            'hold-perfect': 'assets/sounds/hold-perfect.mp3',
+            'hold-overflow': 'assets/sounds/hold-overflow.mp3',
+            'release-early': 'assets/sounds/release-early.mp3',
+            'release-success': 'assets/sounds/release-success.mp3',
+            'release-perfect': 'assets/sounds/release-perfect.mp3',
+            'release-overflow': 'assets/sounds/release-overflow.mp3'
+        };
+        
+        for (const [key, url] of Object.entries(soundFiles)) {
+            await this.loadSound(key, url);
+        }
+        
+        console.log(`사운드 로딩 완료: ${this.soundStats.soundsLoaded}/${Object.keys(soundFiles).length}`);
+    }
+    
+    /**
+     * 개별 사운드 로딩
+     */
+    async loadSound(name, url) {
+        if (!this.isInitialized) {
+            console.warn(`오디오 컨텍스트가 초기화되지 않음: ${name}`);
+            return;
+        }
+        
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            
+            const arrayBuffer = await response.arrayBuffer();
+            this.sounds[name] = await this.audioContext.decodeAudioData(arrayBuffer);
+            this.soundStats.soundsLoaded++;
+            console.log(`사운드 로딩 완료: ${name}`);
+        } catch (error) {
+            console.warn(`사운드 로딩 실패: ${name}`, error);
+            // 폴백으로 프로그래밍 방식 사운드 생성
+            this.createFallbackSound(name);
+        }
+    }
+    
+    /**
+     * 폴백 사운드 생성 (프로그래밍 방식)
+     */
+    createFallbackSound(name) {
+        if (!this.isInitialized) return;
+        
+        try {
+            const duration = 0.5; // 0.5초
+            const sampleRate = this.audioContext.sampleRate;
+            const buffer = this.audioContext.createBuffer(1, duration * sampleRate, sampleRate);
+            const data = buffer.getChannelData(0);
+            
+            // 사운드 타입별 주파수 설정
+            let frequency = 440; // 기본 A4
+            switch (name) {
+                case 'hold-basic':
+                    frequency = 220; // 낮은 톤
+                    break;
+                case 'hold-passing':
+                    frequency = 330; // 중간 톤
+                    break;
+                case 'hold-perfect':
+                    frequency = 550; // 높은 톤
+                    break;
+                case 'hold-overflow':
+                    frequency = 180; // 매우 낮은 톤
+                    break;
+                case 'release-early':
+                    frequency = 200; // 실패 톤
+                    break;
+                case 'release-success':
+                    frequency = 523; // 성공 톤 (C5)
+                    break;
+                case 'release-perfect':
+                    frequency = 659; // 완벽 톤 (E5)
+                    break;
+                case 'release-overflow':
+                    frequency = 150; // 넘침 톤
+                    break;
+            }
+            
+            // 사인파 생성
+            for (let i = 0; i < data.length; i++) {
+                data[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate) * 0.3;
+                
+                // 페이드 아웃 효과
+                if (name.includes('release')) {
+                    data[i] *= (1 - i / data.length);
+                }
+            }
+            
+            this.sounds[name] = buffer;
+            this.soundStats.soundsLoaded++;
+            console.log(`폴백 사운드 생성: ${name} (${frequency}Hz)`);
+        } catch (error) {
+            console.error(`폴백 사운드 생성 실패: ${name}`, error);
+        }
+    }
+    
+    /**
+     * 홀드 시작
+     */
     startHold() {
         this.isHolding = true;
         this.playHoldSound('basic');
+        console.log('홀드 사운드 시작');
     }
     
+    /**
+     * 타이밍 구간 업데이트
+     */
     updateTimingZone(zone) {
         if (!this.isHolding) return;
         
-        this.playHoldSound(zone);
-    }
-    
-    playHoldSound(type) {
-        // 실제 사운드 파일이 없으므로 콘솔 로그로 대체
-        console.log(`홀드 사운드 재생: ${type}`);
+        console.log(`타이밍 구간 변경: ${zone}`);
         
-        // 나중에 실제 오디오 파일로 교체
-        switch (type) {
+        switch (zone) {
             case 'basic':
-                console.log('기본 홀드 사운드');
+                this.playHoldSound('basic');
                 break;
             case 'passing':
-                console.log('합격 구간 사운드');
+                this.playHoldSound('passing');
                 break;
             case 'perfect':
-                console.log('완벽한 타이밍 사운드');
+                this.playHoldSound('perfect');
                 break;
             case 'overflow':
-                console.log('넘침 사운드');
+                this.playHoldSound('overflow');
                 break;
         }
     }
     
-    endHold() {
-        this.isHolding = false;
-        this.stopAllHoldSounds();
+    /**
+     * 홀드 사운드 재생
+     */
+    playHoldSound(type) {
+        if (!this.isInitialized) {
+            console.log(`폴백: 홀드 사운드 ${type}`);
+            return;
+        }
+        
+        // 현재 홀드 사운드 정지
+        this.stopCurrentHoldSound();
+        
+        const soundKey = `hold-${type}`;
+        const sound = this.sounds[soundKey];
+        
+        if (sound) {
+            try {
+                const source = this.audioContext.createBufferSource();
+                const gainNode = this.audioContext.createGain();
+                
+                source.buffer = sound;
+                source.loop = type === 'overflow'; // 넘침만 반복
+                
+                // 볼륨 설정
+                gainNode.gain.value = this.masterVolume * this.volumeSettings.hold;
+                
+                // 연결
+                source.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+                
+                source.start();
+                this.currentHoldSound = source;
+                this.soundStats.holdSoundsPlayed++;
+                
+                console.log(`홀드 사운드 재생: ${type}`);
+            } catch (error) {
+                console.error(`홀드 사운드 재생 실패: ${type}`, error);
+            }
+        } else {
+            console.warn(`사운드 파일 없음: ${soundKey}`);
+        }
     }
     
+    /**
+     * 현재 홀드 사운드 정지
+     */
+    stopCurrentHoldSound() {
+        if (this.currentHoldSound) {
+            try {
+                this.currentHoldSound.stop();
+            } catch (error) {
+                // 이미 정지된 사운드
+            }
+            this.currentHoldSound = null;
+        }
+    }
+    
+    /**
+     * 홀드 종료
+     */
+    endHold() {
+        this.isHolding = false;
+        this.stopCurrentHoldSound();
+        console.log('홀드 사운드 종료');
+    }
+    
+    /**
+     * 모든 홀드 사운드 정지
+     */
     stopAllHoldSounds() {
+        this.stopCurrentHoldSound();
         console.log('모든 홀드 사운드 정지');
     }
     
+    /**
+     * 릴리즈 사운드 재생
+     */
     playReleaseSound(result) {
-        console.log(`릴리즈 사운드 재생: ${result}`);
-        
-        switch (result) {
-            case 'early':
-                console.log('빠른 릴리즈 사운드');
-                break;
-            case 'success':
-                console.log('성공 사운드');
-                break;
-            case 'perfect':
-                console.log('완벽한 타이밍 성공 사운드');
-                break;
-            case 'overflow':
-                console.log('넘침 릴리즈 사운드');
-                break;
+        if (!this.isInitialized) {
+            console.log(`폴백: 릴리즈 사운드 ${result}`);
+            return;
         }
+        
+        const soundKey = `release-${result}`;
+        const sound = this.sounds[soundKey];
+        
+        if (sound) {
+            try {
+                const source = this.audioContext.createBufferSource();
+                const gainNode = this.audioContext.createGain();
+                
+                source.buffer = sound;
+                
+                // 볼륨 설정
+                gainNode.gain.value = this.masterVolume * this.volumeSettings.release;
+                
+                // 연결
+                source.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+                
+                source.start();
+                this.soundStats.releaseSoundsPlayed++;
+                this.soundStats.soundsPlayed++;
+                
+                console.log(`릴리즈 사운드 재생: ${result}`);
+            } catch (error) {
+                console.error(`릴리즈 사운드 재생 실패: ${result}`, error);
+            }
+        } else {
+            console.warn(`사운드 파일 없음: ${soundKey}`);
+        }
+    }
+    
+    /**
+     * 볼륨 설정
+     */
+    setVolume(category, volume) {
+        if (category === 'master') {
+            this.masterVolume = Math.max(0, Math.min(1, volume));
+        } else if (this.volumeSettings[category] !== undefined) {
+            this.volumeSettings[category] = Math.max(0, Math.min(1, volume));
+        }
+        
+        console.log(`볼륨 설정: ${category} = ${volume}`);
+    }
+    
+    /**
+     * 사운드 통계 조회
+     */
+    getSoundStats() {
+        return {
+            ...this.soundStats,
+            isInitialized: this.isInitialized,
+            masterVolume: this.masterVolume,
+            volumeSettings: { ...this.volumeSettings }
+        };
+    }
+    
+    /**
+     * 사운드 매니저 초기화
+     */
+    reset() {
+        this.stopAllHoldSounds();
+        this.isHolding = false;
+        this.soundStats = {
+            soundsLoaded: 0,
+            soundsPlayed: 0,
+            holdSoundsPlayed: 0,
+            releaseSoundsPlayed: 0
+        };
+        
+        console.log('SoundManager 초기화 완료');
+    }
+    
+    /**
+     * 디버그 정보 출력
+     */
+    debugInfo() {
+        const stats = this.getSoundStats();
+        console.log('=== SoundManager 디버그 정보 ===');
+        console.log(`초기화 상태: ${stats.isInitialized ? '완료' : '실패'}`);
+        console.log(`로딩된 사운드: ${stats.soundsLoaded}`);
+        console.log(`총 재생 횟수: ${stats.soundsPlayed}`);
+        console.log(`홀드 사운드: ${stats.holdSoundsPlayed}`);
+        console.log(`릴리즈 사운드: ${stats.releaseSoundsPlayed}`);
+        console.log(`마스터 볼륨: ${stats.masterVolume}`);
+        console.log(`현재 홀드 상태: ${this.isHolding ? '활성' : '비활성'}`);
+        console.log('===============================');
     }
 }
 
@@ -1619,6 +1909,19 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('===============================');
     };
     
+    // SoundManager 디버그 함수들
+    window.getSoundStats = () => {
+        return window.baristaGame.soundManager.getSoundStats();
+    };
+    
+    window.debugSound = () => {
+        window.baristaGame.soundManager.debugInfo();
+    };
+    
+    window.setSoundVolume = (category, volume) => {
+        window.baristaGame.soundManager.setVolume(category, volume);
+    };
+    
     // 개발 모드에서 사용 가능한 함수들 로그
     console.log('🔧 개발 모드: 사용 가능한 함수들');
     console.log('addNewCupType(id, timing, perfect, options) - 새 컵 타입 추가');
@@ -1628,5 +1931,8 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('debugInput() - 입력 매니저 디버그 정보');
     console.log('getVisualStats() - 시각적 효과 통계 조회');
     console.log('debugVisual() - 시각적 효과 디버그 정보');
+    console.log('getSoundStats() - 사운드 통계 조회');
+    console.log('debugSound() - 사운드 디버그 정보');
+    console.log('setSoundVolume(category, volume) - 사운드 볼륨 설정');
     console.log('예시: addNewCupType("D", [4.0, 5.0], [4.9, 5.0], {name: "Mega Cup", difficulty: "hard"})');
 });

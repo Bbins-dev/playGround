@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사운드 시스템 테스트 - 바리스타 게임</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #005a9e;
+        }
+        .test-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .test-result {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+        .warning { color: #ffc107; }
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #007acc;
+        }
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #007acc;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .volume-controls {
+            display: flex;
+            gap: 20px;
+            margin: 15px 0;
+            align-items: center;
+        }
+        .volume-slider {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .volume-slider label {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .volume-slider input {
+            width: 150px;
+        }
+        .sound-test-area {
+            border: 2px dashed #007acc;
+            padding: 30px;
+            text-align: center;
+            margin: 20px 0;
+            background: #f8f9fa;
+            border-radius: 10px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .sound-test-area.active {
+            background: #e3f2fd;
+            border-color: #1976d2;
+        }
+        .frequency-display {
+            font-size: 2em;
+            font-weight: bold;
+            color: #007acc;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔊 바리스타 게임 - 사운드 시스템 테스트</h1>
+        
+        <div class="test-section">
+            <h3>1. 사운드 시스템 상태</h3>
+            <button class="test-button" onclick="checkAudioContext()">오디오 컨텍스트 확인</button>
+            <button class="test-button" onclick="initializeAudio()">오디오 초기화</button>
+            <div id="audioStatus" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>2. 볼륨 컨트롤</h3>
+            <div class="volume-controls">
+                <div class="volume-slider">
+                    <label>마스터 볼륨</label>
+                    <input type="range" id="masterVolume" min="0" max="1" step="0.1" value="0.7" onchange="updateVolume('master', this.value)">
+                    <span id="masterVolumeValue">0.7</span>
+                </div>
+                <div class="volume-slider">
+                    <label>홀드 사운드</label>
+                    <input type="range" id="holdVolume" min="0" max="1" step="0.1" value="0.6" onchange="updateVolume('hold', this.value)">
+                    <span id="holdVolumeValue">0.6</span>
+                </div>
+                <div class="volume-slider">
+                    <label>릴리즈 사운드</label>
+                    <input type="range" id="releaseVolume" min="0" max="1" step="0.1" value="0.8" onchange="updateVolume('release', this.value)">
+                    <span id="releaseVolumeValue">0.8</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>3. 홀드 사운드 테스트</h3>
+            <div class="sound-test-area" id="holdTestArea">
+                <h4>🎵 홀드 사운드 테스트</h4>
+                <p>마우스를 누르고 있으면 홀드 사운드가 재생됩니다</p>
+                <div class="frequency-display" id="holdFrequency">-</div>
+                <button class="test-button" onmousedown="startHoldTest()" onmouseup="stopHoldTest()" ontouchstart="startHoldTest()" ontouchend="stopHoldTest()">홀드 테스트</button>
+            </div>
+            <div id="holdResult" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>4. 타이밍별 사운드 테스트</h3>
+            <button class="test-button" onclick="testBasicSound()">기본 홀드</button>
+            <button class="test-button" onclick="testPassingSound()">합격 구간</button>
+            <button class="test-button" onclick="testPerfectSound()">완벽한 타이밍</button>
+            <button class="test-button" onclick="testOverflowSound()">넘침 사운드</button>
+            <div id="timingResult" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>5. 릴리즈 사운드 테스트</h3>
+            <button class="test-button" onclick="testReleaseEarly()">빠른 릴리즈</button>
+            <button class="test-button" onclick="testReleaseSuccess()">성공 릴리즈</button>
+            <button class="test-button" onclick="testReleasePerfect()">완벽한 릴리즈</button>
+            <button class="test-button" onclick="testReleaseOverflow()">넘침 릴리즈</button>
+            <div id="releaseResult" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>6. 폴백 사운드 테스트</h3>
+            <button class="test-button" onclick="testFallbackSounds()">폴백 사운드 생성</button>
+            <button class="test-button" onclick="testFrequencyRange()">주파수 범위 테스트</button>
+            <div id="fallbackResult" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>7. 사운드 통계</h3>
+            <button class="test-button" onclick="updateSoundStats()">통계 업데이트</button>
+            <button class="test-button" onclick="clearSoundStats()">통계 초기화</button>
+            <div class="stats-display" id="soundStatsDisplay">
+                <div class="stat-card">
+                    <div class="stat-value" id="soundsLoaded">0</div>
+                    <div class="stat-label">로딩된 사운드</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="soundsPlayed">0</div>
+                    <div class="stat-label">총 재생 횟수</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="holdSoundsPlayed">0</div>
+                    <div class="stat-label">홀드 사운드</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="releaseSoundsPlayed">0</div>
+                    <div class="stat-label">릴리즈 사운드</div>
+                </div>
+            </div>
+            <div id="statsResult" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>8. 전체 테스트 실행</h3>
+            <button class="test-button" onclick="runAllSoundTests()">전체 테스트 실행</button>
+            <div id="allResult" class="test-result"></div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+    <script>
+        let soundManager;
+        let statsInterval;
+        let holdTestInterval;
+        
+        // 테스트용 사운드 매니저 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            soundManager = window.baristaGame.soundManager;
+            
+            // 주기적으로 통계 업데이트
+            statsInterval = setInterval(updateSoundStats, 1000);
+            
+            // 초기 상태 확인
+            checkAudioContext();
+        });
+        
+        function checkAudioContext() {
+            const result = document.getElementById('audioStatus');
+            let output = '오디오 컨텍스트 상태:\n\n';
+            
+            try {
+                const stats = soundManager.getSoundStats();
+                output += `초기화 상태: ${stats.isInitialized ? '✅ 완료' : '❌ 실패'}\n`;
+                output += `로딩된 사운드: ${stats.soundsLoaded}/8\n`;
+                output += `마스터 볼륨: ${stats.masterVolume}\n`;
+                output += `홀드 볼륨: ${stats.volumeSettings.hold}\n`;
+                output += `릴리즈 볼륨: ${stats.volumeSettings.release}\n`;
+                
+                if (soundManager.audioContext) {
+                    output += `오디오 컨텍스트 상태: ${soundManager.audioContext.state}\n`;
+                    output += `샘플 레이트: ${soundManager.audioContext.sampleRate}Hz\n`;
+                }
+                
+                result.textContent = output;
+                result.className = stats.isInitialized ? 'test-result success' : 'test-result warning';
+            } catch (error) {
+                result.textContent = `에러: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        async function initializeAudio() {
+            const result = document.getElementById('audioStatus');
+            result.textContent = '오디오 초기화 중...';
+            result.className = 'test-result info';
+            
+            try {
+                await soundManager.initializeAudioContext();
+                await soundManager.loadSounds();
+                
+                result.textContent = '오디오 초기화 완료!';
+                result.className = 'test-result success';
+                
+                setTimeout(checkAudioContext, 100);
+            } catch (error) {
+                result.textContent = `오디오 초기화 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function updateVolume(category, volume) {
+            const volumeValue = parseFloat(volume);
+            soundManager.setVolume(category, volumeValue);
+            
+            // UI 업데이트
+            document.getElementById(`${category}VolumeValue`).textContent = volumeValue.toFixed(1);
+            
+            console.log(`${category} 볼륨 설정: ${volumeValue}`);
+        }
+        
+        function startHoldTest() {
+            const testArea = document.getElementById('holdTestArea');
+            testArea.classList.add('active');
+            
+            soundManager.startHold();
+            
+            // 주파수 표시 업데이트
+            holdTestInterval = setInterval(() => {
+                const stats = soundManager.getSoundStats();
+                document.getElementById('holdFrequency').textContent = `${stats.holdSoundsPlayed}회 재생`;
+            }, 100);
+            
+            const result = document.getElementById('holdResult');
+            result.textContent = '홀드 사운드 시작...';
+            result.className = 'test-result info';
+        }
+        
+        function stopHoldTest() {
+            const testArea = document.getElementById('holdTestArea');
+            testArea.classList.remove('active');
+            
+            soundManager.endHold();
+            
+            if (holdTestInterval) {
+                clearInterval(holdTestInterval);
+            }
+            
+            const result = document.getElementById('holdResult');
+            result.textContent = '홀드 사운드 종료';
+            result.className = 'test-result success';
+        }
+        
+        function testBasicSound() {
+            soundManager.playHoldSound('basic');
+            updateTestResult('timingResult', '기본 홀드 사운드 재생', 'info');
+        }
+        
+        function testPassingSound() {
+            soundManager.playHoldSound('passing');
+            updateTestResult('timingResult', '합격 구간 사운드 재생', 'info');
+        }
+        
+        function testPerfectSound() {
+            soundManager.playHoldSound('perfect');
+            updateTestResult('timingResult', '완벽한 타이밍 사운드 재생', 'info');
+        }
+        
+        function testOverflowSound() {
+            soundManager.playHoldSound('overflow');
+            updateTestResult('timingResult', '넘침 사운드 재생 (루프)', 'info');
+        }
+        
+        function testReleaseEarly() {
+            soundManager.playReleaseSound('tooEarly');
+            updateTestResult('releaseResult', '빠른 릴리즈 사운드 재생', 'info');
+        }
+        
+        function testReleaseSuccess() {
+            soundManager.playReleaseSound('success');
+            updateTestResult('releaseResult', '성공 릴리즈 사운드 재생', 'info');
+        }
+        
+        function testReleasePerfect() {
+            soundManager.playReleaseSound('perfect');
+            updateTestResult('releaseResult', '완벽한 릴리즈 사운드 재생', 'info');
+        }
+        
+        function testReleaseOverflow() {
+            soundManager.playReleaseSound('overflow');
+            updateTestResult('releaseResult', '넘침 릴리즈 사운드 재생', 'info');
+        }
+        
+        function updateTestResult(elementId, message, type) {
+            const result = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            result.textContent = `[${timestamp}] ${message}`;
+            result.className = `test-result ${type}`;
+        }
+        
+        function testFallbackSounds() {
+            const result = document.getElementById('fallbackResult');
+            let output = '폴백 사운드 테스트:\n\n';
+            
+            try {
+                // 모든 폴백 사운드 생성
+                const soundNames = [
+                    'hold-basic', 'hold-passing', 'hold-perfect', 'hold-overflow',
+                    'release-early', 'release-success', 'release-perfect', 'release-overflow'
+                ];
+                
+                let successCount = 0;
+                for (const name of soundNames) {
+                    try {
+                        soundManager.createFallbackSound(name);
+                        successCount++;
+                        output += `✅ ${name}: 생성 성공\n`;
+                    } catch (error) {
+                        output += `❌ ${name}: 생성 실패\n`;
+                    }
+                }
+                
+                output += `\n총 ${successCount}/${soundNames.length}개 폴백 사운드 생성 완료`;
+                
+                result.textContent = output;
+                result.className = successCount === soundNames.length ? 'test-result success' : 'test-result warning';
+            } catch (error) {
+                result.textContent = `에러: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function testFrequencyRange() {
+            const result = document.getElementById('fallbackResult');
+            let output = result.textContent + '\n\n주파수 범위 테스트:\n';
+            
+            const frequencies = {
+                'hold-basic': 220,
+                'hold-passing': 330,
+                'hold-perfect': 550,
+                'hold-overflow': 180,
+                'release-early': 200,
+                'release-success': 523,
+                'release-perfect': 659,
+                'release-overflow': 150
+            };
+            
+            for (const [name, freq] of Object.entries(frequencies)) {
+                output += `${name}: ${freq}Hz\n`;
+            }
+            
+            result.textContent = output;
+            result.className = 'test-result info';
+        }
+        
+        function updateSoundStats() {
+            try {
+                const stats = soundManager.getSoundStats();
+                
+                document.getElementById('soundsLoaded').textContent = stats.soundsLoaded;
+                document.getElementById('soundsPlayed').textContent = stats.soundsPlayed;
+                document.getElementById('holdSoundsPlayed').textContent = stats.holdSoundsPlayed;
+                document.getElementById('releaseSoundsPlayed').textContent = stats.releaseSoundsPlayed;
+                
+                const result = document.getElementById('statsResult');
+                let output = '사운드 통계:\n\n';
+                output += `초기화 상태: ${stats.isInitialized ? '완료' : '실패'}\n`;
+                output += `로딩된 사운드: ${stats.soundsLoaded}\n`;
+                output += `총 재생 횟수: ${stats.soundsPlayed}\n`;
+                output += `홀드 사운드: ${stats.holdSoundsPlayed}\n`;
+                output += `릴리즈 사운드: ${stats.releaseSoundsPlayed}\n`;
+                output += `마스터 볼륨: ${stats.masterVolume}\n`;
+                
+                result.textContent = output;
+                result.className = 'test-result success';
+            } catch (error) {
+                const result = document.getElementById('statsResult');
+                result.textContent = `에러: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function clearSoundStats() {
+            soundManager.reset();
+            updateSoundStats();
+            
+            const result = document.getElementById('statsResult');
+            result.textContent = '사운드 통계가 초기화되었습니다.';
+            result.className = 'test-result info';
+        }
+        
+        function runAllSoundTests() {
+            const result = document.getElementById('allResult');
+            result.textContent = '전체 사운드 테스트 실행 중...\n\n';
+            result.className = 'test-result info';
+            
+            setTimeout(() => {
+                try {
+                    checkAudioContext();
+                    testFallbackSounds();
+                    testBasicSound();
+                    setTimeout(() => testPassingSound(), 500);
+                    setTimeout(() => testPerfectSound(), 1000);
+                    setTimeout(() => testReleaseSuccess(), 1500);
+                    setTimeout(() => testReleasePerfect(), 2000);
+                    setTimeout(() => updateSoundStats(), 2500);
+                    
+                    result.textContent = '✅ 모든 사운드 테스트 완료!\n\n각 사운드가 순차적으로 재생됩니다.';
+                    result.className = 'test-result success';
+                } catch (error) {
+                    result.textContent = `❌ 테스트 실행 중 에러: ${error.message}`;
+                    result.className = 'test-result error';
+                }
+            }, 100);
+        }
+        
+        // 페이지 언로드 시 정리
+        window.addEventListener('beforeunload', () => {
+            if (statsInterval) {
+                clearInterval(statsInterval);
+            }
+            if (holdTestInterval) {
+                clearInterval(holdTestInterval);
+            }
+        });
+    </script>
+</body>
+</html>
