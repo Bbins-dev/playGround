@@ -25,6 +25,9 @@ class BaristaGame {
         // 시각적 효과 매니저 초기화
         this.visualEffects = new VisualEffects(this.ctx);
         
+        // UI 매니저 초기화
+        this.uiManager = new UIManager();
+        
         // 사운드 매니저
         this.soundManager = new SoundManager();
         
@@ -94,7 +97,11 @@ class BaristaGame {
         // 사운드 매니저 초기화
         this.soundManager.reset();
         
-        document.getElementById('startScreen').style.display = 'none';
+        // UI 매니저 초기화
+        this.uiManager.reset();
+        
+        // 시작 화면 숨기기
+        this.uiManager.hideStartScreen();
         this.updateUI();
         
         // 첫 번째 컵 생성
@@ -218,27 +225,13 @@ class BaristaGame {
             this.saveHighScore();
         }
         
-        // 게임 오버 화면 표시
-        document.getElementById('finalScore').textContent = this.score;
-        document.getElementById('highScore').textContent = this.highScore;
-        document.getElementById('gameOverScreen').style.display = 'block';
+        // 게임 오버 화면 표시 (UIManager 사용)
+        this.uiManager.showGameOver(this.score, this.highScore);
     }
     
     updateUI() {
-        // 하트 업데이트
-        for (let i = 1; i <= 3; i++) {
-            const heart = document.getElementById(`heart${i}`);
-            if (i <= this.lives) {
-                heart.classList.remove('lost');
-            } else {
-                heart.classList.add('lost');
-            }
-        }
-        
-        // 시간 바 업데이트
-        const timeFill = document.getElementById('timeFill');
-        const timePercentage = (this.gameTime / this.maxTime) * 100;
-        timeFill.style.width = `${Math.max(0, Math.min(100, timePercentage))}%`;
+        // UIManager를 통한 UI 업데이트
+        this.uiManager.updateUI(this);
     }
     
     loadHighScore() {
@@ -415,6 +408,328 @@ class BaristaGame {
         this.render();
         
         this.animationId = requestAnimationFrame((time) => this.gameLoop(time));
+    }
+}
+
+// UI 관리 클래스
+class UIManager {
+    constructor() {
+        // DOM 요소 참조
+        this.hearts = document.querySelectorAll('.heart');
+        this.timeFill = document.getElementById('timeFill');
+        this.gameOverScreen = document.getElementById('gameOverScreen');
+        this.finalScore = document.getElementById('finalScore');
+        this.highScore = document.getElementById('highScore');
+        this.startScreen = document.getElementById('startScreen');
+        this.startBtn = document.getElementById('startBtn');
+        this.restartBtn = document.getElementById('restartBtn');
+        
+        // UI 상태 추적
+        this.uiStats = {
+            heartAnimations: 0,
+            timeBarUpdates: 0,
+            gameOverShows: 0,
+            totalUpdates: 0
+        };
+        
+        // 이전 상태 저장 (애니메이션 최적화용)
+        this.previousState = {
+            lives: 3,
+            gameTime: 120,
+            score: 0
+        };
+        
+        this.initializeUI();
+    }
+    
+    /**
+     * UI 초기화
+     */
+    initializeUI() {
+        // 하트 초기화
+        this.hearts.forEach((heart, index) => {
+            heart.style.transition = 'all 0.3s ease';
+            heart.style.transform = 'scale(1)';
+        });
+        
+        // 시간 바 초기화
+        this.timeFill.style.transition = 'width 0.1s linear';
+        this.timeFill.style.width = '100%';
+        
+        // 게임 오버 화면 초기화
+        this.gameOverScreen.style.transition = 'all 0.3s ease';
+        this.gameOverScreen.style.opacity = '0';
+        this.gameOverScreen.style.transform = 'scale(0.8)';
+        
+        console.log('UIManager 초기화 완료');
+    }
+    
+    /**
+     * 실시간 UI 업데이트
+     */
+    updateUI(game) {
+        this.uiStats.totalUpdates++;
+        
+        // 하트 업데이트
+        this.updateLives(game.lives);
+        
+        // 시간 바 업데이트
+        this.updateTimeBar(game.gameTime, game.maxTime);
+        
+        // 이전 상태 업데이트
+        this.previousState = {
+            lives: game.lives,
+            gameTime: game.gameTime,
+            score: game.score
+        };
+    }
+    
+    /**
+     * 하트 (기회) 업데이트
+     */
+    updateLives(lives) {
+        this.hearts.forEach((heart, index) => {
+            const heartNumber = index + 1;
+            
+            if (heartNumber <= lives) {
+                // 하트 활성화
+                if (heart.classList.contains('lost')) {
+                    heart.classList.remove('lost');
+                    heart.style.opacity = '1';
+                    heart.style.transform = 'scale(1)';
+                }
+            } else {
+                // 하트 비활성화
+                if (!heart.classList.contains('lost')) {
+                    this.animateHeartLoss(heart);
+                }
+            }
+        });
+    }
+    
+    /**
+     * 하트 손실 애니메이션
+     */
+    animateHeartLoss(heart) {
+        heart.classList.add('lost');
+        
+        // 애니메이션 효과
+        heart.style.transform = 'scale(1.3)';
+        heart.style.opacity = '0.7';
+        
+        setTimeout(() => {
+            heart.style.transform = 'scale(1)';
+            heart.style.opacity = '0.3';
+        }, 150);
+        
+        // 추가 효과: 하트 깜빡임
+        let blinkCount = 0;
+        const blinkInterval = setInterval(() => {
+            heart.style.opacity = heart.style.opacity === '0.3' ? '0.1' : '0.3';
+            blinkCount++;
+            
+            if (blinkCount >= 6) { // 3번 깜빡임
+                clearInterval(blinkInterval);
+                heart.style.opacity = '0.3';
+            }
+        }, 100);
+        
+        this.uiStats.heartAnimations++;
+    }
+    
+    /**
+     * 시간 바 업데이트
+     */
+    updateTimeBar(currentTime, maxTime) {
+        const percentage = Math.max(0, Math.min(100, (currentTime / maxTime) * 100));
+        
+        // 기본 시간 바 업데이트
+        this.timeFill.style.width = `${percentage}%`;
+        
+        // 시간 연장 효과 (완벽한 타이밍으로 시간이 늘어날 때)
+        if (currentTime > maxTime) {
+            this.handleTimeExtension(currentTime, maxTime);
+        }
+        
+        // 시간 바 색상 변화 (시간이 적을 때 빨간색으로)
+        this.updateTimeBarColor(percentage);
+        
+        this.uiStats.timeBarUpdates++;
+    }
+    
+    /**
+     * 시간 연장 효과 처리
+     */
+    handleTimeExtension(currentTime, maxTime) {
+        const overflowPercentage = ((currentTime - maxTime) / maxTime) * 100;
+        const extendedWidth = Math.min(150, 100 + overflowPercentage * 0.5); // 최대 150%
+        
+        this.timeFill.style.width = `${extendedWidth}%`;
+        
+        // 시간 연장 시 특별한 색상 효과
+        this.timeFill.style.background = 'linear-gradient(90deg, #FFD700 0%, #FFA500 50%, #FF6347 100%)';
+        
+        // 펄스 효과
+        this.timeFill.style.animation = 'pulse 0.5s ease-in-out';
+        
+        setTimeout(() => {
+            this.timeFill.style.animation = '';
+        }, 500);
+    }
+    
+    /**
+     * 시간 바 색상 업데이트
+     */
+    updateTimeBarColor(percentage) {
+        if (percentage > 50) {
+            // 충분한 시간 - 파란색 그라데이션
+            this.timeFill.style.background = 'linear-gradient(90deg, #4ECDC4 0%, #45B7D1 50%, #96CEB4 100%)';
+        } else if (percentage > 25) {
+            // 시간 부족 - 노란색 그라데이션
+            this.timeFill.style.background = 'linear-gradient(90deg, #FFEAA7 0%, #FDCB6E 50%, #E17055 100%)';
+        } else {
+            // 위험 - 빨간색 그라데이션
+            this.timeFill.style.background = 'linear-gradient(90deg, #FF6B6B 0%, #FF5252 50%, #E53E3E 100%)';
+            
+            // 위험 시 깜빡임 효과
+            if (percentage > 0) {
+                this.timeFill.style.animation = 'danger-blink 0.3s ease-in-out infinite';
+            }
+        }
+    }
+    
+    /**
+     * 게임 오버 화면 표시
+     */
+    showGameOver(finalScore, highScore) {
+        this.finalScore.textContent = finalScore.toLocaleString();
+        this.highScore.textContent = highScore.toLocaleString();
+        
+        // 화면 표시
+        this.gameOverScreen.style.display = 'block';
+        
+        // 페이드인 애니메이션
+        requestAnimationFrame(() => {
+            this.gameOverScreen.style.transition = 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            this.gameOverScreen.style.opacity = '1';
+            this.gameOverScreen.style.transform = 'scale(1)';
+        });
+        
+        // 점수 카운트업 애니메이션
+        this.animateScoreCountup(this.finalScore, 0, finalScore, 1000);
+        
+        this.uiStats.gameOverShows++;
+        
+        console.log('게임 오버 화면 표시');
+    }
+    
+    /**
+     * 점수 카운트업 애니메이션
+     */
+    animateScoreCountup(element, start, end, duration) {
+        const startTime = performance.now();
+        
+        const updateScore = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // 이징 함수 (easeOut)
+            const easeProgress = 1 - Math.pow(1 - progress, 3);
+            const currentScore = Math.floor(start + (end - start) * easeProgress);
+            
+            element.textContent = currentScore.toLocaleString();
+            
+            if (progress < 1) {
+                requestAnimationFrame(updateScore);
+            } else {
+                element.textContent = end.toLocaleString();
+            }
+        };
+        
+        requestAnimationFrame(updateScore);
+    }
+    
+    /**
+     * 게임 시작 화면 숨기기
+     */
+    hideStartScreen() {
+        this.startScreen.style.transition = 'all 0.3s ease';
+        this.startScreen.style.opacity = '0';
+        this.startScreen.style.transform = 'scale(0.9)';
+        
+        setTimeout(() => {
+            this.startScreen.style.display = 'none';
+        }, 300);
+    }
+    
+    /**
+     * 게임 오버 화면 숨기기
+     */
+    hideGameOverScreen() {
+        this.gameOverScreen.style.transition = 'all 0.3s ease';
+        this.gameOverScreen.style.opacity = '0';
+        this.gameOverScreen.style.transform = 'scale(0.8)';
+        
+        setTimeout(() => {
+            this.gameOverScreen.style.display = 'none';
+        }, 300);
+    }
+    
+    /**
+     * UI 상태 초기화
+     */
+    reset() {
+        // 하트 초기화
+        this.hearts.forEach(heart => {
+            heart.classList.remove('lost');
+            heart.style.opacity = '1';
+            heart.style.transform = 'scale(1)';
+            heart.style.animation = '';
+        });
+        
+        // 시간 바 초기화
+        this.timeFill.style.width = '100%';
+        this.timeFill.style.background = 'linear-gradient(90deg, #4ECDC4 0%, #45B7D1 50%, #96CEB4 100%)';
+        this.timeFill.style.animation = '';
+        
+        // 게임 오버 화면 숨기기
+        this.hideGameOverScreen();
+        
+        // 통계 초기화
+        this.uiStats = {
+            heartAnimations: 0,
+            timeBarUpdates: 0,
+            gameOverShows: 0,
+            totalUpdates: 0
+        };
+        
+        console.log('UIManager 초기화 완료');
+    }
+    
+    /**
+     * UI 통계 조회
+     */
+    getUIStats() {
+        return {
+            ...this.uiStats,
+            currentLives: this.hearts.length - document.querySelectorAll('.heart.lost').length,
+            timeBarWidth: this.timeFill.style.width
+        };
+    }
+    
+    /**
+     * 디버그 정보 출력
+     */
+    debugInfo() {
+        const stats = this.getUIStats();
+        console.log('=== UIManager 디버그 정보 ===');
+        console.log(`총 UI 업데이트: ${stats.totalUpdates}`);
+        console.log(`하트 애니메이션: ${stats.heartAnimations}`);
+        console.log(`시간 바 업데이트: ${stats.timeBarUpdates}`);
+        console.log(`게임 오버 표시: ${stats.gameOverShows}`);
+        console.log(`현재 생명: ${stats.currentLives}`);
+        console.log(`시간 바 너비: ${stats.timeBarWidth}`);
+        console.log('===============================');
     }
 }
 
@@ -1922,6 +2237,15 @@ document.addEventListener('DOMContentLoaded', () => {
         window.baristaGame.soundManager.setVolume(category, volume);
     };
     
+    // UIManager 디버그 함수들
+    window.getUIStats = () => {
+        return window.baristaGame.uiManager.getUIStats();
+    };
+    
+    window.debugUI = () => {
+        window.baristaGame.uiManager.debugInfo();
+    };
+    
     // 개발 모드에서 사용 가능한 함수들 로그
     console.log('🔧 개발 모드: 사용 가능한 함수들');
     console.log('addNewCupType(id, timing, perfect, options) - 새 컵 타입 추가');
@@ -1934,5 +2258,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('getSoundStats() - 사운드 통계 조회');
     console.log('debugSound() - 사운드 디버그 정보');
     console.log('setSoundVolume(category, volume) - 사운드 볼륨 설정');
+    console.log('getUIStats() - UI 통계 조회');
+    console.log('debugUI() - UI 디버그 정보');
     console.log('예시: addNewCupType("D", [4.0, 5.0], [4.9, 5.0], {name: "Mega Cup", difficulty: "hard"})');
 });

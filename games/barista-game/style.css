@@ -60,6 +60,21 @@ body {
     opacity: 0.3;
 }
 
+/* 하트 애니메이션 효과 */
+.heart {
+    transition: all 0.3s ease;
+}
+
+.heart.lost {
+    animation: heartLoss 0.5s ease-in-out;
+}
+
+@keyframes heartLoss {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 0.3; }
+}
+
 /* 시간 바 */
 .time-bar-container {
     position: absolute;
@@ -82,10 +97,32 @@ body {
 
 .time-fill {
     height: 100%;
-    background: linear-gradient(90deg, #FF6B6B 0%, #4ECDC4 50%, #45B7D1 100%);
+    background: linear-gradient(90deg, #4ECDC4 0%, #45B7D1 50%, #96CEB4 100%);
     width: 100%;
-    transition: width 0.1s linear;
+    transition: width 0.1s linear, background 0.3s ease;
     border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 시간 바 애니메이션 효과 */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+@keyframes danger-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.time-fill.pulse {
+    animation: pulse 0.5s ease-in-out;
+}
+
+.time-fill.danger {
+    animation: danger-blink 0.3s ease-in-out infinite;
 }
 
 /* 게임 시작 화면 */
@@ -147,6 +184,13 @@ body {
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     pointer-events: auto;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.game-over-screen.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
 }
 
 .game-over-screen h2 {
