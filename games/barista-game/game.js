@@ -359,6 +359,9 @@ class BaristaGame {
         
         if (this.currentCup) {
             console.log('✅ 새 컵 생성 성공:', this.currentCup.type);
+            
+            // 컵 등장 애니메이션 시작 (왼쪽에서 X축 이동으로 등장)
+            this.visualEffects.animateCupEnter(this.currentCup);
         } else {
             console.log('❌ 새 컵 생성 실패 - currentCup이 null');
         }
@@ -1786,6 +1789,35 @@ class VisualEffects {
     }
     
     /**
+     * 컵 등장 애니메이션 (왼쪽에서 X축 이동으로 등장)
+     */
+    animateCupEnter(cup) {
+        const targetX = cup.x; // 최종 목표 위치
+        const startX = -100; // 왼쪽 화면 밖에서 시작
+        const duration = 800; // 0.8초
+        const startTime = performance.now();
+        
+        // 초기 위치 설정
+        cup.x = startX;
+        
+        // 애니메이션 객체 생성
+        const animation = {
+            id: Date.now(),
+            startTime,
+            duration,
+            startX,
+            targetX,
+            cup,
+            type: 'cupEnter'
+        };
+        
+        this.animations.push(animation);
+        this.effectStats.animationsPlayed++;
+        
+        console.log('컵 등장 애니메이션 시작 (왼쪽에서 X축 이동)');
+    }
+    
+    /**
      * 컵 퇴장 애니메이션
      */
     animateCupExit(cup, callback) {
@@ -1829,14 +1861,11 @@ class VisualEffects {
             const easeProgress = 1 - Math.pow(1 - progress, 3);
             
             if (animation.type === 'cupExit') {
-                // 컵 위치 업데이트
+                // 컵 X축 이동만 (회전과 투명도 효과 제거)
                 animation.cup.x = animation.startX + (animation.targetX - animation.startX) * easeProgress;
-                
-                // 회전 효과
-                animation.cup.rotation = progress * Math.PI * 0.5;
-                
-                // 투명도 효과
-                animation.cup.alpha = 1 - progress * 0.5;
+            } else if (animation.type === 'cupEnter') {
+                // 컵 등장 애니메이션 (왼쪽에서 X축 이동으로 등장)
+                animation.cup.x = animation.startX + (animation.targetX - animation.startX) * easeProgress;
             }
             
             // 애니메이션 완료 체크
