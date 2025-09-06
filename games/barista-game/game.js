@@ -80,6 +80,9 @@ class BaristaGame {
      * 보안된 스코어 설정
      */
     setScore(newScore) {
+        console.log('📝 setScore 호출됨:', newScore);
+        console.log('  - 이전 점수:', this._score);
+        
         if (typeof newScore !== 'number' || newScore < 0 || !Number.isInteger(newScore)) {
             console.warn('⚠️ 잘못된 스코어 값:', newScore);
             return false;
@@ -94,6 +97,9 @@ class BaristaGame {
         
         this._score = newScore;
         this._scoreHash = this.generateScoreHash(newScore);
+        console.log('  - 점수 설정 완료:', this._score);
+        console.log('  - 해시 생성 완료:', this._scoreHash);
+        
         return true;
     }
     
@@ -101,30 +107,51 @@ class BaristaGame {
      * 보안된 스코어 증가
      */
     addScore(points) {
+        console.log('🔢 addScore 호출됨:', points);
+        console.log('  - 현재 점수:', this._score);
+        
         if (typeof points !== 'number' || points < 0 || !Number.isInteger(points)) {
             console.warn('⚠️ 잘못된 점수 값:', points);
             return false;
         }
         
         const newScore = this._score + points;
-        return this.setScore(newScore);
+        console.log('  - 새 점수:', newScore);
+        
+        const result = this.setScore(newScore);
+        console.log('  - setScore 결과:', result);
+        console.log('  - 최종 점수:', this._score);
+        
+        return result;
     }
     
     /**
      * 보안된 스코어 조회
      */
     getScore() {
+        console.log('📊 getScore 호출됨');
+        console.log('  - 현재 _score:', this._score);
+        console.log('  - 현재 _scoreHash:', this._scoreHash);
+        console.log('  - 검증 실패 플래그:', this._scoreValidationFailed);
+        
         // 무한 루프 방지: 이미 검증 실패한 경우 재검증하지 않음
         if (this._scoreValidationFailed) {
+            console.log('  - 검증 실패로 인해 재검증 건너뜀');
             return this._score;
         }
         
-        if (!this.validateScore(this._score, this._scoreHash)) {
+        const isValid = this.validateScore(this._score, this._scoreHash);
+        console.log('  - 스코어 검증 결과:', isValid);
+        
+        if (!isValid) {
             console.error('🚨 스코어 무결성 검증 실패! 스코어가 조작되었을 수 있습니다.');
             this._score = 0;
             this._scoreHash = this.generateScoreHash(0);
             this._scoreValidationFailed = true; // 무한 루프 방지
+            console.log('  - 스코어를 0으로 리셋');
         }
+        
+        console.log('  - 최종 반환 점수:', this._score);
         return this._score;
     }
     
@@ -524,7 +551,11 @@ class BaristaGame {
     processSuccess() {
         // 기본 점수 (10점)
         const baseScore = 10;
-        this.addScore(baseScore);
+        console.log('🎯 processSuccess 시작 - 점수 추가 시도:', baseScore);
+        
+        const scoreResult = this.addScore(baseScore);
+        console.log('  - addScore 결과:', scoreResult);
+        console.log('  - 현재 총 점수:', this.getScore());
         
         // 콤보 유지 (성공도 콤보에 포함)
         this.combo++;
@@ -535,7 +566,7 @@ class BaristaGame {
         // 통계 업데이트
         this.gameStats.successCups++;
         
-        console.log(`성공: +${baseScore}점, 콤보 ${this.combo}, 시간 -10초`);
+        console.log(`성공: +${baseScore}점, 콤보 ${this.combo}, 시간 -10초, 최종 점수: ${this.getScore()}`);
     }
     
     /**
@@ -547,7 +578,13 @@ class BaristaGame {
         const comboBonus = this.combo * 10; // 콤보당 10점 추가
         const totalScore = baseScore + comboBonus;
         
-        this.addScore(totalScore);
+        console.log('🌟 processPerfect 시작 - 점수 추가 시도:', totalScore);
+        console.log('  - 기본 점수:', baseScore);
+        console.log('  - 콤보 보너스:', comboBonus);
+        
+        const scoreResult = this.addScore(totalScore);
+        console.log('  - addScore 결과:', scoreResult);
+        console.log('  - 현재 총 점수:', this.getScore());
         
         // 콤보 증가
         this.combo++;
@@ -558,7 +595,7 @@ class BaristaGame {
         // 통계 업데이트
         this.gameStats.perfectCups++;
         
-        console.log(`완벽한 타이밍: +${totalScore}점 (기본 ${baseScore} + 콤보 ${comboBonus}), 콤보 ${this.combo}, 시간 +2초`);
+        console.log(`완벽한 타이밍: +${totalScore}점 (기본 ${baseScore} + 콤보 ${comboBonus}), 콤보 ${this.combo}, 시간 +2초, 최종 점수: ${this.getScore()}`);
     }
     
     /**
