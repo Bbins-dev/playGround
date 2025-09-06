@@ -818,10 +818,11 @@ class BaristaGame {
         
         this.ctx.restore();
         
-        // 커피 채우기 효과
-        if (cup.fillLevel > 0) {
-            this.visualEffects.renderCoffeeFill(cup, cup.fillLevel);
-        }
+        // 커피 채우기 효과 (사용자에게 보이지 않음)
+        // fillLevel 계산은 게임 로직용으로 유지하되 시각적 표시는 제거
+        // if (cup.fillLevel > 0) {
+        //     this.visualEffects.renderCoffeeFill(cup, cup.fillLevel);
+        // }
         
         // 컵 라벨
         this.ctx.fillStyle = '#654321';
