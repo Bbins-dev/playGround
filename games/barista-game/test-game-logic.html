@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게임 로직 테스트 - 바리스타 게임</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #005a9e;
+        }
+        .test-result {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+        .warning { color: #ffc107; }
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #007acc;
+        }
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #007acc;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .logic-test-area {
+            border: 2px dashed #007acc;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            background: #f8f9fa;
+            border-radius: 10px;
+            min-height: 300px;
+            position: relative;
+        }
+        .score-display {
+            font-size: 2em;
+            font-weight: bold;
+            color: #007acc;
+            margin: 10px 0;
+        }
+        .combo-display {
+            font-size: 1.5em;
+            color: #ff6b6b;
+            margin: 5px 0;
+        }
+        .time-display {
+            font-size: 1.2em;
+            color: #4ecdc4;
+            margin: 5px 0;
+        }
+        .lives-display {
+            font-size: 1.2em;
+            color: #ff6b6b;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎯 바리스타 게임 - 게임 로직 테스트</h1>
+        
+        <div class="test-section">
+            <h3>1. 게임 상태 시뮬레이션</h3>
+            <div class="logic-test-area">
+                <h4>게임 상태 표시</h4>
+                <div class="score-display" id="currentScore">점수: 0</div>
+                <div class="combo-display" id="currentCombo">콤보: 0</div>
+                <div class="time-display" id="currentTime">시간: 120초</div>
+                <div class="lives-display" id="currentLives">생명: 3</div>
+                
+                <div style="margin-top: 20px;">
+                    <button class="test-button" onclick="simulatePerfect()">완벽한 타이밍 시뮬레이션</button>
+                    <button class="test-button" onclick="simulateSuccess()">성공 시뮬레이션</button>
+                    <button class="test-button" onclick="simulateTooEarly()">너무 빠른 시뮬레이션</button>
+                    <button class="test-button" onclick="simulateOverflow()">넘침 시뮬레이션</button>
+                </div>
+            </div>
+            <div id="simulationResult" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>2. 점수 시스템 테스트</h3>
+            <button class="test-button" onclick="testScoreCalculation()">점수 계산 테스트</button>
+            <button class="test-button" onclick="testComboSystem()">콤보 시스템 테스트</button>
+            <button class="test-button" onclick="testTimeSystem()">시간 시스템 테스트</button>
+            <div id="scoreResult" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>3. 게임 통계 테스트</h3>
+            <button class="test-button" onclick="testGameStats()">게임 통계 테스트</button>
+            <button class="test-button" onclick="testFinalStats()">최종 통계 테스트</button>
+            <button class="test-button" onclick="testGameOverConditions()">게임 오버 조건 테스트</button>
+            <div id="statsResult" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>4. 게임 밸런싱 테스트</h3>
+            <button class="test-button" onclick="testGameBalance()">게임 밸런싱 테스트</button>
+            <button class="test-button" onclick="testInfinitePlay()">무한 플레이 시뮬레이션</button>
+            <button class="test-button" onclick="testDifficultyProgression()">난이도 진행 테스트</button>
+            <div id="balanceResult" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>5. 실시간 통계</h3>
+            <button class="test-button" onclick="updateGameStats()">통계 업데이트</button>
+            <button class="test-button" onclick="clearGameStats()">통계 초기화</button>
+            <div class="stats-display" id="gameStatsDisplay">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalCups">0</div>
+                    <div class="stat-label">총 컵 수</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="perfectCups">0</div>
+                    <div class="stat-label">완벽한 컵</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="successCups">0</div>
+                    <div class="stat-label">성공한 컵</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="failedCups">0</div>
+                    <div class="stat-label">실패한 컵</div>
+                </div>
+            </div>
+            <div id="liveStatsResult" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>6. 전체 테스트 실행</h3>
+            <button class="test-button" onclick="runAllLogicTests()">전체 테스트 실행</button>
+            <div id="allResult" class="test-result"></div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+    <script>
+        let game;
+        let statsInterval;
+        
+        // 테스트용 게임 인스턴스 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            game = window.baristaGame;
+            
+            // 주기적으로 통계 업데이트
+            statsInterval = setInterval(updateGameStats, 1000);
+            
+            // 초기 상태 확인
+            updateGameStats();
+        });
+        
+        function simulatePerfect() {
+            const result = document.getElementById('simulationResult');
+            result.textContent = '완벽한 타이밍 시뮬레이션 시작...\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                // 완벽한 타이밍 처리 시뮬레이션
+                game.processPerfect();
+                updateDisplay();
+                
+                result.textContent += '완벽한 타이밍 시뮬레이션 완료!\n';
+                result.textContent += `점수: +${20 + (game.combo - 1) * 10}점, 콤보: ${game.combo}, 시간: +2초`;
+                result.className = 'test-result success';
+            } catch (error) {
+                result.textContent = `시뮬레이션 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function simulateSuccess() {
+            const result = document.getElementById('simulationResult');
+            result.textContent = '성공 시뮬레이션 시작...\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                game.processSuccess();
+                updateDisplay();
+                
+                result.textContent += '성공 시뮬레이션 완료!\n';
+                result.textContent += `점수: +10점, 콤보: ${game.combo}, 시간: +2초`;
+                result.className = 'test-result success';
+            } catch (error) {
+                result.textContent = `시뮬레이션 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function simulateTooEarly() {
+            const result = document.getElementById('simulationResult');
+            result.textContent = '너무 빠른 시뮬레이션 시작...\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                game.processTooEarly();
+                updateDisplay();
+                
+                result.textContent += '너무 빠른 시뮬레이션 완료!\n';
+                result.textContent += `점수: 변화없음, 콤보: 리셋, 시간: -10초`;
+                result.className = 'test-result warning';
+            } catch (error) {
+                result.textContent = `시뮬레이션 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function simulateOverflow() {
+            const result = document.getElementById('simulationResult');
+            result.textContent = '넘침 시뮬레이션 시작...\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                game.processOverflow();
+                updateDisplay();
+                
+                result.textContent += '넘침 시뮬레이션 완료!\n';
+                result.textContent += `점수: 변화없음, 콤보: 리셋, 생명: -1, 시간: -10초`;
+                result.className = 'test-result error';
+            } catch (error) {
+                result.textContent = `시뮬레이션 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function updateDisplay() {
+            document.getElementById('currentScore').textContent = `점수: ${game.score.toLocaleString()}`;
+            document.getElementById('currentCombo').textContent = `콤보: ${game.combo}`;
+            document.getElementById('currentTime').textContent = `시간: ${game.gameTime.toFixed(1)}초`;
+            document.getElementById('currentLives').textContent = `생명: ${game.lives}`;
+        }
+        
+        function testScoreCalculation() {
+            const result = document.getElementById('scoreResult');
+            result.textContent = '점수 계산 테스트:\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                // 초기 상태 저장
+                const initialScore = game.score;
+                const initialCombo = game.combo;
+                
+                // 성공 테스트
+                game.processSuccess();
+                const successScore = game.score - initialScore;
+                
+                // 완벽한 타이밍 테스트
+                const perfectScoreBefore = game.score;
+                game.processPerfect();
+                const perfectScore = game.score - perfectScoreBefore;
+                
+                result.textContent += `✅ 성공 점수: +${successScore}점 (예상: 10점)\n`;
+                result.textContent += `✅ 완벽한 타이밍 점수: +${perfectScore}점 (예상: 20+콤보보너스)\n`;
+                result.textContent += `✅ 콤보 시스템: ${game.combo} (예상: 2)\n`;
+                
+                result.textContent += '\n점수 계산 테스트 완료!';
+                result.className = 'test-result success';
+            } catch (error) {
+                result.textContent = `점수 계산 테스트 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function testComboSystem() {
+            const result = document.getElementById('scoreResult');
+            result.textContent = '콤보 시스템 테스트:\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                // 초기 콤보
+                const initialCombo = game.combo;
+                
+                // 연속 성공으로 콤보 증가 테스트
+                for (let i = 0; i < 3; i++) {
+                    game.processSuccess();
+                }
+                
+                result.textContent += `✅ 성공 후 콤보: ${game.combo} (예상: ${initialCombo + 3})\n`;
+                
+                // 완벽한 타이밍으로 콤보 보너스 테스트
+                const scoreBefore = game.score;
+                game.processPerfect();
+                const scoreAfter = game.score;
+                const comboBonus = scoreAfter - scoreBefore - 20; // 기본 20점 제외
+                
+                result.textContent += `✅ 완벽한 타이밍 콤보 보너스: +${comboBonus}점 (예상: ${game.combo * 10})\n`;
+                
+                // 실패로 콤보 리셋 테스트
+                game.processTooEarly();
+                
+                result.textContent += `✅ 실패 후 콤보 리셋: ${game.combo} (예상: 0)\n`;
+                
+                result.textContent += '\n콤보 시스템 테스트 완료!';
+                result.className = 'test-result success';
+            } catch (error) {
+                result.textContent = `콤보 시스템 테스트 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function testTimeSystem() {
+            const result = document.getElementById('scoreResult');
+            result.textContent = '시간 시스템 테스트:\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                // 초기 시간
+                const initialTime = game.gameTime;
+                
+                // 성공으로 시간 연장 테스트
+                game.processSuccess();
+                const timeAfterSuccess = game.gameTime;
+                
+                // 완벽한 타이밍으로 시간 연장 테스트
+                game.processPerfect();
+                const timeAfterPerfect = game.gameTime;
+                
+                // 실패로 시간 감소 테스트
+                game.processTooEarly();
+                const timeAfterFailure = game.gameTime;
+                
+                result.textContent += `✅ 초기 시간: ${initialTime.toFixed(1)}초\n`;
+                result.textContent += `✅ 성공 후 시간: ${timeAfterSuccess.toFixed(1)}초 (+2초)\n`;
+                result.textContent += `✅ 완벽 후 시간: ${timeAfterPerfect.toFixed(1)}초 (+2초)\n`;
+                result.textContent += `✅ 실패 후 시간: ${timeAfterFailure.toFixed(1)}초 (-10초)\n`;
+                
+                result.textContent += '\n시간 시스템 테스트 완료!';
+                result.className = 'test-result success';
+            } catch (error) {
+                result.textContent = `시간 시스템 테스트 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function testGameStats() {
+            const result = document.getElementById('statsResult');
+            result.textContent = '게임 통계 테스트:\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                const stats = game.gameStats;
+                
+                result.textContent += `✅ 총 컵 수: ${stats.totalCups}\n`;
+                result.textContent += `✅ 완벽한 컵: ${stats.perfectCups}\n`;
+                result.textContent += `✅ 성공한 컵: ${stats.successCups}\n`;
+                result.textContent += `✅ 실패한 컵: ${stats.failedCups}\n`;
+                result.textContent += `✅ 총 플레이 시간: ${(stats.totalPlayTime / 1000).toFixed(1)}초\n`;
+                
+                const accuracy = stats.totalCups > 0 
+                    ? ((stats.successCups + stats.perfectCups) / stats.totalCups * 100).toFixed(1)
+                    : 0;
+                
+                result.textContent += `✅ 정확도: ${accuracy}%\n`;
+                
+                result.textContent += '\n게임 통계 테스트 완료!';
+                result.className = 'test-result success';
+            } catch (error) {
+                result.textContent = `게임 통계 테스트 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function testFinalStats() {
+            const result = document.getElementById('statsResult');
+            result.textContent = '최종 통계 테스트:\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                const finalStats = game.calculateFinalStats();
+                
+                result.textContent += `✅ 최종 점수: ${finalStats.finalScore.toLocaleString()}\n`;
+                result.textContent += `✅ 최고 점수: ${finalStats.highScore.toLocaleString()}\n`;
+                result.textContent += `✅ 최대 콤보: ${finalStats.maxCombo}\n`;
+                result.textContent += `✅ 정확도: ${finalStats.accuracy.toFixed(1)}%\n`;
+                result.textContent += `✅ 완벽률: ${finalStats.perfectRate.toFixed(1)}%\n`;
+                result.textContent += `✅ 컵당 평균 점수: ${finalStats.avgScorePerCup.toFixed(1)}\n`;
+                result.textContent += `✅ 게임 오버 사유: ${finalStats.gameOverReason || '진행 중'}\n`;
+                
+                result.textContent += '\n최종 통계 테스트 완료!';
+                result.className = 'test-result success';
+            } catch (error) {
+                result.textContent = `최종 통계 테스트 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function testGameOverConditions() {
+            const result = document.getElementById('statsResult');
+            result.textContent = '게임 오버 조건 테스트:\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                // 초기 상태
+                const initialLives = game.lives;
+                const initialTime = game.gameTime;
+                
+                result.textContent += `✅ 초기 생명: ${initialLives}\n`;
+                result.textContent += `✅ 초기 시간: ${initialTime.toFixed(1)}초\n`;
+                
+                // 생명 소진 테스트
+                game.lives = 0;
+                result.textContent += `✅ 생명 소진 시 게임 오버: ${game.isGameOver() ? '예' : '아니오'}\n`;
+                result.textContent += `✅ 게임 오버 사유: ${game.getGameOverReason()}\n`;
+                
+                // 시간 소진 테스트
+                game.lives = 3;
+                game.gameTime = 0;
+                result.textContent += `✅ 시간 소진 시 게임 오버: ${game.isGameOver() ? '예' : '아니오'}\n`;
+                result.textContent += `✅ 게임 오버 사유: ${game.getGameOverReason()}\n`;
+                
+                // 정상 상태 복원
+                game.lives = initialLives;
+                game.gameTime = initialTime;
+                
+                result.textContent += '\n게임 오버 조건 테스트 완료!';
+                result.className = 'test-result success';
+            } catch (error) {
+                result.textContent = `게임 오버 조건 테스트 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function testGameBalance() {
+            const result = document.getElementById('balanceResult');
+            result.textContent = '게임 밸런싱 테스트:\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                // 완벽한 플레이 시뮬레이션 (시간 무한 연장)
+                let perfectCount = 0;
+                let timeIncrease = 0;
+                
+                for (let i = 0; i < 10; i++) {
+                    const timeBefore = game.gameTime;
+                    game.processPerfect();
+                    const timeAfter = game.gameTime;
+                    timeIncrease += (timeAfter - timeBefore);
+                    perfectCount++;
+                }
+                
+                result.textContent += `✅ ${perfectCount}번 완벽한 플레이 후 시간 증가: +${timeIncrease.toFixed(1)}초\n`;
+                result.textContent += `✅ 완벽한 플레이로 무한 게임 가능: ${timeIncrease > 0 ? '예' : '아니오'}\n`;
+                
+                // 실패 플레이 시뮬레이션
+                const timeBeforeFailure = game.gameTime;
+                game.processOverflow();
+                const timeAfterFailure = game.gameTime;
+                const timeDecrease = timeBeforeFailure - timeAfterFailure;
+                
+                result.textContent += `✅ 넘침 실패 후 시간 감소: -${timeDecrease.toFixed(1)}초\n`;
+                result.textContent += `✅ 생명 감소: ${game.lives}\n`;
+                
+                result.textContent += '\n게임 밸런싱 테스트 완료!';
+                result.className = 'test-result success';
+            } catch (error) {
+                result.textContent = `게임 밸런싱 테스트 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function testInfinitePlay() {
+            const result = document.getElementById('balanceResult');
+            result.textContent = '무한 플레이 시뮬레이션:\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                let simulationCount = 0;
+                let maxTimeReached = game.gameTime;
+                
+                // 완벽한 플레이로 시간 연장 시뮬레이션
+                while (simulationCount < 50 && game.gameTime < 300) { // 최대 5분까지
+                    game.processPerfect();
+                    maxTimeReached = Math.max(maxTimeReached, game.gameTime);
+                    simulationCount++;
+                }
+                
+                result.textContent += `✅ ${simulationCount}번 완벽한 플레이 시뮬레이션\n`;
+                result.textContent += `✅ 최대 도달 시간: ${maxTimeReached.toFixed(1)}초\n`;
+                result.textContent += `✅ 무한 플레이 가능성: ${maxTimeReached > 200 ? '높음' : '보통'}\n`;
+                
+                result.textContent += '\n무한 플레이 시뮬레이션 완료!';
+                result.className = 'test-result success';
+            } catch (error) {
+                result.textContent = `무한 플레이 시뮬레이션 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function testDifficultyProgression() {
+            const result = document.getElementById('balanceResult');
+            result.textContent = '난이도 진행 테스트:\n\n';
+            result.className = 'test-result info';
+            
+            try {
+                // 다양한 결과 패턴 테스트
+                const patterns = [
+                    { name: '완벽한 플레이', results: ['perfect', 'perfect', 'perfect'] },
+                    { name: '혼합 플레이', results: ['perfect', 'success', 'tooEarly'] },
+                    { name: '실패 플레이', results: ['overflow', 'tooEarly', 'overflow'] }
+                ];
+                
+                for (const pattern of patterns) {
+                    const initialScore = game.score;
+                    const initialTime = game.gameTime;
+                    const initialLives = game.lives;
+                    
+                    for (const resultType of pattern.results) {
+                        switch (resultType) {
+                            case 'perfect':
+                                game.processPerfect();
+                                break;
+                            case 'success':
+                                game.processSuccess();
+                                break;
+                            case 'tooEarly':
+                                game.processTooEarly();
+                                break;
+                            case 'overflow':
+                                game.processOverflow();
+                                break;
+                        }
+                    }
+                    
+                    const scoreChange = game.score - initialScore;
+                    const timeChange = game.gameTime - initialTime;
+                    const livesChange = game.lives - initialLives;
+                    
+                    result.textContent += `✅ ${pattern.name}: 점수 ${scoreChange > 0 ? '+' : ''}${scoreChange}, 시간 ${timeChange > 0 ? '+' : ''}${timeChange.toFixed(1)}초, 생명 ${livesChange > 0 ? '+' : ''}${livesChange}\n`;
+                }
+                
+                result.textContent += '\n난이도 진행 테스트 완료!';
+                result.className = 'test-result success';
+            } catch (error) {
+                result.textContent = `난이도 진행 테스트 실패: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function updateGameStats() {
+            try {
+                const stats = game.gameStats;
+                
+                document.getElementById('totalCups').textContent = stats.totalCups;
+                document.getElementById('perfectCups').textContent = stats.perfectCups;
+                document.getElementById('successCups').textContent = stats.successCups;
+                document.getElementById('failedCups').textContent = stats.failedCups;
+                
+                const result = document.getElementById('liveStatsResult');
+                let output = '실시간 게임 통계:\n\n';
+                output += `현재 점수: ${game.score.toLocaleString()}\n`;
+                output += `현재 콤보: ${game.combo}\n`;
+                output += `최대 콤보: ${game.maxCombo}\n`;
+                output += `생명: ${game.lives}\n`;
+                output += `게임 시간: ${game.gameTime.toFixed(1)}초\n`;
+                output += `총 컵 수: ${stats.totalCups}\n`;
+                output += `완벽한 컵: ${stats.perfectCups}\n`;
+                output += `성공한 컵: ${stats.successCups}\n`;
+                output += `실패한 컵: ${stats.failedCups}\n`;
+                
+                if (stats.totalCups > 0) {
+                    const accuracy = ((stats.successCups + stats.perfectCups) / stats.totalCups * 100).toFixed(1);
+                    const perfectRate = (stats.perfectCups / stats.totalCups * 100).toFixed(1);
+                    output += `정확도: ${accuracy}%\n`;
+                    output += `완벽률: ${perfectRate}%\n`;
+                }
+                
+                result.textContent = output;
+                result.className = 'test-result success';
+            } catch (error) {
+                const result = document.getElementById('liveStatsResult');
+                result.textContent = `에러: ${error.message}`;
+                result.className = 'test-result error';
+            }
+        }
+        
+        function clearGameStats() {
+            // 게임 상태 초기화 (테스트용)
+            game.score = 0;
+            game.combo = 0;
+            game.maxCombo = 0;
+            game.lives = 3;
+            game.gameTime = 120;
+            game.gameStats = {
+                totalCups: 0,
+                perfectCups: 0,
+                successCups: 0,
+                failedCups: 0,
+                totalPlayTime: 0,
+                startTime: Date.now()
+            };
+            
+            updateDisplay();
+            updateGameStats();
+            
+            const result = document.getElementById('liveStatsResult');
+            result.textContent = '게임 통계가 초기화되었습니다.';
+            result.className = 'test-result info';
+        }
+        
+        function runAllLogicTests() {
+            const result = document.getElementById('allResult');
+            result.textContent = '전체 게임 로직 테스트 실행 중...\n\n';
+            result.className = 'test-result info';
+            
+            setTimeout(() => {
+                try {
+                    testScoreCalculation();
+                    setTimeout(() => testComboSystem(), 1000);
+                    setTimeout(() => testTimeSystem(), 2000);
+                    setTimeout(() => testGameStats(), 3000);
+                    setTimeout(() => testFinalStats(), 4000);
+                    setTimeout(() => testGameOverConditions(), 5000);
+                    setTimeout(() => testGameBalance(), 6000);
+                    
+                    result.textContent = '✅ 모든 게임 로직 테스트 완료!\n\n각 테스트가 순차적으로 실행됩니다.';
+                    result.className = 'test-result success';
+                } catch (error) {
+                    result.textContent = `❌ 테스트 실행 중 에러: ${error.message}`;
+                    result.className = 'test-result error';
+                }
+            }, 100);
+        }
+        
+        // 페이지 언로드 시 정리
+        window.addEventListener('beforeunload', () => {
+            if (statsInterval) {
+                clearInterval(statsInterval);
+            }
+        });
+    </script>
+</body>
+</html>

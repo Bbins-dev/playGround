@@ -82,8 +82,19 @@ class BaristaGame {
         this.lives = 3;
         this.score = 0;
         this.combo = 0;
+        this.maxCombo = 0;
         this.currentCup = null;
         this.isHolding = false;
+        
+        // 게임 통계 초기화
+        this.gameStats = {
+            totalCups: 0,
+            perfectCups: 0,
+            successCups: 0,
+            failedCups: 0,
+            totalPlayTime: 0,
+            startTime: Date.now()
+        };
         
         // 컵 시스템 통계 초기화
         this.cupSystem.reset();
@@ -159,27 +170,27 @@ class BaristaGame {
     }
     
     processResult(result) {
-        // CupSystem을 사용하여 점수와 시간 변경량 계산
-        const scoreGain = this.cupSystem.calculateScore(this.currentCup, result, this.combo || 0);
-        const timeChange = this.cupSystem.calculateTimeChange(result);
+        // 게임 통계 업데이트
+        this.gameStats.totalCups++;
         
-        // 점수 업데이트
-        this.score += scoreGain;
-        
-        // 시간 업데이트
-        this.gameTime = Math.max(0, this.gameTime + timeChange);
-        
-        // 콤보 시스템 (완벽한 타이밍만)
-        if (result === 'perfect') {
-            this.combo = (this.combo || 0) + 1;
-        } else {
-            this.combo = 0;
+        // 결과별 상세 처리
+        switch (result) {
+            case 'tooEarly':
+                this.processTooEarly();
+                break;
+            case 'success':
+                this.processSuccess();
+                break;
+            case 'perfect':
+                this.processPerfect();
+                break;
+            case 'overflow':
+                this.processOverflow();
+                break;
         }
         
-        // 생명 감소 (넘침 시에만)
-        if (result === 'overflow') {
-            this.lives--;
-        }
+        // 최대 콤보 업데이트
+        this.maxCombo = Math.max(this.maxCombo, this.combo);
         
         // 사운드 재생
         this.soundManager.playReleaseSound(result);
@@ -201,14 +212,131 @@ class BaristaGame {
         this.updateUI();
         
         // 게임 오버 체크
-        if (this.lives <= 0 || this.gameTime <= 0) {
+        this.checkGameOver();
+        
+        // 게임 통계 로깅
+        this.logGameStats(result);
+    }
+    
+    /**
+     * 게임 오버 체크
+     */
+    checkGameOver() {
+        if (this.isGameOver()) {
             this.gameOver();
-        } else {
-            // 새 컵 생성 (약간의 지연 후)
-            setTimeout(() => {
-                this.generateNewCup();
-            }, 1000);
         }
+    }
+    
+    /**
+     * 게임 오버 조건 상세 체크
+     */
+    isGameOver() {
+        return this.lives <= 0 || this.gameTime <= 0;
+    }
+    
+    /**
+     * 게임 오버 사유 반환
+     */
+    getGameOverReason() {
+        if (this.lives <= 0) {
+            return 'lives'; // 생명 소진
+        } else if (this.gameTime <= 0) {
+            return 'time'; // 시간 소진
+        }
+        return null;
+    }
+    
+    /**
+     * 너무 빠른 릴리즈 처리
+     */
+    processTooEarly() {
+        // 콤보 리셋
+        this.combo = 0;
+        
+        // 시간 감소 (10초)
+        this.gameTime = Math.max(0, this.gameTime - 10);
+        
+        // 통계 업데이트
+        this.gameStats.failedCups++;
+        
+        console.log(`너무 빠른 릴리즈: 시간 -10초, 콤보 리셋`);
+    }
+    
+    /**
+     * 성공 처리
+     */
+    processSuccess() {
+        // 기본 점수 (10점)
+        const baseScore = 10;
+        this.score += baseScore;
+        
+        // 콤보 유지 (성공도 콤보에 포함)
+        this.combo++;
+        
+        // 시간 연장 (2초)
+        this.gameTime += 2;
+        
+        // 통계 업데이트
+        this.gameStats.successCups++;
+        
+        console.log(`성공: +${baseScore}점, 콤보 ${this.combo}, 시간 +2초`);
+    }
+    
+    /**
+     * 완벽한 타이밍 처리
+     */
+    processPerfect() {
+        // 기본 점수 (20점) + 콤보 보너스
+        const baseScore = 20;
+        const comboBonus = this.combo * 10; // 콤보당 10점 추가
+        const totalScore = baseScore + comboBonus;
+        
+        this.score += totalScore;
+        
+        // 콤보 증가
+        this.combo++;
+        
+        // 시간 연장 (2초)
+        this.gameTime += 2;
+        
+        // 통계 업데이트
+        this.gameStats.perfectCups++;
+        
+        console.log(`완벽한 타이밍: +${totalScore}점 (기본 ${baseScore} + 콤보 ${comboBonus}), 콤보 ${this.combo}, 시간 +2초`);
+    }
+    
+    /**
+     * 넘침 처리
+     */
+    processOverflow() {
+        // 콤보 리셋
+        this.combo = 0;
+        
+        // 생명 감소
+        this.lives--;
+        
+        // 시간 감소 (10초)
+        this.gameTime = Math.max(0, this.gameTime - 10);
+        
+        // 통계 업데이트
+        this.gameStats.failedCups++;
+        
+        console.log(`넘침: 생명 -1, 시간 -10초, 콤보 리셋`);
+    }
+    
+    /**
+     * 게임 통계 로깅
+     */
+    logGameStats(result) {
+        const accuracy = this.gameStats.totalCups > 0 
+            ? ((this.gameStats.successCups + this.gameStats.perfectCups) / this.gameStats.totalCups * 100).toFixed(1)
+            : 0;
+        
+        const perfectRate = this.gameStats.totalCups > 0 
+            ? (this.gameStats.perfectCups / this.gameStats.totalCups * 100).toFixed(1)
+            : 0;
+        
+        console.log(`게임 통계: 총 ${this.gameStats.totalCups}개 컵, 정확도 ${accuracy}%, 완벽률 ${perfectRate}%, 최대 콤보 ${this.maxCombo}`);
     }
     
     animateCupExit() {
@@ -225,8 +353,71 @@ class BaristaGame {
             this.saveHighScore();
         }
         
+        // 게임 통계 완료
+        this.gameStats.totalPlayTime = Date.now() - this.gameStats.startTime;
+        
+        // 최종 통계 계산
+        const finalStats = this.calculateFinalStats();
+        
         // 게임 오버 화면 표시 (UIManager 사용)
         this.uiManager.showGameOver(this.score, this.highScore);
+        
+        // 최종 통계 로깅
+        this.logFinalStats(finalStats);
+    }
+    
+    /**
+     * 최종 게임 통계 계산
+     */
+    calculateFinalStats() {
+        const accuracy = this.gameStats.totalCups > 0 
+            ? ((this.gameStats.successCups + this.gameStats.perfectCups) / this.gameStats.totalCups * 100)
+            : 0;
+        
+        const perfectRate = this.gameStats.totalCups > 0 
+            ? (this.gameStats.perfectCups / this.gameStats.totalCups * 100)
+            : 0;
+        
+        const avgScorePerCup = this.gameStats.totalCups > 0 
+            ? (this.score / this.gameStats.totalCups)
+            : 0;
+        
+        const gameOverReason = this.getGameOverReason();
+        
+        return {
+            finalScore: this.score,
+            highScore: this.highScore,
+            maxCombo: this.maxCombo,
+            accuracy: accuracy,
+            perfectRate: perfectRate,
+            avgScorePerCup: avgScorePerCup,
+            totalCups: this.gameStats.totalCups,
+            perfectCups: this.gameStats.perfectCups,
+            successCups: this.gameStats.successCups,
+            failedCups: this.gameStats.failedCups,
+            totalPlayTime: this.gameStats.totalPlayTime,
+            gameOverReason: gameOverReason
+        };
+    }
+    
+    /**
+     * 최종 통계 로깅
+     */
+    logFinalStats(stats) {
+        console.log('=== 게임 종료 통계 ===');
+        console.log(`최종 점수: ${stats.finalScore.toLocaleString()}`);
+        console.log(`최고 점수: ${stats.highScore.toLocaleString()}`);
+        console.log(`최대 콤보: ${stats.maxCombo}`);
+        console.log(`정확도: ${stats.accuracy.toFixed(1)}%`);
+        console.log(`완벽률: ${stats.perfectRate.toFixed(1)}%`);
+        console.log(`컵당 평균 점수: ${stats.avgScorePerCup.toFixed(1)}`);
+        console.log(`총 컵 수: ${stats.totalCups}`);
+        console.log(`완벽한 컵: ${stats.perfectCups}`);
+        console.log(`성공한 컵: ${stats.successCups}`);
+        console.log(`실패한 컵: ${stats.failedCups}`);
+        console.log(`총 플레이 시간: ${(stats.totalPlayTime / 1000).toFixed(1)}초`);
+        console.log(`게임 오버 사유: ${stats.gameOverReason === 'lives' ? '생명 소진' : '시간 소진'}`);
+        console.log('======================');
     }
     
     updateUI() {
@@ -2246,6 +2437,31 @@ document.addEventListener('DOMContentLoaded', () => {
         window.baristaGame.uiManager.debugInfo();
     };
     
+    // 게임 로직 디버그 함수들
+    window.getGameStats = () => {
+        return window.baristaGame.gameStats;
+    };
+    
+    window.getFinalStats = () => {
+        return window.baristaGame.calculateFinalStats();
+    };
+    
+    window.debugGameLogic = () => {
+        const stats = window.baristaGame.gameStats;
+        console.log('=== 게임 로직 디버그 정보 ===');
+        console.log(`현재 점수: ${window.baristaGame.score}`);
+        console.log(`현재 콤보: ${window.baristaGame.combo}`);
+        console.log(`최대 콤보: ${window.baristaGame.maxCombo}`);
+        console.log(`생명: ${window.baristaGame.lives}`);
+        console.log(`게임 시간: ${window.baristaGame.gameTime.toFixed(1)}초`);
+        console.log(`총 컵 수: ${stats.totalCups}`);
+        console.log(`완벽한 컵: ${stats.perfectCups}`);
+        console.log(`성공한 컵: ${stats.successCups}`);
+        console.log(`실패한 컵: ${stats.failedCups}`);
+        console.log(`게임 상태: ${window.baristaGame.gameState}`);
+        console.log('===============================');
+    };
+    
     // 개발 모드에서 사용 가능한 함수들 로그
     console.log('🔧 개발 모드: 사용 가능한 함수들');
     console.log('addNewCupType(id, timing, perfect, options) - 새 컵 타입 추가');
@@ -2260,5 +2476,8 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('setSoundVolume(category, volume) - 사운드 볼륨 설정');
     console.log('getUIStats() - UI 통계 조회');
     console.log('debugUI() - UI 디버그 정보');
+    console.log('getGameStats() - 게임 통계 조회');
+    console.log('getFinalStats() - 최종 통계 조회');
+    console.log('debugGameLogic() - 게임 로직 디버그 정보');
     console.log('예시: addNewCupType("D", [4.0, 5.0], [4.9, 5.0], {name: "Mega Cup", difficulty: "hard"})');
 });
