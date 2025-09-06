@@ -19,6 +19,9 @@ class BaristaGame {
         // 컵 시스템 초기화
         this.cupSystem = new CupSystem();
         
+        // 입력 매니저 초기화
+        this.inputManager = new InputManager(this.canvas, this);
+        
         // 사운드 매니저
         this.soundManager = new SoundManager();
         
@@ -57,25 +60,8 @@ class BaristaGame {
             this.restartGame();
         });
         
-        // 마우스 이벤트
-        this.canvas.addEventListener('mousedown', (e) => {
-            this.handleStart();
-        });
-        
-        this.canvas.addEventListener('mouseup', (e) => {
-            this.handleEnd();
-        });
-        
-        // 터치 이벤트 (모바일)
-        this.canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            this.handleStart();
-        }, { passive: false });
-        
-        this.canvas.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            this.handleEnd();
-        }, { passive: false });
+        // InputManager가 모든 입력 이벤트를 처리합니다
+        console.log('입력 이벤트는 InputManager에서 처리됩니다.');
         
         // 윈도우 리사이즈
         window.addEventListener('resize', () => {
@@ -95,6 +81,9 @@ class BaristaGame {
         
         // 컵 시스템 통계 초기화
         this.cupSystem.reset();
+        
+        // 입력 매니저 초기화
+        this.inputManager.reset();
         
         document.getElementById('startScreen').style.display = 'none';
         this.updateUI();
@@ -120,7 +109,7 @@ class BaristaGame {
         if (this.gameState !== 'playing' || this.isHolding || !this.currentCup) return;
         
         this.isHolding = true;
-        this.currentCup.holdStartTime = Date.now();
+        this.currentCup.holdStartTime = performance.now();
         
         // 홀드 사운드 시작
         this.soundManager.startHold();
@@ -128,11 +117,15 @@ class BaristaGame {
         console.log('홀드 시작');
     }
     
-    handleEnd() {
+    handleEnd(holdDuration = null) {
         if (this.gameState !== 'playing' || !this.isHolding || !this.currentCup) return;
         
         this.isHolding = false;
-        const holdDuration = (Date.now() - this.currentCup.holdStartTime) / 1000;
+        
+        // holdDuration이 제공되지 않은 경우 계산
+        if (holdDuration === null) {
+            holdDuration = (performance.now() - this.currentCup.holdStartTime) / 1000;
+        }
         
         // 사운드 정지
         this.soundManager.endHold();
@@ -141,7 +134,7 @@ class BaristaGame {
         const result = this.calculateResult(holdDuration);
         this.processResult(result);
         
-        console.log(`홀드 종료: ${holdDuration.toFixed(2)}초, 결과: ${result}`);
+        console.log(`홀드 종료: ${holdDuration.toFixed(3)}초, 결과: ${result}`);
     }
     
     calculateResult(holdDuration) {
@@ -247,10 +240,13 @@ class BaristaGame {
         // 게임 시간 업데이트
         this.gameTime -= deltaTime / 1000;
         
-        // 홀드 중인 경우 타이밍 구간 체크
+        // 홀드 중인 경우 타이밍 구간 체크 (InputManager에서 실시간 시간 가져오기)
         if (this.isHolding && this.currentCup) {
-            const holdDuration = (Date.now() - this.currentCup.holdStartTime) / 1000;
+            const holdDuration = this.inputManager.getCurrentHoldDuration();
             this.checkTimingZone(holdDuration);
+            
+            // 커피 채우기 애니메이션
+            this.currentCup.fillLevel = Math.min(1, holdDuration / this.currentCup.config.timing[1]);
         }
         
         // UI 업데이트
@@ -447,6 +443,336 @@ class SoundManager {
                 console.log('넘침 릴리즈 사운드');
                 break;
         }
+    }
+}
+
+// 입력 관리 클래스
+class InputManager {
+    constructor(canvas, gameInstance) {
+        this.canvas = canvas;
+        this.game = gameInstance;
+        this.isHolding = false;
+        this.holdStartTime = 0;
+        this.lastTouchTime = 0;
+        this.touchCooldown = 100; // 터치 중복 방지 (100ms)
+        
+        // 성능 측정을 위한 변수들
+        this.inputStats = {
+            totalInputs: 0,
+            mouseInputs: 0,
+            touchInputs: 0,
+            averageResponseTime: 0,
+            lastResponseTime: 0
+        };
+        
+        this.setupEvents();
+        this.setupMobileOptimizations();
+    }
+    
+    /**
+     * 이벤트 리스너 설정
+     */
+    setupEvents() {
+        // 마우스 이벤트 (데스크톱)
+        this.canvas.addEventListener('mousedown', this.handleMouseStart.bind(this));
+        this.canvas.addEventListener('mouseup', this.handleMouseEnd.bind(this));
+        this.canvas.addEventListener('mouseleave', this.handleMouseEnd.bind(this)); // 마우스가 캔버스 밖으로 나갔을 때
+        
+        // 터치 이벤트 (모바일 최적화)
+        this.canvas.addEventListener('touchstart', this.handleTouchStart.bind(this), { 
+            passive: false,
+            capture: false
+        });
+        this.canvas.addEventListener('touchend', this.handleTouchEnd.bind(this), { 
+            passive: false,
+            capture: false
+        });
+        this.canvas.addEventListener('touchcancel', this.handleTouchEnd.bind(this), { 
+            passive: false,
+            capture: false
+        });
+        
+        // 키보드 이벤트 (접근성)
+        document.addEventListener('keydown', this.handleKeyDown.bind(this));
+        document.addEventListener('keyup', this.handleKeyUp.bind(this));
+        
+        console.log('InputManager 이벤트 리스너 설정 완료');
+    }
+    
+    /**
+     * 모바일 최적화 설정
+     */
+    setupMobileOptimizations() {
+        // 터치 액션 설정
+        this.canvas.style.touchAction = 'none';
+        
+        // 뷰포트 메타 태그 확인 및 설정
+        this.ensureViewportMeta();
+        
+        // 디바이스 방향 변경 대응
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => this.handleOrientationChange(), 100);
+        });
+        
+        // 성능 모니터링
+        this.setupPerformanceMonitoring();
+    }
+    
+    /**
+     * 뷰포트 메타 태그 확인
+     */
+    ensureViewportMeta() {
+        const viewport = document.querySelector('meta[name="viewport"]');
+        if (!viewport) {
+            const meta = document.createElement('meta');
+            meta.name = 'viewport';
+            meta.content = 'width=device-width, initial-scale=1.0, user-scalable=no';
+            document.head.appendChild(meta);
+            console.log('뷰포트 메타 태그 추가됨');
+        }
+    }
+    
+    /**
+     * 마우스 시작 이벤트 처리
+     */
+    handleMouseStart(event) {
+        event.preventDefault();
+        this.inputStats.totalInputs++;
+        this.inputStats.mouseInputs++;
+        
+        const startTime = performance.now();
+        this.startHold(startTime);
+        this.recordResponseTime(startTime);
+        
+        console.log('마우스 홀드 시작');
+    }
+    
+    /**
+     * 마우스 종료 이벤트 처리
+     */
+    handleMouseEnd(event) {
+        event.preventDefault();
+        this.endHold();
+        console.log('마우스 홀드 종료');
+    }
+    
+    /**
+     * 터치 시작 이벤트 처리
+     */
+    handleTouchStart(event) {
+        event.preventDefault();
+        
+        const currentTime = performance.now();
+        
+        // 터치 중복 방지
+        if (currentTime - this.lastTouchTime < this.touchCooldown) {
+            console.log('터치 중복 방지');
+            return;
+        }
+        
+        this.inputStats.totalInputs++;
+        this.inputStats.touchInputs++;
+        this.lastTouchTime = currentTime;
+        
+        // 첫 번째 터치만 처리
+        if (event.touches.length === 1) {
+            this.startHold(currentTime);
+            this.recordResponseTime(currentTime);
+            console.log('터치 홀드 시작');
+        }
+    }
+    
+    /**
+     * 터치 종료 이벤트 처리
+     */
+    handleTouchEnd(event) {
+        event.preventDefault();
+        
+        // 터치가 완전히 끝났을 때만 처리
+        if (event.touches.length === 0) {
+            this.endHold();
+            console.log('터치 홀드 종료');
+        }
+    }
+    
+    /**
+     * 키보드 시작 이벤트 처리 (접근성)
+     */
+    handleKeyDown(event) {
+        // 스페이스바 또는 엔터키
+        if (event.code === 'Space' || event.code === 'Enter') {
+            event.preventDefault();
+            const startTime = performance.now();
+            this.startHold(startTime);
+            console.log('키보드 홀드 시작');
+        }
+    }
+    
+    /**
+     * 키보드 종료 이벤트 처리 (접근성)
+     */
+    handleKeyUp(event) {
+        if (event.code === 'Space' || event.code === 'Enter') {
+            event.preventDefault();
+            this.endHold();
+            console.log('키보드 홀드 종료');
+        }
+    }
+    
+    /**
+     * 홀드 시작 처리
+     */
+    startHold(startTime) {
+        if (this.isHolding || this.game.gameState !== 'playing' || !this.game.currentCup) {
+            return;
+        }
+        
+        this.isHolding = true;
+        this.holdStartTime = startTime;
+        
+        // 게임 인스턴스의 홀드 시작 메서드 호출
+        this.game.handleStart();
+    }
+    
+    /**
+     * 홀드 종료 처리
+     */
+    endHold() {
+        if (!this.isHolding || this.game.gameState !== 'playing' || !this.game.currentCup) {
+            return;
+        }
+        
+        this.isHolding = false;
+        const holdDuration = this.getHoldDuration();
+        
+        // 게임 인스턴스의 홀드 종료 메서드 호출
+        this.game.handleEnd(holdDuration);
+    }
+    
+    /**
+     * 홀드 지속 시간 계산 (정밀한 타이밍)
+     */
+    getHoldDuration() {
+        if (!this.isHolding) {
+            return 0;
+        }
+        return (performance.now() - this.holdStartTime) / 1000;
+    }
+    
+    /**
+     * 실시간 홀드 시간 반환 (게임 루프에서 사용)
+     */
+    getCurrentHoldDuration() {
+        if (!this.isHolding) {
+            return 0;
+        }
+        return (performance.now() - this.holdStartTime) / 1000;
+    }
+    
+    /**
+     * 응답 시간 기록
+     */
+    recordResponseTime(startTime) {
+        const responseTime = performance.now() - startTime;
+        this.inputStats.lastResponseTime = responseTime;
+        
+        // 평균 응답 시간 계산
+        const total = this.inputStats.totalInputs;
+        this.inputStats.averageResponseTime = 
+            ((this.inputStats.averageResponseTime * (total - 1)) + responseTime) / total;
+    }
+    
+    /**
+     * 디바이스 방향 변경 처리
+     */
+    handleOrientationChange() {
+        console.log('디바이스 방향 변경 감지');
+        
+        // 캔버스 크기 재설정
+        this.game.setupCanvas();
+        
+        // 현재 홀드 상태 유지
+        if (this.isHolding) {
+            console.log('방향 변경 중 홀드 상태 유지');
+        }
+    }
+    
+    /**
+     * 성능 모니터링 설정
+     */
+    setupPerformanceMonitoring() {
+        let frameCount = 0;
+        let lastTime = performance.now();
+        
+        const monitor = () => {
+            frameCount++;
+            const currentTime = performance.now();
+            
+            if (currentTime - lastTime >= 1000) {
+                const fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+                
+                if (fps < 50) {
+                    console.warn(`성능 경고: FPS ${fps}`);
+                }
+                
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+            
+            requestAnimationFrame(monitor);
+        };
+        
+        monitor();
+    }
+    
+    /**
+     * 입력 통계 조회
+     */
+    getInputStats() {
+        return {
+            ...this.inputStats,
+            mousePercentage: this.inputStats.totalInputs > 0 ? 
+                (this.inputStats.mouseInputs / this.inputStats.totalInputs * 100).toFixed(1) : 0,
+            touchPercentage: this.inputStats.totalInputs > 0 ? 
+                (this.inputStats.touchInputs / this.inputStats.totalInputs * 100).toFixed(1) : 0
+        };
+    }
+    
+    /**
+     * 입력 매니저 초기화 (게임 재시작 시)
+     */
+    reset() {
+        this.isHolding = false;
+        this.holdStartTime = 0;
+        this.lastTouchTime = 0;
+        
+        this.inputStats = {
+            totalInputs: 0,
+            mouseInputs: 0,
+            touchInputs: 0,
+            averageResponseTime: 0,
+            lastResponseTime: 0
+        };
+        
+        console.log('InputManager 초기화 완료');
+    }
+    
+    /**
+     * 디버그 정보 출력
+     */
+    debugInfo() {
+        const stats = this.getInputStats();
+        console.log('=== InputManager 디버그 정보 ===');
+        console.log(`총 입력: ${stats.totalInputs}`);
+        console.log(`마우스: ${stats.mouseInputs} (${stats.mousePercentage}%)`);
+        console.log(`터치: ${stats.touchInputs} (${stats.touchPercentage}%)`);
+        console.log(`평균 응답 시간: ${stats.averageResponseTime.toFixed(2)}ms`);
+        console.log(`마지막 응답 시간: ${stats.lastResponseTime.toFixed(2)}ms`);
+        console.log(`현재 홀드 상태: ${this.isHolding ? '활성' : '비활성'}`);
+        if (this.isHolding) {
+            console.log(`홀드 시간: ${this.getHoldDuration().toFixed(3)}초`);
+        }
+        console.log('===============================');
     }
 }
 
@@ -774,10 +1100,21 @@ document.addEventListener('DOMContentLoaded', () => {
         return window.baristaGame.cupSystem.getAllCupTypes();
     };
     
+    // InputManager 디버그 함수들
+    window.getInputStats = () => {
+        return window.baristaGame.inputManager.getInputStats();
+    };
+    
+    window.debugInput = () => {
+        window.baristaGame.inputManager.debugInfo();
+    };
+    
     // 개발 모드에서 사용 가능한 함수들 로그
     console.log('🔧 개발 모드: 사용 가능한 함수들');
     console.log('addNewCupType(id, timing, perfect, options) - 새 컵 타입 추가');
     console.log('getCupStats() - 컵 생성 통계 조회');
     console.log('getAllCupTypes() - 모든 컵 타입 조회');
+    console.log('getInputStats() - 입력 통계 조회');
+    console.log('debugInput() - 입력 매니저 디버그 정보');
     console.log('예시: addNewCupType("D", [4.0, 5.0], [4.9, 5.0], {name: "Mega Cup", difficulty: "hard"})');
 });
