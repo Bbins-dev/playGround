@@ -22,6 +22,9 @@ class BaristaGame {
         // 입력 매니저 초기화
         this.inputManager = new InputManager(this.canvas, this);
         
+        // 시각적 효과 매니저 초기화
+        this.visualEffects = new VisualEffects(this.ctx);
+        
         // 사운드 매니저
         this.soundManager = new SoundManager();
         
@@ -84,6 +87,9 @@ class BaristaGame {
         
         // 입력 매니저 초기화
         this.inputManager.reset();
+        
+        // 시각적 효과 초기화
+        this.visualEffects.reset();
         
         document.getElementById('startScreen').style.display = 'none';
         this.updateUI();
@@ -168,12 +174,18 @@ class BaristaGame {
         // 사운드 재생
         this.soundManager.playReleaseSound(result);
         
+        // 시각적 피드백 표시
+        this.visualEffects.showResultFeedback(result, this.currentCup);
+        
         // 컵 결과 저장
         this.currentCup.result = result;
         this.currentCup.isComplete = true;
         
         // 컵 퇴장 애니메이션 시작
-        this.animateCupExit();
+        this.visualEffects.animateCupExit(this.currentCup, () => {
+            // 애니메이션 완료 후 새 컵 생성
+            this.generateNewCup();
+        });
         
         // UI 업데이트
         this.updateUI();
@@ -249,6 +261,9 @@ class BaristaGame {
             this.currentCup.fillLevel = Math.min(1, holdDuration / this.currentCup.config.timing[1]);
         }
         
+        // 시각적 효과 업데이트
+        this.visualEffects.update();
+        
         // UI 업데이트
         this.updateUI();
         
@@ -264,10 +279,16 @@ class BaristaGame {
         
         if (holdDuration >= timing[0] && holdDuration < perfect[0]) {
             zone = 'passing';
+            // 합격 구간 방울 효과
+            this.visualEffects.createSplashEffect(this.currentCup, 1.0);
         } else if (holdDuration >= perfect[0] && holdDuration <= perfect[1]) {
             zone = 'perfect';
+            // 완벽한 타이밍 방울 효과
+            this.visualEffects.createSplashEffect(this.currentCup, 2.0);
         } else if (holdDuration > timing[1]) {
             zone = 'overflow';
+            // 넘침 방울 효과
+            this.visualEffects.createSplashEffect(this.currentCup, 3.0);
         }
         
         this.soundManager.updateTimingZone(zone);
@@ -313,6 +334,27 @@ class BaristaGame {
         const cupX = this.centerX;
         const cupY = this.centerY + 50;
         
+        // 컵 위치 업데이트
+        cup.x = cupX;
+        cup.y = cupY;
+        cup.width = 80;
+        cup.height = 120;
+        
+        // 회전 및 투명도 효과 적용
+        this.ctx.save();
+        
+        // 회전 효과
+        if (cup.rotation) {
+            this.ctx.translate(cupX, cupY);
+            this.ctx.rotate(cup.rotation);
+            this.ctx.translate(-cupX, -cupY);
+        }
+        
+        // 투명도 효과
+        if (cup.alpha !== undefined) {
+            this.ctx.globalAlpha = cup.alpha;
+        }
+        
         // 컵 그리기
         this.ctx.fillStyle = cup.config.color;
         this.ctx.fillRect(cupX - 40, cupY - 60, 80, 120);
@@ -322,11 +364,21 @@ class BaristaGame {
         this.ctx.lineWidth = 3;
         this.ctx.strokeRect(cupX - 40, cupY - 60, 80, 120);
         
+        this.ctx.restore();
+        
+        // 커피 채우기 효과
+        if (cup.fillLevel > 0) {
+            this.visualEffects.renderCoffeeFill(cup, cup.fillLevel);
+        }
+        
         // 컵 라벨
         this.ctx.fillStyle = '#654321';
         this.ctx.font = '16px Inter';
         this.ctx.textAlign = 'center';
         this.ctx.fillText(cup.config.name, cupX, cupY + 80);
+        
+        // 파티클 효과 렌더링
+        this.visualEffects.renderParticles();
     }
     
     renderFaucet() {
@@ -344,12 +396,8 @@ class BaristaGame {
     }
     
     renderCoffeeFlow() {
-        // 커피 흐름 애니메이션 (나중에 구현)
-        const faucetX = this.centerX;
-        const faucetY = this.centerY - 80;
-        
-        this.ctx.fillStyle = '#8B4513';
-        this.ctx.fillRect(faucetX - 3, faucetY, 6, 30);
+        // 커피 흐름 애니메이션
+        this.visualEffects.renderCoffeeStream(this.centerX, this.centerY - 80);
     }
     
     renderGameOver() {
@@ -443,6 +491,452 @@ class SoundManager {
                 console.log('넘침 릴리즈 사운드');
                 break;
         }
+    }
+}
+
+// 시각적 효과 관리 클래스
+class VisualEffects {
+    constructor(ctx) {
+        this.ctx = ctx;
+        this.particles = [];
+        this.animations = [];
+        this.effectStats = {
+            particlesCreated: 0,
+            animationsPlayed: 0,
+            totalEffects: 0
+        };
+        
+        // 성능 최적화 설정
+        this.maxParticles = 100;
+        this.particleLifetime = 2000; // 2초
+        this.animationFrame = 0;
+    }
+    
+    /**
+     * 커피 채우기 렌더링
+     */
+    renderCoffeeFill(cup, fillLevel) {
+        const x = cup.x - cup.width / 2;
+        const y = cup.y - cup.height / 2;
+        const width = cup.width;
+        const height = cup.height;
+        
+        // 채워진 높이 계산
+        const fillHeight = height * fillLevel;
+        const fillY = y + height - fillHeight;
+        
+        // 커피 그라데이션 생성
+        const gradient = this.ctx.createLinearGradient(x, fillY, x, y + height);
+        gradient.addColorStop(0, '#8B4513'); // 밝은 갈색
+        gradient.addColorStop(0.5, '#654321'); // 중간 갈색
+        gradient.addColorStop(1, '#3E2723'); // 어두운 갈색
+        
+        // 커피 채우기 그리기
+        this.ctx.fillStyle = gradient;
+        this.ctx.fillRect(x, fillY, width, fillHeight);
+        
+        // 커피 표면 파도 효과
+        if (fillLevel > 0.1) {
+            this.renderCoffeeSurface(x, fillY, width, fillLevel);
+        }
+        
+        // 채워진 영역 테두리
+        this.ctx.strokeStyle = '#5D4037';
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect(x, fillY, width, fillHeight);
+    }
+    
+    /**
+     * 커피 표면 파도 효과
+     */
+    renderCoffeeSurface(x, y, width, fillLevel) {
+        const time = Date.now() * 0.005;
+        const waveHeight = 2 + Math.sin(time) * 1;
+        
+        this.ctx.beginPath();
+        this.ctx.moveTo(x, y);
+        
+        // 파도 곡선 그리기
+        for (let i = 0; i <= width; i += 5) {
+            const wave = Math.sin((i / width) * Math.PI * 2 + time) * waveHeight;
+            this.ctx.lineTo(x + i, y + wave);
+        }
+        
+        this.ctx.strokeStyle = '#8D6E63';
+        this.ctx.lineWidth = 2;
+        this.ctx.stroke();
+    }
+    
+    /**
+     * 커피 흐름 렌더링
+     */
+    renderCoffeeStream(faucetX, faucetY) {
+        const streamWidth = 6;
+        const streamLength = 80;
+        
+        // 흐름 그라데이션
+        const gradient = this.ctx.createLinearGradient(
+            faucetX, faucetY, 
+            faucetX, faucetY + streamLength
+        );
+        gradient.addColorStop(0, '#8B4513');
+        gradient.addColorStop(1, '#654321');
+        
+        // 흐름 그리기
+        this.ctx.fillStyle = gradient;
+        this.ctx.fillRect(
+            faucetX - streamWidth / 2, 
+            faucetY, 
+            streamWidth, 
+            streamLength
+        );
+        
+        // 흐름 중앙 하이라이트
+        this.ctx.fillStyle = '#A0522D';
+        this.ctx.fillRect(
+            faucetX - streamWidth / 4, 
+            faucetY, 
+            streamWidth / 2, 
+            streamLength
+        );
+        
+        // 물방울 효과 추가
+        this.createStreamDroplets(faucetX, faucetY + streamLength);
+    }
+    
+    /**
+     * 흐름 물방울 효과
+     */
+    createStreamDroplets(faucetX, faucetY) {
+        if (Math.random() < 0.3) { // 30% 확률로 물방울 생성
+            this.particles.push({
+                x: faucetX + (Math.random() - 0.5) * 4,
+                y: faucetY,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: 2 + Math.random() * 2,
+                size: 1 + Math.random() * 2,
+                color: '#8B4513',
+                life: 1.0,
+                maxLife: 1.0,
+                type: 'droplet'
+            });
+        }
+    }
+    
+    /**
+     * 방울 튀기기 효과 생성
+     */
+    createSplashEffect(cup, intensity) {
+        const particleCount = Math.min(intensity * 15, 30); // 최대 30개
+        
+        for (let i = 0; i < particleCount; i++) {
+            const angle = (i / particleCount) * Math.PI * 2 + Math.random() * 0.5;
+            const speed = 2 + Math.random() * intensity * 3;
+            
+            this.particles.push({
+                x: cup.x + (Math.random() - 0.5) * cup.width * 0.8,
+                y: cup.y - cup.height / 2,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed - Math.random() * 2,
+                size: 1 + Math.random() * 3,
+                color: this.getSplashColor(intensity),
+                life: 1.0,
+                maxLife: 1.0 + Math.random() * 0.5,
+                type: 'splash',
+                gravity: 0.1
+            });
+        }
+        
+        this.effectStats.particlesCreated += particleCount;
+        this.effectStats.totalEffects++;
+    }
+    
+    /**
+     * 방울 색상 결정
+     */
+    getSplashColor(intensity) {
+        if (intensity >= 2.5) {
+            return '#8B4513'; // 완벽한 타이밍 - 진한 갈색
+        } else if (intensity >= 1.5) {
+            return '#A0522D'; // 합격 - 중간 갈색
+        } else {
+            return '#D2691E'; // 기본 - 밝은 갈색
+        }
+    }
+    
+    /**
+     * 파티클 렌더링 및 업데이트
+     */
+    renderParticles() {
+        const currentTime = Date.now();
+        
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+            const particle = this.particles[i];
+            
+            // 파티클 업데이트
+            particle.x += particle.vx;
+            particle.y += particle.vy;
+            
+            // 중력 적용
+            if (particle.gravity) {
+                particle.vy += particle.gravity;
+            }
+            
+            // 생명 감소
+            particle.life -= 1 / 60; // 60fps 기준
+            
+            // 파티클 렌더링
+            if (particle.life > 0) {
+                this.ctx.save();
+                this.ctx.globalAlpha = particle.life;
+                this.ctx.fillStyle = particle.color;
+                
+                // 파티클 모양에 따른 렌더링
+                if (particle.type === 'droplet') {
+                    // 물방울 모양
+                    this.ctx.beginPath();
+                    this.ctx.ellipse(particle.x, particle.y, particle.size, particle.size * 1.5, 0, 0, Math.PI * 2);
+                    this.ctx.fill();
+                } else {
+                    // 원형 파티클
+                    this.ctx.beginPath();
+                    this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+                
+                this.ctx.restore();
+            } else {
+                // 생명이 끝난 파티클 제거
+                this.particles.splice(i, 1);
+            }
+        }
+    }
+    
+    /**
+     * 컵 퇴장 애니메이션
+     */
+    animateCupExit(cup, callback) {
+        const startX = cup.x;
+        const startY = cup.y;
+        const targetX = this.ctx.canvas.width + 100;
+        const duration = 1000; // 1초
+        const startTime = performance.now();
+        
+        // 애니메이션 객체 생성
+        const animation = {
+            id: Date.now(),
+            startTime,
+            duration,
+            startX,
+            startY,
+            targetX,
+            cup,
+            callback,
+            type: 'cupExit'
+        };
+        
+        this.animations.push(animation);
+        this.effectStats.animationsPlayed++;
+        
+        console.log('컵 퇴장 애니메이션 시작');
+    }
+    
+    /**
+     * 애니메이션 업데이트
+     */
+    updateAnimations() {
+        const currentTime = performance.now();
+        
+        for (let i = this.animations.length - 1; i >= 0; i--) {
+            const animation = this.animations[i];
+            const elapsed = currentTime - animation.startTime;
+            const progress = Math.min(elapsed / animation.duration, 1);
+            
+            // 이징 함수 적용 (easeOut)
+            const easeProgress = 1 - Math.pow(1 - progress, 3);
+            
+            if (animation.type === 'cupExit') {
+                // 컵 위치 업데이트
+                animation.cup.x = animation.startX + (animation.targetX - animation.startX) * easeProgress;
+                
+                // 회전 효과
+                animation.cup.rotation = progress * Math.PI * 0.5;
+                
+                // 투명도 효과
+                animation.cup.alpha = 1 - progress * 0.5;
+            }
+            
+            // 애니메이션 완료 체크
+            if (progress >= 1) {
+                if (animation.callback) {
+                    animation.callback();
+                }
+                this.animations.splice(i, 1);
+            }
+        }
+    }
+    
+    /**
+     * 성공/실패 시각적 피드백
+     */
+    showResultFeedback(result, cup) {
+        let color, message, size;
+        
+        switch (result) {
+            case 'perfect':
+                color = '#FFD700';
+                message = 'PERFECT!';
+                size = 24;
+                this.createSuccessParticles(cup);
+                break;
+            case 'success':
+                color = '#4CAF50';
+                message = 'SUCCESS!';
+                size = 20;
+                break;
+            case 'tooEarly':
+                color = '#FF9800';
+                message = 'TOO EARLY';
+                size = 18;
+                break;
+            case 'overflow':
+                color = '#F44336';
+                message = 'OVERFLOW!';
+                size = 20;
+                this.createOverflowEffect(cup);
+                break;
+        }
+        
+        // 텍스트 애니메이션
+        this.createTextAnimation(message, cup.x, cup.y - 50, color, size);
+    }
+    
+    /**
+     * 성공 파티클 효과
+     */
+    createSuccessParticles(cup) {
+        for (let i = 0; i < 20; i++) {
+            const angle = (i / 20) * Math.PI * 2;
+            const speed = 3 + Math.random() * 2;
+            
+            this.particles.push({
+                x: cup.x,
+                y: cup.y - cup.height / 2,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                size: 2 + Math.random() * 3,
+                color: '#FFD700',
+                life: 1.0,
+                maxLife: 1.0,
+                type: 'success',
+                gravity: -0.05 // 위로 올라가는 효과
+            });
+        }
+    }
+    
+    /**
+     * 넘침 효과
+     */
+    createOverflowEffect(cup) {
+        // 큰 물방울 효과
+        for (let i = 0; i < 10; i++) {
+            this.particles.push({
+                x: cup.x + (Math.random() - 0.5) * cup.width,
+                y: cup.y + cup.height / 2,
+                vx: (Math.random() - 0.5) * 4,
+                vy: Math.random() * 3,
+                size: 3 + Math.random() * 4,
+                color: '#8B4513',
+                life: 1.0,
+                maxLife: 1.5,
+                type: 'overflow',
+                gravity: 0.2
+            });
+        }
+    }
+    
+    /**
+     * 텍스트 애니메이션
+     */
+    createTextAnimation(text, x, y, color, size) {
+        const animation = {
+            id: Date.now(),
+            startTime: performance.now(),
+            duration: 1500,
+            text,
+            x,
+            y,
+            color,
+            size,
+            alpha: 1.0,
+            type: 'text'
+        };
+        
+        this.animations.push(animation);
+    }
+    
+    /**
+     * 텍스트 애니메이션 렌더링
+     */
+    renderTextAnimations() {
+        for (const animation of this.animations) {
+            if (animation.type === 'text') {
+                const elapsed = performance.now() - animation.startTime;
+                const progress = elapsed / animation.duration;
+                
+                if (progress < 1) {
+                    const alpha = 1 - progress;
+                    const offsetY = progress * 50;
+                    
+                    this.ctx.save();
+                    this.ctx.globalAlpha = alpha;
+                    this.ctx.fillStyle = animation.color;
+                    this.ctx.font = `bold ${animation.size}px Inter`;
+                    this.ctx.textAlign = 'center';
+                    this.ctx.fillText(animation.text, animation.x, animation.y - offsetY);
+                    this.ctx.restore();
+                }
+            }
+        }
+    }
+    
+    /**
+     * 모든 시각적 효과 업데이트
+     */
+    update() {
+        this.updateAnimations();
+        this.renderTextAnimations();
+        
+        // 파티클 개수 제한
+        if (this.particles.length > this.maxParticles) {
+            this.particles = this.particles.slice(-this.maxParticles);
+        }
+    }
+    
+    /**
+     * 효과 통계 조회
+     */
+    getEffectStats() {
+        return {
+            ...this.effectStats,
+            activeParticles: this.particles.length,
+            activeAnimations: this.animations.length
+        };
+    }
+    
+    /**
+     * 모든 효과 초기화
+     */
+    reset() {
+        this.particles = [];
+        this.animations = [];
+        this.effectStats = {
+            particlesCreated: 0,
+            animationsPlayed: 0,
+            totalEffects: 0
+        };
+        
+        console.log('VisualEffects 초기화 완료');
     }
 }
 
@@ -1109,6 +1603,22 @@ document.addEventListener('DOMContentLoaded', () => {
         window.baristaGame.inputManager.debugInfo();
     };
     
+    // VisualEffects 디버그 함수들
+    window.getVisualStats = () => {
+        return window.baristaGame.visualEffects.getEffectStats();
+    };
+    
+    window.debugVisual = () => {
+        const stats = window.baristaGame.visualEffects.getEffectStats();
+        console.log('=== VisualEffects 디버그 정보 ===');
+        console.log(`생성된 파티클: ${stats.particlesCreated}`);
+        console.log(`재생된 애니메이션: ${stats.animationsPlayed}`);
+        console.log(`총 효과: ${stats.totalEffects}`);
+        console.log(`활성 파티클: ${stats.activeParticles}`);
+        console.log(`활성 애니메이션: ${stats.activeAnimations}`);
+        console.log('===============================');
+    };
+    
     // 개발 모드에서 사용 가능한 함수들 로그
     console.log('🔧 개발 모드: 사용 가능한 함수들');
     console.log('addNewCupType(id, timing, perfect, options) - 새 컵 타입 추가');
@@ -1116,5 +1626,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('getAllCupTypes() - 모든 컵 타입 조회');
     console.log('getInputStats() - 입력 통계 조회');
     console.log('debugInput() - 입력 매니저 디버그 정보');
+    console.log('getVisualStats() - 시각적 효과 통계 조회');
+    console.log('debugVisual() - 시각적 효과 디버그 정보');
     console.log('예시: addNewCupType("D", [4.0, 5.0], [4.9, 5.0], {name: "Mega Cup", difficulty: "hard"})');
 });
