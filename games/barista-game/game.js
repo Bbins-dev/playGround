@@ -446,6 +446,9 @@ class BaristaGame {
         if (this.currentCup) {
             console.log('✅ 새 컵 생성 성공:', this.currentCup.type);
             
+            // 타이밍 구간 추적 초기화
+            this.currentCup.lastTimingZone = 'basic';
+            
             // 컵 등장 애니메이션 시작 (왼쪽에서 X축 이동으로 등장)
             this.visualEffects.animateCupEnter(this.currentCup);
         } else {
@@ -874,20 +877,30 @@ class BaristaGame {
     checkTimingZone(holdDuration) {
         const { timing, perfect } = this.currentCup.config;
         let zone = 'basic';
+        let previousZone = this.currentCup.lastTimingZone || 'basic';
         
         if (holdDuration >= timing[0] && holdDuration < perfect[0]) {
             zone = 'passing';
-            // 합격 구간 방울 효과
-            this.visualEffects.createSplashEffect(this.currentCup, 1.0);
+            // 구간이 처음 바뀔 때만 이펙트 생성 (갈색 작은 물보라)
+            if (previousZone !== 'passing' && previousZone !== 'perfect') {
+                this.visualEffects.createSplashEffect(this.currentCup, 1.0);
+            }
         } else if (holdDuration >= perfect[0] && holdDuration <= perfect[1]) {
             zone = 'perfect';
-            // 완벽한 타이밍 방울 효과
-            this.visualEffects.createSplashEffect(this.currentCup, 2.0);
+            // 완벽 구간 진입 시만 이펙트 생성 (완벽한 타이밍 방울 효과)
+            if (previousZone !== 'perfect') {
+                this.visualEffects.createSplashEffect(this.currentCup, 2.0);
+            }
         } else if (holdDuration > timing[1]) {
             zone = 'overflow';
-            // 넘침 방울 효과
-            this.visualEffects.createSplashEffect(this.currentCup, 3.0);
+            // 넘침 구간 진입 시만 이펙트 생성 (짙은 갈색 많은 물보라)
+            if (previousZone !== 'overflow') {
+                this.visualEffects.createSplashEffect(this.currentCup, 3.0);
+            }
         }
+        
+        // 현재 구간 저장
+        this.currentCup.lastTimingZone = zone;
         
         this.soundManager.updateTimingZone(zone);
     }
@@ -1893,9 +1906,13 @@ class VisualEffects {
     }
     
     /**
-     * 흐름 물방울 효과
+     * 흐름 물방울 효과 (기본 홀드 시에는 비활성화)
      */
     createStreamDroplets(faucetX, faucetY) {
+        // 기본 홀드 시에는 물방울 이펙트 생성하지 않음
+        // (컵 안에 잘 담기고 있으므로 불필요)
+        return;
+        
         if (Math.random() < 0.3) { // 30% 확률로 물방울 생성
             this.particles.push({
                 x: faucetX + (Math.random() - 0.5) * 4,
@@ -2853,15 +2870,19 @@ class CupSystem {
         console.log('  - timing:', timing);
         console.log('  - perfect:', perfect);
         
-        if (holdDuration < timing[0]) {
-            console.log(`  - 결과: tooEarly (${holdDuration.toFixed(3)} < ${timing[0]})`);
+        // 이펙트와 판정 동기화를 위한 미세 조정 버퍼 (0.05초)
+        const timingBuffer = 0.05;
+        const adjustedTimingStart = timing[0] - timingBuffer;
+        
+        if (holdDuration < adjustedTimingStart) {
+            console.log(`  - 결과: tooEarly (${holdDuration.toFixed(3)} < ${adjustedTimingStart.toFixed(3)})`);
             return 'tooEarly';
-        } else if (holdDuration >= timing[0] && holdDuration <= timing[1]) {
+        } else if (holdDuration >= adjustedTimingStart && holdDuration <= timing[1]) {
             if (holdDuration >= perfect[0] && holdDuration <= perfect[1]) {
                 console.log(`  - 결과: perfect (${perfect[0]} <= ${holdDuration.toFixed(3)} <= ${perfect[1]})`);
                 return 'perfect';
             } else {
-                console.log(`  - 결과: success (${timing[0]} <= ${holdDuration.toFixed(3)} <= ${timing[1]}, but not perfect)`);
+                console.log(`  - 결과: success (${adjustedTimingStart.toFixed(3)} <= ${holdDuration.toFixed(3)} <= ${timing[1]}, with timing buffer)`);
                 return 'success';
             }
         } else {
