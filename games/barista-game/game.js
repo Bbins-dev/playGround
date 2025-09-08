@@ -662,13 +662,13 @@ class BaristaGame {
         // 콤보 유지 (성공도 콤보에 포함)
         this.combo++;
         
-        // 시간 패널티 (10초 감소)
-        this.gameTime = Math.max(0, this.gameTime - 10);
+        // 성공 시에는 시간 패널티 없음 (시간 유지)
+        // this.gameTime = Math.max(0, this.gameTime - 10); // 제거됨
         
         // 통계 업데이트
         this.gameStats.successCups++;
         
-        console.log(`✅ 성공: +${baseScore}점, 콤보 ${this.combo}, 시간 -10초, 최종 점수: ${this.getScore()}`);
+        console.log(`✅ 성공: +${baseScore}점, 콤보 ${this.combo}, 시간 유지, 최종 점수: ${this.getScore()}`);
         console.log(`  - 현재 시간: ${this.gameTime.toFixed(1)}초`);
         console.log(`  - 현재 콤보: ${this.combo}`);
     }
