@@ -533,6 +533,9 @@ class BaristaGame {
         // 사운드 정지
         this.soundManager.endHold();
         
+        // 지속적인 스플래시 효과 타이밍 리셋
+        this.visualEffects.lastSplashTime = 0;
+        
         // 결과 계산
         const result = this.calculateResult(holdDuration);
         console.log(`계산된 결과: ${result}`);
@@ -906,7 +909,7 @@ class BaristaGame {
             this.checkTimingZone(holdDuration);
             
             // 커피 채우기 애니메이션
-            this.currentCup.fillLevel = Math.min(1, holdDuration / this.currentCup.config.timing[1]);
+            this.currentCup.fillLevel = Math.min(1, holdDuration / this.currentCup.config.maxTime);
         }
         
         // 시각적 효과 업데이트
@@ -923,28 +926,25 @@ class BaristaGame {
     }
     
     checkTimingZone(holdDuration) {
-        const { timing, perfect } = this.currentCup.config;
-        let zone = 'basic';
+        const { maxTime } = this.currentCup.config;
+        const zone = this.cupSystem.getCurrentZone(holdDuration, maxTime);
         let previousZone = this.currentCup.lastTimingZone || 'basic';
         
-        if (holdDuration >= timing[0] && holdDuration < perfect[0]) {
-            zone = 'passing';
-            // 구간이 처음 바뀔 때만 이펙트 생성 (갈색 작은 물보라)
-            if (previousZone !== 'passing' && previousZone !== 'perfect') {
-                this.visualEffects.createSplashEffect(this.currentCup, 1.0);
-            }
-        } else if (holdDuration >= perfect[0] && holdDuration <= perfect[1]) {
-            zone = 'perfect';
-            // 완벽 구간 진입 시만 이펙트 생성 (완벽한 타이밍 방울 효과)
-            if (previousZone !== 'perfect') {
-                this.visualEffects.createSplashEffect(this.currentCup, 2.0);
-            }
-        } else if (holdDuration > timing[1]) {
-            zone = 'overflow';
-            // 넘침 구간 진입 시만 이펙트 생성 (짙은 갈색 많은 물보라)
-            if (previousZone !== 'overflow') {
-                this.visualEffects.createSplashEffect(this.currentCup, 3.0);
-            }
+        // 타이밍 구간별 시각 효과
+        if (zone === 'passing') {
+            // 합격 타이밍 구간에서 지속적인 물방울 효과 (조금 튀다가 점점 많이 튐)
+            this.visualEffects.createContinuousSplashEffect(this.currentCup, 'passing', holdDuration, maxTime);
+        } else if (zone === 'perfect') {
+            // 완벽한 타이밍 구간에서 특별한 배경 효과 + 강화된 물방울 효과
+            this.visualEffects.createContinuousSplashEffect(this.currentCup, 'perfect', holdDuration, maxTime);
+            this.visualEffects.updatePerfectTimingBackground(true);
+        } else if (zone === 'overflow') {
+            // 넘침 구간에서 많은 양의 지속적인 물방울 효과
+            this.visualEffects.createContinuousSplashEffect(this.currentCup, 'overflow', holdDuration, maxTime);
+            this.visualEffects.updatePerfectTimingBackground(false);
+        } else {
+            // basic 구간에서는 배경 효과 해제
+            this.visualEffects.updatePerfectTimingBackground(false);
         }
         
         // 현재 구간 저장
@@ -971,9 +971,12 @@ class BaristaGame {
     }
     
     renderGame() {
-        // 배경
+        // 기본 배경
         this.ctx.fillStyle = '#F5DEB3';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // 완벽한 타이밍 배경 효과 (배경 위에 오버레이)
+        this.visualEffects.renderPerfectTimingBackground();
         
         // 현재 컵 렌더링
         if (this.currentCup) {
@@ -1859,6 +1862,13 @@ class VisualEffects {
         this.maxParticles = 100;
         this.particleLifetime = 2000; // 2초
         this.animationFrame = 0;
+        
+        // 지속적인 스플래시 효과를 위한 타이밍 제어
+        this.lastSplashTime = 0;
+        
+        // 완벽한 타이밍 배경 효과
+        this.perfectTimingActive = false;
+        this.backgroundTransition = 0; // 0-1 사이의 값
     }
     
     /**
@@ -2005,7 +2015,163 @@ class VisualEffects {
     }
     
     /**
-     * 방울 색상 결정
+     * 완벽한 타이밍 배경 효과 업데이트
+     */
+    updatePerfectTimingBackground(active) {
+        this.perfectTimingActive = active;
+    }
+    
+    /**
+     * 완벽한 타이밍 배경 렌더링
+     */
+    renderPerfectTimingBackground() {
+        if (this.perfectTimingActive) {
+            // 배경 전환 애니메이션 (부드럽게 변화)
+            this.backgroundTransition = Math.min(1, this.backgroundTransition + 0.1);
+        } else {
+            this.backgroundTransition = Math.max(0, this.backgroundTransition - 0.1);
+        }
+        
+        if (this.backgroundTransition > 0) {
+            // 황금빛 오버레이 효과
+            const alpha = this.backgroundTransition * 0.3; // 최대 30% 투명도
+            const gradient = this.ctx.createRadialGradient(
+                this.ctx.canvas.width / 2, this.ctx.canvas.height / 2, 0,
+                this.ctx.canvas.width / 2, this.ctx.canvas.height / 2, Math.max(this.ctx.canvas.width, this.ctx.canvas.height)
+            );
+            
+            gradient.addColorStop(0, `rgba(255, 215, 0, ${alpha})`);  // 황금색 중심
+            gradient.addColorStop(0.5, `rgba(255, 165, 0, ${alpha * 0.5})`); // 오렌지색 중간
+            gradient.addColorStop(1, `rgba(255, 215, 0, 0)`); // 가장자리는 투명
+            
+            this.ctx.fillStyle = gradient;
+            this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        }
+    }
+
+    /**
+     * 지속적인 방울 튀기기 효과 생성 (새로운 타이밍 시스템)
+     */
+    createContinuousSplashEffect(cup, zone, holdDuration, maxTime) {
+        const currentTime = Date.now();
+        
+        // 지속적인 효과를 위한 간격 제어
+        if (!this.lastSplashTime) this.lastSplashTime = currentTime;
+        let splashInterval;
+        let intensity;
+        let particleCount;
+        
+        const zones = this.getTimingZonesForSplash(maxTime);
+        
+        switch (zone) {
+            case 'passing':
+                // 합격 타이밍: 조금 튀다가 점점 많이 튐
+                const passingProgress = (holdDuration - zones.passing) / (zones.perfect - zones.passing);
+                splashInterval = 200 - (passingProgress * 100); // 200ms에서 100ms로 점점 빨라짐
+                intensity = 0.5 + (passingProgress * 1.0); // 강도도 점점 증가
+                particleCount = Math.floor(5 + (passingProgress * 10)); // 5-15개
+                break;
+                
+            case 'perfect':
+                // 완벽한 타이밍: 대폭 강화된 효과 (40개/30ms)
+                splashInterval = 30; // 매우 빠른 간격
+                intensity = 4.0; // 최대 강도
+                particleCount = 40; // 많은 양
+                break;
+                
+            case 'overflow':
+                // 넘침: 많은 양의 물방울
+                splashInterval = 100; // 빠른 간격
+                intensity = 3.0; // 높은 강도
+                particleCount = 25; // 많은 양
+                break;
+                
+            default:
+                return; // basic 구간에서는 효과 없음
+        }
+        
+        // 간격에 따른 효과 생성
+        if (currentTime - this.lastSplashTime >= splashInterval) {
+            this.createTimedSplashEffect(cup, zone, intensity, particleCount);
+            this.lastSplashTime = currentTime;
+        }
+    }
+    
+    /**
+     * 스플래시 효과용 타이밍 구간 계산
+     */
+    getTimingZonesForSplash(maxTime) {
+        return {
+            passing: maxTime - 1.0,
+            perfect: maxTime - 0.3,
+            overflow: maxTime
+        };
+    }
+    
+    /**
+     * 타이밍별 특화된 스플래시 효과 생성
+     */
+    createTimedSplashEffect(cup, zone, intensity, particleCount) {
+        for (let i = 0; i < particleCount; i++) {
+            const angle = (i / particleCount) * Math.PI * 2 + Math.random() * 0.5;
+            let speed, size, spread, life;
+            
+            if (zone === 'perfect') {
+                // 완벽한 타이밍: 최대 스플래시 거리와 크기
+                speed = 4 + Math.random() * intensity * 3; // 더 빠른 속도
+                size = 2 + Math.random() * (intensity * 2); // 더 큰 크기
+                spread = cup.width * 1.2; // 더 넓은 퍼짐
+                life = 1.5 + Math.random() * 1.0; // 더 긴 생명
+            } else {
+                speed = 2 + Math.random() * intensity * 2;
+                size = 1 + Math.random() * (intensity * 1.5);
+                spread = cup.width * 0.8;
+                life = 1.0 + Math.random() * 0.5;
+            }
+            
+            this.particles.push({
+                x: cup.x + (Math.random() - 0.5) * spread,
+                y: cup.y - cup.height / 2,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed - Math.random() * 3,
+                size: size,
+                color: this.getZoneSplashColor(zone, intensity),
+                life: 1.0,
+                maxLife: life,
+                type: 'splash',
+                gravity: zone === 'perfect' ? 0.05 : 0.1, // 완벽한 타이밍은 더 부드럽게 떨어짐
+                zone: zone // 구간 정보 추가
+            });
+        }
+        
+        this.effectStats.particlesCreated += particleCount;
+        this.effectStats.totalEffects++;
+    }
+    
+    /**
+     * 구간별 방울 색상 결정
+     */
+    getZoneSplashColor(zone, intensity) {
+        switch (zone) {
+            case 'passing':
+                // 합격 타이밍: 중간 갈색 계열
+                return '#A0522D';
+                
+            case 'perfect':
+                // 완벽한 타이밍: 특별한 황금 갈색
+                return '#DAA520';
+                
+            case 'overflow':
+                // 넘침: 진한 갈색
+                return '#654321';
+                
+            default:
+                return '#D2691E'; // 기본 - 밝은 갈색
+        }
+    }
+
+    /**
+     * 방울 색상 결정 (기존 메서드 유지)
      */
     getSplashColor(intensity) {
         if (intensity >= 2.5) {
@@ -2737,27 +2903,24 @@ class InputManager {
 // 컵 시스템 클래스
 class CupSystem {
     constructor() {
-        // 기본 컵 타입 설정
+        // 기본 컵 타입 설정 (새로운 단순화된 타이밍 시스템)
         this.cupTypes = {
             A: { 
-                timing: [2.0, 2.5], 
-                perfect: [2.4, 2.5],
+                maxTime: 2.5,  // 최대 시간 (합격: 1.5초부터, 완벽: 2.2초부터, 넘침: 2.5초 이후)
                 name: 'Small Cup',
                 color: '#8B4513',
                 difficulty: 'easy',
                 points: { success: 10, perfect: 20 }
             },
             B: { 
-                timing: [1.0, 1.5], 
-                perfect: [1.4, 1.5],
+                maxTime: 1.5,  // 최대 시간 (합격: 0.5초부터, 완벽: 1.2초부터, 넘침: 1.5초 이후)
                 name: 'Medium Cup',
                 color: '#D2691E',
                 difficulty: 'medium',
                 points: { success: 15, perfect: 30 }
             },
             C: { 
-                timing: [3.5, 4.0], 
-                perfect: [3.9, 4.0],
+                maxTime: 4.0,  // 최대 시간 (합격: 3.0초부터, 완벽: 3.7초부터, 넘침: 4.0초 이후)
                 name: 'Large Cup',
                 color: '#654321',
                 difficulty: 'hard',
@@ -2771,6 +2934,34 @@ class CupSystem {
             typeCount: {},
             lastGeneratedType: null
         };
+    }
+    
+    /**
+     * 새로운 타이밍 시스템: maxTime 기준으로 타이밍 구간 계산
+     */
+    getTimingZones(maxTime) {
+        return {
+            passing: maxTime - 1.0,    // 합격 타이밍: 최대시간 - 1초
+            perfect: maxTime - 0.3,    // 완벽 타이밍: 최대시간 - 0.3초
+            overflow: maxTime          // 넘침 타이밍: 최대시간 초과
+        };
+    }
+    
+    /**
+     * 홀드 시간에 따른 현재 타이밍 구간 반환
+     */
+    getCurrentZone(holdDuration, maxTime) {
+        const zones = this.getTimingZones(maxTime);
+        
+        if (holdDuration < zones.passing) {
+            return 'basic';
+        } else if (holdDuration >= zones.passing && holdDuration < zones.perfect) {
+            return 'passing';
+        } else if (holdDuration >= zones.perfect && holdDuration < zones.overflow) {
+            return 'perfect';
+        } else {
+            return 'overflow';
+        }
         
         // 랜덤 시드 (일관된 테스트를 위해)
         this.randomSeed = Date.now();
@@ -2824,16 +3015,15 @@ class CupSystem {
     }
     
     /**
-     * 새로운 컵 타입 추가
+     * 새로운 컵 타입 추가 (새로운 단순화된 시스템)
      * @param {string} id - 컵 타입 ID
-     * @param {Array} timing - 합격 타이밍 구간 [시작, 끝]
-     * @param {Array} perfect - 완벽한 타이밍 구간 [시작, 끝]
+     * @param {number} maxTime - 컵의 최대 시간 (넘침 기준)
      * @param {Object} options - 추가 옵션
      */
-    addNewCupType(id, timing, perfect, options = {}) {
-        // 타이밍 구간 검증
-        if (!this.validateTimingRange(timing, perfect)) {
-            throw new Error(`잘못된 타이밍 구간: ${id}`);
+    addNewCupType(id, maxTime, options = {}) {
+        // maxTime 검증
+        if (typeof maxTime !== 'number' || maxTime <= 1.0) {
+            throw new Error(`잘못된 maxTime 값: ${maxTime} (1.0초 이상이어야 함)`);
         }
         
         const defaultOptions = {
@@ -2844,13 +3034,16 @@ class CupSystem {
         };
         
         this.cupTypes[id] = {
-            timing,
-            perfect,
+            maxTime,
             ...defaultOptions,
             ...options
         };
         
-        console.log(`새 컵 타입 추가됨: ${id}`);
+        const zones = this.getTimingZones(maxTime);
+        console.log(`새 컵 타입 추가됨: ${id} (maxTime: ${maxTime}초)`);
+        console.log(`  - 합격 타이밍: ${zones.passing}초부터`);
+        console.log(`  - 완벽 타이밍: ${zones.perfect}초부터`);
+        console.log(`  - 넘침 타이밍: ${zones.overflow}초부터`);
     }
     
     /**
@@ -2867,45 +3060,13 @@ class CupSystem {
     }
     
     /**
-     * 타이밍 구간 검증
-     * @param {Array} timing - 합격 타이밍 구간
-     * @param {Array} perfect - 완벽한 타이밍 구간
-     * @returns {boolean} 유효성 여부
-     */
-    validateTimingRange(timing, perfect) {
-        // 기본 검증
-        if (!Array.isArray(timing) || !Array.isArray(perfect)) return false;
-        if (timing.length !== 2 || perfect.length !== 2) return false;
-        
-        const [timingStart, timingEnd] = timing;
-        const [perfectStart, perfectEnd] = perfect;
-        
-        // 범위 검증
-        if (timingStart >= timingEnd) return false;
-        if (perfectStart >= perfectEnd) return false;
-        
-        // 완벽한 타이밍이 합격 타이밍 내에 있는지 확인
-        if (perfectStart < timingStart || perfectEnd > timingEnd) return false;
-        
-        // 완벽한 타이밍이 합격 타이밍의 마지막 0.1초 구간인지 확인
-        const perfectDuration = perfectEnd - perfectStart;
-        const expectedPerfectDuration = 0.1;
-        
-        if (Math.abs(perfectDuration - expectedPerfectDuration) > 0.01) {
-            console.warn(`완벽한 타이밍 구간이 0.1초가 아닙니다: ${perfectDuration}초`);
-        }
-        
-        return true;
-    }
-    
-    /**
      * 컵의 결과 계산
      * @param {Object} cup - 컵 객체
      * @param {number} holdDuration - 홀드 지속 시간 (초)
      * @returns {string} 결과 ('tooEarly', 'success', 'perfect', 'overflow')
      */
     calculateResult(cup, holdDuration) {
-        console.log('🔍 CupSystem.calculateResult 호출됨');
+        console.log('🔍 CupSystem.calculateResult 호출됨 (새로운 타이밍 시스템)');
         console.log('  - cup.type:', cup ? cup.type : 'null');
         console.log('  - holdDuration:', holdDuration.toFixed(3), '초');
         
@@ -2914,27 +3075,29 @@ class CupSystem {
             return 'tooEarly';
         }
         
-        const { timing, perfect } = cup.config;
-        console.log('  - timing:', timing);
-        console.log('  - perfect:', perfect);
+        const { maxTime } = cup.config;
+        const zones = this.getTimingZones(maxTime);
+        
+        console.log('  - maxTime:', maxTime);
+        console.log('  - zones:', zones);
         
         // 이펙트와 판정 동기화를 위한 미세 조정 버퍼 (0.05초)
         const timingBuffer = 0.05;
-        const adjustedTimingStart = timing[0] - timingBuffer;
+        const adjustedPassingStart = zones.passing - timingBuffer;
         
-        if (holdDuration < adjustedTimingStart) {
-            console.log(`  - 결과: tooEarly (${holdDuration.toFixed(3)} < ${adjustedTimingStart.toFixed(3)})`);
+        if (holdDuration < adjustedPassingStart) {
+            console.log(`  - 결과: tooEarly (${holdDuration.toFixed(3)} < ${adjustedPassingStart.toFixed(3)})`);
             return 'tooEarly';
-        } else if (holdDuration >= adjustedTimingStart && holdDuration <= timing[1]) {
-            if (holdDuration >= perfect[0] && holdDuration <= perfect[1]) {
-                console.log(`  - 결과: perfect (${perfect[0]} <= ${holdDuration.toFixed(3)} <= ${perfect[1]})`);
+        } else if (holdDuration >= adjustedPassingStart && holdDuration < zones.overflow) {
+            if (holdDuration >= zones.perfect) {
+                console.log(`  - 결과: perfect (${zones.perfect} <= ${holdDuration.toFixed(3)} < ${zones.overflow})`);
                 return 'perfect';
             } else {
-                console.log(`  - 결과: success (${adjustedTimingStart.toFixed(3)} <= ${holdDuration.toFixed(3)} <= ${timing[1]}, with timing buffer)`);
+                console.log(`  - 결과: success (${adjustedPassingStart.toFixed(3)} <= ${holdDuration.toFixed(3)} < ${zones.perfect})`);
                 return 'success';
             }
         } else {
-            console.log(`  - 결과: overflow (${holdDuration.toFixed(3)} > ${timing[1]})`);
+            console.log(`  - 결과: overflow (${holdDuration.toFixed(3)} >= ${zones.overflow})`);
             return 'overflow';
         }
     }
@@ -3087,8 +3250,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // 개발자 콘솔용 전역 함수들 (안전한 것들만)
-    window.addNewCupType = (id, timing, perfect, options = {}) => {
-        gameInstance.cupSystem.addNewCupType(id, timing, perfect, options);
+    window.addNewCupType = (id, maxTime, options = {}) => {
+        gameInstance.cupSystem.addNewCupType(id, maxTime, options);
         console.log(`새 컵 타입 추가됨: ${id}`);
     };
     
@@ -3174,7 +3337,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 개발 모드에서 사용 가능한 함수들 로그
     console.log('🔧 개발 모드: 사용 가능한 함수들');
-    console.log('addNewCupType(id, timing, perfect, options) - 새 컵 타입 추가');
+    console.log('addNewCupType(id, maxTime, options) - 새 컵 타입 추가');
     console.log('getCupStats() - 컵 생성 통계 조회');
     console.log('getAllCupTypes() - 모든 컵 타입 조회');
     console.log('getInputStats() - 입력 통계 조회');
@@ -3191,7 +3354,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('debugGameLogic() - 게임 로직 디버그 정보');
     console.log('getMobileStats() - 모바일 최적화 통계 조회');
     console.log('debugMobile() - 모바일 디버그 정보');
-    console.log('예시: addNewCupType("D", [4.0, 5.0], [4.9, 5.0], {name: "Mega Cup", difficulty: "hard"})');
+    console.log('예시: addNewCupType("D", 5.0, {name: "Mega Cup", difficulty: "hard"})');
 });
 
 /**
