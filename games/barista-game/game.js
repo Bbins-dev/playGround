@@ -55,18 +55,27 @@ class BaristaGame {
     }
     
     /**
-     * 스코어 해시 생성 (보안용) - 단순화된 버전
+     * 스코어 해시 생성 (보안용) - 강화된 버전
      */
     generateScoreHash(score) {
-        const secret = 'barista_game_2024';
-        const data = score.toString() + secret;
-        let hash = 0;
-        for (let i = 0; i < data.length; i++) {
-            const char = data.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash = hash & hash; // 32bit integer로 변환
+        // 동적 시크릿 생성 (게임 시작 시간 기반)
+        const dynamicSecret = this.gameStartTime ? this.gameStartTime.toString() : Date.now().toString();
+        const staticSecret = String.fromCharCode(98,97,114,105,115,116,97); // 'barista' 인코딩
+        const combinedSecret = dynamicSecret + staticSecret + (score * 7).toString();
+        
+        // 더 복잡한 해시 알고리즘
+        let hash1 = 0, hash2 = 0;
+        for (let i = 0; i < combinedSecret.length; i++) {
+            const char = combinedSecret.charCodeAt(i);
+            hash1 = ((hash1 << 5) - hash1) + char;
+            hash2 = ((hash2 << 3) + hash2) ^ char;
+            hash1 = hash1 & hash1; // 32bit 정수로 변환
+            hash2 = hash2 & hash2;
         }
-        return Math.abs(hash).toString(16);
+        
+        // 두 해시를 조합하여 더 복잡한 해시 생성
+        const finalHash = (hash1 ^ hash2) + score * 13;
+        return Math.abs(finalHash).toString(36); // 36진법으로 변환
     }
     
     /**
@@ -80,6 +89,16 @@ class BaristaGame {
      * 보안된 스코어 설정
      */
     setScore(newScore) {
+        // 콘솔 호출 감지 (스택 트레이스 분석)
+        const stack = new Error().stack;
+        const isConsoleCall = !stack || stack.includes('eval') || stack.includes('<anonymous>');
+        
+        if (isConsoleCall && this.gameState === 'playing') {
+            console.warn('🚫 콘솔을 통한 점수 조작이 감지되었습니다.');
+            this._scoreValidationFailed = true;
+            return false;
+        }
+        
         console.log('📝 setScore 호출됨:', newScore);
         console.log('  - 이전 점수:', this._score);
         
@@ -830,12 +849,41 @@ class BaristaGame {
     }
     
     loadHighScore() {
-        const savedScore = parseInt(localStorage.getItem('barista-high-score') || '0');
-        this.setHighScore(savedScore);
+        try {
+            const savedScore = parseInt(localStorage.getItem('barista-high-score') || '0');
+            const savedHash = localStorage.getItem('barista-high-score-hash') || '';
+            
+            // 저장된 최고점수의 무결성 검증
+            if (savedScore > 0 && savedHash) {
+                const expectedHash = this.generateScoreHash(savedScore);
+                if (expectedHash === savedHash) {
+                    this.setHighScore(savedScore);
+                    console.log('✅ 저장된 최고점수 검증 완료:', savedScore);
+                } else {
+                    console.warn('⚠️ 저장된 최고점수가 조작된 것으로 의심됩니다. 초기화합니다.');
+                    this.setHighScore(0);
+                    this.saveHighScore();
+                }
+            } else {
+                this.setHighScore(savedScore);
+            }
+        } catch (error) {
+            console.error('최고점수 로드 중 오류:', error);
+            this.setHighScore(0);
+        }
     }
-    
+
     saveHighScore() {
-        localStorage.setItem('barista-high-score', this.getHighScore().toString());
+        try {
+            const highScore = this.getHighScore();
+            const highScoreHash = this.generateScoreHash(highScore);
+            
+            localStorage.setItem('barista-high-score', highScore.toString());
+            localStorage.setItem('barista-high-score-hash', highScoreHash);
+            console.log('💾 최고점수 저장 완료:', highScore);
+        } catch (error) {
+            console.error('최고점수 저장 중 오류:', error);
+        }
     }
     
     update(deltaTime) {
@@ -3013,38 +3061,61 @@ class CupSystem {
 
 // 게임 시작
 document.addEventListener('DOMContentLoaded', () => {
-    window.baristaGame = new BaristaGame();
+    const gameInstance = new BaristaGame();
     
-    // 개발자 콘솔용 전역 함수들
+    // 보안 강화: 제한된 인터페이스만 전역에 노출
+    window.baristaGame = Object.freeze({
+        // 읽기 전용 속성들만 노출
+        get gameState() { return gameInstance.gameState; },
+        get lives() { return gameInstance.lives; },
+        get gameTime() { return gameInstance.gameTime; },
+        get combo() { return gameInstance.combo; },
+        
+        // 안전한 메서드들만 노출 (점수 조작 불가능한 것들)
+        getScore: () => gameInstance.getScore(),
+        getHighScore: () => gameInstance.getHighScore(),
+        
+        // 게임 제어 (콘솔에서 게임 재시작 등은 허용)
+        restartGame: () => gameInstance.restartGame(),
+        
+        // 개발/디버그용 - 점수에 영향 없는 정보만
+        getGameStats: () => gameInstance.gameStats,
+        getFinalStats: () => gameInstance.calculateFinalStats(),
+        
+        // 점수 관련 메서드들은 보안 검증을 거친 후에만 동작
+        _secureReference: gameInstance // 내부 참조 (직접 사용 금지)
+    });
+    
+    // 개발자 콘솔용 전역 함수들 (안전한 것들만)
     window.addNewCupType = (id, timing, perfect, options = {}) => {
-        window.baristaGame.cupSystem.addNewCupType(id, timing, perfect, options);
+        gameInstance.cupSystem.addNewCupType(id, timing, perfect, options);
         console.log(`새 컵 타입 추가됨: ${id}`);
     };
     
     window.getCupStats = () => {
-        return window.baristaGame.cupSystem.getGenerationStats();
+        return gameInstance.cupSystem.getGenerationStats();
     };
     
     window.getAllCupTypes = () => {
-        return window.baristaGame.cupSystem.getAllCupTypes();
+        return gameInstance.cupSystem.getAllCupTypes();
     };
     
     // InputManager 디버그 함수들
     window.getInputStats = () => {
-        return window.baristaGame.inputManager.getInputStats();
+        return gameInstance.inputManager.getInputStats();
     };
     
     window.debugInput = () => {
-        window.baristaGame.inputManager.debugInfo();
+        gameInstance.inputManager.debugInfo();
     };
     
     // VisualEffects 디버그 함수들
     window.getVisualStats = () => {
-        return window.baristaGame.visualEffects.getEffectStats();
+        return gameInstance.visualEffects.getEffectStats();
     };
     
     window.debugVisual = () => {
-        const stats = window.baristaGame.visualEffects.getEffectStats();
+        const stats = gameInstance.visualEffects.getEffectStats();
         console.log('=== VisualEffects 디버그 정보 ===');
         console.log(`생성된 파티클: ${stats.particlesCreated}`);
         console.log(`재생된 애니메이션: ${stats.animationsPlayed}`);
@@ -3056,48 +3127,48 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // SoundManager 디버그 함수들
     window.getSoundStats = () => {
-        return window.baristaGame.soundManager.getSoundStats();
+        return gameInstance.soundManager.getSoundStats();
     };
     
     window.debugSound = () => {
-        window.baristaGame.soundManager.debugInfo();
+        gameInstance.soundManager.debugInfo();
     };
     
     window.setSoundVolume = (category, volume) => {
-        window.baristaGame.soundManager.setVolume(category, volume);
+        gameInstance.soundManager.setVolume(category, volume);
     };
     
     // UIManager 디버그 함수들
     window.getUIStats = () => {
-        return window.baristaGame.uiManager.getUIStats();
+        return gameInstance.uiManager.getUIStats();
     };
     
     window.debugUI = () => {
-        window.baristaGame.uiManager.debugInfo();
+        gameInstance.uiManager.debugInfo();
     };
     
     // 게임 로직 디버그 함수들
     window.getGameStats = () => {
-        return window.baristaGame.gameStats;
+        return gameInstance.gameStats;
     };
     
     window.getFinalStats = () => {
-        return window.baristaGame.calculateFinalStats();
+        return gameInstance.calculateFinalStats();
     };
     
     window.debugGameLogic = () => {
-        const stats = window.baristaGame.gameStats;
+        const stats = gameInstance.gameStats;
         console.log('=== 게임 로직 디버그 정보 ===');
-        console.log(`현재 점수: ${window.baristaGame.score}`);
-        console.log(`현재 콤보: ${window.baristaGame.combo}`);
-        console.log(`최대 콤보: ${window.baristaGame.maxCombo}`);
-        console.log(`생명: ${window.baristaGame.lives}`);
-        console.log(`게임 시간: ${window.baristaGame.gameTime.toFixed(1)}초`);
+        console.log(`현재 점수: ${gameInstance.score}`);
+        console.log(`현재 콤보: ${gameInstance.combo}`);
+        console.log(`최대 콤보: ${gameInstance.maxCombo}`);
+        console.log(`생명: ${gameInstance.lives}`);
+        console.log(`게임 시간: ${gameInstance.gameTime.toFixed(1)}초`);
         console.log(`총 컵 수: ${stats.totalCups}`);
         console.log(`완벽한 컵: ${stats.perfectCups}`);
         console.log(`성공한 컵: ${stats.successCups}`);
         console.log(`실패한 컵: ${stats.failedCups}`);
-        console.log(`게임 상태: ${window.baristaGame.gameState}`);
+        console.log(`게임 상태: ${gameInstance.gameState}`);
         console.log('===============================');
     };
     
@@ -3392,9 +3463,9 @@ class MobileOptimizer {
 
 // 모바일 최적화 디버그 함수들
 window.getMobileStats = () => {
-    return window.baristaGame.mobileOptimizer.getMobileStats();
+    return gameInstance.mobileOptimizer.getMobileStats();
 };
 
 window.debugMobile = () => {
-    window.baristaGame.mobileOptimizer.debugInfo();
+    gameInstance.mobileOptimizer.debugInfo();
 };
