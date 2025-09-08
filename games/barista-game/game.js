@@ -422,6 +422,13 @@ class BaristaGame {
             this.gameLoop();
         }
         
+        // 게임 상태 확인
+        console.log('🔍 게임 재시작 후 상태 확인:');
+        console.log('  - gameState:', this.gameState);
+        console.log('  - currentCup:', this.currentCup ? this.currentCup.type : 'null');
+        console.log('  - isHolding:', this.isHolding);
+        console.log('  - inputManager:', this.inputManager ? '존재' : 'null');
+        
         console.log('🎮 게임 다시 시작 - 모든 초기화 완료');
     }
     
@@ -452,9 +459,21 @@ class BaristaGame {
         console.log('  - isHolding:', this.isHolding);
         console.log('  - currentCup:', this.currentCup ? '존재' : 'null');
         
-        if (this.gameState !== 'playing' || this.isHolding || !this.currentCup) {
-            console.log('❌ game.handleStart() 실패 - 조건 불만족');
-            return;
+        // 조건 체크를 더 유연하게 수정
+        if (this.gameState !== 'playing') {
+            console.log('❌ game.handleStart() 실패 - 게임 상태가 playing이 아님:', this.gameState);
+            return false;
+        }
+        
+        if (!this.currentCup) {
+            console.log('❌ game.handleStart() 실패 - currentCup이 null');
+            return false;
+        }
+        
+        // 이미 홀드 중인 경우 중복 방지
+        if (this.isHolding) {
+            console.log('⚠️ game.handleStart() - 이미 홀드 중이므로 무시');
+            return false;
         }
         
         console.log('✅ game.handleStart() 조건 만족 - 홀드 시작');
@@ -466,10 +485,19 @@ class BaristaGame {
         this.soundManager.startHold();
         
         console.log('✅ 게임 홀드 시작 완료');
+        return true;
     }
     
     handleEnd(holdDuration = null) {
-        if (this.gameState !== 'playing' || !this.isHolding || !this.currentCup) return;
+        console.log('🎮 game.handleEnd() 호출됨');
+        console.log('  - gameState:', this.gameState);
+        console.log('  - isHolding:', this.isHolding);
+        console.log('  - currentCup:', this.currentCup ? '존재' : 'null');
+        
+        if (this.gameState !== 'playing' || !this.isHolding || !this.currentCup) {
+            console.log('❌ game.handleEnd() 실패 - 조건 불만족');
+            return false;
+        }
         
         this.isHolding = false;
         
@@ -478,19 +506,36 @@ class BaristaGame {
             holdDuration = (performance.now() - this.currentCup.holdStartTime) / 1000;
         }
         
+        console.log(`홀드 지속 시간: ${holdDuration.toFixed(3)}초`);
+        
         // 사운드 정지
         this.soundManager.endHold();
         
         // 결과 계산
         const result = this.calculateResult(holdDuration);
+        console.log(`계산된 결과: ${result}`);
+        
         this.processResult(result);
         
-        console.log(`홀드 종료: ${holdDuration.toFixed(3)}초, 결과: ${result}`);
+        console.log(`✅ 홀드 종료 완료: ${holdDuration.toFixed(3)}초, 결과: ${result}`);
+        return true;
     }
     
     calculateResult(holdDuration) {
+        console.log('🔍 calculateResult 호출됨');
+        console.log('  - holdDuration:', holdDuration.toFixed(3), '초');
+        console.log('  - currentCup:', this.currentCup ? this.currentCup.type : 'null');
+        
+        if (this.currentCup) {
+            console.log('  - cup.timing:', this.currentCup.config.timing);
+            console.log('  - cup.perfect:', this.currentCup.config.perfect);
+        }
+        
         // CupSystem을 사용하여 결과 계산
-        return this.cupSystem.calculateResult(this.currentCup, holdDuration);
+        const result = this.cupSystem.calculateResult(this.currentCup, holdDuration);
+        console.log('  - 계산된 결과:', result);
+        
+        return result;
     }
     
     processResult(result) {
@@ -594,7 +639,9 @@ class BaristaGame {
         // 통계 업데이트
         this.gameStats.failedCups++;
         
-        console.log(`너무 빠른 릴리즈: 시간 -10초, 콤보 리셋`);
+        console.log(`❌ 너무 빠른 릴리즈: 시간 -10초, 콤보 리셋`);
+        console.log(`  - 현재 시간: ${this.gameTime.toFixed(1)}초`);
+        console.log(`  - 현재 콤보: ${this.combo}`);
     }
     
     /**
@@ -618,7 +665,9 @@ class BaristaGame {
         // 통계 업데이트
         this.gameStats.successCups++;
         
-        console.log(`성공: +${baseScore}점, 콤보 ${this.combo}, 시간 -10초, 최종 점수: ${this.getScore()}`);
+        console.log(`✅ 성공: +${baseScore}점, 콤보 ${this.combo}, 시간 -10초, 최종 점수: ${this.getScore()}`);
+        console.log(`  - 현재 시간: ${this.gameTime.toFixed(1)}초`);
+        console.log(`  - 현재 콤보: ${this.combo}`);
     }
     
     /**
@@ -647,7 +696,9 @@ class BaristaGame {
         // 통계 업데이트
         this.gameStats.perfectCups++;
         
-        console.log(`완벽한 타이밍: +${totalScore}점 (기본 ${baseScore} + 콤보 ${comboBonus}), 콤보 ${this.combo}, 시간 +2초, 최종 점수: ${this.getScore()}`);
+        console.log(`🌟 완벽한 타이밍: +${totalScore}점 (기본 ${baseScore} + 콤보 ${comboBonus}), 콤보 ${this.combo}, 시간 +2초, 최종 점수: ${this.getScore()}`);
+        console.log(`  - 현재 시간: ${this.gameTime.toFixed(1)}초`);
+        console.log(`  - 현재 콤보: ${this.combo}`);
     }
     
     /**
@@ -666,7 +717,10 @@ class BaristaGame {
         // 통계 업데이트
         this.gameStats.failedCups++;
         
-        console.log(`넘침: 생명 -1, 시간 변화 없음, 콤보 리셋`);
+        console.log(`💥 넘침: 생명 -1, 시간 변화 없음, 콤보 리셋`);
+        console.log(`  - 현재 생명: ${this.lives}`);
+        console.log(`  - 현재 시간: ${this.gameTime.toFixed(1)}초`);
+        console.log(`  - 현재 콤보: ${this.combo}`);
     }
     
     /**
@@ -1225,6 +1279,26 @@ class UIManager {
     }
     
     /**
+     * 성능 최적화
+     */
+    optimizeForPerformance() {
+        console.log('UIManager 성능 최적화 실행...');
+        
+        // 애니메이션 효과 단순화
+        this.hearts.forEach(heart => {
+            heart.style.transition = 'opacity 0.1s ease';
+        });
+        
+        // 시간 바 애니메이션 단순화
+        this.timeFill.style.transition = 'width 0.2s linear';
+        
+        // 게임 오버 화면 애니메이션 단순화
+        this.gameOverScreen.style.transition = 'opacity 0.2s ease';
+        
+        console.log('UIManager 성능 최적화 완료');
+    }
+    
+    /**
      * UI 상태 초기화
      */
     reset() {
@@ -1243,6 +1317,11 @@ class UIManager {
         
         // 게임 오버 화면 숨기기
         this.hideGameOverScreen();
+
+        // 시작 화면 표시 상태 복구 (재시작 시 검은 화면 방지)
+        this.startScreen.style.display = 'block';
+        this.startScreen.style.opacity = '1';
+        this.startScreen.style.transform = 'scale(1)';
         
         // 통계 초기화
         this.uiStats = {
@@ -1624,6 +1703,26 @@ class SoundManager {
             masterVolume: this.masterVolume,
             volumeSettings: { ...this.volumeSettings }
         };
+    }
+    
+    /**
+     * 성능 최적화
+     */
+    optimizeForPerformance() {
+        console.log('SoundManager 성능 최적화 실행...');
+        
+        // 마스터 볼륨 감소
+        this.masterVolume = Math.max(0.3, this.masterVolume * 0.8);
+        
+        // 볼륨 설정 최적화
+        this.volumeSettings.hold = Math.max(0.2, this.volumeSettings.hold * 0.7);
+        this.volumeSettings.release = Math.max(0.3, this.volumeSettings.release * 0.8);
+        this.volumeSettings.ambient = Math.max(0.1, this.volumeSettings.ambient * 0.5);
+        
+        // 현재 홀드 사운드 정지
+        this.stopAllHoldSounds();
+        
+        console.log('SoundManager 성능 최적화 완료');
     }
     
     /**
@@ -2116,6 +2215,31 @@ class VisualEffects {
     }
     
     /**
+     * 성능 최적화
+     */
+    optimizeForPerformance() {
+        console.log('VisualEffects 성능 최적화 실행...');
+        
+        // 파티클 개수 제한
+        this.maxParticles = Math.min(this.maxParticles, 50);
+        
+        // 파티클 생명주기 단축
+        this.particleLifetime = Math.min(this.particleLifetime, 1000);
+        
+        // 활성 파티클 정리
+        if (this.particles.length > this.maxParticles) {
+            this.particles = this.particles.slice(-this.maxParticles);
+        }
+        
+        // 애니메이션 정리
+        if (this.animations.length > 10) {
+            this.animations = this.animations.slice(-10);
+        }
+        
+        console.log('VisualEffects 성능 최적화 완료');
+    }
+    
+    /**
      * 모든 효과 초기화
      */
     reset() {
@@ -2328,17 +2452,17 @@ class InputManager {
         
         if (this.isHolding) {
             console.log('❌ 홀드 시작 실패 - 이미 홀드 중');
-            return;
+            return false;
         }
         
         if (this.game.gameState !== 'playing') {
             console.log('❌ 홀드 시작 실패 - 게임 상태가 playing이 아님:', this.game.gameState);
-            return;
+            return false;
         }
         
         if (!this.game.currentCup) {
             console.log('❌ 홀드 시작 실패 - currentCup이 null');
-            return;
+            return false;
         }
         
         console.log('✅ 모든 조건 만족 - 홀드 시작 진행');
@@ -2348,24 +2472,47 @@ class InputManager {
         
         console.log('🔄 game.handleStart() 호출 중...');
         // 게임 인스턴스의 홀드 시작 메서드 호출
-        this.game.handleStart();
+        const success = this.game.handleStart();
         
-        console.log('✅ startHold 완료');
+        if (success) {
+            console.log('✅ startHold 완료 - 게임 홀드 시작 성공');
+            return true;
+        } else {
+            console.log('❌ startHold 실패 - 게임 홀드 시작 실패');
+            this.isHolding = false; // 실패 시 상태 롤백
+            return false;
+        }
     }
     
     /**
      * 홀드 종료 처리
      */
     endHold() {
+        console.log('🔍 endHold 호출됨 - 조건 확인 중...');
+        console.log('  - isHolding:', this.isHolding);
+        console.log('  - gameState:', this.game.gameState);
+        console.log('  - currentCup:', this.game.currentCup ? '존재' : 'null');
+        
         if (!this.isHolding || this.game.gameState !== 'playing' || !this.game.currentCup) {
-            return;
+            console.log('❌ endHold 실패 - 조건 불만족');
+            return false;
         }
         
-        this.isHolding = false;
         const holdDuration = this.getHoldDuration();
+        this.isHolding = false;
+        
+        console.log(`홀드 지속 시간: ${holdDuration.toFixed(3)}초`);
         
         // 게임 인스턴스의 홀드 종료 메서드 호출
-        this.game.handleEnd(holdDuration);
+        const success = this.game.handleEnd(holdDuration);
+        
+        if (success) {
+            console.log('✅ endHold 완료 - 게임 홀드 종료 성공');
+            return true;
+        } else {
+            console.log('❌ endHold 실패 - 게임 홀드 종료 실패');
+            return false;
+        }
     }
     
     /**
@@ -2472,6 +2619,9 @@ class InputManager {
             averageResponseTime: 0,
             lastResponseTime: 0
         };
+        
+        // 이벤트 리스너 재설정
+        this.setupEvents();
         
         console.log('InputManager 초기화 완료');
     }
@@ -2666,17 +2816,32 @@ class CupSystem {
      * @returns {string} 결과 ('tooEarly', 'success', 'perfect', 'overflow')
      */
     calculateResult(cup, holdDuration) {
+        console.log('🔍 CupSystem.calculateResult 호출됨');
+        console.log('  - cup.type:', cup ? cup.type : 'null');
+        console.log('  - holdDuration:', holdDuration.toFixed(3), '초');
+        
+        if (!cup || !cup.config) {
+            console.log('❌ 컵 또는 컵 설정이 없음');
+            return 'tooEarly';
+        }
+        
         const { timing, perfect } = cup.config;
+        console.log('  - timing:', timing);
+        console.log('  - perfect:', perfect);
         
         if (holdDuration < timing[0]) {
+            console.log(`  - 결과: tooEarly (${holdDuration.toFixed(3)} < ${timing[0]})`);
             return 'tooEarly';
         } else if (holdDuration >= timing[0] && holdDuration <= timing[1]) {
             if (holdDuration >= perfect[0] && holdDuration <= perfect[1]) {
+                console.log(`  - 결과: perfect (${perfect[0]} <= ${holdDuration.toFixed(3)} <= ${perfect[1]})`);
                 return 'perfect';
             } else {
+                console.log(`  - 결과: success (${timing[0]} <= ${holdDuration.toFixed(3)} <= ${timing[1]}, but not perfect)`);
                 return 'success';
             }
         } else {
+            console.log(`  - 결과: overflow (${holdDuration.toFixed(3)} > ${timing[1]})`);
             return 'overflow';
         }
     }
@@ -3115,11 +3280,12 @@ class MobileOptimizer {
         touchArea.style.height = '100%';
         touchArea.style.zIndex = '1';
         touchArea.style.background = 'transparent';
+        touchArea.style.pointerEvents = 'none'; // 이벤트를 캔버스로 통과시키기
         
         // 터치 영역을 캔버스 부모에 추가
         canvas.parentNode.appendChild(touchArea);
         
-        console.log('터치 영역 확대 완료');
+        console.log('터치 영역 확대 완료 (pointer-events: none 적용)');
     }
     
     /**

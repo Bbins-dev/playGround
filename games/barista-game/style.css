@@ -36,6 +36,10 @@ body {
     border-radius: 10px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     
+    /* z-index 설정으로 클릭 이벤트 보장 */
+    position: relative;
+    z-index: 1;
+    
     /* 모바일 최적화 */
     touch-action: none;
     -webkit-touch-callout: none;
