@@ -1,0 +1,20 @@
+{
+  "name": "playground-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP Server for PlayGround game collection",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": ["mcp", "server", "games", "playground"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.4.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "mcpServers": {
+    "playground-server": {
+      "command": "node",
+      "args": ["mcp-server/index.js"],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "context7-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@smithery/cli@latest",
+        "run",
+        "@upstash/context7-mcp",
+        "--key",
+        "bc3075dd-e9ea-4d61-919e-4a10b50ec3c1"
+      ]
+    },
+    "supabase-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@smithery/cli@latest",
+        "run",
+        "@supabase-community/supabase-mcp",
+        "--key",
+        "bc3075dd-e9ea-4d61-919e-4a10b50ec3c1",
+        "--profile",
+        "aggressive-krill-wYQxGR"
+      ]
+    },
+    "playwright-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@smithery/cli@latest",
+        "run",
+        "@microsoft/playwright-mcp",
+        "--key",
+        "bc3075dd-e9ea-4d61-919e-4a10b50ec3c1"
+      ]
+    }
+  }
+}
