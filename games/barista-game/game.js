@@ -1043,6 +1043,9 @@ class UIManager {
         };
         
         this.initializeUI();
+        
+        // 초기 상태: 시작 화면이 보이므로 오버레이 클릭 활성화
+        this.setOverlayPointerEvents(true);
     }
     
     /**
@@ -1208,6 +1211,9 @@ class UIManager {
         this.finalScore.textContent = finalScore.toLocaleString();
         this.highScore.textContent = highScore.toLocaleString();
         
+        // 게임 오버 화면 표시 시 오버레이 클릭 활성화 (UI 클릭 허용)
+        this.setOverlayPointerEvents(true);
+        
         // 화면 표시
         this.gameOverScreen.style.display = 'block';
         
@@ -1260,6 +1266,9 @@ class UIManager {
         this.startScreen.style.opacity = '0';
         this.startScreen.style.transform = 'scale(0.9)';
         
+        // 게임 시작 시 오버레이 클릭 비활성화 (캔버스 클릭 허용)
+        this.setOverlayPointerEvents(false);
+        
         setTimeout(() => {
             this.startScreen.style.display = 'none';
         }, 300);
@@ -1273,11 +1282,26 @@ class UIManager {
         this.gameOverScreen.style.opacity = '0';
         this.gameOverScreen.style.transform = 'scale(0.8)';
         
+        // 게임 오버 화면 숨길 때 오버레이 클릭 활성화 (UI 클릭 허용)
+        this.setOverlayPointerEvents(true);
+        
         setTimeout(() => {
             this.gameOverScreen.style.display = 'none';
         }, 300);
     }
     
+    /**
+     * 오버레이 포인터 이벤트 제어
+     * @param {boolean} enable - true면 UI 클릭 허용, false면 캔버스 클릭 허용
+     */
+    setOverlayPointerEvents(enable) {
+        const overlay = document.querySelector('.ui-overlay');
+        if (overlay) {
+            overlay.style.pointerEvents = enable ? 'auto' : 'none';
+            console.log(`오버레이 포인터 이벤트: ${enable ? '활성화' : '비활성화'}`);
+        }
+    }
+
     /**
      * 성능 최적화
      */
