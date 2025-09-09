@@ -1609,11 +1609,11 @@ class SoundManager {
         this.currentHoldSound = null;
         this.isHolding = false;
         this.isInitialized = false;
-        this.masterVolume = 0.7;
+        this.masterVolume = 0.4;
         this.volumeSettings = {
-            hold: 0.6,
-            release: 0.8,
-            ambient: 0.4
+            hold: 0.3,
+            release: 0.5,
+            ambient: 0.2
         };
         
         // 사운드 통계
@@ -1757,7 +1757,7 @@ class SoundManager {
             
             // 사인파 생성
             for (let i = 0; i < data.length; i++) {
-                data[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate) * 0.3;
+                data[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate) * 0.15;
                 
                 // 페이드 아웃 효과
                 if (name.includes('release')) {
@@ -1966,7 +1966,7 @@ class SoundManager {
             
             // 하모니 게인
             const harmonyGain = this.audioContext.createGain();
-            harmonyGain.gain.value = 0.3;
+            harmonyGain.gain.value = 0.1;
             
             // 연결
             oscillator1.connect(filterNode);
@@ -2071,7 +2071,7 @@ class SoundManager {
             
             // 하모니 설정
             const harmonyGain = this.audioContext.createGain();
-            harmonyGain.gain.value = type === 'perfect' ? 0.5 : 0.3;
+            harmonyGain.gain.value = type === 'perfect' ? 0.2 : 0.1;
             
             // 연결
             oscillator1.connect(filterNode);
