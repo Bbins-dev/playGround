@@ -62,7 +62,10 @@ class BaristaGame {
      * 현재 작업 중인 컵 반환
      */
     getCurrentCup() {
-        return this.cupQueue[this.activeCupIndex] || null;
+        // activeCupIndex(2)는 화면 중앙 위치를 의미
+        // positionIndex가 2인 컵을 찾아서 반환
+        const activeCup = this.cupQueue.find(cup => cup && cup.positionIndex === this.activeCupIndex);
+        return activeCup || null;
     }
 
     /**
@@ -71,8 +74,20 @@ class BaristaGame {
     updateCupPositions() {
         for (let i = 0; i < this.cupQueue.length; i++) {
             if (this.cupQueue[i]) {
-                this.cupQueue[i].x = this.centerX + this.cupPositions[i];
-                this.cupQueue[i].y = this.centerY + 100; // 컵을 아래쪽으로 100px 이동
+                const cup = this.cupQueue[i];
+                // positionIndex가 없으면 배열 인덱스 사용
+                const posIndex = cup.positionIndex !== undefined ? cup.positionIndex : i;
+                
+                // 위치 인덱스에 따른 X 좌표 계산
+                if (posIndex < this.cupPositions.length) {
+                    cup.x = this.centerX + this.cupPositions[posIndex];
+                } else {
+                    // 화면 밖 위치 (오른쪽으로 계속 이동)
+                    cup.x = this.centerX + this.cupPositions[this.cupPositions.length - 1] + 
+                            (posIndex - this.cupPositions.length + 1) * 100;
+                }
+                
+                cup.y = this.centerY + 100; // 컵을 아래쪽으로 100px 이동
             }
         }
     }
@@ -84,6 +99,8 @@ class BaristaGame {
         const newCup = this.cupSystem.generateRandomCup(true);
         if (newCup) {
             newCup.lastTimingZone = 'basic';
+            // positionIndex 설정 (큐에서의 위치)
+            newCup.positionIndex = this.cupQueue.length;
             this.cupQueue.push(newCup);
             this.updateCupPositions();
             console.log('✅ 새 컵을 큐에 추가:', newCup.type);
@@ -106,16 +123,44 @@ class BaristaGame {
     }
 
     /**
-     * 컵 완료 시 큐 이동 (모든 컵이 한 칸씩 오른쪽으로)
+     * 컵 완료 시 큐 이동 (완료된 컵을 포함해 모든 컵이 한 칸씩 오른쪽으로)
      */
     advanceCupQueue() {
-        // 첫 번째 컵 제거 (화면 밖으로 사라짐)
-        if (this.cupQueue.length > 0) {
-            this.cupQueue.shift();
+        const currentCup = this.getCurrentCup();
+        if (currentCup) {
+            // 완료된 컵에 상태 표시
+            currentCup.isCompleted = true;
+            console.log('✅ 컵 완료 표시:', currentCup.type);
         }
         
-        // 새 컵을 끝에 추가
-        this.addNewCupToQueue();
+        // 모든 컵을 한 칸씩 오른쪽으로 이동 (인덱스는 그대로, 위치만 변경)
+        for (let i = 0; i < this.cupQueue.length; i++) {
+            if (this.cupQueue[i]) {
+                // 각 컵의 위치 인덱스를 1씩 증가 (오른쪽으로 이동)
+                this.cupQueue[i].positionIndex = (this.cupQueue[i].positionIndex || i) + 1;
+            }
+        }
+        
+        // 새 컵을 왼쪽 끝에 추가 (위치 인덱스 0)
+        const newCup = this.cupSystem.generateRandomCup(true);
+        if (newCup) {
+            newCup.lastTimingZone = 'basic';
+            newCup.positionIndex = 0; // 가장 왼쪽 위치
+            this.cupQueue.unshift(newCup); // 배열 앞쪽에 추가
+            console.log('✅ 새 컵을 왼쪽에 추가:', newCup.type);
+        }
+        
+        // 화면 밖으로 나간 컵들 제거 (위치 인덱스가 5 이상인 컵)
+        this.cupQueue = this.cupQueue.filter((cup, index) => {
+            if (cup.positionIndex >= 5) {
+                console.log('🗑️ 화면 밖으로 나간 컵 제거:', cup.type);
+                return false;
+            }
+            return true;
+        });
+        
+        // activeCupIndex 조정 (중앙 위치는 항상 인덱스 2)
+        this.activeCupIndex = 2;
         
         // 위치 즉시 업데이트
         this.updateCupPositions();
@@ -1100,9 +1145,11 @@ class BaristaGame {
             this.ctx.translate(-cupX, -cupY);
         }
         
-        // 투명도 효과 (비활성 컵은 반투명)
+        // 투명도 효과 (비활성 컵은 반투명, 완료된 컵은 더 투명)
         if (cup.alpha !== undefined) {
             this.ctx.globalAlpha = cup.alpha;
+        } else if (cup.isCompleted) {
+            this.ctx.globalAlpha = 0.4; // 완료된 컵은 더 투명하게
         } else if (!isActiveCup) {
             this.ctx.globalAlpha = 0.6; // 비활성 컵은 투명도 60%
         }
@@ -1129,6 +1176,13 @@ class BaristaGame {
         this.ctx.font = '16px Inter';
         this.ctx.textAlign = 'center';
         this.ctx.fillText(cup.config.name, cupX, cupY + 80);
+        
+        // 완료된 컵에 체크마크 표시
+        if (cup.isCompleted) {
+            this.ctx.fillStyle = '#4CAF50'; // 녹색 체크마크
+            this.ctx.font = '24px Inter';
+            this.ctx.fillText('✓', cupX, cupY - 20);
+        }
         
         // 파티클 효과 렌더링
         this.visualEffects.renderParticles();
