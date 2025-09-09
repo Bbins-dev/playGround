@@ -87,7 +87,10 @@ class BaristaGame {
                             (posIndex - this.cupPositions.length + 1) * 100;
                 }
                 
-                cup.y = this.centerY + 100; // 컵을 아래쪽으로 100px 이동
+                // 바닥 위치 유지: 모든 컵의 바닥이 같은 라인에 오도록 Y 위치 조정
+                const baseBottomY = this.centerY + 160; // 기준 바닥 Y 위치 
+                const cupHeight = cup.config.height;
+                cup.y = baseBottomY - cupHeight / 2; // 컵의 중심이 바닥에서 높이/2만큼 위에 오도록
             }
         }
     }
@@ -1135,8 +1138,11 @@ class BaristaGame {
         // 컵의 실제 위치 사용 (큐 위치에서 계산된 값)
         const cupX = cup.x;
         const cupY = cup.y;
-        cup.width = 80;
-        cup.height = 120;
+        
+        // 컵 타입별 크기 설정 (바닥 위치 유지를 위해 높이에 따라 Y 위치 조정)
+        const cupConfig = cup.config;
+        cup.width = cupConfig.width;
+        cup.height = cupConfig.height;
         
         // 회전 및 투명도 효과 적용
         this.ctx.save();
@@ -1157,14 +1163,14 @@ class BaristaGame {
             this.ctx.globalAlpha = 0.6; // 비활성 컵은 투명도 60%
         }
         
-        // 컵 그리기
+        // 컵 그리기 (각 컵 타입별 크기 사용)
         this.ctx.fillStyle = cup.config.color;
-        this.ctx.fillRect(cupX - 40, cupY - 60, 80, 120);
+        this.ctx.fillRect(cupX - cup.width/2, cupY - cup.height/2, cup.width, cup.height);
         
         // 컵 테두리
         this.ctx.strokeStyle = '#654321';
         this.ctx.lineWidth = 3;
-        this.ctx.strokeRect(cupX - 40, cupY - 60, 80, 120);
+        this.ctx.strokeRect(cupX - cup.width/2, cupY - cup.height/2, cup.width, cup.height);
         
         this.ctx.restore();
         
@@ -1174,11 +1180,7 @@ class BaristaGame {
         //     this.visualEffects.renderCoffeeFill(cup, cup.fillLevel);
         // }
         
-        // 컵 라벨
-        this.ctx.fillStyle = '#654321';
-        this.ctx.font = '16px Inter';
-        this.ctx.textAlign = 'center';
-        this.ctx.fillText(cup.config.name, cupX, cupY + 80);
+        // 컵 라벨 제거 - 컵 이름 표시하지 않음
         
         // 완료된 컵에 체크마크 표시
         if (cup.isCompleted) {
@@ -3020,21 +3022,27 @@ class CupSystem {
                 name: 'Small Cup',
                 color: '#8B4513',
                 difficulty: 'easy',
-                points: { success: 10, perfect: 20 }
+                points: { success: 10, perfect: 20 },
+                width: 65,    // 작은 컵
+                height: 100
             },
             B: { 
                 maxTime: 1.5,  // 최대 시간 (합격: 0.5초부터, 완벽: 1.2초부터, 넘침: 1.5초 이후)
                 name: 'Medium Cup',
                 color: '#D2691E',
                 difficulty: 'medium',
-                points: { success: 15, perfect: 30 }
+                points: { success: 15, perfect: 30 },
+                width: 80,    // 중간 컵
+                height: 120
             },
             C: { 
                 maxTime: 4.0,  // 최대 시간 (합격: 3.0초부터, 완벽: 3.7초부터, 넘침: 4.0초 이후)
                 name: 'Large Cup',
                 color: '#654321',
                 difficulty: 'hard',
-                points: { success: 20, perfect: 40 }
+                points: { success: 20, perfect: 40 },
+                width: 95,    // 큰 컵
+                height: 140
             }
         };
         
