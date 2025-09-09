@@ -2103,7 +2103,7 @@ class VisualEffects {
     getTimingZonesForSplash(maxTime) {
         return {
             passing: maxTime - 1.0,
-            perfect: maxTime - 0.15,
+            perfect: maxTime - 0.2,
             overflow: maxTime
         };
     }
@@ -2942,7 +2942,7 @@ class CupSystem {
     getTimingZones(maxTime) {
         return {
             passing: maxTime - 1.0,    // 합격 타이밍: 최대시간 - 1초
-            perfect: maxTime - 0.15,   // 완벽 타이밍: 최대시간 - 0.15초
+            perfect: maxTime - 0.2,   // 완벽 타이밍: 최대시간 - 0.2초
             overflow: maxTime          // 넘침 타이밍: 최대시간 초과
         };
     }
@@ -2997,7 +2997,7 @@ class CupSystem {
             isComplete: false,
             result: null,
             // 추가 속성들
-            perfectTimingBonus: 0.1, // 완벽한 타이밍 구간 길이
+            perfectTimingBonus: 0.2, // 완벽한 타이밍 구간 길이
             visualEffects: {
                 splashIntensity: 1.0,
                 fillAnimation: true,
