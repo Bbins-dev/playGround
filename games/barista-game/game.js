@@ -2428,24 +2428,24 @@ class VisualEffects {
         switch (result) {
             case 'perfect':
                 color = '#FFD700';
-                message = 'Perfect!';
-                size = 24;
+                message = 'PERFECT!!';
+                size = 48;
                 this.createSuccessParticles(cup);
                 break;
             case 'success':
                 color = '#4CAF50';
-                message = 'Good!';
-                size = 20;
+                message = 'GOOD!!';
+                size = 40;
                 break;
             case 'tooEarly':
                 color = '#FF9800';
-                message = 'TOO EARLY';
-                size = 18;
+                message = 'TOO EARLY!!';
+                size = 36;
                 break;
             case 'overflow':
                 color = '#F44336';
-                message = 'Too Late...';
-                size = 20;
+                message = 'TOO LATE!!';
+                size = 40;
                 this.createOverflowEffect(cup);
                 break;
         }
