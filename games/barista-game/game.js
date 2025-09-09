@@ -828,8 +828,8 @@ class BaristaGame {
      * 완벽한 타이밍 처리
      */
     processPerfect() {
-        // 기본 점수 (20점) + 콤보 보너스
-        const baseScore = 20;
+        // 기본 점수 (100점) + 콤보 보너스
+        const baseScore = 100;
         const comboBonus = this.combo * 10; // 콤보당 10점 추가
         const totalScore = baseScore + comboBonus;
         
@@ -3234,7 +3234,7 @@ class CupSystem {
                 name: 'Espresso Cup',
                 color: '#FF6B6B',  // 밝은 빨강
                 difficulty: 'easy',
-                points: { success: 10, perfect: 20 },
+                points: { success: 10, perfect: 100 },
                 width: 35,    // 매우 작은 컵
                 height: 55
             },
@@ -3243,7 +3243,7 @@ class CupSystem {
                 name: 'Small Mug',
                 color: '#4ECDC4',  // 청록색
                 difficulty: 'easy',
-                points: { success: 10, perfect: 20 },
+                points: { success: 10, perfect: 100 },
                 width: 50,
                 height: 75
             },
@@ -3252,7 +3252,7 @@ class CupSystem {
                 name: 'Tea Cup',
                 color: '#45B7D1',  // 밝은 파랑
                 difficulty: 'medium',
-                points: { success: 10, perfect: 20 },
+                points: { success: 10, perfect: 100 },
                 width: 65,
                 height: 95
             },
@@ -3261,7 +3261,7 @@ class CupSystem {
                 name: 'Coffee Mug',
                 color: '#96CEB4',  // 민트 그린
                 difficulty: 'medium',
-                points: { success: 10, perfect: 20 },
+                points: { success: 10, perfect: 100 },
                 width: 80,
                 height: 115
             },
@@ -3270,7 +3270,7 @@ class CupSystem {
                 name: 'Medium Mug',
                 color: '#FFEAA7',  // 밝은 노랑
                 difficulty: 'medium',
-                points: { success: 10, perfect: 20 },
+                points: { success: 10, perfect: 100 },
                 width: 95,
                 height: 135
             },
@@ -3279,7 +3279,7 @@ class CupSystem {
                 name: 'Large Mug',
                 color: '#DDA0DD',  // 연보라
                 difficulty: 'hard',
-                points: { success: 10, perfect: 20 },
+                points: { success: 10, perfect: 100 },
                 width: 100,
                 height: 145
             },
@@ -3288,7 +3288,7 @@ class CupSystem {
                 name: 'Travel Mug',
                 color: '#F8A5C2',  // 연분홍
                 difficulty: 'hard',
-                points: { success: 10, perfect: 20 },
+                points: { success: 10, perfect: 100 },
                 width: 115,
                 height: 165
             },
@@ -3297,7 +3297,7 @@ class CupSystem {
                 name: 'Jumbo Mug',
                 color: '#FA8072',  // 샐몬 색
                 difficulty: 'hard',
-                points: { success: 10, perfect: 20 },
+                points: { success: 10, perfect: 100 },
                 width: 130,   // 가장 큰 컵 (150px 간격에 안전하게)
                 height: 185
             }
@@ -3436,7 +3436,7 @@ class CupSystem {
             name: `${id} Cup`,
             color: this.generateRandomColor(),
             difficulty: 'medium',
-            points: { success: 10, perfect: 20 }
+            points: { success: 10, perfect: 100 }
         };
         
         this.cupTypes[id] = {
