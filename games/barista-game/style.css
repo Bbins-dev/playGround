@@ -52,15 +52,20 @@ body {
     object-fit: contain;
 }
 
-/* UI 오버레이 */
+/* UI 오버레이 - 캔버스와 동일한 크기와 위치 */
 .ui-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(800px, 95vw);
+    height: min(600px, 75vh);
+    max-width: 100vw;
+    max-height: 100vh;
     pointer-events: none;
     z-index: 10;
+    /* 캔버스와 정확히 동일한 비율 유지 */
+    aspect-ratio: 4/3;
 }
 
 /* 게임 상태별 클릭 이벤트 제어 */
@@ -77,28 +82,21 @@ body {
     pointer-events: auto !important;
 }
 
-/* 하트 (기회) */
+/* 하트 (기회) - 수도꼭지 위쪽에 배치 */
 .hearts-container {
     position: absolute;
-    top: 20px;
+    top: 8%;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 10px;
+    gap: 1.5vmin;
     pointer-events: none;
-    
-    /* 모바일 반응형 */
-    top: 10px;
-    gap: 8px;
 }
 
 .heart {
-    font-size: 30px;
+    font-size: 4vmin;
     opacity: 1;
     transition: opacity 0.3s ease;
-    
-    /* 모바일 반응형 */
-    font-size: 24px;
 }
 
 .heart.lost {
@@ -120,28 +118,23 @@ body {
     100% { transform: scale(1); opacity: 0.3; }
 }
 
-/* 시간 바 - 하트 아래로 이동 */
+/* 시간 바 - 하트 아래, 수도꼭지 위에 배치 */
 .time-bar-container {
     position: absolute;
-    top: 60px;
+    top: 15%;
     left: 50%;
     transform: translateX(-50%);
-    width: 80%;
-    max-width: 600px;
+    width: 70%;
     pointer-events: none;
-    
-    /* 모바일 반응형 */
-    top: 50px;
-    width: 90%;
 }
 
 .time-bar {
     width: 100%;
-    height: 20px;
+    height: 2.5vmin;
     background: rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
+    border-radius: 1.25vmin;
     overflow: hidden;
-    border: 2px solid #654321;
+    border: 0.25vmin solid #654321;
 }
 
 .time-fill {
@@ -174,36 +167,35 @@ body {
     animation: danger-blink 0.3s ease-in-out infinite;
 }
 
-/* 콤보 표시 */
+/* 콤보 표시 - 컵 아래쪽에 큼직하게 배치 */
 .combo-display {
     position: absolute;
-    bottom: 150px;
+    bottom: 20%;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
     pointer-events: none;
     z-index: 100;
-    
-    /* 모바일 반응형 */
-    bottom: 120px;
 }
 
 .combo-text {
     display: block;
     color: #FF6B6B;
-    font-size: 1.4rem;
+    font-size: 2.5vmin;
     font-weight: bold;
-    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
-    margin-bottom: 10px;
+    text-shadow: 0.5vmin 0.5vmin 1vmin rgba(0, 0, 0, 0.7);
+    margin-bottom: 1vmin;
+    letter-spacing: 0.2vmin;
 }
 
 .combo-number {
     display: block;
     color: #FFD93D;
-    font-size: 3rem;
+    font-size: 8vmin;
     font-weight: bold;
-    text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.8);
+    text-shadow: 0.8vmin 0.8vmin 1.6vmin rgba(0, 0, 0, 0.8);
     animation: combo-pulse 0.3s ease-out;
+    line-height: 1;
 }
 
 @keyframes combo-pulse {
@@ -345,13 +337,11 @@ body {
     transform: translateY(-2px);
 }
 
-/* 반응형 디자인 */
+/* 반응형 디자인 - 모바일 */
 @media (max-width: 768px) {
-    #gameCanvas {
-        width: 95vw;
-        height: 60vh;
-        border: none;
-        border-radius: 0;
+    .ui-overlay {
+        width: min(95vw, 90vh * 4/3);
+        height: min(95vw * 3/4, 90vh);
     }
     
     .start-screen, .game-over-screen {
@@ -363,19 +353,6 @@ body {
         font-size: 2rem;
     }
     
-    .hearts-container {
-        top: 10px;
-    }
-    
-    .heart {
-        font-size: 25px;
-    }
-    
-    .time-bar-container {
-        top: 50px;
-        width: 90%;
-    }
-    
     .back-btn {
         top: 10px;
         left: 10px;
@@ -383,6 +360,11 @@ body {
 }
 
 @media (max-width: 480px) {
+    .ui-overlay {
+        width: min(98vw, 95vh * 4/3);
+        height: min(98vw * 3/4, 95vh);
+    }
+    
     .start-screen h1 {
         font-size: 1.8rem;
     }
@@ -395,116 +377,14 @@ body {
         padding: 12px 25px;
         font-size: 1rem;
     }
-    
-    .heart {
-        font-size: 20px;
-    }
 }
 
-/* 모바일 최적화 추가 스타일 */
-@media (max-width: 480px) {
-    body {
-        overflow: hidden;
-        position: fixed;
-        width: 100%;
-        height: 100%;
-    }
-    
-    .game-container {
-        width: 100vw;
-        height: 100vh;
-        position: fixed;
-        top: 0;
-        left: 0;
-    }
-    
-    #gameCanvas {
-        width: 100vw !important;
-        height: 100vh !important;
-        border: none;
-        border-radius: 0;
-        box-shadow: none;
-    }
-    
-    .hearts-container {
-        top: 5px;
-        gap: 5px;
-    }
-    
-    .heart {
-        font-size: 18px;
-    }
-    
-    .time-bar-container {
-        top: 40px;
-        width: 95%;
-        height: 14px;
-    }
-    
-    .start-screen, .game-over-screen {
-        width: 95%;
-        padding: 20px 15px;
-        margin: 0;
-        
-        /* 모바일에서 강력한 중앙 정렬 보장 */
-        position: fixed !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        -webkit-transform: translate(-50%, -50%) !important;
-        -moz-transform: translate(-50%, -50%) !important;
-        -ms-transform: translate(-50%, -50%) !important;
-        -o-transform: translate(-50%, -50%) !important;
-    }
-    
-    .start-screen h1, .game-over-screen h1 {
-        font-size: 1.5rem;
-        margin-bottom: 15px;
-    }
-    
-    .start-screen p, .game-over-screen p {
-        font-size: 0.9rem;
-        margin-bottom: 20px;
-    }
-    
-    .start-btn, .restart-btn {
-        padding: 10px 20px;
-        font-size: 0.9rem;
-        width: 100%;
-        max-width: 200px;
-    }
-    
-    .back-btn {
-        top: 5px;
-        left: 5px;
-        padding: 8px 12px;
-        font-size: 0.8rem;
-    }
-}
 
 /* 태블릿 최적화 */
 @media (min-width: 481px) and (max-width: 1024px) {
-    .game-container {
-        padding: 10px;
-    }
-    
-    #gameCanvas {
-        max-width: 100%;
-        max-height: 100%;
-    }
-    
-    .hearts-container {
-        top: 15px;
-        gap: 8px;
-    }
-    
-    .heart {
-        font-size: 26px;
-    }
-    
-    .time-bar-container {
-        top: 55px;
-        width: 85%;
+    .ui-overlay {
+        width: min(90vw, 85vh * 4/3);
+        height: min(90vw * 3/4, 85vh);
     }
     
     .start-screen, .game-over-screen {
@@ -527,14 +407,6 @@ body {
     .start-btn, .restart-btn, .back-btn {
         min-height: 44px;
         min-width: 44px;
-    }
-    
-    .heart {
-        font-size: 28px;
-    }
-    
-    .time-bar-container {
-        height: 18px;
     }
 }
 
