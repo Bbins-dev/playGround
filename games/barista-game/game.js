@@ -24,7 +24,7 @@ class BaristaGame {
         // 컵 큐 시스템
         this.cupQueue = [];
         this.activeCupIndex = 2; // 가운데 위치 (인덱스 2)가 작업 컵
-        this.cupPositions = [-200, -100, 0, 100, 200]; // 5개 위치 (왼쪽 2개, 중앙 1개, 오른쪽 2개)
+        this.cupPositions = [-300, -150, 0, 150, 300]; // 5개 위치 (왼쪽 2개, 중앙 1개, 오른쪽 2개) - 간격 증가
         
         // 컵 시스템 초기화
         this.cupSystem = new CupSystem();
@@ -661,6 +661,9 @@ class BaristaGame {
         
         // 사운드 정지
         this.soundManager.endHold();
+        
+        // 완벽 타이밍 배경 효과 즉시 복구
+        this.visualEffects.updatePerfectTimingBackground(false);
         
         // 지속적인 스플래시 효과 타이밍 리셋
         this.visualEffects.lastSplashTime = 0;
@@ -1727,22 +1730,22 @@ class SoundManager {
             let frequency = 440; // 기본 A4
             switch (name) {
                 case 'hold-basic':
-                    frequency = 220; // 낮은 톤
+                    frequency = 262; // 낮은 톤
                     break;
                 case 'hold-passing':
                     frequency = 330; // 중간 톤
                     break;
                 case 'hold-perfect':
-                    frequency = 550; // 높은 톤
+                    frequency = 392; // 높은 톤
                     break;
                 case 'hold-overflow':
                     frequency = 180; // 매우 낮은 톤
                     break;
                 case 'release-early':
-                    frequency = 200; // 실패 톤
+                    frequency = 208; // 실패 톤
                     break;
                 case 'release-success':
-                    frequency = 523; // 성공 톤 (C5)
+                    frequency = 524; // 성공 톤 (C5)
                     break;
                 case 'release-perfect':
                     frequency = 659; // 완벽 톤 (E5)
@@ -1813,37 +1816,39 @@ class SoundManager {
             return;
         }
         
-        // 현재 홀드 사운드 정지
-        this.stopCurrentHoldSound();
-        
-        const soundKey = `hold-${type}`;
-        const sound = this.sounds[soundKey];
-        
-        if (sound) {
-            try {
-                const source = this.audioContext.createBufferSource();
-                const gainNode = this.audioContext.createGain();
-                
-                source.buffer = sound;
-                source.loop = type === 'overflow'; // 넘침만 반복
-                
-                // 볼륨 설정
-                gainNode.gain.value = this.masterVolume * this.volumeSettings.hold;
-                
-                // 연결
-                source.connect(gainNode);
-                gainNode.connect(this.audioContext.destination);
-                
-                source.start();
-                this.currentHoldSound = source;
-                this.soundStats.holdSoundsPlayed++;
-                
-                console.log(`홀드 사운드 재생: ${type}`);
-            } catch (error) {
-                console.error(`홀드 사운드 재생 실패: ${type}`, error);
+        // 홀드 사운드가 없으면 새로 시작
+        if (!this.currentHoldSound) {
+            const soundKey = `hold-${type}`;
+            const sound = this.sounds[soundKey];
+            
+            if (sound) {
+                try {
+                    const source = this.audioContext.createBufferSource();
+                    const gainNode = this.audioContext.createGain();
+                    
+                    source.buffer = sound;
+                    source.loop = true; // 모든 홀드 사운드를 루프로
+                    
+                    // 볼륨 설정
+                    gainNode.gain.value = this.masterVolume * this.volumeSettings.hold;
+                    
+                    // 연결
+                    source.connect(gainNode);
+                    gainNode.connect(this.audioContext.destination);
+                    
+                    source.start();
+                    this.currentHoldSound = source;
+                    this.soundStats.holdSoundsPlayed++;
+                    
+                    console.log(`홀드 사운드 재생: ${type}`);
+                } catch (error) {
+                    console.error(`홀드 사운드 재생 실패: ${type}`, error);
+                }
+            } else {
+                // 사운드 파일이 없으면 지속적인 홀드 사운드 생성
+                this.currentHoldSound = this.createContinuousHoldSound(type);
+                console.log(`지속적인 홀드 사운드 시작: ${type}`);
             }
-        } else {
-            console.warn(`사운드 파일 없음: ${soundKey}`);
         }
     }
     
@@ -1861,6 +1866,46 @@ class SoundManager {
         }
     }
     
+    /**
+     * 타이밍 구간 변화 처리
+     */
+    updateTimingZone(zone) {
+        if (!this.isInitialized) return;
+        
+        console.log(`🔄 updateTimingZone 호출됨: ${zone}`);
+        console.log(`  - currentHoldSound 존재:`, !!this.currentHoldSound);
+        
+        // 현재 홀드 사운드가 있을 때만 처리
+        if (this.currentHoldSound && this.currentHoldSound.changeFrequency) {
+            const soundType = zone === 'perfect' ? 'perfect' : 
+                             zone === 'passing' ? 'passing' : 'basic';
+            
+            console.log(`  - 주파수 변경 시도: ${soundType}`);
+            this.currentHoldSound.changeFrequency(soundType);
+            console.log(`✅ 타이밍 구간 변화: ${zone} -> ${soundType} 사운드`);
+        } else {
+            console.log(`❌ 홀드 사운드가 없거나 changeFrequency 메소드가 없음`);
+            // 홀드 사운드가 없다면 새로 시작
+            if (!this.currentHoldSound) {
+                const soundType = zone === 'perfect' ? 'perfect' : 
+                                 zone === 'passing' ? 'passing' : 'basic';
+                console.log(`  - 새로운 홀드 사운드 생성: ${soundType}`);
+                this.currentHoldSound = this.createContinuousHoldSound(soundType);
+            }
+        }
+    }
+
+    /**
+     * 홀드 시작
+     */
+    startHold() {
+        console.log('🎵 startHold 호출됨');
+        this.isHolding = true;
+        // 기본 홀드 사운드로 시작
+        this.currentHoldSound = this.createContinuousHoldSound('basic');
+        console.log('✅ 홀드 사운드 시작됨 (basic)');
+    }
+
     /**
      * 홀드 종료
      */
@@ -1913,10 +1958,175 @@ class SoundManager {
                 console.error(`릴리즈 사운드 재생 실패: ${result}`, error);
             }
         } else {
-            console.warn(`사운드 파일 없음: ${soundKey}`);
+            // 사운드 파일이 없으면 기본 beep 소리 생성
+            this.playBeepSound(result, false);
         }
     }
     
+    /**
+     * 지속적인 홀드 사운드 생성
+     */
+    createContinuousHoldSound(type) {
+        if (!this.isInitialized) return null;
+        
+        try {
+            const oscillator1 = this.audioContext.createOscillator();
+            const oscillator2 = this.audioContext.createOscillator();
+            const gainNode = this.audioContext.createGain();
+            const filterNode = this.audioContext.createBiquadFilter();
+            
+            // 타입별 주파수 설정
+            const frequencies = {
+                basic: { main: 392, harmony: 523 },      // G4 + C5
+                passing: { main: 523, harmony: 659 },    // C5 + E5 (합격 구간)
+                perfect: { main: 784, harmony: 988 }     // G5 + B5 (완벽 구간, 높은 톤)
+            };
+            
+            const freq = frequencies[type] || frequencies.basic;
+            
+            oscillator1.frequency.value = freq.main;
+            oscillator1.type = 'sine';
+            oscillator2.frequency.value = freq.harmony;
+            oscillator2.type = 'triangle';
+            
+            // 필터 설정
+            filterNode.type = 'lowpass';
+            filterNode.frequency.value = 3000;
+            filterNode.Q.value = 1;
+            
+            // 볼륨 설정
+            const baseVolume = this.masterVolume * this.volumeSettings.hold * 0.25;
+            gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(baseVolume, this.audioContext.currentTime + 0.1);
+            
+            // 하모니 게인
+            const harmonyGain = this.audioContext.createGain();
+            harmonyGain.gain.value = 0.3;
+            
+            // 연결
+            oscillator1.connect(filterNode);
+            oscillator2.connect(harmonyGain);
+            harmonyGain.connect(filterNode);
+            filterNode.connect(gainNode);
+            gainNode.connect(this.audioContext.destination);
+            
+            // 재생 시작 (무한 지속)
+            oscillator1.start();
+            oscillator2.start();
+            
+            return {
+                oscillator1,
+                oscillator2,
+                gainNode,
+                filterNode,
+                harmonyGain,
+                stop: () => {
+                    try {
+                        gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.1);
+                        setTimeout(() => {
+                            oscillator1.stop();
+                            oscillator2.stop();
+                        }, 150);
+                    } catch(e) {}
+                },
+                changeFrequency: (newType) => {
+                    const newFreq = frequencies[newType] || frequencies.basic;
+                    console.log(`🎵 주파수 변경: ${newType} -> ${newFreq.main}Hz, ${newFreq.harmony}Hz`);
+                    
+                    try {
+                        // 더 빠른 전환으로 즉각적인 변화 느낌
+                        oscillator1.frequency.exponentialRampToValueAtTime(newFreq.main, this.audioContext.currentTime + 0.05);
+                        oscillator2.frequency.exponentialRampToValueAtTime(newFreq.harmony, this.audioContext.currentTime + 0.05);
+                        console.log(`✅ 주파수 변경 완료`);
+                    } catch (error) {
+                        console.error(`❌ 주파수 변경 실패:`, error);
+                    }
+                }
+            };
+            
+        } catch (error) {
+            console.error('지속 홀드 사운드 생성 실패:', error);
+            return null;
+        }
+    }
+
+    /**
+     * 릴리즈 사운드 생성 (부드러운 버전)
+     */
+    playBeepSound(type, isHold) {
+        if (!this.isInitialized) return;
+        if (isHold) return; // 홀드는 별도 처리
+        
+        try {
+            const oscillator1 = this.audioContext.createOscillator();
+            const oscillator2 = this.audioContext.createOscillator();
+            const gainNode = this.audioContext.createGain();
+            const filterNode = this.audioContext.createBiquadFilter();
+            
+            // 릴리즈 사운드 주파수 (더 부드럽고 기분 좋게)
+            const frequencies = {
+                early: { main: 330, harmony: 392 },      // E4 + G4 (아쉬움)
+                success: { main: 523, harmony: 659 },    // C5 + E5 (딩~ 부드러운 성공음)
+                perfect: { main: 784, harmony: 1047 },   // G5 + C6 (아주 좋은 완벽음)
+                overflow: { main: 196, harmony: 233 }    // G3 + Bb3 (경고)
+            };
+            
+            const freq = frequencies[type] || frequencies.success;
+            
+            oscillator1.frequency.value = freq.main;
+            oscillator1.type = 'sine';
+            oscillator2.frequency.value = freq.harmony;
+            oscillator2.type = 'triangle';
+            
+            // 부드러운 필터
+            filterNode.type = 'lowpass';
+            filterNode.frequency.value = type === 'perfect' ? 4000 : 2500;
+            filterNode.Q.value = 0.7;
+            
+            // 볼륨 설정 (타입별 차별화)
+            let baseVolume;
+            if (type === 'perfect') {
+                baseVolume = this.masterVolume * 0.4; // 완벽은 더 크게
+            } else if (type === 'success') {
+                baseVolume = this.masterVolume * 0.25; // 성공은 부드럽게
+            } else {
+                baseVolume = this.masterVolume * 0.2;
+            }
+            
+            // 부드러운 페이드 인
+            gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(baseVolume, this.audioContext.currentTime + 0.02);
+            
+            // 지속시간 (perfect는 더 길게)
+            const duration = type === 'perfect' ? 0.6 : type === 'success' ? 0.4 : 0.25;
+            
+            // 자연스러운 페이드 아웃 (딩~ 효과)
+            gainNode.gain.exponentialRampToValueAtTime(baseVolume * 0.7, this.audioContext.currentTime + duration * 0.3);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + duration);
+            
+            // 하모니 설정
+            const harmonyGain = this.audioContext.createGain();
+            harmonyGain.gain.value = type === 'perfect' ? 0.5 : 0.3;
+            
+            // 연결
+            oscillator1.connect(filterNode);
+            oscillator2.connect(harmonyGain);
+            harmonyGain.connect(filterNode);
+            filterNode.connect(gainNode);
+            gainNode.connect(this.audioContext.destination);
+            
+            oscillator1.start();
+            oscillator2.start();
+            oscillator1.stop(this.audioContext.currentTime + duration);
+            oscillator2.stop(this.audioContext.currentTime + duration);
+            
+            console.log(`부드러운 릴리즈 사운드: ${type}`);
+            
+        } catch (error) {
+            console.error('릴리즈 사운드 생성 실패:', error);
+        }
+    }
+
     /**
      * 볼륨 설정
      */
@@ -3035,8 +3245,8 @@ class CupSystem {
                 color: '#FF6B6B',  // 밝은 빨강
                 difficulty: 'easy',
                 points: { success: 10, perfect: 20 },
-                width: 50,    // 가장 작은 컵
-                height: 80
+                width: 35,    // 매우 작은 컵
+                height: 55
             },
             B: { 
                 maxTime: 1.357,
@@ -3044,8 +3254,8 @@ class CupSystem {
                 color: '#4ECDC4',  // 청록색
                 difficulty: 'easy',
                 points: { success: 10, perfect: 20 },
-                width: 58,
-                height: 90
+                width: 50,
+                height: 75
             },
             C: { 
                 maxTime: 1.714,
@@ -3053,8 +3263,8 @@ class CupSystem {
                 color: '#45B7D1',  // 밝은 파랑
                 difficulty: 'medium',
                 points: { success: 10, perfect: 20 },
-                width: 66,
-                height: 100
+                width: 65,
+                height: 95
             },
             D: { 
                 maxTime: 2.071,
@@ -3062,8 +3272,8 @@ class CupSystem {
                 color: '#96CEB4',  // 민트 그린
                 difficulty: 'medium',
                 points: { success: 10, perfect: 20 },
-                width: 74,
-                height: 110
+                width: 80,
+                height: 115
             },
             E: { 
                 maxTime: 2.428,
@@ -3071,8 +3281,8 @@ class CupSystem {
                 color: '#FFEAA7',  // 밝은 노랑
                 difficulty: 'medium',
                 points: { success: 10, perfect: 20 },
-                width: 82,
-                height: 120
+                width: 95,
+                height: 135
             },
             F: { 
                 maxTime: 2.785,
@@ -3080,8 +3290,8 @@ class CupSystem {
                 color: '#DDA0DD',  // 연보라
                 difficulty: 'hard',
                 points: { success: 10, perfect: 20 },
-                width: 90,
-                height: 130
+                width: 100,
+                height: 145
             },
             G: { 
                 maxTime: 3.142,
@@ -3089,8 +3299,8 @@ class CupSystem {
                 color: '#F8A5C2',  // 연분홍
                 difficulty: 'hard',
                 points: { success: 10, perfect: 20 },
-                width: 98,
-                height: 140
+                width: 115,
+                height: 165
             },
             H: { 
                 maxTime: 3.5,  // 가장 큰 컵
@@ -3098,8 +3308,8 @@ class CupSystem {
                 color: '#FA8072',  // 샐몬 색
                 difficulty: 'hard',
                 points: { success: 10, perfect: 20 },
-                width: 106,   // 가장 큰 컵
-                height: 150
+                width: 130,   // 가장 큰 컵 (150px 간격에 안전하게)
+                height: 185
             }
         };
         
