@@ -418,9 +418,77 @@ class BaristaGame {
             // 새 클래스 추가
             if (mode === 'menu') {
                 uiOverlay.classList.add('menu-mode');
+                // 메뉴 모드일 때는 높이 초기화 및 리사이즈 감지 중단
+                uiOverlay.style.removeProperty('height');
+                uiOverlay.style.removeProperty('aspect-ratio');
+                uiOverlay.style.removeProperty('min-height');
+                uiOverlay.style.removeProperty('max-height');
+                this.stopHeightSync();
             } else if (mode === 'game') {
                 uiOverlay.classList.add('game-mode');
+                // 게임 모드일 때 실시간 높이 동기화 시작
+                this.startHeightSync();
             }
+        }
+    }
+
+    /**
+     * gameCanvas와 ui-overlay 높이 실시간 동기화 시작
+     */
+    startHeightSync() {
+        // 초기 동기화 실행
+        this.syncUIHeight();
+        
+        // ResizeObserver로 gameCanvas 크기 변경 감지
+        const gameCanvas = document.getElementById('gameCanvas');
+        if (gameCanvas && 'ResizeObserver' in window) {
+            this.resizeObserver = new ResizeObserver(() => {
+                this.syncUIHeight();
+            });
+            this.resizeObserver.observe(gameCanvas);
+        }
+        
+        // window resize 이벤트로 viewport 변경 감지 (모바일 회전, 키보드 등)
+        this.resizeHandler = () => this.syncUIHeight();
+        window.addEventListener('resize', this.resizeHandler);
+        window.addEventListener('orientationchange', this.resizeHandler);
+    }
+
+    /**
+     * 높이 동기화 중단
+     */
+    stopHeightSync() {
+        if (this.resizeObserver) {
+            this.resizeObserver.disconnect();
+            this.resizeObserver = null;
+        }
+        if (this.resizeHandler) {
+            window.removeEventListener('resize', this.resizeHandler);
+            window.removeEventListener('orientationchange', this.resizeHandler);
+            this.resizeHandler = null;
+        }
+    }
+
+    /**
+     * UI 높이를 gameCanvas와 동기화
+     */
+    syncUIHeight() {
+        const gameCanvas = document.getElementById('gameCanvas');
+        const uiOverlay = document.querySelector('.ui-overlay.game-mode');
+        
+        if (gameCanvas && uiOverlay) {
+            // 작은 지연을 두어 브라우저 레이아웃 완료 대기
+            requestAnimationFrame(() => {
+                const canvasHeight = gameCanvas.clientHeight;
+                if (canvasHeight > 0) { // 유효한 높이만 적용
+                    // CSS aspect-ratio와 기타 높이 제약을 강제로 무시
+                    uiOverlay.style.setProperty('height', canvasHeight + 'px', 'important');
+                    uiOverlay.style.setProperty('aspect-ratio', 'unset', 'important');
+                    uiOverlay.style.setProperty('min-height', 'unset', 'important');
+                    uiOverlay.style.setProperty('max-height', 'unset', 'important');
+                    console.log(`🔄 UI 높이 강제 동기화: ${canvasHeight}px`);
+                }
+            });
         }
     }
 

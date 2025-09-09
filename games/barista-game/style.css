@@ -68,13 +68,11 @@ body {
     aspect-ratio: 4/3;
 }
 
-/* 게임 모드에서 ui-overlay height을 gameCanvas와 일치 - 최고 우선순위 */
+/* 게임 모드에서 ui-overlay height을 gameCanvas와 일치 - JavaScript에서 동적 설정 */
 .game-container .ui-overlay.game-mode,
 .ui-overlay.game-mode {
-    height: 600px !important;
+    /* height는 JavaScript에서 동적으로 설정됨 */
     aspect-ratio: unset !important;
-    max-height: 600px !important;
-    min-height: 600px !important;
     /* width는 기존 설정 유지 */
 }
 
@@ -198,7 +196,7 @@ body {
 .combo-text {
     display: block;
     color: #FF6B6B;
-    font-size: 18px;
+    font-size: 36px;
     font-weight: bold;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
     margin-bottom: 5px;
@@ -208,7 +206,7 @@ body {
 .combo-number {
     display: block;
     color: #FFD93D;
-    font-size: 48px;
+    font-size: 96px;
     font-weight: bold;
     text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
     animation: combo-pulse 0.3s ease-out;
@@ -429,19 +427,19 @@ body {
     /* 콤보 표시 - 캔버스 아래에 배치 */
     .combo-display {
         position: absolute;
-        bottom: 50px;
+        bottom: 20px;
         left: 50%;
         transform: translateX(-50%);
         z-index: 150;
     }
     
     .combo-text {
-        font-size: 14px;
+        font-size: 28px;
         margin-bottom: 3px;
     }
     
     .combo-number {
-        font-size: 36px;
+        font-size: 72px;
     }
     
     .start-screen, .game-over-screen {
@@ -500,19 +498,19 @@ body {
     
     .combo-display {
         position: absolute;
-        bottom: 50px;
+        bottom: 20px;
         left: 50%;
         transform: translateX(-50%);
         z-index: 150;
     }
     
     .combo-text {
-        font-size: 12px;
+        font-size: 24px;
         margin-bottom: 2px;
     }
     
     .combo-number {
-        font-size: 24px;
+        font-size: 48px;
     }
     
     .start-screen h1 {
