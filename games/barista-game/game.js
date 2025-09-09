@@ -431,8 +431,8 @@ class BaristaGame {
         });
         
         // 재시작 버튼
-        document.getElementById('restartBtn').addEventListener('click', () => {
-            this.restartGame();
+        document.getElementById('restartBtn').addEventListener('click', async () => {
+            await this.restartGame();
         });
         
         // InputManager가 모든 입력 이벤트를 처리합니다
@@ -521,7 +521,7 @@ class BaristaGame {
         console.log('🎮 게임 시작 - 모든 초기화 완료');
     }
     
-    restartGame() {
+    async restartGame() {
         console.log('🔄 게임 다시 시작 - 초기화 시작');
         
         // 게임 상태를 start로 설정
@@ -561,7 +561,7 @@ class BaristaGame {
         this.visualEffects.reset();
         console.log('✅ 시각적 효과 초기화 완료');
         
-        this.soundManager.reset();
+        await this.soundManager.reset();
         console.log('✅ 사운드 매니저 초기화 완료');
         
         this.uiManager.reset();
@@ -1965,7 +1965,7 @@ class SoundManager {
     /**
      * 사운드 매니저 초기화
      */
-    reset() {
+    async reset() {
         this.stopAllHoldSounds();
         this.isHolding = false;
         this.soundStats = {
@@ -1974,6 +1974,16 @@ class SoundManager {
             holdSoundsPlayed: 0,
             releaseSoundsPlayed: 0
         };
+        
+        // 오디오 컨텍스트 상태 확인 및 재활성화
+        if (this.audioContext && this.audioContext.state === 'suspended') {
+            try {
+                await this.audioContext.resume();
+                console.log('🔊 오디오 컨텍스트 재활성화 완료');
+            } catch (error) {
+                console.error('오디오 컨텍스트 재활성화 실패:', error);
+            }
+        }
         
         console.log('SoundManager 초기화 완료');
     }
@@ -2229,7 +2239,7 @@ class VisualEffects {
         switch (zone) {
             case 'passing':
                 // 합격 타이밍: 조금 튀다가 점점 많이 튐
-                const passingProgress = (holdDuration - zones.passing) / (zones.perfect - zones.passing);
+                const passingProgress = (holdDuration - zones.passing) / (zones.passingEnd - zones.passing);
                 splashInterval = 200 - (passingProgress * 100); // 200ms에서 100ms로 점점 빨라짐
                 intensity = 0.5 + (passingProgress * 1.0); // 강도도 점점 증가
                 particleCount = Math.floor(5 + (passingProgress * 10)); // 5-15개
@@ -2265,8 +2275,10 @@ class VisualEffects {
      */
     getTimingZonesForSplash(maxTime) {
         return {
-            passing: maxTime - 1.0,
+            passing: maxTime - 0.8,
+            passingEnd: maxTime - 0.2,
             perfect: maxTime - 0.2,
+            perfectEnd: maxTime,
             overflow: maxTime
         };
     }
@@ -3018,31 +3030,76 @@ class CupSystem {
         // 기본 컵 타입 설정 (새로운 단순화된 타이밍 시스템)
         this.cupTypes = {
             A: { 
-                maxTime: 2.5,  // 최대 시간 (합격: 1.5초부터, 완벽: 2.2초부터, 넘침: 2.5초 이후)
-                name: 'Small Cup',
-                color: '#8B4513',
+                maxTime: 1.0,  // 에스프레소 컵
+                name: 'Espresso Cup',
+                color: '#FF6B6B',  // 밝은 빨강
                 difficulty: 'easy',
                 points: { success: 10, perfect: 20 },
-                width: 65,    // 작은 컵
-                height: 100
+                width: 50,    // 가장 작은 컵
+                height: 80
             },
             B: { 
-                maxTime: 1.5,  // 최대 시간 (합격: 0.5초부터, 완벽: 1.2초부터, 넘침: 1.5초 이후)
-                name: 'Medium Cup',
-                color: '#D2691E',
-                difficulty: 'medium',
-                points: { success: 15, perfect: 30 },
-                width: 80,    // 중간 컵
-                height: 120
+                maxTime: 1.357,
+                name: 'Small Mug',
+                color: '#4ECDC4',  // 청록색
+                difficulty: 'easy',
+                points: { success: 10, perfect: 20 },
+                width: 58,
+                height: 90
             },
             C: { 
-                maxTime: 4.0,  // 최대 시간 (합격: 3.0초부터, 완벽: 3.7초부터, 넘침: 4.0초 이후)
-                name: 'Large Cup',
-                color: '#654321',
+                maxTime: 1.714,
+                name: 'Tea Cup',
+                color: '#45B7D1',  // 밝은 파랑
+                difficulty: 'medium',
+                points: { success: 10, perfect: 20 },
+                width: 66,
+                height: 100
+            },
+            D: { 
+                maxTime: 2.071,
+                name: 'Coffee Mug',
+                color: '#96CEB4',  // 민트 그린
+                difficulty: 'medium',
+                points: { success: 10, perfect: 20 },
+                width: 74,
+                height: 110
+            },
+            E: { 
+                maxTime: 2.428,
+                name: 'Medium Mug',
+                color: '#FFEAA7',  // 밝은 노랑
+                difficulty: 'medium',
+                points: { success: 10, perfect: 20 },
+                width: 82,
+                height: 120
+            },
+            F: { 
+                maxTime: 2.785,
+                name: 'Large Mug',
+                color: '#DDA0DD',  // 연보라
                 difficulty: 'hard',
-                points: { success: 20, perfect: 40 },
-                width: 95,    // 큰 컵
+                points: { success: 10, perfect: 20 },
+                width: 90,
+                height: 130
+            },
+            G: { 
+                maxTime: 3.142,
+                name: 'Travel Mug',
+                color: '#F8A5C2',  // 연분홍
+                difficulty: 'hard',
+                points: { success: 10, perfect: 20 },
+                width: 98,
                 height: 140
+            },
+            H: { 
+                maxTime: 3.5,  // 가장 큰 컵
+                name: 'Jumbo Mug',
+                color: '#FA8072',  // 샐몬 색
+                difficulty: 'hard',
+                points: { success: 10, perfect: 20 },
+                width: 106,   // 가장 큰 컵
+                height: 150
             }
         };
         
@@ -3059,8 +3116,10 @@ class CupSystem {
      */
     getTimingZones(maxTime) {
         return {
-            passing: maxTime - 1.0,    // 합격 타이밍: 최대시간 - 1초
-            perfect: maxTime - 0.2,   // 완벽 타이밍: 최대시간 - 0.2초
+            passing: maxTime - 0.8,    // 합격 타이밍 시작: 최대시간 - 0.8초
+            passingEnd: maxTime - 0.2, // 합격 타이밍 끝: 최대시간 - 0.2초
+            perfect: maxTime - 0.2,    // 완벽 타이밍 시작: 최대시간 - 0.2초
+            perfectEnd: maxTime,       // 완벽 타이밍 끝: 최대시간
             overflow: maxTime          // 넘침 타이밍: 최대시간 초과
         };
     }
@@ -3073,16 +3132,13 @@ class CupSystem {
         
         if (holdDuration < zones.passing) {
             return 'basic';
-        } else if (holdDuration >= zones.passing && holdDuration < zones.perfect) {
+        } else if (holdDuration >= zones.passing && holdDuration < zones.passingEnd) {
             return 'passing';
-        } else if (holdDuration >= zones.perfect && holdDuration < zones.overflow) {
+        } else if (holdDuration >= zones.perfect && holdDuration < zones.perfectEnd) {
             return 'perfect';
         } else {
             return 'overflow';
         }
-        
-        // 랜덤 시드 (일관된 테스트를 위해)
-        this.randomSeed = Date.now();
     }
     
     /**
