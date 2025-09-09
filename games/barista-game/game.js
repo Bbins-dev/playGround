@@ -1149,7 +1149,7 @@ class BaristaGame {
         if (cup.alpha !== undefined) {
             this.ctx.globalAlpha = cup.alpha;
         } else if (cup.isCompleted) {
-            this.ctx.globalAlpha = 0.4; // 완료된 컵은 더 투명하게
+            this.ctx.globalAlpha = 0.25; // 완료된 컵은 더 투명하게 (25%)
         } else if (!isActiveCup) {
             this.ctx.globalAlpha = 0.6; // 비활성 컵은 투명도 60%
         }
