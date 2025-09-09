@@ -86,3 +86,25 @@ class GameName {
 - BEM-style CSS naming where applicable
 
 The project emphasizes modularity (each game is independent), Korean-first localization, mobile responsiveness, and performance optimization for smooth 60fps gaming experiences.
+
+## ⚠️ Critical URL Path Rules (MEMORIZE!)
+
+**ALWAYS use trailing slashes for directory links in HTML:**
+- ✅ CORRECT: `games/barista-game/` (with slash)
+- ❌ WRONG: `games/barista-game` (without slash)
+
+**Why this matters:**
+- Without trailing slash: Browser treats URL as a file, so relative paths like `./style.css` resolve incorrectly (e.g., `/games/style.css` instead of `/games/barista-game/style.css`)
+- With trailing slash: Browser treats URL as directory, so relative paths resolve correctly
+
+**Example of the problem:**
+- Link: `games/barista-game` (no slash)
+- Browser URL: `http://localhost:8000/games/barista-game` 
+- `./style.css` resolves to: `http://localhost:8000/games/style.css` ❌ 404 Error
+
+**Solution:**
+- Link: `games/barista-game/` (with slash)
+- Browser URL: `http://localhost:8000/games/barista-game/`
+- `./style.css` resolves to: `http://localhost:8000/games/barista-game/style.css` ✅ Success
+
+**Always check for this pattern when adding new games or fixing navigation issues.**

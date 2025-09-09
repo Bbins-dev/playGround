@@ -82,19 +82,19 @@ body {
     pointer-events: auto !important;
 }
 
-/* 하트 (기회) - 수도꼭지 위쪽에 배치 */
+/* 하트 (기회) - 상단 고정 */
 .hearts-container {
     position: absolute;
-    top: 8%;
+    top: 10px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 1.5vmin;
+    gap: 10px;
     pointer-events: none;
 }
 
 .heart {
-    font-size: 4vmin;
+    font-size: 24px;
     opacity: 1;
     transition: opacity 0.3s ease;
 }
@@ -118,23 +118,23 @@ body {
     100% { transform: scale(1); opacity: 0.3; }
 }
 
-/* 시간 바 - 하트 아래, 수도꼭지 위에 배치 */
+/* 시간 바 - 하트 바로 아래 상단 고정 */
 .time-bar-container {
     position: absolute;
-    top: 15%;
+    top: 50px;
     left: 50%;
     transform: translateX(-50%);
-    width: 70%;
+    width: 80%;
     pointer-events: none;
 }
 
 .time-bar {
     width: 100%;
-    height: 2.5vmin;
+    height: 18px;
     background: rgba(0, 0, 0, 0.3);
-    border-radius: 1.25vmin;
+    border-radius: 9px;
     overflow: hidden;
-    border: 0.25vmin solid #654321;
+    border: 2px solid #654321;
 }
 
 .time-fill {
@@ -167,10 +167,10 @@ body {
     animation: danger-blink 0.3s ease-in-out infinite;
 }
 
-/* 콤보 표시 - 컵 아래쪽에 큼직하게 배치 */
+/* 콤보 표시 - 하단 고정 */
 .combo-display {
     position: absolute;
-    bottom: 20%;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
@@ -181,19 +181,19 @@ body {
 .combo-text {
     display: block;
     color: #FF6B6B;
-    font-size: 2.5vmin;
+    font-size: 18px;
     font-weight: bold;
-    text-shadow: 0.5vmin 0.5vmin 1vmin rgba(0, 0, 0, 0.7);
-    margin-bottom: 1vmin;
-    letter-spacing: 0.2vmin;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    margin-bottom: 5px;
+    letter-spacing: 1px;
 }
 
 .combo-number {
     display: block;
     color: #FFD93D;
-    font-size: 8vmin;
+    font-size: 48px;
     font-weight: bold;
-    text-shadow: 0.8vmin 0.8vmin 1.6vmin rgba(0, 0, 0, 0.8);
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
     animation: combo-pulse 0.3s ease-out;
     line-height: 1;
 }
@@ -344,6 +344,43 @@ body {
         height: min(95vw * 3/4, 90vh);
     }
     
+    /* 하트 컨테이너 - 캔버스 위 화면 최상단으로 완전히 이동 */
+    .hearts-container {
+        position: fixed;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+    }
+    
+    /* 시간 바 컨테이너 - 캔버스 위 하트 바로 아래로 이동 */
+    .time-bar-container {
+        position: fixed;
+        top: 45px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 70%;
+        z-index: 1000;
+    }
+    
+    /* 콤보 표시 - 캔버스 아래 화면 최하단으로 완전히 이동 */
+    .combo-display {
+        position: fixed;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+    }
+    
+    .combo-text {
+        font-size: 14px;
+        margin-bottom: 3px;
+    }
+    
+    .combo-number {
+        font-size: 36px;
+    }
+    
     .start-screen, .game-over-screen {
         width: 90%;
         padding: 30px 20px;
@@ -363,6 +400,51 @@ body {
     .ui-overlay {
         width: min(98vw, 95vh * 4/3);
         height: min(98vw * 3/4, 95vh);
+    }
+    
+    /* 더 작은 모바일에서 UI 요소들을 화면 가장자리로 완전히 이동 */
+    .hearts-container {
+        position: fixed;
+        top: 5px;
+        left: 50%;
+        transform: translateX(-50%);
+        gap: 8px;
+        z-index: 1000;
+    }
+    
+    .heart {
+        font-size: 18px;
+    }
+    
+    .time-bar-container {
+        position: fixed;
+        top: 35px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 65%;
+        z-index: 1000;
+    }
+    
+    .time-bar {
+        height: 12px;
+        border-radius: 6px;
+    }
+    
+    .combo-display {
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+    }
+    
+    .combo-text {
+        font-size: 12px;
+        margin-bottom: 2px;
+    }
+    
+    .combo-number {
+        font-size: 24px;
     }
     
     .start-screen h1 {
