@@ -2446,7 +2446,7 @@ class VisualEffects {
                 break;
             case 'overflow':
                 color = '#F44336';
-                message = 'TOO LATE!!';
+                message = 'TOO LATE!! -❤️';
                 size = 40;
                 this.createOverflowEffect(cup);
                 break;
