@@ -1112,6 +1112,9 @@ class BaristaGame {
         
         // 수도꼭지 렌더링 - 맨 마지막에 렌더링해서 가장 앞에 보이게 함
         this.renderFaucet();
+        
+        // 텍스트 애니메이션 렌더링 - 모든 요소 위에 표시
+        this.visualEffects.renderTextAnimations();
     }
 
     /**
@@ -2425,13 +2428,13 @@ class VisualEffects {
         switch (result) {
             case 'perfect':
                 color = '#FFD700';
-                message = 'PERFECT!';
+                message = 'Perfect!';
                 size = 24;
                 this.createSuccessParticles(cup);
                 break;
             case 'success':
                 color = '#4CAF50';
-                message = 'SUCCESS!';
+                message = 'Good!';
                 size = 20;
                 break;
             case 'tooEarly':
@@ -2441,14 +2444,20 @@ class VisualEffects {
                 break;
             case 'overflow':
                 color = '#F44336';
-                message = 'OVERFLOW!';
+                message = 'Too Late...';
                 size = 20;
                 this.createOverflowEffect(cup);
                 break;
         }
         
-        // 텍스트 애니메이션
-        this.createTextAnimation(message, cup.x, cup.y - 50, color, size);
+        // 텍스트 애니메이션 - 화면 중앙 상단에 표시
+        if (this.ctx && this.ctx.canvas) {
+            const textX = this.ctx.canvas.width / 2;
+            const textY = 150;  // 상단에서 150px 아래
+            this.createTextAnimation(message, textX, textY, color, size);
+        } else {
+            console.error('Canvas context not available for text animation');
+        }
     }
     
     /**
@@ -2502,7 +2511,7 @@ class VisualEffects {
         const animation = {
             id: Date.now(),
             startTime: performance.now(),
-            duration: 1500,
+            duration: 3000,
             text,
             x,
             y,
@@ -2530,9 +2539,16 @@ class VisualEffects {
                     
                     this.ctx.save();
                     this.ctx.globalAlpha = alpha;
-                    this.ctx.fillStyle = animation.color;
-                    this.ctx.font = `bold ${animation.size}px Inter`;
+                    this.ctx.font = `bold ${animation.size}px Arial, sans-serif`;
                     this.ctx.textAlign = 'center';
+                    
+                    // 텍스트 아웃라인 (검은색)
+                    this.ctx.strokeStyle = '#000000';
+                    this.ctx.lineWidth = 3;
+                    this.ctx.strokeText(animation.text, animation.x, animation.y - offsetY);
+                    
+                    // 텍스트 채우기 (원래 색상)
+                    this.ctx.fillStyle = animation.color;
                     this.ctx.fillText(animation.text, animation.x, animation.y - offsetY);
                     this.ctx.restore();
                 }
@@ -2545,7 +2561,6 @@ class VisualEffects {
      */
     update() {
         this.updateAnimations();
-        this.renderTextAnimations();
         
         // 파티클 개수 제한
         if (this.particles.length > this.maxParticles) {
