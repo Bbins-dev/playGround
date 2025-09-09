@@ -1057,16 +1057,16 @@ class BaristaGame {
         // 완벽한 타이밍 배경 효과 (배경 위에 오버레이)
         this.visualEffects.renderPerfectTimingBackground();
         
-        // 모든 큐의 컵 렌더링
-        this.renderAllCups();
-        
-        // 수도꼭지 렌더링
-        this.renderFaucet();
-        
-        // 커피 흐름 렌더링 (홀드 중일 때)
+        // 커피 흐름 렌더링 (홀드 중일 때) - 컵보다 먼저 렌더링해서 컵 뒤에 숨겨지게 함
         if (this.isHolding) {
             this.renderCoffeeFlow();
         }
+        
+        // 모든 큐의 컵 렌더링 - 물줄기를 가리도록 나중에 렌더링
+        this.renderAllCups();
+        
+        // 수도꼭지 렌더링 - 맨 마지막에 렌더링해서 가장 앞에 보이게 함
+        this.renderFaucet();
     }
 
     /**
@@ -2021,35 +2021,49 @@ class VisualEffects {
      */
     renderCoffeeStream(faucetX, faucetY) {
         const streamWidth = 6;
-        const streamLength = 80;
+        const streamLength = 200; // 컵 안으로 충분히 들어가도록 길이 증가
         
-        // 흐름 그라데이션
+        // 물줄기 끝으로 갈수록 약간 좁아지는 효과
+        const endWidth = streamWidth * 0.8;
+        
+        // 흐름 그라데이션 - 더 어둡게 해서 컵 안에서 자연스럽게 보이게
         const gradient = this.ctx.createLinearGradient(
             faucetX, faucetY, 
             faucetX, faucetY + streamLength
         );
         gradient.addColorStop(0, '#8B4513');
-        gradient.addColorStop(1, '#654321');
+        gradient.addColorStop(0.7, '#654321');
+        gradient.addColorStop(1, '#4A2C17'); // 끝부분을 더 어둡게
         
-        // 흐름 그리기
+        // 메인 물줄기 그리기 - 테이퍼링 효과
         this.ctx.fillStyle = gradient;
-        this.ctx.fillRect(
-            faucetX - streamWidth / 2, 
-            faucetY, 
-            streamWidth, 
-            streamLength
-        );
+        this.ctx.beginPath();
+        this.ctx.moveTo(faucetX - streamWidth / 2, faucetY);
+        this.ctx.lineTo(faucetX + streamWidth / 2, faucetY);
+        this.ctx.lineTo(faucetX + endWidth / 2, faucetY + streamLength);
+        this.ctx.lineTo(faucetX - endWidth / 2, faucetY + streamLength);
+        this.ctx.closePath();
+        this.ctx.fill();
         
-        // 흐름 중앙 하이라이트
-        this.ctx.fillStyle = '#A0522D';
-        this.ctx.fillRect(
-            faucetX - streamWidth / 4, 
-            faucetY, 
-            streamWidth / 2, 
-            streamLength
+        // 흐름 중앙 하이라이트 - 더 자연스러운 광택 효과
+        const highlightGradient = this.ctx.createLinearGradient(
+            faucetX, faucetY, 
+            faucetX, faucetY + streamLength
         );
+        highlightGradient.addColorStop(0, '#A0522D');
+        highlightGradient.addColorStop(0.5, '#8B4513');
+        highlightGradient.addColorStop(1, 'rgba(139, 69, 19, 0.8)'); // 끝부분 투명도 적용
         
-        // 물방울 효과 추가
+        this.ctx.fillStyle = highlightGradient;
+        this.ctx.beginPath();
+        this.ctx.moveTo(faucetX - streamWidth / 4, faucetY);
+        this.ctx.lineTo(faucetX + streamWidth / 4, faucetY);
+        this.ctx.lineTo(faucetX + endWidth / 4, faucetY + streamLength);
+        this.ctx.lineTo(faucetX - endWidth / 4, faucetY + streamLength);
+        this.ctx.closePath();
+        this.ctx.fill();
+        
+        // 물방울 효과를 컵 안쪽에 생성
         this.createStreamDroplets(faucetX, faucetY + streamLength);
     }
     
