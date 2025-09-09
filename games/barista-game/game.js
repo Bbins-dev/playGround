@@ -2511,7 +2511,7 @@ class VisualEffects {
         const animation = {
             id: Date.now(),
             startTime: performance.now(),
-            duration: 3000,
+            duration: 1200,
             text,
             x,
             y,
@@ -2535,7 +2535,7 @@ class VisualEffects {
                 
                 if (progress < 1) {
                     const alpha = 1 - progress;
-                    const offsetY = progress * 50;
+                    const offsetY = progress * 100;
                     
                     this.ctx.save();
                     this.ctx.globalAlpha = alpha;
