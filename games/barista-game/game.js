@@ -20,7 +20,11 @@ class BaristaGame {
         this._highScoreHash = this.generateScoreHash(0);
         this._scoreValidationFailed = false; // 무한 루프 방지
         this._highScoreValidationFailed = false; // 무한 루프 방지
-        this.currentCup = null;
+        
+        // 컵 큐 시스템
+        this.cupQueue = [];
+        this.activeCupIndex = 2; // 가운데 위치 (인덱스 2)가 작업 컵
+        this.cupPositions = [-200, -100, 0, 100, 200]; // 5개 위치 (왼쪽 2개, 중앙 1개, 오른쪽 2개)
         
         // 컵 시스템 초기화
         this.cupSystem = new CupSystem();
@@ -52,6 +56,71 @@ class BaristaGame {
         this.bindEvents();
         this.loadHighScore();
         this.gameLoop();
+    }
+
+    /**
+     * 현재 작업 중인 컵 반환
+     */
+    getCurrentCup() {
+        return this.cupQueue[this.activeCupIndex] || null;
+    }
+
+    /**
+     * 컵 큐에서 위치 업데이트
+     */
+    updateCupPositions() {
+        for (let i = 0; i < this.cupQueue.length; i++) {
+            if (this.cupQueue[i]) {
+                this.cupQueue[i].x = this.centerX + this.cupPositions[i];
+                this.cupQueue[i].y = this.centerY;
+            }
+        }
+    }
+
+    /**
+     * 새 컵을 큐의 끝에 추가
+     */
+    addNewCupToQueue() {
+        const newCup = this.cupSystem.generateRandomCup(true);
+        if (newCup) {
+            newCup.lastTimingZone = 'basic';
+            this.cupQueue.push(newCup);
+            this.updateCupPositions();
+            console.log('✅ 새 컵을 큐에 추가:', newCup.type);
+        }
+        return newCup;
+    }
+
+    /**
+     * 컵 큐 초기화 (게임 시작 시 여러 컵 미리 생성)
+     */
+    initializeCupQueue() {
+        this.cupQueue = [];
+        
+        // 5개 위치에 컵 배치 (처음 2개는 대기, 가운데 1개는 작업용, 마지막 2개는 빈 공간)
+        for (let i = 0; i < 3; i++) {
+            this.addNewCupToQueue();
+        }
+        
+        console.log('✅ 컵 큐 초기화 완료, 컵 개수:', this.cupQueue.length);
+    }
+
+    /**
+     * 컵 완료 시 큐 이동 (모든 컵이 한 칸씩 오른쪽으로)
+     */
+    advanceCupQueue() {
+        // 첫 번째 컵 제거 (화면 밖으로 사라짐)
+        if (this.cupQueue.length > 0) {
+            this.cupQueue.shift();
+        }
+        
+        // 새 컵을 끝에 추가
+        this.addNewCupToQueue();
+        
+        // 위치 즉시 업데이트
+        this.updateCupPositions();
+        
+        console.log('✅ 컵 큐 이동 완료, 현재 컵 개수:', this.cupQueue.length);
     }
     
     /**
@@ -278,10 +347,7 @@ class BaristaGame {
      */
     resizeGame() {
         // 게임 요소들의 크기를 새로운 캔버스 크기에 맞게 조정
-        if (this.currentCup) {
-            this.currentCup.x = this.centerX;
-            this.currentCup.y = this.centerY;
-        }
+        this.updateCupPositions();
         
         // UI 매니저에 크기 변경 알림
         if (this.uiManager && this.uiManager.handleResize) {
@@ -332,7 +398,8 @@ class BaristaGame {
         this.setScore(0);
         this.combo = 0;
         this.maxCombo = 0;
-        this.currentCup = null;
+        this.cupQueue = [];
+        this.activeCupIndex = 2;
         this.isHolding = false;
         
         console.log('✅ 게임 상태 설정 완료:', this.gameState);
@@ -374,12 +441,12 @@ class BaristaGame {
         
         // 첫 번째 컵 생성
         this.generateNewCup();
-        console.log('✅ 첫 번째 컵 생성 완료:', this.currentCup ? '성공' : '실패');
+        console.log('✅ 첫 번째 컵 생성 완료:', this.getCurrentCup() ? '성공' : '실패');
         
         // 게임 시작 후 상태 확인
         console.log('🔍 게임 시작 후 상태 확인:');
         console.log('  - gameState:', this.gameState);
-        console.log('  - currentCup:', this.currentCup ? this.currentCup.type : 'null');
+        console.log('  - currentCup:', this.getCurrentCup() ? this.getCurrentCup().type : 'null');
         console.log('  - isHolding:', this.isHolding);
         console.log('  - inputManager:', this.inputManager ? '존재' : 'null');
         
@@ -399,7 +466,8 @@ class BaristaGame {
         this.setScore(0);
         this.combo = 0;
         this.maxCombo = 0;
-        this.currentCup = null;
+        this.cupQueue = [];
+        this.activeCupIndex = 2;
         this.isHolding = false;
         
         // 게임 통계 초기화
@@ -459,19 +527,11 @@ class BaristaGame {
         
         console.log('🔄 새 컵 생성 시작...');
         
-        // CupSystem을 사용하여 새 컵 생성
-        this.currentCup = this.cupSystem.generateRandomCup(true); // 이전 컵과 다른 타입 선택
-        
-        if (this.currentCup) {
-            console.log('✅ 새 컵 생성 성공:', this.currentCup.type);
-            
-            // 타이밍 구간 추적 초기화
-            this.currentCup.lastTimingZone = 'basic';
-            
-            // 컵 등장 애니메이션 시작 (왼쪽에서 X축 이동으로 등장)
-            this.visualEffects.animateCupEnter(this.currentCup);
+        // 게임 시작 시에는 큐 초기화, 그 외에는 큐 이동
+        if (this.cupQueue.length === 0) {
+            this.initializeCupQueue();
         } else {
-            console.log('❌ 새 컵 생성 실패 - currentCup이 null');
+            this.advanceCupQueue();
         }
     }
     
@@ -479,7 +539,7 @@ class BaristaGame {
         console.log('🎮 game.handleStart() 호출됨');
         console.log('  - gameState:', this.gameState);
         console.log('  - isHolding:', this.isHolding);
-        console.log('  - currentCup:', this.currentCup ? '존재' : 'null');
+        console.log('  - currentCup:', this.getCurrentCup() ? '존재' : 'null');
         
         // 조건 체크를 더 유연하게 수정
         if (this.gameState !== 'playing') {
@@ -487,7 +547,7 @@ class BaristaGame {
             return false;
         }
         
-        if (!this.currentCup) {
+        if (!this.getCurrentCup()) {
             console.log('❌ game.handleStart() 실패 - currentCup이 null');
             return false;
         }
@@ -501,7 +561,7 @@ class BaristaGame {
         console.log('✅ game.handleStart() 조건 만족 - 홀드 시작');
         
         this.isHolding = true;
-        this.currentCup.holdStartTime = performance.now();
+        this.getCurrentCup().holdStartTime = performance.now();
         
         // 홀드 사운드 시작
         this.soundManager.startHold();
@@ -514,9 +574,9 @@ class BaristaGame {
         console.log('🎮 game.handleEnd() 호출됨');
         console.log('  - gameState:', this.gameState);
         console.log('  - isHolding:', this.isHolding);
-        console.log('  - currentCup:', this.currentCup ? '존재' : 'null');
+        console.log('  - currentCup:', this.getCurrentCup() ? '존재' : 'null');
         
-        if (this.gameState !== 'playing' || !this.isHolding || !this.currentCup) {
+        if (this.gameState !== 'playing' || !this.isHolding || !this.getCurrentCup()) {
             console.log('❌ game.handleEnd() 실패 - 조건 불만족');
             return false;
         }
@@ -525,7 +585,7 @@ class BaristaGame {
         
         // holdDuration이 제공되지 않은 경우 계산
         if (holdDuration === null) {
-            holdDuration = (performance.now() - this.currentCup.holdStartTime) / 1000;
+            holdDuration = (performance.now() - this.getCurrentCup().holdStartTime) / 1000;
         }
         
         console.log(`홀드 지속 시간: ${holdDuration.toFixed(3)}초`);
@@ -549,15 +609,15 @@ class BaristaGame {
     calculateResult(holdDuration) {
         console.log('🔍 calculateResult 호출됨');
         console.log('  - holdDuration:', holdDuration.toFixed(3), '초');
-        console.log('  - currentCup:', this.currentCup ? this.currentCup.type : 'null');
+        console.log('  - currentCup:', this.getCurrentCup() ? this.getCurrentCup().type : 'null');
         
-        if (this.currentCup) {
-            console.log('  - cup.timing:', this.currentCup.config.timing);
-            console.log('  - cup.perfect:', this.currentCup.config.perfect);
+        if (this.getCurrentCup()) {
+            console.log('  - cup.timing:', this.getCurrentCup().config.timing);
+            console.log('  - cup.perfect:', this.getCurrentCup().config.perfect);
         }
         
         // CupSystem을 사용하여 결과 계산
-        const result = this.cupSystem.calculateResult(this.currentCup, holdDuration);
+        const result = this.cupSystem.calculateResult(this.getCurrentCup(), holdDuration);
         console.log('  - 계산된 결과:', result);
         
         return result;
@@ -590,17 +650,14 @@ class BaristaGame {
         this.soundManager.playReleaseSound(result);
         
         // 시각적 피드백 표시
-        this.visualEffects.showResultFeedback(result, this.currentCup);
+        this.visualEffects.showResultFeedback(result, this.getCurrentCup());
         
         // 컵 결과 저장
-        this.currentCup.result = result;
-        this.currentCup.isComplete = true;
+        this.getCurrentCup().result = result;
+        this.getCurrentCup().isComplete = true;
         
-        // 컵 퇴장 애니메이션 시작
-        this.visualEffects.animateCupExit(this.currentCup, () => {
-            // 애니메이션 완료 후 새 컵 생성
-            this.generateNewCup();
-        });
+        // 즉시 큐 이동 (애니메이션 제거)
+        this.generateNewCup();
         
         // UI 업데이트
         this.updateUI();
@@ -904,12 +961,12 @@ class BaristaGame {
         }
         
         // 홀드 중인 경우 타이밍 구간 체크 (InputManager에서 실시간 시간 가져오기)
-        if (this.isHolding && this.currentCup) {
+        if (this.isHolding && this.getCurrentCup()) {
             const holdDuration = this.inputManager.getCurrentHoldDuration();
             this.checkTimingZone(holdDuration);
             
             // 커피 채우기 애니메이션
-            this.currentCup.fillLevel = Math.min(1, holdDuration / this.currentCup.config.maxTime);
+            this.getCurrentCup().fillLevel = Math.min(1, holdDuration / this.getCurrentCup().config.maxTime);
         }
         
         // 시각적 효과 업데이트
@@ -926,21 +983,21 @@ class BaristaGame {
     }
     
     checkTimingZone(holdDuration) {
-        const { maxTime } = this.currentCup.config;
+        const { maxTime } = this.getCurrentCup().config;
         const zone = this.cupSystem.getCurrentZone(holdDuration, maxTime);
-        let previousZone = this.currentCup.lastTimingZone || 'basic';
+        let previousZone = this.getCurrentCup().lastTimingZone || 'basic';
         
         // 타이밍 구간별 시각 효과
         if (zone === 'passing') {
             // 합격 타이밍 구간에서 지속적인 물방울 효과 (조금 튀다가 점점 많이 튐)
-            this.visualEffects.createContinuousSplashEffect(this.currentCup, 'passing', holdDuration, maxTime);
+            this.visualEffects.createContinuousSplashEffect(this.getCurrentCup(), 'passing', holdDuration, maxTime);
         } else if (zone === 'perfect') {
             // 완벽한 타이밍 구간에서 특별한 배경 효과 + 강화된 물방울 효과
-            this.visualEffects.createContinuousSplashEffect(this.currentCup, 'perfect', holdDuration, maxTime);
+            this.visualEffects.createContinuousSplashEffect(this.getCurrentCup(), 'perfect', holdDuration, maxTime);
             this.visualEffects.updatePerfectTimingBackground(true);
         } else if (zone === 'overflow') {
             // 넘침 구간에서 많은 양의 지속적인 물방울 효과
-            this.visualEffects.createContinuousSplashEffect(this.currentCup, 'overflow', holdDuration, maxTime);
+            this.visualEffects.createContinuousSplashEffect(this.getCurrentCup(), 'overflow', holdDuration, maxTime);
             this.visualEffects.updatePerfectTimingBackground(false);
         } else {
             // basic 구간에서는 배경 효과 해제
@@ -948,7 +1005,7 @@ class BaristaGame {
         }
         
         // 현재 구간 저장
-        this.currentCup.lastTimingZone = zone;
+        this.getCurrentCup().lastTimingZone = zone;
         
         this.soundManager.updateTimingZone(zone);
     }
@@ -978,10 +1035,8 @@ class BaristaGame {
         // 완벽한 타이밍 배경 효과 (배경 위에 오버레이)
         this.visualEffects.renderPerfectTimingBackground();
         
-        // 현재 컵 렌더링
-        if (this.currentCup) {
-            this.renderCup(this.currentCup);
-        }
+        // 모든 큐의 컵 렌더링
+        this.renderAllCups();
         
         // 수도꼭지 렌더링
         this.renderFaucet();
@@ -991,14 +1046,25 @@ class BaristaGame {
             this.renderCoffeeFlow();
         }
     }
+
+    /**
+     * 모든 큐의 컵 렌더링
+     */
+    renderAllCups() {
+        for (let i = 0; i < this.cupQueue.length; i++) {
+            const cup = this.cupQueue[i];
+            if (cup) {
+                // 작업 중인 컵인지 확인
+                const isActiveCup = (i === this.activeCupIndex);
+                this.renderCup(cup, isActiveCup);
+            }
+        }
+    }
     
-    renderCup(cup) {
-        const cupX = this.centerX;
-        const cupY = this.centerY + 50;
-        
-        // 컵 위치 업데이트
-        cup.x = cupX;
-        cup.y = cupY;
+    renderCup(cup, isActiveCup = false) {
+        // 컵의 실제 위치 사용 (큐 위치에서 계산된 값)
+        const cupX = cup.x;
+        const cupY = cup.y;
         cup.width = 80;
         cup.height = 120;
         
@@ -1012,9 +1078,11 @@ class BaristaGame {
             this.ctx.translate(-cupX, -cupY);
         }
         
-        // 투명도 효과
+        // 투명도 효과 (비활성 컵은 반투명)
         if (cup.alpha !== undefined) {
             this.ctx.globalAlpha = cup.alpha;
+        } else if (!isActiveCup) {
+            this.ctx.globalAlpha = 0.6; // 비활성 컵은 투명도 60%
         }
         
         // 컵 그리기
@@ -2231,63 +2299,6 @@ class VisualEffects {
         }
     }
     
-    /**
-     * 컵 등장 애니메이션 (왼쪽에서 X축 이동으로 등장)
-     */
-    animateCupEnter(cup) {
-        const targetX = cup.x; // 최종 목표 위치
-        const startX = -100; // 왼쪽 화면 밖에서 시작
-        const duration = 800; // 0.8초
-        const startTime = performance.now();
-        
-        // 초기 위치 설정
-        cup.x = startX;
-        
-        // 애니메이션 객체 생성
-        const animation = {
-            id: Date.now(),
-            startTime,
-            duration,
-            startX,
-            targetX,
-            cup,
-            type: 'cupEnter'
-        };
-        
-        this.animations.push(animation);
-        this.effectStats.animationsPlayed++;
-        
-        console.log('컵 등장 애니메이션 시작 (왼쪽에서 X축 이동)');
-    }
-    
-    /**
-     * 컵 퇴장 애니메이션
-     */
-    animateCupExit(cup, callback) {
-        const startX = cup.x;
-        const startY = cup.y;
-        const targetX = this.ctx.canvas.width + 100;
-        const duration = 1000; // 1초
-        const startTime = performance.now();
-        
-        // 애니메이션 객체 생성
-        const animation = {
-            id: Date.now(),
-            startTime,
-            duration,
-            startX,
-            startY,
-            targetX,
-            cup,
-            callback,
-            type: 'cupExit'
-        };
-        
-        this.animations.push(animation);
-        this.effectStats.animationsPlayed++;
-        
-        console.log('컵 퇴장 애니메이션 시작');
-    }
     
     /**
      * 애니메이션 업데이트
@@ -2303,13 +2314,7 @@ class VisualEffects {
             // 이징 함수 적용 (easeOut)
             const easeProgress = 1 - Math.pow(1 - progress, 3);
             
-            if (animation.type === 'cupExit') {
-                // 컵 X축 이동만 (회전과 투명도 효과 제거)
-                animation.cup.x = animation.startX + (animation.targetX - animation.startX) * easeProgress;
-            } else if (animation.type === 'cupEnter') {
-                // 컵 등장 애니메이션 (왼쪽에서 X축 이동으로 등장)
-                animation.cup.x = animation.startX + (animation.targetX - animation.startX) * easeProgress;
-            }
+            // 컵 애니메이션은 제거됨 - 다른 애니메이션만 처리
             
             // 애니메이션 완료 체크
             if (progress >= 1) {
