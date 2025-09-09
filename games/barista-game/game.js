@@ -2026,15 +2026,15 @@ class VisualEffects {
      */
     renderPerfectTimingBackground() {
         if (this.perfectTimingActive) {
-            // 배경 전환 애니메이션 (부드럽게 변화)
-            this.backgroundTransition = Math.min(1, this.backgroundTransition + 0.1);
+            // 배경 전환 애니메이션 (즉시 변화)
+            this.backgroundTransition = 1;
         } else {
-            this.backgroundTransition = Math.max(0, this.backgroundTransition - 0.1);
+            this.backgroundTransition = 0;
         }
         
         if (this.backgroundTransition > 0) {
             // 황금빛 오버레이 효과
-            const alpha = this.backgroundTransition * 0.3; // 최대 30% 투명도
+            const alpha = this.backgroundTransition * 0.6; // 최대 60% 투명도
             const gradient = this.ctx.createRadialGradient(
                 this.ctx.canvas.width / 2, this.ctx.canvas.height / 2, 0,
                 this.ctx.canvas.width / 2, this.ctx.canvas.height / 2, Math.max(this.ctx.canvas.width, this.ctx.canvas.height)
@@ -2103,7 +2103,7 @@ class VisualEffects {
     getTimingZonesForSplash(maxTime) {
         return {
             passing: maxTime - 1.0,
-            perfect: maxTime - 0.3,
+            perfect: maxTime - 0.15,
             overflow: maxTime
         };
     }
@@ -2942,7 +2942,7 @@ class CupSystem {
     getTimingZones(maxTime) {
         return {
             passing: maxTime - 1.0,    // 합격 타이밍: 최대시간 - 1초
-            perfect: maxTime - 0.3,    // 완벽 타이밍: 최대시간 - 0.3초
+            perfect: maxTime - 0.15,   // 완벽 타이밍: 최대시간 - 0.15초
             overflow: maxTime          // 넘침 타이밍: 최대시간 초과
         };
     }
