@@ -1236,6 +1236,8 @@ class UIManager {
         // DOM 요소 참조
         this.hearts = document.querySelectorAll('.heart');
         this.timeFill = document.getElementById('timeFill');
+        this.comboDisplay = document.getElementById('comboDisplay');
+        this.comboNumber = document.getElementById('comboNumber');
         this.gameOverScreen = document.getElementById('gameOverScreen');
         this.finalScore = document.getElementById('finalScore');
         this.highScore = document.getElementById('highScore');
@@ -1297,6 +1299,9 @@ class UIManager {
         
         // 시간 바 업데이트
         this.updateTimeBar(game.gameTime, game.maxTime);
+        
+        // 콤보 업데이트
+        this.updateCombo(game.combo);
         
         // 이전 상태 업데이트
         this.previousState = {
@@ -1417,6 +1422,26 @@ class UIManager {
             if (percentage > 0) {
                 this.timeFill.style.animation = 'danger-blink 0.3s ease-in-out infinite';
             }
+        }
+    }
+    
+    /**
+     * 콤보 표시 업데이트
+     */
+    updateCombo(combo) {
+        if (combo > 1) {
+            // 콤보가 1보다 클 때만 표시
+            this.comboDisplay.style.display = 'block';
+            this.comboNumber.textContent = combo;
+            
+            // 콤보 증가 애니메이션 트리거
+            this.comboNumber.style.animation = 'none';
+            setTimeout(() => {
+                this.comboNumber.style.animation = 'combo-pulse 0.3s ease-out';
+            }, 10);
+        } else {
+            // 콤보가 1 이하일 때는 숨김
+            this.comboDisplay.style.display = 'none';
         }
     }
     
