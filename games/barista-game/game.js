@@ -1773,41 +1773,9 @@ class SoundManager {
         }
     }
     
-    /**
-     * 홀드 시작
-     */
-    startHold() {
-        this.isHolding = true;
-        this.playHoldSound('basic');
-        console.log('홀드 사운드 시작');
-    }
     
     /**
-     * 타이밍 구간 업데이트
-     */
-    updateTimingZone(zone) {
-        if (!this.isHolding) return;
-        
-        console.log(`타이밍 구간 변경: ${zone}`);
-        
-        switch (zone) {
-            case 'basic':
-                this.playHoldSound('basic');
-                break;
-            case 'passing':
-                this.playHoldSound('passing');
-                break;
-            case 'perfect':
-                this.playHoldSound('perfect');
-                break;
-            case 'overflow':
-                this.playHoldSound('overflow');
-                break;
-        }
-    }
-    
-    /**
-     * 홀드 사운드 재생
+     * 홀드 사운드 재생 (기존 사운드가 있으면 먼저 정지)
      */
     playHoldSound(type) {
         // 사운드가 없어도 게임은 계속 진행
@@ -1816,39 +1784,39 @@ class SoundManager {
             return;
         }
         
-        // 홀드 사운드가 없으면 새로 시작
-        if (!this.currentHoldSound) {
-            const soundKey = `hold-${type}`;
-            const sound = this.sounds[soundKey];
-            
-            if (sound) {
-                try {
-                    const source = this.audioContext.createBufferSource();
-                    const gainNode = this.audioContext.createGain();
-                    
-                    source.buffer = sound;
-                    source.loop = true; // 모든 홀드 사운드를 루프로
-                    
-                    // 볼륨 설정
-                    gainNode.gain.value = this.masterVolume * this.volumeSettings.hold;
-                    
-                    // 연결
-                    source.connect(gainNode);
-                    gainNode.connect(this.audioContext.destination);
-                    
-                    source.start();
-                    this.currentHoldSound = source;
-                    this.soundStats.holdSoundsPlayed++;
-                    
-                    console.log(`홀드 사운드 재생: ${type}`);
-                } catch (error) {
-                    console.error(`홀드 사운드 재생 실패: ${type}`, error);
-                }
-            } else {
-                // 사운드 파일이 없으면 지속적인 홀드 사운드 생성
-                this.currentHoldSound = this.createContinuousHoldSound(type);
-                console.log(`지속적인 홀드 사운드 시작: ${type}`);
+        // 기존 홀드 사운드가 있으면 먼저 정지
+        this.stopCurrentHoldSound();
+        
+        const soundKey = `hold-${type}`;
+        const sound = this.sounds[soundKey];
+        
+        if (sound) {
+            try {
+                const source = this.audioContext.createBufferSource();
+                const gainNode = this.audioContext.createGain();
+                
+                source.buffer = sound;
+                source.loop = true; // 모든 홀드 사운드를 루프로
+                
+                // 볼륨 설정
+                gainNode.gain.value = this.masterVolume * this.volumeSettings.hold;
+                
+                // 연결
+                source.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+                
+                source.start();
+                this.currentHoldSound = source;
+                this.soundStats.holdSoundsPlayed++;
+                
+                console.log(`홀드 사운드 재생: ${type}`);
+            } catch (error) {
+                console.error(`홀드 사운드 재생 실패: ${type}`, error);
             }
+        } else {
+            // 사운드 파일이 없으면 지속적인 홀드 사운드 생성
+            this.currentHoldSound = this.createContinuousHoldSound(type);
+            console.log(`지속적인 홀드 사운드 시작: ${type}`);
         }
     }
     
@@ -1867,43 +1835,40 @@ class SoundManager {
     }
     
     /**
-     * 타이밍 구간 변화 처리
-     */
-    updateTimingZone(zone) {
-        if (!this.isInitialized) return;
-        
-        console.log(`🔄 updateTimingZone 호출됨: ${zone}`);
-        console.log(`  - currentHoldSound 존재:`, !!this.currentHoldSound);
-        
-        // 현재 홀드 사운드가 있을 때만 처리
-        if (this.currentHoldSound && this.currentHoldSound.changeFrequency) {
-            const soundType = zone === 'perfect' ? 'perfect' : 
-                             zone === 'passing' ? 'passing' : 'basic';
-            
-            console.log(`  - 주파수 변경 시도: ${soundType}`);
-            this.currentHoldSound.changeFrequency(soundType);
-            console.log(`✅ 타이밍 구간 변화: ${zone} -> ${soundType} 사운드`);
-        } else {
-            console.log(`❌ 홀드 사운드가 없거나 changeFrequency 메소드가 없음`);
-            // 홀드 사운드가 없다면 새로 시작
-            if (!this.currentHoldSound) {
-                const soundType = zone === 'perfect' ? 'perfect' : 
-                                 zone === 'passing' ? 'passing' : 'basic';
-                console.log(`  - 새로운 홀드 사운드 생성: ${soundType}`);
-                this.currentHoldSound = this.createContinuousHoldSound(soundType);
-            }
-        }
-    }
-
-    /**
      * 홀드 시작
      */
     startHold() {
         console.log('🎵 startHold 호출됨');
         this.isHolding = true;
         // 기본 홀드 사운드로 시작
-        this.currentHoldSound = this.createContinuousHoldSound('basic');
+        this.playHoldSound('basic');
         console.log('✅ 홀드 사운드 시작됨 (basic)');
+    }
+
+    /**
+     * 타이밍 구간 변화 처리
+     */
+    updateTimingZone(zone) {
+        if (!this.isHolding) return;
+        
+        console.log(`🔄 updateTimingZone 호출됨: ${zone}`);
+        
+        // 타이밍 구간에 따라 적절한 홀드 사운드로 변경
+        const soundType = zone === 'perfect' ? 'perfect' : 
+                         zone === 'passing' ? 'passing' : 
+                         zone === 'overflow' ? 'overflow' : 'basic';
+        
+        // 현재 홀드 사운드가 있으면서 changeFrequency 기능이 있다면 사용
+        if (this.currentHoldSound && this.currentHoldSound.changeFrequency) {
+            console.log(`  - 주파수 변경: ${soundType}`);
+            this.currentHoldSound.changeFrequency(soundType);
+        } else {
+            // 그렇지 않으면 새로운 홀드 사운드로 교체
+            console.log(`  - 홀드 사운드 교체: ${soundType}`);
+            this.playHoldSound(soundType);
+        }
+        
+        console.log(`✅ 타이밍 구간 변화: ${zone} -> ${soundType} 사운드`);
     }
 
     /**
