@@ -72,7 +72,7 @@ class BaristaGame {
         for (let i = 0; i < this.cupQueue.length; i++) {
             if (this.cupQueue[i]) {
                 this.cupQueue[i].x = this.centerX + this.cupPositions[i];
-                this.cupQueue[i].y = this.centerY;
+                this.cupQueue[i].y = this.centerY + 100; // 컵을 아래쪽으로 100px 이동
             }
         }
     }
@@ -217,14 +217,16 @@ class BaristaGame {
      * 보안된 스코어 조회
      */
     getScore() {
-        console.log('📊 getScore 호출됨');
-        console.log('  - 현재 _score:', this._score);
-        console.log('  - 현재 _scoreHash:', this._scoreHash);
-        console.log('  - 검증 실패 플래그:', this._scoreValidationFailed);
+        // 검증 실패 상태에서는 로그를 줄임
+        if (!this._scoreValidationFailed) {
+            console.log('📊 getScore 호출됨');
+            console.log('  - 현재 _score:', this._score);
+            console.log('  - 현재 _scoreHash:', this._scoreHash);
+            console.log('  - 검증 실패 플래그:', this._scoreValidationFailed);
+        }
         
         // 무한 루프 방지: 이미 검증 실패한 경우 재검증하지 않음
         if (this._scoreValidationFailed) {
-            console.log('  - 검증 실패로 인해 재검증 건너뜀');
             return this._score;
         }
         
@@ -357,6 +359,23 @@ class BaristaGame {
         console.log('게임 요소 크기 조정 완료');
     }
     
+    /**
+     * UI 상태 제어 (게임 상태에 따른 클릭 이벤트 제어)
+     */
+    updateUIMode(mode) {
+        const uiOverlay = document.querySelector('.ui-overlay');
+        if (uiOverlay) {
+            // 기존 클래스 제거
+            uiOverlay.classList.remove('menu-mode', 'game-mode');
+            // 새 클래스 추가
+            if (mode === 'menu') {
+                uiOverlay.classList.add('menu-mode');
+            } else if (mode === 'game') {
+                uiOverlay.classList.add('game-mode');
+            }
+        }
+    }
+
     bindEvents() {
         // 게임 시작 버튼
         document.getElementById('startBtn').addEventListener('click', () => {
@@ -392,6 +411,7 @@ class BaristaGame {
         console.log('🎮 게임 시작 - 초기화 시작');
         
         this.gameState = 'playing';
+        this.updateUIMode('game'); // 게임 모드로 UI 변경
         this.gameStartTime = Date.now();
         this.gameTime = this.maxTime;
         this.lives = 3;
@@ -458,6 +478,7 @@ class BaristaGame {
         
         // 게임 상태를 start로 설정
         this.gameState = 'start';
+        this.updateUIMode('menu'); // 메뉴 모드로 UI 변경
         
         // 모든 게임 변수 초기화
         this.gameStartTime = 0;
@@ -827,6 +848,7 @@ class BaristaGame {
     
     gameOver() {
         this.gameState = 'gameOver';
+        this.updateUIMode('menu'); // 메뉴 모드로 UI 변경 (게임 오버 화면 클릭 허용)
         
         // 최고 점수 업데이트
         const currentScore = this.getScore();
@@ -1114,7 +1136,7 @@ class BaristaGame {
     
     renderFaucet() {
         const faucetX = this.centerX;
-        const faucetY = this.centerY - 100;
+        const faucetY = this.centerY - 100; // 수도꼭지는 원래 위치 유지
         
         // 수도꼭지
         this.ctx.fillStyle = '#C0C0C0';
@@ -1127,7 +1149,7 @@ class BaristaGame {
     }
     
     renderCoffeeFlow() {
-        // 커피 흐름 애니메이션
+        // 커피 흐름 애니메이션 (수도꼭지에서 컵으로)
         this.visualEffects.renderCoffeeStream(this.centerX, this.centerY - 80);
     }
     
@@ -2708,7 +2730,7 @@ class InputManager {
         console.log('🔍 startHold 호출됨 - 조건 확인 중...');
         console.log('  - isHolding:', this.isHolding);
         console.log('  - gameState:', this.game.gameState);
-        console.log('  - currentCup:', this.game.currentCup ? '존재' : 'null');
+        console.log('  - currentCup:', this.game.getCurrentCup() ? '존재' : 'null');
         
         if (this.isHolding) {
             console.log('❌ 홀드 시작 실패 - 이미 홀드 중');
@@ -2720,7 +2742,7 @@ class InputManager {
             return false;
         }
         
-        if (!this.game.currentCup) {
+        if (!this.game.getCurrentCup()) {
             console.log('❌ 홀드 시작 실패 - currentCup이 null');
             return false;
         }
@@ -2751,9 +2773,9 @@ class InputManager {
         console.log('🔍 endHold 호출됨 - 조건 확인 중...');
         console.log('  - isHolding:', this.isHolding);
         console.log('  - gameState:', this.game.gameState);
-        console.log('  - currentCup:', this.game.currentCup ? '존재' : 'null');
+        console.log('  - currentCup:', this.game.getCurrentCup() ? '존재' : 'null');
         
-        if (!this.isHolding || this.game.gameState !== 'playing' || !this.game.currentCup) {
+        if (!this.isHolding || this.game.gameState !== 'playing' || !this.game.getCurrentCup()) {
             console.log('❌ endHold 실패 - 조건 불만족');
             return false;
         }
@@ -2973,6 +2995,34 @@ class CupSystem {
     }
     
     /**
+     * 균등 분배를 고려한 타입 선택 (확장성 있는 랜덤 시스템)
+     * @param {Array} availableTypes - 선택 가능한 컵 타입들
+     * @returns {string} 선택된 컵 타입
+     */
+    selectBalancedType(availableTypes) {
+        if (availableTypes.length === 1) {
+            return availableTypes[0];
+        }
+        
+        // 각 타입의 선택 횟수 계산
+        const typeCounts = availableTypes.map(type => ({
+            type,
+            count: this.generationStats.typeCount[type] || 0
+        }));
+        
+        // 가장 적게 선택된 횟수 찾기
+        const minCount = Math.min(...typeCounts.map(item => item.count));
+        
+        // 가장 적게 선택된 타입들만 필터링
+        const leastUsedTypes = typeCounts
+            .filter(item => item.count === minCount)
+            .map(item => item.type);
+        
+        // 가장 적게 사용된 타입들 중에서 랜덤 선택
+        return this.getRandomElement(leastUsedTypes);
+    }
+
+    /**
      * 랜덤 컵 생성
      * @param {boolean} avoidRepeat - 이전 컵과 같은 타입 피하기
      * @returns {Object} 생성된 컵 객체
@@ -2981,14 +3031,18 @@ class CupSystem {
         const availableTypes = Object.keys(this.cupTypes);
         let selectedType;
         
-        if (avoidRepeat && availableTypes.length > 1) {
-            // 이전 컵과 다른 타입 선택
+        // 완전 랜덤 시스템: 모든 타입이 균등하게 출현하도록 개선
+        if (availableTypes.length <= 1) {
+            selectedType = availableTypes[0];
+        } else if (avoidRepeat && this.generationStats.lastGeneratedType) {
+            // 이전 컵과 다른 타입들 중에서 가장 적게 선택된 타입 우선 선택
             const filteredTypes = availableTypes.filter(type => 
                 type !== this.generationStats.lastGeneratedType
             );
-            selectedType = this.getRandomElement(filteredTypes);
+            selectedType = this.selectBalancedType(filteredTypes);
         } else {
-            selectedType = this.getRandomElement(availableTypes);
+            // 전체 타입 중에서 균등 분배를 고려하여 선택
+            selectedType = this.selectBalancedType(availableTypes);
         }
         
         const cupConfig = this.cupTypes[selectedType];

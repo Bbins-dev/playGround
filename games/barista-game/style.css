@@ -63,6 +63,20 @@ body {
     z-index: 10;
 }
 
+/* 게임 상태별 클릭 이벤트 제어 */
+.ui-overlay.menu-mode {
+    pointer-events: auto; /* 메뉴 상태에서는 UI 클릭 허용 */
+}
+
+.ui-overlay.game-mode {
+    pointer-events: none; /* 게임 중에는 UI 클릭 차단 */
+}
+
+/* 개별 UI 요소는 항상 클릭 가능하도록 설정 */
+.start-screen, .game-over-screen {
+    pointer-events: auto !important;
+}
+
 /* 하트 (기회) */
 .hearts-container {
     position: absolute;
@@ -106,10 +120,10 @@ body {
     100% { transform: scale(1); opacity: 0.3; }
 }
 
-/* 시간 바 */
+/* 시간 바 - 하트 아래로 이동 */
 .time-bar-container {
     position: absolute;
-    bottom: 20px;
+    top: 60px;
     left: 50%;
     transform: translateX(-50%);
     width: 80%;
@@ -117,7 +131,7 @@ body {
     pointer-events: none;
     
     /* 모바일 반응형 */
-    bottom: 10px;
+    top: 50px;
     width: 90%;
 }
 
@@ -321,7 +335,7 @@ body {
     }
     
     .time-bar-container {
-        bottom: 10px;
+        top: 50px;
         width: 90%;
     }
     
@@ -385,7 +399,7 @@ body {
     }
     
     .time-bar-container {
-        bottom: 5px;
+        top: 40px;
         width: 95%;
         height: 14px;
     }
@@ -452,7 +466,7 @@ body {
     }
     
     .time-bar-container {
-        bottom: 15px;
+        top: 55px;
         width: 85%;
     }
     
