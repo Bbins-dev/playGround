@@ -34,7 +34,7 @@
   "barista_game": {
     "title": "바리스타 게임",
     "page_title": "바리스타 게임 - PlayGround",
-    "description": "홀드로 커피를 따르고 완벽한 타이밍에 뗼어 높은 콤보를 기록하세요!",
+    "description": "홀드하여 커피를 따르고 완벽한 타이밍에 떼어 높은 콤보를 기록하세요!",
     "genre": "타이밍",
     "ui": {
       "combo": "콤보",
