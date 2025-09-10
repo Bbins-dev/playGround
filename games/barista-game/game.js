@@ -1282,77 +1282,92 @@ class BaristaGame {
     }
     
     /**
-     * 픽셀아트 스타일 컵 그리기 (카페 아이콘 스타일)
+     * 테이크아웃 종이컵 스타일 픽셀아트
      */
     drawPixelCup(x, y, width, height, baseColor) {
         const halfWidth = width / 2;
         const halfHeight = height / 2;
         
-        // 더 어두운 색과 밝은 색 계산
-        const darkerColor = this.darkenColor(baseColor, 0.4);
-        const lighterColor = this.lightenColor(baseColor, 0.4);
-        const veryLightColor = this.lightenColor(baseColor, 0.8);
+        // 테이크아웃 컵 색상 (흰색 베이스)
+        const cupWhite = '#F5F5F5';
+        const cupBorder = '#D0D0D0';
+        const sleeveColor = '#8B4513'; // 갈색 슬리브
+        const sleeveDark = '#654321';
+        const sleeveBright = '#A0522D';
         
-        // 컵 받침대 (하단)
-        this.ctx.fillStyle = darkerColor;
-        this.ctx.fillRect(x - halfWidth - 2, y + halfHeight - 4, width + 4, 6);
-        
-        // 컵 몸체 (둥근 형태를 픽셀로 표현)
-        this.ctx.fillStyle = baseColor;
-        // 중앙 부분
-        this.ctx.fillRect(x - halfWidth, y - halfHeight + 4, width, height - 8);
-        // 상단 넓은 부분 (둥근 효과)
+        // 컵 몸체 (원뿔형 - 상단 넓고 하단 좁음)
+        this.ctx.fillStyle = cupWhite;
+        // 상단 (가장 넓음)
         this.ctx.fillRect(x - halfWidth - 1, y - halfHeight + 2, width + 2, 6);
-        this.ctx.fillRect(x - halfWidth - 2, y - halfHeight + 4, width + 4, 4);
-        // 하단 좁은 부분
-        this.ctx.fillRect(x - halfWidth + 2, y + halfHeight - 8, width - 4, 4);
+        // 중상단
+        this.ctx.fillRect(x - halfWidth, y - halfHeight + 8, width, height - 16);
+        // 중하단 (점점 좁아짐)
+        this.ctx.fillRect(x - halfWidth + 2, y + halfHeight - 12, width - 4, 8);
+        // 하단 (가장 좁음)
+        this.ctx.fillRect(x - halfWidth + 4, y + halfHeight - 4, width - 8, 4);
         
-        // 컵 내부 (커피가 들어있는 부분)
+        // 컵 상단 림 (테두리)
+        this.ctx.fillStyle = cupBorder;
+        this.ctx.fillRect(x - halfWidth - 1, y - halfHeight + 1, width + 2, 1);
+        this.ctx.fillRect(x - halfWidth - 2, y - halfHeight + 2, width + 4, 2);
+        
+        // 컵 내부 (커피)
         this.ctx.fillStyle = '#2F1B14'; // 진한 커피색
-        this.ctx.fillRect(x - halfWidth + 2, y - halfHeight + 6, width - 4, 4);
+        this.ctx.fillRect(x - halfWidth + 1, y - halfHeight + 4, width - 2, 4);
         
-        // 커피 거품/크림 레이어
-        this.ctx.fillStyle = '#F5DEB3'; // 크림색
-        this.ctx.fillRect(x - halfWidth + 3, y - halfHeight + 6, width - 6, 2);
+        // 갈색 슬리브 (컵 홀더) - 중앙 부분
+        const sleeveTop = y - halfHeight/4;
+        const sleeveHeight = halfHeight;
+        this.ctx.fillStyle = sleeveColor;
+        this.ctx.fillRect(x - halfWidth, sleeveTop, width, sleeveHeight);
         
-        // 컵 몸체 하이라이트 (왼쪽)
-        this.ctx.fillStyle = lighterColor;
-        this.ctx.fillRect(x - halfWidth, y - halfHeight + 6, 2, height - 12);
-        this.ctx.fillRect(x - halfWidth - 1, y - halfHeight + 4, 2, 4);
+        // 슬리브 상단/하단 테두리
+        this.ctx.fillStyle = sleeveDark;
+        this.ctx.fillRect(x - halfWidth, sleeveTop, width, 1);
+        this.ctx.fillRect(x - halfWidth, sleeveTop + sleeveHeight - 1, width, 1);
         
-        // 컵 몸체 그림자 (오른쪽)
-        this.ctx.fillStyle = darkerColor;
-        this.ctx.fillRect(x + halfWidth - 2, y - halfHeight + 6, 2, height - 12);
-        this.ctx.fillRect(x + halfWidth - 1, y - halfHeight + 4, 2, 4);
+        // 슬리브 하이라이트
+        this.ctx.fillStyle = sleeveBright;
+        this.ctx.fillRect(x - halfWidth, sleeveTop + 2, 2, sleeveHeight - 4);
         
-        // 세련된 곡선형 손잡이 (오른쪽)
-        this.ctx.fillStyle = baseColor;
-        // 손잡이 상단 연결부
-        this.ctx.fillRect(x + halfWidth, y - halfHeight/3, 2, 4);
-        // 손잡이 중간 곡선부
-        this.ctx.fillRect(x + halfWidth + 2, y - halfHeight/3 + 2, 4, 2);
-        this.ctx.fillRect(x + halfWidth + 4, y - halfHeight/3 + 4, 2, halfHeight - 4);
-        this.ctx.fillRect(x + halfWidth + 2, y + halfHeight/3 - 2, 4, 2);
-        // 손잡이 하단 연결부  
-        this.ctx.fillRect(x + halfWidth, y + halfHeight/3, 2, 4);
+        // 커피 원두 로고 (슬리브 중앙)
+        const logoX = x;
+        const logoY = sleeveTop + sleeveHeight/2;
+        this.drawCoffeeBeanLogo(logoX, logoY);
         
-        // 손잡이 하이라이트
-        this.ctx.fillStyle = lighterColor;
-        this.ctx.fillRect(x + halfWidth, y - halfHeight/3, 1, 4);
-        this.ctx.fillRect(x + halfWidth + 2, y - halfHeight/3 + 2, 1, 2);
-        this.ctx.fillRect(x + halfWidth + 4, y - halfHeight/3 + 4, 1, halfHeight - 4);
-        
-        // 컵 테두리 (더 세밀한 아웃라인)
-        this.ctx.fillStyle = '#654321';
-        // 상단 테두리 (둥근 형태)
-        this.ctx.fillRect(x - halfWidth - 2, y - halfHeight + 4, width + 4, 1);
-        this.ctx.fillRect(x - halfWidth - 1, y - halfHeight + 2, width + 2, 1);
-        this.ctx.fillRect(x - halfWidth, y - halfHeight + 1, width, 1);
-        // 측면 테두리
-        this.ctx.fillRect(x - halfWidth - 2, y - halfHeight + 5, 1, height - 10);
-        this.ctx.fillRect(x + halfWidth + 1, y - halfHeight + 5, 1, height - 10);
+        // 컵 테두리 (아웃라인)
+        this.ctx.fillStyle = cupBorder;
+        // 좌측 테두리
+        this.ctx.fillRect(x - halfWidth - 2, y - halfHeight + 4, 1, height - 8);
+        this.ctx.fillRect(x - halfWidth - 1, y - halfHeight + 8, 1, height - 16);
+        this.ctx.fillRect(x - halfWidth, y + halfHeight - 12, 1, 8);
+        // 우측 테두리  
+        this.ctx.fillRect(x + halfWidth + 1, y - halfHeight + 4, 1, height - 8);
+        this.ctx.fillRect(x + halfWidth, y - halfHeight + 8, 1, height - 16);
+        this.ctx.fillRect(x + halfWidth - 1, y + halfHeight - 12, 1, 8);
         // 하단 테두리
-        this.ctx.fillRect(x - halfWidth + 2, y + halfHeight - 4, width - 4, 1);
+        this.ctx.fillRect(x - halfWidth + 4, y + halfHeight, width - 8, 1);
+    }
+    
+    /**
+     * 픽셀아트 커피 원두 로고
+     */
+    drawCoffeeBeanLogo(x, y) {
+        this.ctx.fillStyle = '#2F1B14'; // 진한 갈색
+        
+        // 커피 원두 모양 (픽셀로 표현)
+        this.ctx.fillRect(x - 3, y - 2, 6, 4);
+        this.ctx.fillRect(x - 2, y - 3, 4, 6);
+        
+        // 원두 중앙 선
+        this.ctx.fillStyle = '#654321';
+        this.ctx.fillRect(x - 1, y - 2, 2, 1);
+        this.ctx.fillRect(x, y - 1, 1, 2);
+        this.ctx.fillRect(x - 1, y + 1, 2, 1);
+        
+        // 원두 하이라이트
+        this.ctx.fillStyle = '#8B4513';
+        this.ctx.fillRect(x - 2, y - 2, 1, 1);
     }
     
     /**
@@ -2522,8 +2537,8 @@ class VisualEffects {
         const dropletSize = 4;
         const dropletSpacing = 6; // 8에서 6으로 줄여서 더 조밀하게
         
-        // 시간에 따른 애니메이션 오프셋 (5배 빠르게)
-        const animationOffset = (Date.now() * 0.05) % dropletSpacing;
+        // 시간에 따른 애니메이션 오프셋 (매우 빠르게)
+        const animationOffset = (Date.now() * 0.5) % dropletSpacing;
         
         // 물방울들을 세로로 배열 (더 많은 물방울)
         for (let i = 0; i < streamLength; i += dropletSpacing) {
