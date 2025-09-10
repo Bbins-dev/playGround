@@ -1,6 +1,6 @@
 {
   "site": {
-    "title": "PlayGround",
+    "title": "BinBox Games",
     "tagline": "Welcome to the world of hypercasual mini games!",
     "description": "Enjoy various hypercasual mini web games!"
   },
@@ -26,14 +26,14 @@
     "difficulty": "Difficulty"
   },
   "footer": {
-    "copyright": "© 2025 PlayGround. Creating the world of hypercasual mini games."
+    "copyright": "© 2025 BinBox Games. Creating the world of hypercasual mini games."
   },
   "ads": {
     "advertisement": "Advertisement"
   },
   "barista_game": {
     "title": "Barista Game",
-    "page_title": "Barista Game - PlayGround",
+    "page_title": "Barista Game - BinBox Games",
     "description": "Hold to pour coffee and release at perfect timing for high combos!",
     "genre": "Timing",
     "ui": {

@@ -1,6 +1,6 @@
 {
   "site": {
-    "title": "PlayGround",
+    "title": "BinBox Games",
     "tagline": "하이퍼캐주얼 미니 게임의 세계로 오세요!",
     "description": "다양한 하이퍼캐주얼 미니 웹게임들을 즐겨보세요!"
   },
@@ -26,14 +26,14 @@
     "difficulty": "난이도"
   },
   "footer": {
-    "copyright": "© 2025 PlayGround. 하이퍼캐주얼 미니 게임의 세계를 만들어갑니다."
+    "copyright": "© 2025 BinBox Games. 하이퍼캐주얼 미니 게임의 세계를 만들어갑니다."
   },
   "ads": {
     "advertisement": "광고"
   },
   "barista_game": {
     "title": "바리스타 게임",
-    "page_title": "바리스타 게임 - PlayGround",
+    "page_title": "바리스타 게임 - BinBox Games",
     "description": "홀드하여 커피를 따르고 완벽한 타이밍에 떼어 높은 콤보를 기록하세요!",
     "genre": "타이밍",
     "ui": {

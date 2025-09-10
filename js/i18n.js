@@ -1,4 +1,4 @@
-// Internationalization (i18n) System for PlayGround
+// Internationalization (i18n) System for BinBox Games
 
 class I18n {
     constructor() {

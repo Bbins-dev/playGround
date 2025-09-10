@@ -1,6 +1,6 @@
 {
   "site": {
-    "title": "PlayGround",
+    "title": "BinBox Games",
     "tagline": "ハイパーカジュアルミニゲームの世界へようこそ！",
     "description": "様々なハイパーカジュアルミニウェブゲームをお楽しみください！"
   },
@@ -26,14 +26,14 @@
     "difficulty": "難易度"
   },
   "footer": {
-    "copyright": "© 2025 PlayGround. ハイパーカジュアルミニゲームの世界を作り上げています。"
+    "copyright": "© 2025 BinBox Games. ハイパーカジュアルミニゲームの世界を作り上げています。"
   },
   "ads": {
     "advertisement": "広告"
   },
   "barista_game": {
     "title": "バリスタゲーム",
-    "page_title": "バリスタゲーム - PlayGround",
+    "page_title": "バリスタゲーム - BinBox Games",
     "description": "ホールドでコーヒーを注ぎ、完璧なタイミングで離して高コンボを記録しよう！",
     "genre": "タイミング",
     "ui": {

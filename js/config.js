@@ -1,11 +1,11 @@
-// PlayGround - 중앙화된 설정 관리
+// BinBox Games - 중앙화된 설정 관리
 const PlayGroundConfig = {
     // 사이트 기본 설정
     site: {
         defaultLanguage: 'ko',
         supportedLanguages: ['ko', 'en', 'ja'],
         languageStorageKey: 'selectedLanguage',
-        gamesStorageKey: 'playground-games'
+        gamesStorageKey: 'binbox-games'
     },
     
     // 게임 레지스트리 - 새 게임은 여기에만 추가하면 됨
@@ -132,6 +132,6 @@ window.PlayGroundConfig = PlayGroundConfig;
 
 // 개발 모드에서 콘솔 정보 출력
 if (PlayGroundConfig.utils.isDevelopment()) {
-    console.log('🔧 PlayGround 설정이 로드되었습니다.');
+    console.log('🔧 BinBox Games 설정이 로드되었습니다.');
     console.log('설정 접근: window.PlayGroundConfig');
 }

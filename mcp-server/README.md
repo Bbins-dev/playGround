@@ -1,6 +1,6 @@
-# PlayGround MCP Server
+# BinBox Games MCP Server
 
-PlayGround 게임 컬렉션을 위한 Model Context Protocol (MCP) 서버입니다.
+BinBox Games 게임 컬렉션을 위한 Model Context Protocol (MCP) 서버입니다.
 
 ## 🚀 설치 및 실행
 

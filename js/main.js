@@ -1,8 +1,8 @@
-// PlayGround - Main JavaScript File
+// BinBox Games - Main JavaScript File
 
 document.addEventListener('DOMContentLoaded', function() {
     if (window.PlayGroundConfig?.utils.isDevelopment()) {
-        console.log('🎮 PlayGround 웹사이트가 로드되었습니다!');
+        console.log('🎮 BinBox Games 웹사이트가 로드되었습니다!');
     }
     
     // 초기화
@@ -171,11 +171,11 @@ const Utils = {
 };
 
 // 전역 객체에 유틸리티 추가
-window.PlayGroundUtils = Utils;
+window.BinBoxGamesUtils = Utils;
 
 // 개발 모드에서 추가 정보 표시
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    console.log('🔧 개발 모드: PlayGround 유틸리티가 전역 객체에 추가되었습니다.');
-    console.log('사용법: PlayGroundUtils.getRandomColor()');
+    console.log('🔧 개발 모드: BinBox Games 유틸리티가 전역 객체에 추가되었습니다.');
+    console.log('사용법: BinBoxGamesUtils.getRandomColor()');
     console.log('게임 추가: addGame({id: "new-game", title: "새 게임", ...})');
 }

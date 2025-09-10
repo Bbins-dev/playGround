@@ -1,4 +1,4 @@
-# 🎮 PlayGround
+# 🎮 BinBox Games
 
 하이퍼캐주얼 미니 웹게임들을 모아놓는 웹사이트입니다.
 
@@ -20,7 +20,7 @@
 ## 📁 프로젝트 구조
 
 ```
-playGround/
+BinBox Games/
 ├── index.html          # 메인 페이지
 ├── css/               # 스타일시트
 ├── js/                # 공통 JavaScript
