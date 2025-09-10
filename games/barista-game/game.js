@@ -1237,7 +1237,7 @@ class BaristaGame {
         } else if (cup.isCompleted) {
             this.ctx.globalAlpha = 0.25; // 완료된 컵은 더 투명하게 (25%)
         } else if (!isActiveCup) {
-            this.ctx.globalAlpha = 0.6; // 비활성 컵은 투명도 60%
+            this.ctx.globalAlpha = 0.85; // 비활성 컵은 투명도 85% (더 진하게)
         }
         
         // 픽셀아트 스타일 컵 그리기
@@ -1295,16 +1295,28 @@ class BaristaGame {
         const sleeveDark = '#654321';
         const sleeveBright = '#A0522D';
         
-        // 컵 몸체 (원뿔형 - 상단 넓고 하단 좁음)
+        // 컵 몸체 (점진적 원뿔형 - 실제 종이컵처럼)
         this.ctx.fillStyle = cupWhite;
-        // 상단 (가장 넓음)
-        this.ctx.fillRect(x - halfWidth - 1, y - halfHeight + 2, width + 2, 6);
-        // 중상단
-        this.ctx.fillRect(x - halfWidth, y - halfHeight + 8, width, height - 16);
-        // 중하단 (점점 좁아짐)
-        this.ctx.fillRect(x - halfWidth + 2, y + halfHeight - 12, width - 4, 8);
-        // 하단 (가장 좁음)
-        this.ctx.fillRect(x - halfWidth + 4, y + halfHeight - 4, width - 8, 4);
+        
+        // 점진적으로 좁아지는 컵 형태 (위에서 아래로)
+        const cupSegments = 10; // 더 세밀한 단계
+        for (let i = 0; i < cupSegments; i++) {
+            const ratio = i / (cupSegments - 1); // 0 to 1
+            const segmentY = y - halfHeight + 6 + (height - 12) * ratio;
+            const segmentHeight = (height - 12) / cupSegments;
+            
+            // 원뿔형 테이퍼링: 위는 넓고 아래는 좁게
+            const taperFactor = 1 - ratio * 0.6; // 상단 100% → 하단 40%
+            const segmentWidth = width * taperFactor;
+            const segmentHalfWidth = segmentWidth / 2;
+            
+            this.ctx.fillRect(
+                x - segmentHalfWidth, 
+                segmentY, 
+                segmentWidth, 
+                segmentHeight + 1 // 약간 겹치게 해서 빈틈 없애기
+            );
+        }
         
         // 컵 상단 림 (테두리)
         this.ctx.fillStyle = cupBorder;
@@ -1315,38 +1327,77 @@ class BaristaGame {
         this.ctx.fillStyle = '#2F1B14'; // 진한 커피색
         this.ctx.fillRect(x - halfWidth + 1, y - halfHeight + 4, width - 2, 4);
         
-        // 갈색 슬리브 (컵 홀더) - 중앙 부분
+        // 갈색 슬리브 (컵 홀더) - 원뿔형에 맞게 조정
         const sleeveTop = y - halfHeight/4;
         const sleeveHeight = halfHeight;
-        this.ctx.fillStyle = sleeveColor;
-        this.ctx.fillRect(x - halfWidth, sleeveTop, width, sleeveHeight);
+        const sleeveSegments = 8; // 슬리브도 세밀하게 그리기
         
-        // 슬리브 상단/하단 테두리
+        for (let i = 0; i < sleeveSegments; i++) {
+            const ratio = i / (sleeveSegments - 1);
+            const segmentY = sleeveTop + sleeveHeight * ratio;
+            const segmentHeight = sleeveHeight / sleeveSegments;
+            
+            // 슬리브 위치에서의 컵 너비 계산 (컵 전체 높이에서의 비율)
+            const totalRatio = (segmentY - (y - halfHeight + 6)) / (height - 12);
+            const clampedRatio = Math.max(0, Math.min(1, totalRatio));
+            const taperFactor = 1 - clampedRatio * 0.6;
+            const segmentWidth = width * taperFactor;
+            
+            // 슬리브 본체
+            this.ctx.fillStyle = sleeveColor;
+            this.ctx.fillRect(x - segmentWidth/2, segmentY, segmentWidth, segmentHeight + 1);
+            
+            // 슬리브 하이라이트 (왼쪽)
+            if (i === 0) {
+                this.ctx.fillStyle = sleeveBright;
+                this.ctx.fillRect(x - segmentWidth/2, segmentY + 2, 2, sleeveHeight - 4);
+            }
+        }
+        
+        // 슬리브 상단/하단 테두리 (테이퍼링에 맞게)
+        const topRatio = (sleeveTop - (y - halfHeight + 6)) / (height - 12);
+        const topClampedRatio = Math.max(0, Math.min(1, topRatio));
+        const topTaperFactor = 1 - topClampedRatio * 0.6;
+        const topWidth = width * topTaperFactor;
+        
+        const bottomRatio = (sleeveTop + sleeveHeight - (y - halfHeight + 6)) / (height - 12);
+        const bottomClampedRatio = Math.max(0, Math.min(1, bottomRatio));
+        const bottomTaperFactor = 1 - bottomClampedRatio * 0.6;
+        const sleeveBottomWidth = width * bottomTaperFactor;
+        
         this.ctx.fillStyle = sleeveDark;
-        this.ctx.fillRect(x - halfWidth, sleeveTop, width, 1);
-        this.ctx.fillRect(x - halfWidth, sleeveTop + sleeveHeight - 1, width, 1);
-        
-        // 슬리브 하이라이트
-        this.ctx.fillStyle = sleeveBright;
-        this.ctx.fillRect(x - halfWidth, sleeveTop + 2, 2, sleeveHeight - 4);
+        // 상단 테두리
+        this.ctx.fillRect(x - topWidth/2, sleeveTop, topWidth, 1);
+        // 하단 테두리  
+        this.ctx.fillRect(x - sleeveBottomWidth/2, sleeveTop + sleeveHeight - 1, sleeveBottomWidth, 1);
         
         // 커피 원두 로고 (슬리브 중앙)
         const logoX = x;
         const logoY = sleeveTop + sleeveHeight/2;
         this.drawCoffeeBeanLogo(logoX, logoY);
         
-        // 컵 테두리 (아웃라인)
+        // 컵 테두리 (원뿔형에 맞는 아웃라인)
         this.ctx.fillStyle = cupBorder;
-        // 좌측 테두리
-        this.ctx.fillRect(x - halfWidth - 2, y - halfHeight + 4, 1, height - 8);
-        this.ctx.fillRect(x - halfWidth - 1, y - halfHeight + 8, 1, height - 16);
-        this.ctx.fillRect(x - halfWidth, y + halfHeight - 12, 1, 8);
-        // 우측 테두리  
-        this.ctx.fillRect(x + halfWidth + 1, y - halfHeight + 4, 1, height - 8);
-        this.ctx.fillRect(x + halfWidth, y - halfHeight + 8, 1, height - 16);
-        this.ctx.fillRect(x + halfWidth - 1, y + halfHeight - 12, 1, 8);
-        // 하단 테두리
-        this.ctx.fillRect(x - halfWidth + 4, y + halfHeight, width - 8, 1);
+        
+        // 좌측/우측 테두리를 원뿔 형태에 맞게 그리기
+        for (let i = 0; i < cupSegments; i++) {
+            const ratio = i / (cupSegments - 1);
+            const segmentY = y - halfHeight + 6 + (height - 12) * ratio;
+            const segmentHeight = (height - 12) / cupSegments;
+            
+            const taperFactor = 1 - ratio * 0.6;
+            const segmentWidth = width * taperFactor;
+            const segmentHalfWidth = segmentWidth / 2;
+            
+            // 좌측 테두리
+            this.ctx.fillRect(x - segmentHalfWidth - 1, segmentY, 1, segmentHeight + 1);
+            // 우측 테두리
+            this.ctx.fillRect(x + segmentHalfWidth, segmentY, 1, segmentHeight + 1);
+        }
+        
+        // 하단 테두리 (가장 좁은 부분)
+        const bottomWidth = width * 0.4;
+        this.ctx.fillRect(x - bottomWidth/2, y + halfHeight, bottomWidth, 1);
     }
     
     /**
