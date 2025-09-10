@@ -2,15 +2,19 @@
 
 class I18n {
     constructor() {
-        this.currentLanguage = 'ko';
+        this.currentLanguage = window.PlayGroundConfig?.site.defaultLanguage || 'ko';
         this.translations = {};
         this.basePath = 'js/lang/';
+        this.storageKey = window.PlayGroundConfig?.site.languageStorageKey || 'selectedLanguage';
         // Don't auto-initialize, let manual init() calls control this
     }
 
-    async init(initialLang = 'ko', basePath = 'js/lang/') {
+    async init(initialLang, basePath = 'js/lang/') {
         this.basePath = basePath;
-        this.currentLanguage = initialLang;
+        
+        // Use config default if no initial language provided
+        const defaultLang = window.PlayGroundConfig?.site.defaultLanguage || 'ko';
+        this.currentLanguage = initialLang || defaultLang;
         
         // Load default language
         await this.loadLanguage(this.currentLanguage);
@@ -63,8 +67,8 @@ class I18n {
             document.documentElement.lang = lang;
             this.applyTranslations();
             
-            // Save language preference (use consistent key)
-            localStorage.setItem('selectedLanguage', lang);
+            // Save language preference (use config key)
+            localStorage.setItem(this.storageKey, lang);
             
             // Update all language selectors
             this.updateLanguageSelectors(lang);
@@ -144,7 +148,8 @@ class I18n {
 
     // Load saved language preference
     async loadSavedLanguage() {
-        const savedLang = localStorage.getItem('selectedLanguage') || 'ko';
+        const defaultLang = window.PlayGroundConfig?.site.defaultLanguage || 'ko';
+        const savedLang = localStorage.getItem(this.storageKey) || defaultLang;
         await this.setLanguage(savedLang);
     }
 }
@@ -154,11 +159,17 @@ if (!window.i18n) {
     window.i18n = new I18n();
 }
 
-// Auto-initialize for main page
-if (window.location.pathname === '/' || window.location.pathname.endsWith('index.html')) {
+// Auto-initialize for main page and games
+if (window.location.pathname === '/' || window.location.pathname.endsWith('index.html') || window.location.pathname.includes('/games/')) {
     document.addEventListener('DOMContentLoaded', async () => {
-        const savedLang = localStorage.getItem('selectedLanguage') || 'ko';
-        await window.i18n.init(savedLang);
-        await window.i18n.loadSavedLanguage();
+        const storageKey = window.PlayGroundConfig?.site.languageStorageKey || 'selectedLanguage';
+        const defaultLang = window.PlayGroundConfig?.site.defaultLanguage || 'ko';
+        const savedLang = localStorage.getItem(storageKey) || defaultLang;
+        
+        // For games, use relative path for language files
+        const basePath = window.location.pathname.includes('/games/') ? '../../js/lang/' : 'js/lang/';
+        await window.i18n.init(savedLang, basePath);
+        // Update language selectors to match saved language
+        window.i18n.updateLanguageSelectors(savedLang);
     });
 }

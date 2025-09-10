@@ -369,7 +369,7 @@ body {
     color: #8B4513;
 }
 
-/* 하단 컨트롤 바 */
+/* 상단 컨트롤 바 */
 .bottom-controls {
     position: absolute;
     top: 20px;
@@ -398,6 +398,14 @@ body {
 }
 
 /* 게임 내 언어 선택기 */
+.game-language-selector {
+    position: absolute;
+    top: 0px;
+    right: 20px;
+    z-index: 30;
+    pointer-events: auto;
+}
+
 .game-language-selector select {
     background: rgba(0, 0, 0, 0.5);
     color: white;

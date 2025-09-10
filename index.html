@@ -6,6 +6,7 @@
     <title>🎮 PlayGround - 하이퍼캐주얼 미니 게임</title>
     <meta name="description" content="다양한 하이퍼캐주얼 미니 웹게임들을 즐겨보세요!">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,48 +64,7 @@
             <section class="games-grid">
                 <h3 data-i18n="games.title">🎯 게임 목록</h3>
                 <div class="games-container" id="gamesContainer">
-                    <!-- 게임들이 여기에 추가될 예정 -->
-                    <div class="game-card" data-genre="timing" data-difficulty="easy">
-                        <div class="game-thumbnail">
-                            <div class="game-icon">☕</div>
-                        </div>
-                        <div class="game-info">
-                            <h4 data-i18n="barista_game.title">Barista Game</h4>
-                            <p class="game-description" data-i18n="barista_game.description">Hold and release at the PERFECT timing to pour coffee!</p>
-                            <div class="game-meta">
-                                <span class="genre" data-i18n="game_info.genre">장르</span>: <span data-i18n="genre_names.timing">타이밍</span>
-                            </div>
-                        </div>
-                        <button class="btn" onclick="window.location.href='games/barista-game/'" data-i18n="games.play_button">게임 시작</button>
-                    </div>
-                    
-                    <div class="game-card coming-soon" data-genre="tbd" data-difficulty="medium">
-                        <div class="game-thumbnail">
-                            <div class="game-icon">🎯</div>
-                        </div>
-                        <div class="game-info">
-                            <h4 data-i18n="upcoming_games.game2.title">두 번째 게임</h4>
-                            <p class="game-description" data-i18n="upcoming_games.game2.description">곧 추가될 예정입니다!</p>
-                            <div class="game-meta">
-                                <span class="genre" data-i18n="game_info.genre">장르</span>: <span data-i18n="genre_names.tbd">미정</span>
-                            </div>
-                        </div>
-                        <button class="btn btn-disabled" disabled data-i18n="games.play_button">게임 시작</button>
-                    </div>
-                    
-                    <div class="game-card coming-soon" data-genre="tbd" data-difficulty="hard">
-                        <div class="game-thumbnail">
-                            <div class="game-icon">🚀</div>
-                        </div>
-                        <div class="game-info">
-                            <h4 data-i18n="upcoming_games.game3.title">세 번째 게임</h4>
-                            <p class="game-description" data-i18n="upcoming_games.game3.description">곧 추가될 예정입니다!</p>
-                            <div class="game-meta">
-                                <span class="genre" data-i18n="game_info.genre">장르</span>: <span data-i18n="genre_names.tbd">미정</span>
-                            </div>
-                        </div>
-                        <button class="btn btn-disabled" disabled data-i18n="games.play_button">게임 시작</button>
-                    </div>
+                    <!-- 게임들이 동적으로 생성됩니다 -->
                 </div>
                 
                 <!-- No Results Message -->
@@ -122,7 +82,9 @@
     </footer>
 
     <!-- Scripts -->
+    <script src="js/config.js"></script>
     <script src="js/i18n.js"></script>
+    <script src="js/gameRegistry.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

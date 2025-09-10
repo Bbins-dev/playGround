@@ -37,29 +37,7 @@ body {
     position: relative;
 }
 
-/* Language Selector */
-.language-selector {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-}
-
-.language-selector select {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 8px 12px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.language-selector select:hover {
-    background: var(--hover-bg);
-    border-color: var(--accent-primary);
-}
+/* Language Selector - styles moved to components.css */
 
 /* Sidebar Ads */
 .sidebar-ad {
@@ -78,33 +56,7 @@ body {
     right: 20px;
 }
 
-.ad-placeholder {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 10px;
-    text-align: center;
-    box-shadow: var(--shadow);
-    transition: all 0.3s ease;
-}
-
-.ad-placeholder:hover {
-    background: var(--hover-bg);
-    border-color: var(--accent-primary);
-}
-
-.ad-label {
-    font-size: 12px;
-    color: var(--text-muted);
-    display: block;
-    margin-bottom: 5px;
-}
-
-.ad-content {
-    font-size: 14px;
-    color: var(--text-secondary);
-    font-weight: 500;
-}
+/* Ad styles moved to components.css */
 
 /* Header */
 .header {
@@ -221,26 +173,7 @@ body {
     margin-bottom: 2rem;
 }
 
-.game-card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1.5rem;
-    transition: all 0.3s ease;
-    box-shadow: var(--shadow);
-    position: relative;
-    overflow: hidden;
-}
-
-.game-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--accent-primary);
-}
-
-.game-card.coming-soon {
-    opacity: 0.6;
-}
+/* Game card styles moved to components.css */
 
 .game-thumbnail {
     text-align: center;
@@ -280,38 +213,7 @@ body {
     font-weight: 500;
 }
 
-/* Buttons */
-.btn {
-    width: 100%;
-    background: var(--accent-primary);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.btn:hover:not(:disabled) {
-    background: var(--accent-secondary);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow);
-}
-
-.btn:active:not(:disabled) {
-    transform: translateY(0);
-}
-
-.btn-disabled {
-    background: var(--bg-tertiary);
-    color: var(--text-muted);
-    cursor: not-allowed;
-    opacity: 0.6;
-}
+/* Button styles moved to components.css */
 
 /* No Results */
 .no-results {
@@ -372,10 +274,7 @@ body {
         display: none; /* Hide sidebar ads on mobile */
     }
     
-    .language-selector {
-        top: 15px;
-        right: 15px;
-    }
+    /* Language selector responsive styles in components.css */
     
     .container {
         padding: 0 15px;
