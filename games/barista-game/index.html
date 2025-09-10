@@ -7,8 +7,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#8B4513">
-    <title>Barista Game - PlayGround</title>
-    <meta name="description" content="Hold and release at the PERFECT timing to pour coffee!">
+    <title data-i18n="barista_game.title">Barista Game - PlayGround</title>
+    <meta name="description" content="Hold to pour coffee and release at perfect timing for high combos!" data-i18n-content="barista_game.description">
     <link rel="stylesheet" href="./style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
 </head>
@@ -35,7 +35,7 @@
             
             <!-- 콤보 표시 -->
             <div class="combo-display" id="comboDisplay" style="display: none;">
-                <span class="combo-text">COMBO</span>
+                <span class="combo-text" data-i18n="barista_game.ui.combo">COMBO</span>
                 <span class="combo-number" id="comboNumber">0</span>
             </div>
             
@@ -46,28 +46,38 @@
             
             <!-- 게임 시작 화면 -->
             <div class="start-screen" id="startScreen">
-                <h1>☕ Barista Game</h1>
-                <p>Hold and release at the PERFECT timing to pour coffee!</p>
-                <button class="start-btn" id="startBtn">Start Game</button>
+                <h1>☕ <span data-i18n="barista_game.title">Barista Game</span></h1>
+                <p data-i18n="barista_game.description">Hold to pour coffee and release at perfect timing for high combos!</p>
+                <button class="start-btn" id="startBtn" data-i18n="barista_game.ui.start_game">Start Game</button>
             </div>
             
             <!-- 게임 오버 화면 -->
             <div class="game-over-screen" id="gameOverScreen" style="display: none;">
-                <h2>Game Over</h2>
+                <h2 data-i18n="barista_game.ui.game_over">Game Over</h2>
                 <div class="score-display">
-                    <p>Final Score: <span id="finalScore">0</span></p>
-                    <p>High Score: <span id="highScore">0</span></p>
+                    <p><span data-i18n="barista_game.ui.final_score">Final Score</span>: <span id="finalScore">0</span></p>
+                    <p><span data-i18n="barista_game.ui.high_score">High Score</span>: <span id="highScore">0</span></p>
                 </div>
-                <button class="restart-btn" id="restartBtn">Restart</button>
+                <button class="restart-btn" id="restartBtn" data-i18n="barista_game.ui.restart">Restart</button>
             </div>
         </div>
         
-        <!-- 뒤로가기 버튼 -->
-        <div class="back-btn">
-            <a href="../../index.html">← Back to Main</a>
+        <!-- 뒤로가기 버튼 및 언어 선택기 -->
+        <div class="bottom-controls">
+            <div class="back-btn">
+                <a href="../../index.html" data-i18n="barista_game.ui.back_to_main">← Back to Main</a>
+            </div>
+            <div class="game-language-selector">
+                <select id="gameLanguageSelect">
+                    <option value="ko">🇰🇷</option>
+                    <option value="en">🇺🇸</option>
+                    <option value="ja">🇯🇵</option>
+                </select>
+            </div>
         </div>
     </div>
     
+    <script src="../../js/i18n.js"></script>
     <script src="./game.js"></script>
 </body>
 </html>

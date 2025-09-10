@@ -26,9 +26,47 @@
     "difficulty": "難易度"
   },
   "footer": {
-    "copyright": "© 2024 PlayGround. ハイパーカジュアルミニゲームの世界を作り上げています。"
+    "copyright": "© 2025 PlayGround. ハイパーカジュアルミニゲームの世界を作り上げています。"
   },
   "ads": {
     "advertisement": "広告"
+  },
+  "barista_game": {
+    "title": "バリスタゲーム",
+    "description": "ホールドでコーヒーを注ぎ、完璧なタイミングで離して高コンボを記録しよう！",
+    "genre": "タイミング",
+    "ui": {
+      "combo": "コンボ",
+      "start_game": "ゲーム開始",
+      "game_over": "ゲームオーバー",
+      "final_score": "最終スコア",
+      "high_score": "ハイスコア",
+      "restart": "再スタート",
+      "back_to_main": "← メインに戻る",
+      "feedback": {
+        "perfect": "パーフェクト！",
+        "good": "グッド！",
+        "miss": "ミス！",
+        "excellent": "エクセレント！"
+      }
+    }
+  },
+  "upcoming_games": {
+    "game2": {
+      "title": "二番目のゲーム",
+      "description": "近日公開予定！",
+      "genre": "未定"
+    },
+    "game3": {
+      "title": "三番目のゲーム",
+      "description": "近日公開予定！",
+      "genre": "未定"
+    }
+  },
+  "genre_names": {
+    "timing": "タイミング",
+    "action": "アクション",
+    "puzzle": "パズル",
+    "tbd": "未定"
   }
 }

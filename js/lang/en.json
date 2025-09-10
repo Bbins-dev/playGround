@@ -26,9 +26,47 @@
     "difficulty": "Difficulty"
   },
   "footer": {
-    "copyright": "© 2024 PlayGround. Creating the world of hypercasual mini games."
+    "copyright": "© 2025 PlayGround. Creating the world of hypercasual mini games."
   },
   "ads": {
     "advertisement": "Advertisement"
+  },
+  "barista_game": {
+    "title": "Barista Game",
+    "description": "Hold to pour coffee and release at perfect timing for high combos!",
+    "genre": "Timing",
+    "ui": {
+      "combo": "COMBO",
+      "start_game": "Start Game",
+      "game_over": "Game Over",
+      "final_score": "Final Score",
+      "high_score": "High Score",
+      "restart": "Restart",
+      "back_to_main": "← Back to Main",
+      "feedback": {
+        "perfect": "Perfect!",
+        "good": "Good!",
+        "miss": "Miss!",
+        "excellent": "Excellent!"
+      }
+    }
+  },
+  "upcoming_games": {
+    "game2": {
+      "title": "Second Game",
+      "description": "Coming soon!",
+      "genre": "TBD"
+    },
+    "game3": {
+      "title": "Third Game",
+      "description": "Coming soon!",
+      "genre": "TBD"
+    }
+  },
+  "genre_names": {
+    "timing": "Timing",
+    "action": "Action",
+    "puzzle": "Puzzle",
+    "tbd": "TBD"
   }
 }

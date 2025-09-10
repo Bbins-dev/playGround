@@ -26,9 +26,47 @@
     "difficulty": "난이도"
   },
   "footer": {
-    "copyright": "© 2024 PlayGround. 하이퍼캐주얼 미니 게임의 세계를 만들어갑니다."
+    "copyright": "© 2025 PlayGround. 하이퍼캐주얼 미니 게임의 세계를 만들어갑니다."
   },
   "ads": {
     "advertisement": "광고"
+  },
+  "barista_game": {
+    "title": "바리스타 게임",
+    "description": "홀드로 커피를 따르고 완벽한 타이밍에 뗼어 높은 콤보를 기록하세요!",
+    "genre": "타이밍",
+    "ui": {
+      "combo": "콤보",
+      "start_game": "게임 시작",
+      "game_over": "게임 오버",
+      "final_score": "최종 점수",
+      "high_score": "최고 점수",
+      "restart": "다시 시작",
+      "back_to_main": "메인으로 돌아가기",
+      "feedback": {
+        "perfect": "완볽!",
+        "good": "좋아요!",
+        "miss": "놀첸다!",
+        "excellent": "훌륭해요!"
+      }
+    }
+  },
+  "upcoming_games": {
+    "game2": {
+      "title": "두 번째 게임",
+      "description": "곧 추가될 예정입니다!",
+      "genre": "미정"
+    },
+    "game3": {
+      "title": "세 번째 게임",
+      "description": "곧 추가될 예정입니다!",
+      "genre": "미정"
+    }
+  },
+  "genre_names": {
+    "timing": "타이밍",
+    "action": "액션",
+    "puzzle": "퍼즐",
+    "tbd": "미정"
   }
 }

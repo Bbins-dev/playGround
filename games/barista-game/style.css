@@ -369,11 +369,15 @@ body {
     color: #8B4513;
 }
 
-/* 뒤로가기 버튼 */
-.back-btn {
+/* 하단 컨트롤 바 */
+.bottom-controls {
     position: absolute;
     top: 20px;
     left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     z-index: 20;
     pointer-events: auto;
 }
@@ -391,6 +395,29 @@ body {
 .back-btn a:hover {
     background: rgba(0, 0, 0, 0.7);
     transform: translateY(-2px);
+}
+
+/* 게임 내 언어 선택기 */
+.game-language-selector select {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.game-language-selector select:hover {
+    background: rgba(0, 0, 0, 0.7);
+    transform: translateY(-2px);
+}
+
+.game-language-selector option {
+    background: #333;
+    color: white;
 }
 
 /* 반응형 디자인 - 모바일 */
@@ -552,6 +579,22 @@ body {
     .start-btn, .restart-btn {
         padding: 14px 28px;
         font-size: 1.1rem;
+    }
+    
+    /* 모바일에서 하단 컨트롤 조정 */
+    .bottom-controls {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .game-language-selector {
+        align-self: flex-end;
+    }
+    
+    .game-language-selector select {
+        padding: 12px 16px;
+        font-size: 18px;
     }
 }
 
