@@ -2,26 +2,32 @@
 
 /* 언어 선택기 공통 스타일 */
 .language-selector-common {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 5px;
     padding: 8px 12px;
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: inherit;
+    outline: none;
 }
 
 .language-selector-common:hover {
-    background: var(--hover-bg);
-    border-color: var(--accent-primary);
+    background: rgba(0, 0, 0, 0.7);
+    transform: translateY(-2px);
 }
 
 .language-selector-common:focus {
     outline: none;
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.1);
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.language-selector-common option {
+    background: #333;
+    color: white;
+    padding: 8px;
 }
 
 /* 메인 페이지 언어 선택기 */
@@ -33,7 +39,32 @@
 }
 
 .language-selector select {
-    @extend .language-selector-common;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    outline: none;
+}
+
+.language-selector select:hover {
+    background: rgba(0, 0, 0, 0.7);
+    transform: translateY(-2px);
+}
+
+.language-selector select:focus {
+    outline: none;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.language-selector select option {
+    background: #333;
+    color: white;
+    padding: 8px;
 }
 
 /* 게임 내 언어 선택기 */
