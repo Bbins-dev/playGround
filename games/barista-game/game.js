@@ -5,6 +5,9 @@ class BaristaGame {
         this.canvas = document.getElementById('gameCanvas');
         this.ctx = this.canvas.getContext('2d');
         
+        // 픽셀아트 스타일을 위한 설정
+        this.ctx.imageSmoothingEnabled = false;
+        
         // 게임 상태
         this.gameState = 'start'; // 'start', 'playing', 'gameOver'
         this.isHolding = false;
@@ -1237,14 +1240,8 @@ class BaristaGame {
             this.ctx.globalAlpha = 0.6; // 비활성 컵은 투명도 60%
         }
         
-        // 컵 그리기 (각 컵 타입별 크기 사용)
-        this.ctx.fillStyle = cup.config.color;
-        this.ctx.fillRect(cupX - cup.width/2, cupY - cup.height/2, cup.width, cup.height);
-        
-        // 컵 테두리
-        this.ctx.strokeStyle = '#654321';
-        this.ctx.lineWidth = 3;
-        this.ctx.strokeRect(cupX - cup.width/2, cupY - cup.height/2, cup.width, cup.height);
+        // 픽셀아트 스타일 컵 그리기
+        this.drawPixelCup(cupX, cupY, cup.width, cup.height, cup.config.color);
         
         this.ctx.restore();
         
@@ -1271,14 +1268,8 @@ class BaristaGame {
         const faucetX = this.centerX;
         const faucetY = this.centerY - 100; // 수도꼭지는 원래 위치 유지
         
-        // 수도꼭지
-        this.ctx.fillStyle = '#C0C0C0';
-        this.ctx.fillRect(faucetX - 20, faucetY - 20, 40, 40);
-        
-        // 수도꼭지 테두리
-        this.ctx.strokeStyle = '#808080';
-        this.ctx.lineWidth = 2;
-        this.ctx.strokeRect(faucetX - 20, faucetY - 20, 40, 40);
+        // 픽셀아트 스타일 수도꼭지 그리기
+        this.drawPixelFaucet(faucetX, faucetY);
     }
     
     renderCoffeeFlow() {
@@ -1288,6 +1279,136 @@ class BaristaGame {
     
     renderGameOver() {
         // 게임 오버 화면은 HTML로 처리
+    }
+    
+    /**
+     * 픽셀아트 스타일 컵 그리기
+     */
+    drawPixelCup(x, y, width, height, baseColor) {
+        const halfWidth = width / 2;
+        const halfHeight = height / 2;
+        
+        // 컵 몸체 (사다리꼴 모양)
+        this.ctx.fillStyle = baseColor;
+        this.ctx.fillRect(x - halfWidth, y - halfHeight, width, height);
+        
+        // 컵 상단 넓은 부분 (픽셀 스타일)
+        this.ctx.fillRect(x - halfWidth - 2, y - halfHeight, width + 4, 4);
+        
+        // 컵 내부 그림자 (어두운 색)
+        const darkerColor = this.darkenColor(baseColor, 0.3);
+        this.ctx.fillStyle = darkerColor;
+        this.ctx.fillRect(x - halfWidth + 2, y - halfHeight + 2, width - 4, 6);
+        
+        // 컵 하이라이트 (밝은 색, 왼쪽)
+        const lighterColor = this.lightenColor(baseColor, 0.3);
+        this.ctx.fillStyle = lighterColor;
+        this.ctx.fillRect(x - halfWidth, y - halfHeight + 4, 3, height - 8);
+        
+        // 컵 손잡이 (오른쪽)
+        this.ctx.fillStyle = baseColor;
+        this.ctx.fillRect(x + halfWidth + 2, y - halfHeight/2, 4, halfHeight);
+        this.ctx.fillRect(x + halfWidth + 6, y - halfHeight/2 + 4, 4, halfHeight - 8);
+        
+        // 컵 손잡이 하이라이트
+        this.ctx.fillStyle = lighterColor;
+        this.ctx.fillRect(x + halfWidth + 2, y - halfHeight/2, 2, halfHeight);
+        
+        // 컵 테두리 (픽셀 스타일)
+        this.ctx.fillStyle = '#654321';
+        // 상단 테두리
+        this.ctx.fillRect(x - halfWidth - 2, y - halfHeight - 2, width + 4, 2);
+        // 하단 테두리
+        this.ctx.fillRect(x - halfWidth, y + halfHeight, width, 2);
+        // 좌측 테두리
+        this.ctx.fillRect(x - halfWidth - 2, y - halfHeight, 2, height);
+        // 우측 테두리
+        this.ctx.fillRect(x + halfWidth, y - halfHeight, 2, height);
+    }
+    
+    /**
+     * 색상 어둡게 하기
+     */
+    darkenColor(color, factor) {
+        const hex = color.replace('#', '');
+        const r = Math.floor(parseInt(hex.substr(0, 2), 16) * (1 - factor));
+        const g = Math.floor(parseInt(hex.substr(2, 2), 16) * (1 - factor));
+        const b = Math.floor(parseInt(hex.substr(4, 2), 16) * (1 - factor));
+        return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+    }
+    
+    /**
+     * 색상 밝게 하기
+     */
+    lightenColor(color, factor) {
+        const hex = color.replace('#', '');
+        const r = Math.min(255, Math.floor(parseInt(hex.substr(0, 2), 16) * (1 + factor)));
+        const g = Math.min(255, Math.floor(parseInt(hex.substr(2, 2), 16) * (1 + factor)));
+        const b = Math.min(255, Math.floor(parseInt(hex.substr(4, 2), 16) * (1 + factor)));
+        return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+    }
+    
+    /**
+     * 픽셀아트 스타일 수도꼭지 그리기
+     */
+    drawPixelFaucet(x, y) {
+        // 파이프 (위쪽 세로 부분)
+        this.ctx.fillStyle = '#A0A0A0';
+        this.ctx.fillRect(x - 6, y - 30, 12, 20);
+        
+        // 파이프 하이라이트 (왼쪽)
+        this.ctx.fillStyle = '#D0D0D0';
+        this.ctx.fillRect(x - 6, y - 30, 3, 20);
+        
+        // 파이프 그림자 (오른쪽)
+        this.ctx.fillStyle = '#808080';
+        this.ctx.fillRect(x + 3, y - 30, 3, 20);
+        
+        // 수도꼭지 몸체 (가로 부분)
+        this.ctx.fillStyle = '#A0A0A0';
+        this.ctx.fillRect(x - 16, y - 12, 32, 16);
+        
+        // 수도꼭지 몸체 하이라이트 (상단)
+        this.ctx.fillStyle = '#D0D0D0';
+        this.ctx.fillRect(x - 16, y - 12, 32, 4);
+        
+        // 수도꼭지 몸체 그림자 (하단)
+        this.ctx.fillStyle = '#808080';
+        this.ctx.fillRect(x - 16, y, 32, 4);
+        
+        // 수도꼭지 주둥이 (앞쪽)
+        this.ctx.fillStyle = '#909090';
+        this.ctx.fillRect(x - 8, y + 4, 16, 8);
+        
+        // 주둥이 하이라이트
+        this.ctx.fillStyle = '#C0C0C0';
+        this.ctx.fillRect(x - 8, y + 4, 16, 2);
+        
+        // 주둥이 구멍 (출구)
+        this.ctx.fillStyle = '#404040';
+        this.ctx.fillRect(x - 3, y + 12, 6, 3);
+        
+        // 수도꼭지 손잡이 (오른쪽)
+        this.ctx.fillStyle = '#B0B0B0';
+        this.ctx.fillRect(x + 12, y - 8, 6, 8);
+        this.ctx.fillRect(x + 16, y - 4, 4, 4);
+        
+        // 손잡이 하이라이트
+        this.ctx.fillStyle = '#E0E0E0';
+        this.ctx.fillRect(x + 12, y - 8, 2, 8);
+        
+        // 테두리 픽셀들 (어두운 아웃라인)
+        this.ctx.fillStyle = '#606060';
+        // 파이프 테두리
+        this.ctx.fillRect(x - 7, y - 30, 1, 20); // 왼쪽
+        this.ctx.fillRect(x + 6, y - 30, 1, 20); // 오른쪽
+        this.ctx.fillRect(x - 6, y - 31, 12, 1); // 상단
+        // 몸체 테두리
+        this.ctx.fillRect(x - 17, y - 12, 1, 16); // 왼쪽
+        this.ctx.fillRect(x + 16, y - 12, 1, 16); // 오른쪽
+        this.ctx.fillRect(x - 16, y - 13, 32, 1); // 상단
+        // 주둥이 테두리
+        this.ctx.fillRect(x - 8, y + 15, 16, 1); // 하단
     }
     
     gameLoop(currentTime = 0) {
@@ -2357,54 +2478,53 @@ class VisualEffects {
     }
     
     /**
-     * 커피 흐름 렌더링
+     * 커피 흐름 렌더링 (픽셀아트 스타일)
      */
     renderCoffeeStream(faucetX, faucetY) {
-        const streamWidth = 6;
-        const streamLength = 200; // 컵 안으로 충분히 들어가도록 길이 증가
+        // 픽셀 물방울들로 물줄기 표현
+        this.drawPixelCoffeeStream(faucetX, faucetY);
+    }
+    
+    /**
+     * 픽셀아트 스타일 커피 물줄기 그리기
+     */
+    drawPixelCoffeeStream(x, y) {
+        const streamLength = 200;
+        const dropletSize = 4;
+        const dropletSpacing = 8;
         
-        // 물줄기 끝으로 갈수록 약간 좁아지는 효과
-        const endWidth = streamWidth * 0.8;
+        // 시간에 따른 애니메이션 오프셋
+        const animationOffset = (Date.now() * 0.01) % dropletSpacing;
         
-        // 흐름 그라데이션 - 더 어둡게 해서 컵 안에서 자연스럽게 보이게
-        const gradient = this.ctx.createLinearGradient(
-            faucetX, faucetY, 
-            faucetX, faucetY + streamLength
-        );
-        gradient.addColorStop(0, '#8B4513');
-        gradient.addColorStop(0.7, '#654321');
-        gradient.addColorStop(1, '#4A2C17'); // 끝부분을 더 어둡게
-        
-        // 메인 물줄기 그리기 - 테이퍼링 효과
-        this.ctx.fillStyle = gradient;
-        this.ctx.beginPath();
-        this.ctx.moveTo(faucetX - streamWidth / 2, faucetY);
-        this.ctx.lineTo(faucetX + streamWidth / 2, faucetY);
-        this.ctx.lineTo(faucetX + endWidth / 2, faucetY + streamLength);
-        this.ctx.lineTo(faucetX - endWidth / 2, faucetY + streamLength);
-        this.ctx.closePath();
-        this.ctx.fill();
-        
-        // 흐름 중앙 하이라이트 - 더 자연스러운 광택 효과
-        const highlightGradient = this.ctx.createLinearGradient(
-            faucetX, faucetY, 
-            faucetX, faucetY + streamLength
-        );
-        highlightGradient.addColorStop(0, '#A0522D');
-        highlightGradient.addColorStop(0.5, '#8B4513');
-        highlightGradient.addColorStop(1, 'rgba(139, 69, 19, 0.8)'); // 끝부분 투명도 적용
-        
-        this.ctx.fillStyle = highlightGradient;
-        this.ctx.beginPath();
-        this.ctx.moveTo(faucetX - streamWidth / 4, faucetY);
-        this.ctx.lineTo(faucetX + streamWidth / 4, faucetY);
-        this.ctx.lineTo(faucetX + endWidth / 4, faucetY + streamLength);
-        this.ctx.lineTo(faucetX - endWidth / 4, faucetY + streamLength);
-        this.ctx.closePath();
-        this.ctx.fill();
-        
-        // 물방울 효과를 컵 안쪽에 생성
-        this.createStreamDroplets(faucetX, faucetY + streamLength);
+        // 물방울들을 세로로 배열
+        for (let i = 0; i < streamLength; i += dropletSpacing) {
+            const dropletY = y + i + animationOffset;
+            
+            // 화면 밖으로 나간 물방울은 그리지 않음
+            if (dropletY > y + streamLength) continue;
+            
+            // 물방울이 아래로 갈수록 약간씩 좌우로 흔들리는 효과
+            const wobble = Math.sin((dropletY - y) * 0.1) * 2;
+            const dropletX = x + wobble;
+            
+            // 커피색 물방울
+            this.ctx.fillStyle = '#8B4513';
+            this.ctx.fillRect(
+                Math.floor(dropletX - dropletSize/2), 
+                Math.floor(dropletY), 
+                dropletSize, 
+                dropletSize
+            );
+            
+            // 물방울 하이라이트 (왼쪽 상단)
+            this.ctx.fillStyle = '#A0522D';
+            this.ctx.fillRect(
+                Math.floor(dropletX - dropletSize/2), 
+                Math.floor(dropletY), 
+                dropletSize/2, 
+                dropletSize/2
+            );
+        }
     }
     
     /**
