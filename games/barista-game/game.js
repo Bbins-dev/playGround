@@ -9,8 +9,8 @@ class BaristaGame {
         this.gameState = 'start'; // 'start', 'playing', 'gameOver'
         this.isHolding = false;
         this.gameStartTime = 0;
-        this.gameTime = 120; // 2분 (120초)
-        this.maxTime = 120;
+        this.gameTime = 30; // 30초
+        this.maxTime = 30;
         this.lives = 3;
         
         // 스코어 보안 강화
@@ -969,6 +969,9 @@ class BaristaGame {
         this.gameState = 'gameOver';
         this.updateUIMode('menu'); // 메뉴 모드로 UI 변경 (게임 오버 화면 클릭 허용)
         
+        // 게임 오버 시 모든 사운드 정지
+        this.soundManager.stopAllHoldSounds();
+        
         // 최고 점수 업데이트
         const currentScore = this.getScore();
         const currentHighScore = this.getHighScore();
@@ -1324,7 +1327,7 @@ class UIManager {
         // 이전 상태 저장 (애니메이션 최적화용)
         this.previousState = {
             lives: 3,
-            gameTime: 120,
+            gameTime: 30,
             score: 0
         };
         
