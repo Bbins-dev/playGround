@@ -4,10 +4,14 @@ class I18n {
     constructor() {
         this.currentLanguage = 'ko';
         this.translations = {};
-        this.init();
+        this.basePath = 'js/lang/';
+        // Don't auto-initialize, let manual init() calls control this
     }
 
-    async init() {
+    async init(initialLang = 'ko', basePath = 'js/lang/') {
+        this.basePath = basePath;
+        this.currentLanguage = initialLang;
+        
         // Load default language
         await this.loadLanguage(this.currentLanguage);
         
@@ -20,7 +24,7 @@ class I18n {
 
     async loadLanguage(lang) {
         try {
-            const response = await fetch(`js/lang/${lang}.json`);
+            const response = await fetch(`${this.basePath}${lang}.json`);
             if (response.ok) {
                 this.translations[lang] = await response.json();
             } else {
@@ -33,14 +37,22 @@ class I18n {
 
     setupLanguageSelector() {
         const languageSelect = document.getElementById('languageSelect');
+        const gameLanguageSelect = document.getElementById('gameLanguageSelect');
+        
         if (languageSelect) {
             languageSelect.addEventListener('change', (e) => {
-                this.changeLanguage(e.target.value);
+                this.setLanguage(e.target.value);
+            });
+        }
+        
+        if (gameLanguageSelect) {
+            gameLanguageSelect.addEventListener('change', (e) => {
+                this.setLanguage(e.target.value);
             });
         }
     }
 
-    async changeLanguage(lang) {
+    async setLanguage(lang) {
         if (lang !== this.currentLanguage) {
             // Load new language if not already loaded
             if (!this.translations[lang]) {
@@ -51,9 +63,22 @@ class I18n {
             document.documentElement.lang = lang;
             this.applyTranslations();
             
-            // Save language preference
-            localStorage.setItem('playground-language', lang);
+            // Save language preference (use consistent key)
+            localStorage.setItem('selectedLanguage', lang);
+            
+            // Update all language selectors
+            this.updateLanguageSelectors(lang);
         }
+    }
+    
+    updateLanguageSelectors(lang) {
+        const selectors = ['languageSelect', 'gameLanguageSelect'];
+        selectors.forEach(id => {
+            const selector = document.getElementById(id);
+            if (selector && selector.value !== lang) {
+                selector.value = lang;
+            }
+        });
     }
 
     applyTranslations() {
@@ -75,6 +100,26 @@ class I18n {
                 element.placeholder = translation;
             }
         });
+        
+        // Handle content attribute translations (for meta tags)
+        const contentElements = document.querySelectorAll('[data-i18n-content]');
+        contentElements.forEach(element => {
+            const key = element.getAttribute('data-i18n-content');
+            const translation = this.getTranslation(key);
+            if (translation) {
+                element.setAttribute('content', translation);
+            }
+        });
+        
+        // Update page title if it has i18n attribute
+        const titleElement = document.querySelector('title[data-i18n]');
+        if (titleElement) {
+            const key = titleElement.getAttribute('data-i18n');
+            const translation = this.getTranslation(key);
+            if (translation) {
+                document.title = translation;
+            }
+        }
     }
 
     getTranslation(key) {
@@ -98,18 +143,22 @@ class I18n {
     }
 
     // Load saved language preference
-    loadSavedLanguage() {
-        const savedLang = localStorage.getItem('playground-language');
-        if (savedLang && this.translations[savedLang]) {
-            this.changeLanguage(savedLang);
-        }
+    async loadSavedLanguage() {
+        const savedLang = localStorage.getItem('selectedLanguage') || 'ko';
+        await this.setLanguage(savedLang);
     }
 }
 
 // Initialize i18n system
-window.i18n = new I18n();
+if (!window.i18n) {
+    window.i18n = new I18n();
+}
 
-// Load saved language preference on page load
-document.addEventListener('DOMContentLoaded', () => {
-    window.i18n.loadSavedLanguage();
-});
+// Auto-initialize for main page
+if (window.location.pathname === '/' || window.location.pathname.endsWith('index.html')) {
+    document.addEventListener('DOMContentLoaded', async () => {
+        const savedLang = localStorage.getItem('selectedLanguage') || 'ko';
+        await window.i18n.init(savedLang);
+        await window.i18n.loadSavedLanguage();
+    });
+}

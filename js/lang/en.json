@@ -33,6 +33,7 @@
   },
   "barista_game": {
     "title": "Barista Game",
+    "page_title": "Barista Game - PlayGround",
     "description": "Hold to pour coffee and release at perfect timing for high combos!",
     "genre": "Timing",
     "ui": {

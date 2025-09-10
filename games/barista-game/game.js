@@ -3697,26 +3697,17 @@ class CupSystem {
 }
 
 // 게임 시작
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     // Initialize i18n with parent page language setting
     if (typeof window.i18n !== 'undefined') {
         // Get language from parent or localStorage
         const savedLang = localStorage.getItem('selectedLanguage') || 'ko';
-        window.i18n.init(savedLang);
         
-        // Set up game language selector
-        const gameLanguageSelect = document.getElementById('gameLanguageSelect');
-        if (gameLanguageSelect) {
-            // Set current language in selector
-            gameLanguageSelect.value = savedLang;
-            
-            // Add change event listener
-            gameLanguageSelect.addEventListener('change', (e) => {
-                const newLang = e.target.value;
-                localStorage.setItem('selectedLanguage', newLang);
-                window.i18n.setLanguage(newLang);
-            });
-        }
+        // Initialize i18n for game with correct path
+        await window.i18n.init(savedLang, '../../js/lang/');
+        
+        // Apply saved language
+        await window.i18n.loadSavedLanguage();
     }
     
     const gameInstance = new BaristaGame();

@@ -33,6 +33,7 @@
   },
   "barista_game": {
     "title": "バリスタゲーム",
+    "page_title": "バリスタゲーム - PlayGround",
     "description": "ホールドでコーヒーを注ぎ、完璧なタイミングで離して高コンボを記録しよう！",
     "genre": "タイミング",
     "ui": {
