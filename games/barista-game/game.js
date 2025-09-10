@@ -1347,11 +1347,9 @@ class BaristaGame {
             this.ctx.fillStyle = sleeveColor;
             this.ctx.fillRect(x - segmentWidth/2, segmentY, segmentWidth, segmentHeight + 1);
             
-            // 슬리브 하이라이트 (왼쪽)
-            if (i === 0) {
-                this.ctx.fillStyle = sleeveBright;
-                this.ctx.fillRect(x - segmentWidth/2, segmentY + 2, 2, sleeveHeight - 4);
-            }
+            // 슬리브 하이라이트 (왼쪽) - 각 세그먼트마다 그리기
+            this.ctx.fillStyle = sleeveBright;
+            this.ctx.fillRect(x - segmentWidth/2, segmentY, 2, segmentHeight);
         }
         
         // 슬리브 상단/하단 테두리 (테이퍼링에 맞게)
