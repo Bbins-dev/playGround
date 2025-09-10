@@ -108,3 +108,44 @@ The project emphasizes modularity (each game is independent), Korean-first local
 - `./style.css` resolves to: `http://localhost:8000/games/barista-game/style.css` ✅ Success
 
 **Always check for this pattern when adding new games or fixing navigation issues.**
+
+## 🔧 Configuration-Driven Architecture (CRITICAL!)
+
+### Centralized Configuration System
+- **Never hard-code values** - always use `js/config.js` for all settings
+- **Dynamic game registry** - games auto-generated from configuration, not manual HTML
+- **Centralized i18n** - all translations managed through `js/lang/*.json` files
+- **Component-based CSS** - reusable styles in `css/components.css`
+
+### Key Configuration Files:
+- `js/config.js`: Site settings, game registry, UI config, performance settings
+- `js/gameRegistry.js`: Dynamic game card generation and management
+- `css/components.css`: Shared component styles (buttons, language selectors, etc.)
+- `js/i18n.js`: Multi-language system with automatic homepage/game sync
+
+### Language System Architecture:
+- **Automatic sync**: Homepage ↔ Game language settings stay synchronized
+- **Storage-driven**: Uses `localStorage` with configurable key names
+- **Path-aware**: Automatically detects homepage vs game context for relative paths
+- **Consistent styling**: All language selectors use unified dark theme with hover effects
+
+### UI Consistency Rules:
+- **Language selectors**: Always use dark semi-transparent background with white text
+- **Game controls**: Position language dropdown at `top: 0px, right: 20px` in games
+- **Combo displays**: Number first, then text ("5 콤보!" not "콤보 5")
+- **Mobile-responsive**: All components must work on touch devices
+
+### Recent Major Refactoring (2025-01):
+- Eliminated 400+ lines of duplicate/hard-coded content
+- Implemented dynamic game card generation
+- Unified language selector styling across all pages
+- Fixed homepage-game language synchronization issues
+- Improved mobile UI positioning and touch responsiveness
+
+### Development Workflow:
+1. **Always check configuration first** - modify `config.js`, not individual files
+2. **Test language switching** - verify sync between homepage and games
+3. **Mobile testing** - ensure touch events and responsive layout work
+4. **Dynamic content** - prefer generated content over static HTML
+
+**REMEMBER: This project prioritizes maintainability through configuration-driven development!**
