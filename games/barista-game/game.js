@@ -1305,8 +1305,8 @@ class BaristaGame {
             const segmentY = y - halfHeight + 6 + (height - 12) * ratio;
             const segmentHeight = (height - 12) / cupSegments;
             
-            // 원뿔형 테이퍼링: 위는 넓고 아래는 좁게
-            const taperFactor = 1 - ratio * 0.6; // 상단 100% → 하단 40%
+            // 원뿔형 테이퍼링: 위는 넓고 아래는 좁게 (완만하게)
+            const taperFactor = 1 - ratio * 0.3; // 상단 100% → 하단 70%
             const segmentWidth = width * taperFactor;
             const segmentHalfWidth = segmentWidth / 2;
             
@@ -1340,7 +1340,7 @@ class BaristaGame {
             // 슬리브 위치에서의 컵 너비 계산 (컵 전체 높이에서의 비율)
             const totalRatio = (segmentY - (y - halfHeight + 6)) / (height - 12);
             const clampedRatio = Math.max(0, Math.min(1, totalRatio));
-            const taperFactor = 1 - clampedRatio * 0.6;
+            const taperFactor = 1 - clampedRatio * 0.3;
             const segmentWidth = width * taperFactor;
             
             // 슬리브 본체
@@ -1355,12 +1355,12 @@ class BaristaGame {
         // 슬리브 상단/하단 테두리 (테이퍼링에 맞게)
         const topRatio = (sleeveTop - (y - halfHeight + 6)) / (height - 12);
         const topClampedRatio = Math.max(0, Math.min(1, topRatio));
-        const topTaperFactor = 1 - topClampedRatio * 0.6;
+        const topTaperFactor = 1 - topClampedRatio * 0.3;
         const topWidth = width * topTaperFactor;
         
         const bottomRatio = (sleeveTop + sleeveHeight - (y - halfHeight + 6)) / (height - 12);
         const bottomClampedRatio = Math.max(0, Math.min(1, bottomRatio));
-        const bottomTaperFactor = 1 - bottomClampedRatio * 0.6;
+        const bottomTaperFactor = 1 - bottomClampedRatio * 0.3;
         const sleeveBottomWidth = width * bottomTaperFactor;
         
         this.ctx.fillStyle = sleeveDark;
@@ -1383,7 +1383,7 @@ class BaristaGame {
             const segmentY = y - halfHeight + 6 + (height - 12) * ratio;
             const segmentHeight = (height - 12) / cupSegments;
             
-            const taperFactor = 1 - ratio * 0.6;
+            const taperFactor = 1 - ratio * 0.3;
             const segmentWidth = width * taperFactor;
             const segmentHalfWidth = segmentWidth / 2;
             
@@ -1394,7 +1394,7 @@ class BaristaGame {
         }
         
         // 하단 테두리 (가장 좁은 부분)
-        const bottomWidth = width * 0.4;
+        const bottomWidth = width * 0.7;
         this.ctx.fillRect(x - bottomWidth/2, y + halfHeight, bottomWidth, 1);
     }
     
