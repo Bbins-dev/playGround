@@ -80,13 +80,10 @@
 
 body {
     margin: 0;
-    padding: 120px 0; /* 상단/하단 광고 영역 여백 */
+    padding: 0; /* 광고는 fixed positioned이므로 패딩 불필요 */
     background: linear-gradient(135deg, #8B4513 0%, #D2691E 50%, #CD853F 100%);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    height: 100vh;
     overflow: hidden;
     
     /* 모바일 최적화 */
@@ -106,6 +103,9 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    /* 광고 영역을 피하기 위한 패딩 */
+    padding: 120px 0;
+    box-sizing: border-box;
 }
 
 #gameCanvas {
@@ -157,6 +157,10 @@ body {
 /* 게임 상태별 클릭 이벤트 제어 */
 .ui-overlay.menu-mode {
     pointer-events: auto; /* 메뉴 상태에서는 UI 클릭 허용 */
+    /* 게임 캔버스 중앙에 정확히 맞춤 */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .ui-overlay.game-mode {
@@ -260,15 +264,30 @@ body {
     animation: danger-blink 0.3s ease-in-out infinite;
 }
 
-/* 콤보 표시 - 하단 고정 */
+/* 콤보 표시 - 반응형: 모바일은 하단, 데스크톱은 우측 */
 .combo-display {
     position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
     text-align: center;
     pointer-events: none;
     z-index: 100;
+}
+
+/* 모바일: 하단 중앙 */
+@media (max-width: 768px) {
+    .combo-display {
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+/* 데스크톱: 우측 중앙 */
+@media (min-width: 769px) {
+    .combo-display {
+        right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
 }
 
 .combo-text {
