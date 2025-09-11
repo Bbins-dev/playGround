@@ -14,7 +14,7 @@ class BaristaGame {
         this.gameStartTime = 0;
         this.gameTime = 30; // 30초
         this.maxTime = 30;
-        this.lives = 3;
+        // 하트 시스템 제거됨
         
         // 스코어 보안 강화
         this._score = 0;
@@ -540,7 +540,7 @@ class BaristaGame {
         this.updateUIMode('game'); // 게임 모드로 UI 변경
         this.gameStartTime = Date.now();
         this.gameTime = this.maxTime;
-        this.lives = 3;
+        // 하트 시스템 제거됨
         this.setScore(0);
         this.combo = 0;
         this.maxCombo = 0; // 이번 플레이 최고 콤보 초기화
@@ -611,7 +611,7 @@ class BaristaGame {
         // 모든 게임 변수 초기화
         this.gameStartTime = 0;
         this.gameTime = this.maxTime;
-        this.lives = 3;
+        // 하트 시스템 제거됨
         this.setScore(0);
         this.combo = 0;
         this.maxCombo = 0;
@@ -834,26 +834,21 @@ class BaristaGame {
      * 게임 오버 조건 상세 체크
      */
     isGameOver() {
-        const livesOver = this.lives <= 0;
         const timeOver = this.gameTime <= 0;
         
-        if (livesOver || timeOver) {
+        if (timeOver) {
             console.log('🔍 게임 오버 조건 체크:');
-            console.log('  - lives:', this.lives, '(소진:', livesOver, ')');
             console.log('  - time:', this.gameTime.toFixed(1), '(소진:', timeOver, ')');
         }
         
-        return livesOver || timeOver;
+        return timeOver;
     }
     
     /**
      * 게임 오버 사유 반환
      */
     getGameOverReason() {
-        if (this.lives <= 0) {
-            console.log('💔 게임 오버 사유: 생명 소진');
-            return 'lives'; // 생명 소진
-        } else if (this.gameTime <= 0) {
+        if (this.gameTime <= 0) {
             console.log('⏰ 게임 오버 사유: 시간 소진');
             return 'time'; // 시간 소진
         }
@@ -867,13 +862,13 @@ class BaristaGame {
         // 콤보 리셋
         this.combo = 0;
         
-        // 시간 감소 (10초)
-        this.gameTime = Math.max(0, this.gameTime - 10);
+        // 시간 감소 (3초)
+        this.gameTime = Math.max(0, this.gameTime - 3);
         
         // 통계 업데이트
         this.gameStats.failedCups++;
         
-        console.log(`❌ 너무 빠른 릴리즈: 시간 -10초, 콤보 리셋`);
+        console.log(`❌ 너무 빠른 릴리즈: 시간 -3초, 콤보 리셋`);
         console.log(`  - 현재 시간: ${this.gameTime.toFixed(1)}초`);
         console.log(`  - 현재 콤보: ${this.combo}`);
     }
@@ -961,17 +956,13 @@ class BaristaGame {
         // 콤보 리셋
         this.combo = 0;
         
-        // 생명 감소
-        this.lives--;
-        
-        // 시간 패널티 없음 (넘침 구간에서는 시간 변화 없음)
-        // this.gameTime = Math.max(0, this.gameTime - 10);
+        // 시간 감소 (7초 패널티)
+        this.gameTime = Math.max(0, this.gameTime - 7);
         
         // 통계 업데이트
         this.gameStats.failedCups++;
         
-        console.log(`💥 넘침: 생명 -1, 시간 변화 없음, 콤보 리셋`);
-        console.log(`  - 현재 생명: ${this.lives}`);
+        console.log(`💥 넘침: 시간 -7초, 콤보 리셋`);
         console.log(`  - 현재 시간: ${this.gameTime.toFixed(1)}초`);
         console.log(`  - 현재 콤보: ${this.combo}`);
     }
@@ -1025,7 +1016,6 @@ class BaristaGame {
         
         // 게임 오버 화면 표시 (UIManager 사용) - 통계 정보 포함
         this.uiManager.showGameOver(this.getScore(), this.getHighScore(), {
-            currentCombo: this.maxCombo,
             bestCombo: this.bestCombo,
             perfectCount: this.perfectCount,
             totalCupCount: this.totalCupCount
@@ -1627,7 +1617,7 @@ class UIManager {
         this.uiStats.totalUpdates++;
         
         // 하트 업데이트
-        this.updateLives(game.lives);
+        // 하트 시스템 제거됨
         
         // 시간 바 업데이트
         this.updateTimeBar(game.gameTime, game.maxTime);
@@ -1786,7 +1776,6 @@ class UIManager {
         
         // 통계 정보 업데이트
         if (stats) {
-            document.getElementById('currentCombo').textContent = stats.currentCombo || 0;
             document.getElementById('bestCombo').textContent = stats.bestCombo || 0;
             
             // 퍼펙트 통계
@@ -3006,16 +2995,16 @@ class VisualEffects {
                 break;
             case 'overflow':
                 color = '#F44336';
-                message = 'TOO LATE... -❤️';
+                message = 'TOO LATE...';
                 size = 40;
                 this.createOverflowEffect(cup);
                 break;
         }
         
-        // 텍스트 애니메이션 - 화면 중앙 상단에 표시
-        if (this.ctx && this.ctx.canvas) {
-            const textX = this.ctx.canvas.width / 2;
-            const textY = 150;  // 상단에서 150px 아래
+        // 텍스트 애니메이션 - 컵 위쪽에서 표시
+        if (this.ctx && this.ctx.canvas && cup) {
+            const textX = cup.x;
+            const textY = cup.y - cup.height/2 - 50;  // 컵 위쪽에서 시작
             this.createTextAnimation(message, textX, textY, color, size);
         } else {
             console.error('Canvas context not available for text animation');
