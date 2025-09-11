@@ -34,7 +34,7 @@
   "barista_game": {
     "title": "Barista Game",
     "page_title": "Barista Game - BinBox Games",
-    "description": "Hold to pour coffee and release at perfect timing for high combos!",
+    "description": "Hold to pour coffee and release at perfect timing for high combos! Release at perfect timing to gain extra time!",
     "genre": "Timing",
     "ui": {
       "combo": "COMBO",
