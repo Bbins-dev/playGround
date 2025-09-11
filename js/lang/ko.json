@@ -42,6 +42,8 @@
       "game_over": "게임 오버",
       "final_score": "최종 점수",
       "high_score": "최고 점수",
+      "best_combo": "최고 콤보",
+      "perfect_rate": "퍼펙트",
       "restart": "다시 시작",
       "back_to_main": "메인으로 돌아가기",
       "feedback": {

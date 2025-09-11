@@ -42,6 +42,8 @@
       "game_over": "ゲームオーバー",
       "final_score": "最終スコア",
       "high_score": "ハイスコア",
+      "best_combo": "ベストコンボ",
+      "perfect_rate": "パーフェクト率",
       "restart": "再スタート",
       "back_to_main": "← メインに戻る",
       "feedback": {

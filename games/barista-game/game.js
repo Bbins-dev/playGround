@@ -24,6 +24,13 @@ class BaristaGame {
         this._scoreValidationFailed = false; // 무한 루프 방지
         this._highScoreValidationFailed = false; // 무한 루프 방지
         
+        // 게임 통계 추적
+        this.currentCombo = 0;
+        this.maxCombo = 0; // 이번 플레이 최고 콤보
+        this.bestCombo = 0; // 전체 최고 콤보 (저장)
+        this.perfectCount = 0; // 퍼펙트 횟수
+        this.totalCupCount = 0; // 전체 시도한 컵 수
+        
         // 컵 큐 시스템
         this.cupQueue = [];
         this.activeCupIndex = 2; // 가운데 위치 (인덱스 2)가 작업 컵
@@ -536,7 +543,9 @@ class BaristaGame {
         this.lives = 3;
         this.setScore(0);
         this.combo = 0;
-        this.maxCombo = 0;
+        this.maxCombo = 0; // 이번 플레이 최고 콤보 초기화
+        this.perfectCount = 0; // 퍼펙트 횟수 초기화
+        this.totalCupCount = 0; // 전체 시도한 컵 수 초기화
         this.cupQueue = [];
         this.activeCupIndex = 2;
         this.isHolding = false;
@@ -873,6 +882,9 @@ class BaristaGame {
      * 성공 처리
      */
     processSuccess() {
+        // 총 컵 카운트 증가
+        this.totalCupCount++;
+        
         // 기본 점수 (10점)
         const baseScore = 10;
         console.log('🎯 processSuccess 시작 - 점수 추가 시도:', baseScore);
@@ -883,6 +895,11 @@ class BaristaGame {
         
         // 콤보 유지 (성공도 콤보에 포함)
         this.combo++;
+        
+        // 최고 콤보 업데이트
+        if (this.combo > this.maxCombo) {
+            this.maxCombo = this.combo;
+        }
         
         // 성공 시에는 시간 패널티 없음 (시간 유지)
         // this.gameTime = Math.max(0, this.gameTime - 10); // 제거됨
@@ -899,6 +916,9 @@ class BaristaGame {
      * 완벽한 타이밍 처리
      */
     processPerfect() {
+        // 총 컵 카운트 증가
+        this.totalCupCount++;
+        
         // 기본 점수 (100점) + 콤보 보너스
         const baseScore = 100;
         const comboBonus = this.combo * 10; // 콤보당 10점 추가
@@ -914,6 +934,14 @@ class BaristaGame {
         
         // 콤보 증가
         this.combo++;
+        
+        // 퍼펙트 카운트 증가
+        this.perfectCount++;
+        
+        // 최고 콤보 업데이트
+        if (this.combo > this.maxCombo) {
+            this.maxCombo = this.combo;
+        }
         
         // 시간 연장 (2초)
         this.gameTime += 2;
@@ -983,14 +1011,25 @@ class BaristaGame {
             this.saveHighScore();
         }
         
+        // 최고 콤보 업데이트
+        if (this.maxCombo > this.bestCombo) {
+            this.bestCombo = this.maxCombo;
+            this.saveHighScore(); // bestCombo도 함께 저장
+        }
+        
         // 게임 통계 완료
         this.gameStats.totalPlayTime = Date.now() - this.gameStats.startTime;
         
         // 최종 통계 계산
         const finalStats = this.calculateFinalStats();
         
-        // 게임 오버 화면 표시 (UIManager 사용)
-        this.uiManager.showGameOver(this.getScore(), this.getHighScore());
+        // 게임 오버 화면 표시 (UIManager 사용) - 통계 정보 포함
+        this.uiManager.showGameOver(this.getScore(), this.getHighScore(), {
+            currentCombo: this.maxCombo,
+            bestCombo: this.bestCombo,
+            perfectCount: this.perfectCount,
+            totalCupCount: this.totalCupCount
+        });
         
         // 최종 통계 로깅
         this.logFinalStats(finalStats);
@@ -1074,9 +1113,15 @@ class BaristaGame {
             } else {
                 this.setHighScore(savedScore);
             }
+            
+            // 최고 콤보 로드
+            const savedBestCombo = parseInt(localStorage.getItem('barista-best-combo') || '0');
+            this.bestCombo = savedBestCombo;
+            console.log('✅ 저장된 최고 콤보 로드 완료:', this.bestCombo);
         } catch (error) {
             console.error('최고점수 로드 중 오류:', error);
             this.setHighScore(0);
+            this.bestCombo = 0;
         }
     }
 
@@ -1087,7 +1132,9 @@ class BaristaGame {
             
             localStorage.setItem('barista-high-score', highScore.toString());
             localStorage.setItem('barista-high-score-hash', highScoreHash);
+            localStorage.setItem('barista-best-combo', this.bestCombo.toString());
             console.log('💾 최고점수 저장 완료:', highScore);
+            console.log('💾 최고 콤보 저장 완료:', this.bestCombo);
         } catch (error) {
             console.error('최고점수 저장 중 오류:', error);
         }
@@ -1733,9 +1780,22 @@ class UIManager {
     /**
      * 게임 오버 화면 표시
      */
-    showGameOver(finalScore, highScore) {
+    showGameOver(finalScore, highScore, stats = {}) {
         this.finalScore.textContent = finalScore.toLocaleString();
         this.highScore.textContent = highScore.toLocaleString();
+        
+        // 통계 정보 업데이트
+        if (stats) {
+            document.getElementById('currentCombo').textContent = stats.currentCombo || 0;
+            document.getElementById('bestCombo').textContent = stats.bestCombo || 0;
+            
+            // 퍼펙트 통계
+            const perfectRate = stats.totalCupCount > 0 
+                ? Math.round((stats.perfectCount / stats.totalCupCount) * 100)
+                : 0;
+            document.getElementById('perfectStats').textContent = 
+                `${stats.perfectCount || 0}/${stats.totalCupCount || 0} (${perfectRate}%)`;
+        }
         
         // 게임 오버 화면 표시 시 오버레이 클릭 활성화 (UI 클릭 허용)
         this.setOverlayPointerEvents(true);

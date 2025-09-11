@@ -433,7 +433,7 @@ body {
 }
 
 .score-display {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .score-display p {
@@ -444,6 +444,24 @@ body {
 
 .score-display span {
     font-weight: 700;
+    color: #8B4513;
+}
+
+/* 추가 통계 표시 */
+.stats-display {
+    margin-bottom: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(101, 67, 33, 0.3);
+}
+
+.stats-display p {
+    color: #654321;
+    font-size: 1rem;
+    margin-bottom: 8px;
+}
+
+.stats-display span {
+    font-weight: 600;
     color: #8B4513;
 }
 

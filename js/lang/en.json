@@ -42,6 +42,8 @@
       "game_over": "Game Over",
       "final_score": "Final Score",
       "high_score": "High Score",
+      "best_combo": "Best Combo",
+      "perfect_rate": "Perfect Rate",
       "restart": "Restart",
       "back_to_main": "← Back to Main",
       "feedback": {
