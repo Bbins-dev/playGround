@@ -375,7 +375,7 @@ class BaristaGame {
         this.canvas.style.display = 'block';
         this.canvas.style.margin = '0 auto';
         this.canvas.style.border = 'none';
-        this.canvas.style.background = '#1a1a1a';
+        // 배경색은 CSS에서 정의된 #F5DEB3 사용
         
         console.log(`캔버스 크기 설정: ${this.canvas.width}x${this.canvas.height} (${isMobile ? '모바일' : isTablet ? '태블릿' : '데스크톱'})`);
     }
