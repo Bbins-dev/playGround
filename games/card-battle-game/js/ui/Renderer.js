@@ -370,15 +370,10 @@ class Renderer {
 
     // 메뉴 모드 렌더링
     renderMenuMode(gameState) {
-        // 제목
-        this.ctx.font = 'bold 32px Arial';
-        this.ctx.fillStyle = '#fff';
-        this.ctx.textAlign = 'center';
-        this.ctx.fillText('카드 배틀', this.width / 2, this.height / 2 - 50);
-
-        // 시작 버튼 (임시)
-        this.ctx.font = '18px Arial';
-        this.ctx.fillText('게임 시작', this.width / 2, this.height / 2 + 20);
+        // MainMenu 인스턴스가 있으면 렌더링 호출
+        if (gameState.currentScreen && typeof gameState.currentScreen.render === 'function') {
+            gameState.currentScreen.render(this.ctx, this.canvas);
+        }
     }
 
     // 애니메이션 추가

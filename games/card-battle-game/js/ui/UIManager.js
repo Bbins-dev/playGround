@@ -137,7 +137,29 @@ class UIManager {
     // 메인 렌더링 루프
     render() {
         const gameState = this.getGameState();
-        this.renderer.render(gameState);
+
+        // 처음 몇 번만 로그 출력
+        if (!this.renderCount) this.renderCount = 0;
+        if (this.renderCount < 3) {
+            console.log(`🎨 UIManager render #${this.renderCount}, currentScreen:`, this.currentScreen);
+            this.renderCount++;
+        }
+
+        // 화면별 렌더링
+        if (this.currentScreen === 'menu' && this.gameManager.mainMenu) {
+            if (this.renderCount <= 3) console.log('📋 메인 메뉴 렌더링 시작');
+            // 메인 메뉴는 MainMenu 클래스에서 직접 렌더링
+            this.gameManager.mainMenu.render(this.gameManager.ctx, this.gameManager.canvas);
+            if (this.renderCount <= 3) console.log('✅ 메인 메뉴 렌더링 완료');
+        } else if (this.currentScreen === 'gallery' && this.gameManager.cardGallery) {
+            if (this.renderCount <= 3) console.log('🎴 카드 갤러리 렌더링');
+            // 카드 갤러리는 CardGallery 클래스에서 직접 렌더링
+            this.gameManager.cardGallery.render(this.gameManager.ctx, this.gameManager.canvas);
+        } else {
+            if (this.renderCount <= 3) console.log('🎮 Renderer를 통한 렌더링, gameState:', gameState);
+            // 기타 화면은 Renderer를 통해 렌더링
+            this.renderer.render(gameState);
+        }
     }
 
     // 게임 상태 가져오기
@@ -281,16 +303,9 @@ class UIManager {
 
     // 메뉴 클릭 처리
     handleMenuClick(x, y) {
-        // 시작 버튼 영역 체크 (임시)
-        const startButtonArea = {
-            x: this.canvas.width / 2 - 100,
-            y: this.canvas.height / 2,
-            width: 200,
-            height: 50
-        };
-
-        if (this.isPointInRect(x, y, startButtonArea)) {
-            this.startGame();
+        // MainMenu 클래스에서 클릭 처리
+        if (this.gameManager.mainMenu && this.gameManager.mainMenu.handlePointerInput) {
+            this.gameManager.mainMenu.handlePointerInput(x, y, this.gameManager.canvas);
         }
     }
 
@@ -403,24 +418,30 @@ class UIManager {
     }
 
     // 갤러리 카드 요소 생성
-    createCardGalleryElement(cardData) {
+    createCardGalleryElement(card) {
         const div = document.createElement('div');
         div.className = 'gallery-card';
 
-        const elementConfig = GameConfig.elements[cardData.element];
-        const typeConfig = GameConfig.cardTypes[cardData.type];
+        // Card 인스턴스의 메서드 사용
+        const cardName = card.getDisplayName ? card.getDisplayName() : card.name;
+        const cardDescription = card.getDisplayDescription ? card.getDisplayDescription() : card.description;
+        const emoji = card.getEmoji ? card.getEmoji() : (GameConfig.elements[card.element]?.emoji || '❓');
+        const elementColor = card.getColor ? card.getColor() : (GameConfig.elements[card.element]?.color || '#666');
+        const typeConfig = GameConfig.cardTypes[card.type];
+
+        // card-preview 중복 제거하고 직접 gallery-card에 콘텐츠 추가
+        div.style.background = `linear-gradient(135deg, ${elementColor}, ${this.darkenColor(elementColor, 0.3)})`;
 
         div.innerHTML = `
-            <div class="card-preview" style="background: ${elementConfig?.color || '#666'}">
-                <div class="card-emoji">${elementConfig?.emoji || '❓'}</div>
-                <div class="card-name">${cardData.name}</div>
-                <div class="card-type">${typeConfig?.name || cardData.type}</div>
-                <div class="card-stats">
-                    <span>⚔${cardData.power}</span>
-                    <span>🎯${cardData.accuracy}%</span>
-                </div>
-                <div class="card-description">${cardData.description}</div>
+            <div class="card-emoji">${emoji}</div>
+            <div class="card-name">${cardName}</div>
+            <div class="card-type">${typeConfig?.name || card.type}</div>
+            <div class="card-stats">
+                <span class="card-power">⚔${card.power}</span>
+                <span class="card-accuracy">🎯${card.accuracy}%</span>
             </div>
+            <div class="card-description">${cardDescription}</div>
+            <div class="card-cost">${card.cost || 0}</div>
         `;
 
         return div;
@@ -463,6 +484,24 @@ class UIManager {
     showCardTooltip(card) {
         // 간단한 툴팁 구현
         console.log(`📋 카드 정보: ${card.name} - ${card.description}`);
+    }
+
+    // 색상 어둡게 하기 유틸리티
+    darkenColor(color, factor) {
+        // 간단한 색상 어둡게 하기 (헥스 색상 기준)
+        if (color.startsWith('#')) {
+            const hex = color.slice(1);
+            const r = parseInt(hex.slice(0, 2), 16);
+            const g = parseInt(hex.slice(2, 4), 16);
+            const b = parseInt(hex.slice(4, 6), 16);
+
+            const newR = Math.floor(r * (1 - factor));
+            const newG = Math.floor(g * (1 - factor));
+            const newB = Math.floor(b * (1 - factor));
+
+            return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
+        }
+        return color;
     }
 
     // 속도 버튼 업데이트

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="card-battle-title">카드 배틀</title>
+    <title data-i18n="auto-battle-card-game-title">자동전투 카드게임</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,20 +13,22 @@
             <select id="language-select">
                 <option value="ko">한국어</option>
                 <option value="en">English</option>
-                <option value="ja">日本語</option>
+                <option value="ja">日본語</option>
             </select>
         </div>
 
-        <!-- 메인 캔버스 -->
-        <canvas id="gameCanvas" width="1280" height="720"></canvas>
+        <!-- 게임 래퍼 (Canvas + UI 오버레이) -->
+        <div class="game-wrapper">
+            <!-- 메인 캔버스 -->
+            <canvas id="gameCanvas" width="1280" height="720"></canvas>
 
-        <!-- UI 오버레이 -->
-        <div id="ui-overlay" class="ui-overlay">
+            <!-- UI 오버레이 -->
+            <div id="ui-overlay" class="ui-overlay">
             <!-- HP 바들 -->
             <div id="enemy-hp-bar" class="hp-bar-container hp-bar-enemy">
                 <div class="hp-bar-fill" style="width: 100%;"></div>
                 <div class="hp-bar-text">
-                    <span class="hp-label" data-i18n="enemy">적</span>
+                    <span class="hp-label" data-i18n="auto_battle_card_game.ui.enemy">적</span>
                     <span class="hp-number">100/100</span>
                 </div>
                 <div class="status-effects" id="enemy-status-effects"></div>
@@ -35,7 +37,7 @@
             <div id="player-hp-bar" class="hp-bar-container hp-bar-player">
                 <div class="hp-bar-fill" style="width: 100%;"></div>
                 <div class="hp-bar-text">
-                    <span class="hp-label" data-i18n="player">플레이어</span>
+                    <span class="hp-label" data-i18n="auto_battle_card_game.ui.player">플레이어</span>
                     <span class="hp-number">100/100</span>
                 </div>
                 <div class="status-effects" id="player-status-effects"></div>
@@ -49,10 +51,10 @@
             </div>
 
             <!-- 카드 갤러리 버튼 -->
-            <button id="card-gallery-btn" class="ui-button" data-i18n="view-all-cards">모든 카드 보기</button>
+            <button id="card-gallery-btn" class="ui-button" data-i18n="auto_battle_card_game.ui.view_all_cards">모든 카드 보기</button>
 
             <!-- 뒤로가기 버튼 -->
-            <button id="back-to-main" class="ui-button back-btn" data-i18n="back-to-main">메인으로</button>
+            <button id="back-to-main" class="ui-button back-btn" data-i18n="auto_battle_card_game.ui.back_to_main">메인으로</button>
 
             <!-- 턴 인디케이터 (동적으로 생성) -->
             <div id="turn-indicator-container"></div>
@@ -67,18 +69,18 @@
         <!-- 카드 갤러리 모달 -->
         <div id="card-gallery-modal" class="modal hidden">
             <div class="modal-content">
-                <h2 data-i18n="card-gallery-title">카드 갤러리</h2>
+                <h2 data-i18n="auto_battle_card_game.ui.card_gallery_title">카드 갤러리</h2>
                 <div id="card-gallery-grid" class="card-gallery-grid"></div>
-                <button id="close-gallery" class="ui-button" data-i18n="close">닫기</button>
+                <button id="close-gallery" class="ui-button" data-i18n="auto_battle_card_game.ui.close">닫기</button>
             </div>
         </div>
 
         <!-- 카드 선택 모달 -->
         <div id="card-selection-modal" class="modal hidden">
             <div class="modal-content">
-                <h2 data-i18n="select-card">카드 선택</h2>
+                <h2 data-i18n="auto_battle_card_game.ui.select_card">카드 선택</h2>
                 <div id="card-selection-grid" class="card-selection-grid"></div>
-                <button id="skip-selection" class="ui-button" data-i18n="skip">건너뛰기</button>
+                <button id="skip-selection" class="ui-button" data-i18n="auto_battle_card_game.ui.skip">건너뛰기</button>
             </div>
         </div>
     </div>
@@ -99,7 +101,6 @@
     <script src="js/ui/UIManager.js"></script>
     <script src="js/ui/AnimationManager.js"></script>
     <script src="js/screens/MainMenu.js"></script>
-    <script src="js/screens/CardGallery.js"></script>
     <script src="js/screens/CardSelection.js"></script>
     <script src="game.js"></script>
 </body>

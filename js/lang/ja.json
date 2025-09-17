@@ -54,6 +54,96 @@
       }
     }
   },
+  "auto_battle_card_game": {
+    "title": "オートバトルカードゲーム",
+    "page_title": "オートバトルカードゲーム - BinBox Games",
+    "description": "ターン制自動戦闘カードゲーム！カードの順序を戦略的に配置し、5つの属性の相性を活用して勝利を目指そう！",
+    "genre": "戦略",
+    "ui": {
+      "start_game": "新しいゲーム",
+      "continue_game": "続ける",
+      "card_gallery": "カードギャラリー",
+      "settings": "設定",
+      "back_to_main": "← メインに戻る",
+      "enemy": "敵",
+      "player": "プレイヤー",
+      "view_all_cards": "全カードを見る",
+      "card_gallery_title": "カードギャラリー",
+      "select_card": "カード選択",
+      "skip": "スキップ",
+      "close": "閉じる",
+      "stage": "ステージ",
+      "victory": "勝利！",
+      "defeat": "敗北",
+      "damage": "ダメージ",
+      "multi_hit_damage": "連続攻撃ダメージ",
+      "miss": "ミス！",
+      "combo": "コンボ",
+      "turn": "ターン",
+      "battle_speed": "戦闘速度",
+      "cards": {
+        "random_bash": {
+          "name": "乱撃",
+          "description": "相手に3～5回連続攻撃を行います。各攻撃は1ダメージを与えます。"
+        },
+        "heavy_strike": {
+          "name": "重撃",
+          "description": "相手に強力な一撃を与えます。5ダメージ、命中率80%。"
+        },
+        "shield_bash": {
+          "name": "シールドバッシュ",
+          "description": "現在の防御力と同じダメージを相手に与えます。"
+        },
+        "concussion": {
+          "name": "脳震盪",
+          "description": "相手に2ダメージを与え、一定確率で気絶させます。"
+        },
+        "counter_attack": {
+          "name": "カウンターアタック",
+          "description": "最後に受けたダメージと同じダメージを相手に与えます。"
+        },
+        "raise_shield": {
+          "name": "シールド構え",
+          "description": "自分に防御力3を追加します。"
+        },
+        "wear_armor": {
+          "name": "鎧装着",
+          "description": "自分に防御力5を追加します。"
+        },
+        "crouch": {
+          "name": "しゃがみ",
+          "description": "自分に防御力10を追加し、ターンをスキップします。"
+        },
+        "large_shield": {
+          "name": "大盾",
+          "description": "自分に防御力8を追加します。成功率80%。"
+        },
+        "thorn_armor": {
+          "name": "棘の鎧",
+          "description": "自分に防御力3と棘1を追加します。"
+        },
+        "taunt": {
+          "name": "挑発",
+          "description": "相手を挑発状態にします。挑発状態では次のターンで攻撃カードのみが発動されます。"
+        }
+      },
+      "elements": {
+        "fire": "火",
+        "water": "水",
+        "electric": "電気",
+        "poison": "毒",
+        "normal": "ノーマル"
+      },
+      "card_types": {
+        "attack": "攻撃",
+        "defense": "防御",
+        "buff": "バフ",
+        "debuff": "デバフ",
+        "special": "特殊",
+        "status": "状態異常"
+      }
+    }
+  },
   "upcoming_games": {
     "game2": {
       "title": "二番目のゲーム",
@@ -70,6 +160,7 @@
     "timing": "タイミング",
     "action": "アクション",
     "puzzle": "パズル",
+    "strategy": "戦略",
     "tbd": "未定"
   }
 }

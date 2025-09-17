@@ -4,13 +4,16 @@ class Card {
     constructor(cardData) {
         // 기본 카드 정보
         this.id = cardData.id;
-        this.name = cardData.name;
+        this.nameKey = cardData.nameKey; // i18n 키
+        this.name = cardData.name || this.id; // 백업용
         this.type = cardData.type;
         this.element = cardData.element;
         this.power = cardData.power;
         this.accuracy = cardData.accuracy || 100;
+        this.cost = cardData.cost || 1;
         this.activationCount = cardData.activationCount || 1;
-        this.description = cardData.description || '';
+        this.descriptionKey = cardData.descriptionKey; // i18n 키
+        this.description = cardData.description || ''; // 백업용
 
         // 카드 효과 (함수)
         this.effect = cardData.effect || this.defaultEffect;
@@ -63,17 +66,34 @@ class Card {
         return Math.random() * 100 < this.accuracy;
     }
 
+    // 현재 언어에 맞는 카드 이름 가져오기
+    getDisplayName() {
+        if (this.nameKey && typeof getI18nText === 'function') {
+            return getI18nText(this.nameKey) || this.name;
+        }
+        return this.name;
+    }
+
+    // 현재 언어에 맞는 카드 설명 가져오기
+    getDisplayDescription() {
+        if (this.descriptionKey && typeof getI18nText === 'function') {
+            return getI18nText(this.descriptionKey) || this.description;
+        }
+        return this.description;
+    }
+
     // 카드 정보 반환
     getInfo() {
         return {
             id: this.id,
-            name: this.name,
+            name: this.getDisplayName(),
             type: this.type,
             element: this.element,
             power: this.power,
             accuracy: this.accuracy,
+            cost: this.cost,
             activationCount: this.activationCount,
-            description: this.description
+            description: this.getDisplayDescription()
         };
     }
 

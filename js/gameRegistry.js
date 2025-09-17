@@ -70,9 +70,9 @@ class GameRegistry {
         card.setAttribute('data-game-id', gameData.id);
 
         // i18n 키 생성
-        const i18nKey = gameData.status === 'coming-soon' ? 
-            `upcoming_games.${gameData.id}` : 
-            `${gameData.id.replace('-', '_')}`;
+        const i18nKey = gameData.status === 'coming-soon' ?
+            `upcoming_games.${gameData.id}` :
+            `${gameData.id.replace(/-/g, '_')}`;
 
         card.innerHTML = `
             <div class="game-thumbnail">
@@ -106,6 +106,7 @@ class GameRegistry {
     getDefaultTitle(gameData) {
         const titles = {
             'barista-game': 'Barista Game',
+            'auto-battle-card-game': 'Auto Battle Card Game',
             'game2': '두 번째 게임',
             'game3': '세 번째 게임'
         };
@@ -121,7 +122,8 @@ class GameRegistry {
         }
         
         const descriptions = {
-            'barista-game': 'Hold to pour coffee and release at perfect timing for high combos!'
+            'barista-game': 'Hold to pour coffee and release at perfect timing for high combos!',
+            'auto-battle-card-game': 'Turn-based auto battle card game!'
         };
         return descriptions[gameData.id] || '새로운 게임입니다!';
     }
@@ -132,6 +134,7 @@ class GameRegistry {
     getGenreName(genre) {
         const genreNames = {
             timing: '타이밍',
+            strategy: '전략',
             action: '액션',
             puzzle: '퍼즐',
             tbd: '미정'

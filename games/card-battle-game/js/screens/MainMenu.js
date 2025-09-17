@@ -81,11 +81,11 @@ class MainMenu {
 
     // 배경 렌더링
     renderBackground(ctx, canvas) {
-        // 어두운 그라데이션 배경
+        // 밝은 그라데이션 배경으로 변경
         const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-        gradient.addColorStop(0, '#0f0f23');
-        gradient.addColorStop(0.5, '#1a1a2e');
-        gradient.addColorStop(1, '#16213e');
+        gradient.addColorStop(0, '#2E4057');  // 더 밝은 블루
+        gradient.addColorStop(0.5, '#48729B'); // 밝은 파란색
+        gradient.addColorStop(1, '#5D8AA8');   // 하늘색
 
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -96,29 +96,35 @@ class MainMenu {
 
     // 배경 패턴 (카드 모티브)
     renderBackgroundPattern(ctx, canvas) {
+        const config = GameConfig.mainMenu.background.pattern;
+
+        // 설정에서 비활성화된 경우 패턴을 렌더링하지 않음
+        if (!config.enabled) {
+            return;
+        }
+
         ctx.save();
-        ctx.globalAlpha = 0.1;
+        ctx.globalAlpha = config.opacity;
 
-        const cardWidth = 60;
-        const cardHeight = 80;
-        const spacing = 100;
+        const cardSize = config.cardSize;
+        const spacing = config.spacing;
 
-        for (let x = -cardWidth; x < canvas.width + cardWidth; x += spacing) {
-            for (let y = -cardHeight; y < canvas.height + cardHeight; y += spacing) {
+        for (let x = -cardSize.width; x < canvas.width + cardSize.width; x += spacing) {
+            for (let y = -cardSize.height; y < canvas.height + cardSize.height; y += spacing) {
                 const offsetX = (y / spacing) % 2 === 0 ? 0 : spacing / 2;
 
                 ctx.strokeStyle = '#fff';
                 ctx.lineWidth = 1;
 
                 // 카드 모양
-                this.roundRect(ctx, x + offsetX, y, cardWidth, cardHeight, 8);
+                this.roundRect(ctx, x + offsetX, y, cardSize.width, cardSize.height, 8);
                 ctx.stroke();
 
                 // 카드 내부 장식
                 ctx.fillStyle = '#fff';
                 ctx.font = '20px Arial';
                 ctx.textAlign = 'center';
-                ctx.fillText('🃏', x + offsetX + cardWidth/2, y + cardHeight/2);
+                ctx.fillText('🃏', x + offsetX + cardSize.width/2, y + cardSize.height/2);
             }
         }
 
@@ -127,96 +133,147 @@ class MainMenu {
 
     // 제목 렌더링
     renderTitle(ctx, canvas) {
+        const config = GameConfig.mainMenu.title;
+        const subtitleConfig = GameConfig.mainMenu.subtitle;
         const centerX = canvas.width / 2;
-        const titleY = 150;
+        const titleY = config.y;
 
-        // 제목 그림자
+        // 제목 그림자 (더 진하게)
         ctx.save();
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-        ctx.font = 'bold 48px Arial';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+        ctx.font = `bold ${config.size}px Arial`;
         ctx.textAlign = 'center';
-        ctx.fillText('카드 배틀', centerX + 3, titleY + 3);
+        const gameTitle = (typeof getI18nText === 'function') ?
+            getI18nText('auto_battle_card_game.title') || '자동전투 카드게임' : '자동전투 카드게임';
+        ctx.fillText(gameTitle, centerX + config.shadowOffset, titleY + config.shadowOffset);
 
-        // 메인 제목
-        ctx.fillStyle = '#fff';
-        ctx.fillText('카드 배틀', centerX, titleY);
+        // 메인 제목 (더 밝고 크게)
+        ctx.fillStyle = '#FFFFFF';
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2;
+        ctx.strokeText(gameTitle, centerX, titleY);
+        ctx.fillText(gameTitle, centerX, titleY);
 
-        // 제목 장식
-        ctx.fillStyle = '#ffd700';
-        ctx.font = 'bold 32px Arial';
-        ctx.fillText('⚔️', centerX - 120, titleY);
-        ctx.fillText('🛡️', centerX + 120, titleY);
+        // 제목 장식 (더 크게)
+        ctx.fillStyle = '#FFD700';
+        ctx.font = 'bold 40px Arial';
+        ctx.fillText('⚔️', centerX - 140, titleY);
+        ctx.fillText('🛡️', centerX + 140, titleY);
 
-        // 부제목
-        ctx.fillStyle = '#ccc';
-        ctx.font = '18px Arial';
-        ctx.fillText('턴 기반 자동 전투 카드 게임', centerX, titleY + 50);
+        // 부제목 (더 밝게)
+        ctx.fillStyle = '#E0E0E0';
+        ctx.font = `bold ${subtitleConfig.size}px Arial`;
+        const gameDescription = '턴 기반 자동 전투 카드 게임!';
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 1;
+        const subtitleY = titleY + subtitleConfig.offsetY;
+        ctx.strokeText(gameDescription, centerX, subtitleY);
+        ctx.fillText(gameDescription, centerX, subtitleY);
 
         ctx.restore();
     }
 
     // 메뉴 아이템 렌더링
     renderMenuItems(ctx, canvas) {
+        console.log(`📋 renderMenuItems 시작 - ${this.menuItems.length}개 아이템`);
+
+        const config = GameConfig.mainMenu.menuItems;
         const centerX = canvas.width / 2;
-        const startY = 280;
-        const itemHeight = 60;
+
+        console.log(`📐 메뉴 설정: startY=${config.startY}, itemHeight=${config.itemHeight}, centerX=${centerX}`);
+        console.log(`📐 Canvas 크기: ${canvas.width}x${canvas.height}`);
 
         this.menuItems.forEach((item, index) => {
-            const y = startY + index * itemHeight;
+            const y = config.startY + index * config.itemHeight;
             const isSelected = index === this.currentSelection;
             const isDisabled = item.disabled;
 
+            console.log(`📋 메뉴 아이템 ${index}: ${item.text}, y=${y}, selected=${isSelected}, disabled=${isDisabled}`);
+
             this.renderMenuItem(ctx, item, centerX, y, isSelected, isDisabled);
         });
+
+        console.log('✅ renderMenuItems 완료');
     }
 
     // 개별 메뉴 아이템 렌더링
     renderMenuItem(ctx, item, x, y, isSelected, isDisabled) {
-        const width = 300;
-        const height = 45;
+        const config = GameConfig.mainMenu.menuItems;
 
         ctx.save();
 
-        // 배경
+        // 배경 (더 진하고 뚜렷하게)
         if (!isDisabled) {
             if (isSelected) {
-                ctx.fillStyle = 'rgba(255, 215, 0, 0.2)';
-                ctx.strokeStyle = '#ffd700';
-                ctx.lineWidth = 2;
+                ctx.fillStyle = 'rgba(255, 215, 0, 0.4)';  // 더 진하게
+                ctx.strokeStyle = '#FFD700';
+                ctx.lineWidth = 3;  // 더 두껍게
             } else {
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-                ctx.strokeStyle = '#666';
-                ctx.lineWidth = 1;
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';  // 더 진하게
+                ctx.strokeStyle = '#CCCCCC';
+                ctx.lineWidth = 2;
             }
         } else {
-            ctx.fillStyle = 'rgba(100, 100, 100, 0.1)';
-            ctx.strokeStyle = '#444';
+            ctx.fillStyle = 'rgba(100, 100, 100, 0.2)';
+            ctx.strokeStyle = '#666';
             ctx.lineWidth = 1;
         }
 
-        this.roundRect(ctx, x - width/2, y - height/2, width, height, 10);
+        this.roundRect(ctx, x - config.width/2, y - config.height/2, config.width, config.height, 12);
         ctx.fill();
         ctx.stroke();
 
-        // 아이콘
-        ctx.font = '24px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillStyle = isDisabled ? '#666' : (isSelected ? '#ffd700' : '#fff');
-        ctx.fillText(item.icon, x - 80, y + 8);
-
-        // 텍스트
-        ctx.font = isSelected ? 'bold 18px Arial' : '16px Arial';
-        ctx.fillStyle = isDisabled ? '#666' : (isSelected ? '#ffd700' : '#fff');
+        // 아이콘 및 텍스트의 절대적 중앙 정렬을 위한 계산
+        const iconTextGap = 20; // 아이콘과 텍스트 사이 간격
 
         // i18n 키를 실제 텍스트로 변환
         const text = this.getLocalizedText(item.text);
-        ctx.fillText(text, x + 20, y + 5);
 
-        // 선택 표시기
+        // 텍스트 크기 측정
+        const fontSize = isSelected ? config.textSize.selected : config.textSize.normal;
+        ctx.font = `bold ${fontSize}px Arial`;
+        const textMetrics = ctx.measureText(text);
+        const textWidth = textMetrics.width;
+
+        // 아이콘 + 텍스트 전체 너비 계산
+        const totalContentWidth = config.iconSize + iconTextGap + textWidth;
+
+        // 전체 콘텐츠를 중앙에 배치하기 위한 시작 X 좌표
+        const contentStartX = x - totalContentWidth / 2;
+
+        // 아이콘 위치 (절대 중앙 정렬)
+        const iconX = contentStartX + config.iconSize / 2;
+
+        // 텍스트 위치 (절대 중앙 정렬)
+        const textX = contentStartX + config.iconSize + iconTextGap + textWidth / 2;
+
+        // 아이콘 렌더링
+        ctx.font = `${config.iconSize}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.fillStyle = isDisabled ? '#888' : (isSelected ? '#FFD700' : '#FFFFFF');
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 1;
+        ctx.strokeText(item.icon, iconX, y + 8);
+        ctx.fillText(item.icon, iconX, y + 8);
+
+        // 텍스트 렌더링
+        ctx.font = `bold ${fontSize}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.fillStyle = isDisabled ? '#888' : (isSelected ? '#FFD700' : '#FFFFFF');
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 1;
+        ctx.strokeText(text, textX, y + 5);
+        ctx.fillText(text, textX, y + 5);
+
+        // 선택 표시기 (왼쪽 끝에 배치)
         if (isSelected && !isDisabled) {
-            ctx.fillStyle = '#ffd700';
-            ctx.font = '20px Arial';
-            ctx.fillText('▶', x - 140, y + 5);
+            ctx.fillStyle = '#FFD700';
+            ctx.font = 'bold 24px Arial';
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 1;
+            const selectorX = x - config.width/2 + 20; // 메뉴 아이템 박스 왼쪽 가장자리에서 20px 안쪽
+            ctx.strokeText('▶', selectorX, y + 5);
+            ctx.fillText('▶', selectorX, y + 5);
         }
 
         ctx.restore();
@@ -224,6 +281,7 @@ class MainMenu {
 
     // 조작 방법 안내
     renderInstructions(ctx, canvas) {
+        const config = GameConfig.mainMenu.instructions;
         const instructions = [
             '↑↓: 메뉴 이동',
             'Enter/Space: 선택',
@@ -232,12 +290,12 @@ class MainMenu {
 
         ctx.save();
         ctx.fillStyle = '#888';
-        ctx.font = '14px Arial';
+        ctx.font = `${config.fontSize}px Arial`;
         ctx.textAlign = 'center';
 
-        const startY = canvas.height - 80;
+        const startY = canvas.height + config.startY;
         instructions.forEach((instruction, index) => {
-            ctx.fillText(instruction, canvas.width / 2, startY + index * 20);
+            ctx.fillText(instruction, canvas.width / 2, startY + index * config.lineHeight);
         });
 
         ctx.restore();
@@ -302,7 +360,9 @@ class MainMenu {
         console.log('🎮 새 게임 시작');
 
         // 초기 카드 선택 화면으로 이동
-        if (this.gameManager.cardSelectionScreen) {
+        if (this.gameManager.cardSelection) {
+            // 카드 선택 화면 초기화
+            this.gameManager.cardSelection.setupInitialSelection();
             this.gameManager.switchScreen('cardSelection');
         } else {
             // 카드 선택 없이 바로 시작
@@ -335,13 +395,11 @@ class MainMenu {
     openCardGallery() {
         console.log('🃏 카드 갤러리 열기');
 
-        if (this.gameManager.cardGalleryScreen) {
-            this.gameManager.switchScreen('gallery');
+        // DOM 모달로 갤러리 표시 (통일된 방식)
+        if (this.gameManager.uiManager) {
+            this.gameManager.uiManager.showCardGallery();
         } else {
-            // DOM 모달로 갤러리 표시
-            if (this.gameManager.uiManager) {
-                this.gameManager.uiManager.showCardGallery();
-            }
+            console.warn('UIManager를 찾을 수 없습니다');
         }
     }
 
@@ -382,7 +440,17 @@ class MainMenu {
 
     // 현지화 텍스트 가져오기
     getLocalizedText(key) {
-        const translations = {
+        // i18n 키 매핑
+        const i18nKeys = {
+            'start-game': 'auto_battle_card_game.ui.start_game',
+            'continue-game': 'auto_battle_card_game.ui.continue_game',
+            'card-gallery': 'auto_battle_card_game.ui.card_gallery',
+            'settings': 'auto_battle_card_game.ui.settings',
+            'back-to-main': 'auto_battle_card_game.ui.back_to_main'
+        };
+
+        // 백업 번역
+        const fallbackTranslations = {
             'start-game': '새 게임',
             'continue-game': '계속하기',
             'card-gallery': '카드 갤러리',
@@ -390,7 +458,12 @@ class MainMenu {
             'back-to-main': '메인으로'
         };
 
-        return translations[key] || key;
+        const i18nKey = i18nKeys[key];
+        if (i18nKey && typeof getI18nText === 'function') {
+            return getI18nText(i18nKey) || fallbackTranslations[key] || key;
+        }
+
+        return fallbackTranslations[key] || key;
     }
 
     // 사운드 재생
@@ -425,18 +498,15 @@ class MainMenu {
 
     // 마우스/터치 입력 처리
     handlePointerInput(x, y, canvas) {
+        const config = GameConfig.mainMenu.menuItems;
         const centerX = canvas.width / 2;
-        const startY = 280;
-        const itemHeight = 60;
-        const itemWidth = 300;
-        const itemHeightBox = 45;
 
         // 메뉴 아이템 클릭 체크
         this.menuItems.forEach((item, index) => {
-            const itemY = startY + index * itemHeight;
+            const itemY = config.startY + index * config.itemHeight;
 
-            if (x >= centerX - itemWidth/2 && x <= centerX + itemWidth/2 &&
-                y >= itemY - itemHeightBox/2 && y <= itemY + itemHeightBox/2) {
+            if (x >= centerX - config.width/2 && x <= centerX + config.width/2 &&
+                y >= itemY - config.height/2 && y <= itemY + config.height/2) {
 
                 if (!item.disabled) {
                     this.currentSelection = index;

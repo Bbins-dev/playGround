@@ -17,7 +17,6 @@ class GameManager {
 
         // 화면 관리
         this.mainMenu = null;
-        this.cardGallery = null;
         this.cardSelection = null;
         this.currentScreen = null;
 
@@ -52,11 +51,11 @@ class GameManager {
             // Canvas 초기화
             this.initCanvas();
 
+            // 데이터베이스 초기화 (시스템들보다 먼저)
+            CardDatabase.initialize();
+
             // 시스템들 초기화
             this.initSystems();
-
-            // 데이터베이스 초기화
-            CardDatabase.initialize();
 
             // 이벤트 리스너 등록
             this.setupEventListeners();
@@ -83,9 +82,8 @@ class GameManager {
         this.ctx = this.canvas.getContext('2d');
         this.ctx.imageSmoothingEnabled = true;
 
-        // Canvas 크기 설정
-        this.canvas.width = GameConfig.canvas.width;
-        this.canvas.height = GameConfig.canvas.height;
+        // Canvas 크기 설정 및 반응형 업데이트
+        this.updateCanvasSize();
 
         console.log(`Canvas 초기화: ${this.canvas.width}x${this.canvas.height}`);
     }
@@ -113,13 +111,11 @@ class GameManager {
 
         // 화면들 초기화
         this.mainMenu = new MainMenu(this);
-        this.cardGallery = new CardGallery(this);
         this.cardSelection = new CardSelection(this);
 
         // 현재 화면 설정
         this.currentScreen = this.mainMenu;
 
-        console.log('🔧 모든 시스템 초기화 완료');
     }
 
     // 이벤트 리스너 설정
@@ -137,6 +133,15 @@ class GameManager {
         this.addEventListeners([
             [document, 'keydown', (e) => this.handleKeyDown(e)],
             [window, 'resize', () => this.handleResize()]
+        ]);
+
+        // 마우스 및 터치 이벤트
+        this.addEventListeners([
+            [this.canvas, 'click', (e) => this.handlePointerInput(e)],
+            [this.canvas, 'touchstart', (e) => this.handleTouchStart(e)],
+            [this.canvas, 'touchend', (e) => this.handleTouchEnd(e)],
+            [this.canvas, 'mousedown', (e) => this.handleMouseDown(e)],
+            [this.canvas, 'mouseup', (e) => this.handleMouseUp(e)]
         ]);
     }
 
@@ -156,6 +161,9 @@ class GameManager {
 
     // 게임 루프 시작
     startGameLoop() {
+        console.log('🔄 게임 루프 시작');
+        this.lastTime = performance.now();
+
         const gameLoop = (currentTime) => {
             const deltaTime = currentTime - this.lastTime;
             this.lastTime = currentTime;
@@ -167,6 +175,7 @@ class GameManager {
         };
 
         this.gameLoop = requestAnimationFrame(gameLoop);
+        console.log('✅ 게임 루프 등록 완료');
     }
 
     // 게임 업데이트
@@ -184,7 +193,10 @@ class GameManager {
 
     // 렌더링
     render() {
-        if (!this.uiManager) return;
+        if (!this.uiManager) {
+            console.warn('⚠️ UIManager가 없어서 렌더링 건너뜀');
+            return;
+        }
 
         // UI 매니저를 통한 렌더링
         this.uiManager.render();
@@ -206,9 +218,6 @@ class GameManager {
             case 'cardSelection':
                 this.currentScreen = this.cardSelection;
                 break;
-            case 'gallery':
-                this.currentScreen = this.cardGallery;
-                break;
         }
 
         // UI 매니저에 화면 전환 알림
@@ -220,10 +229,17 @@ class GameManager {
     // 메인 메뉴 표시
     showMainMenu() {
         console.log('🏠 메인 메뉴 표시');
+
+        // 게임 상태를 메뉴로 강제 설정
+        this.gameState = 'menu';
+        this.currentScreen = 'menu';
+
         this.switchScreen('menu');
         if (this.mainMenu) {
             this.mainMenu.show();
         }
+
+        console.log(`✅ 메인 메뉴 설정 완료 - gameState: ${this.gameState}, currentScreen: ${this.currentScreen}`);
     }
 
     // 게임 상태 변경
@@ -240,10 +256,13 @@ class GameManager {
         // 플레이어 생성
         this.player = new Player('플레이어', true);
 
-        // 기본 카드 추가 (임시)
-        const bashCard = this.cardManager.createCard('bash');
-        if (bashCard) {
-            this.player.hand.push(bashCard);
+        // 기본 카드 추가 (카드 선택을 건너뛴 경우의 폴백)
+        if (this.player.hand.length === 0) {
+            console.log('⚠️ 카드가 없어서 기본 카드 추가');
+            const bashCard = this.cardManager.createCard('bash');
+            if (bashCard) {
+                this.player.hand.push(bashCard);
+            }
         }
 
         // 첫 번째 스테이지 시작
@@ -270,12 +289,13 @@ class GameManager {
         this.startStage(1);
     }
 
-    // 보상 카드 추가
+    // 보상 카드 추가 (손패 왼쪽에 추가)
     addRewardCard(cardId) {
         console.log('🎁 보상 카드 추가:', cardId);
 
         if (this.player && this.cardManager) {
-            this.cardManager.addCardToPlayer(this.player, cardId);
+            // 'left' 옵션으로 손패 왼쪽에 추가
+            this.cardManager.addCardToPlayer(this.player, cardId, 'left');
         }
 
         this.continueToNextStage();
@@ -356,7 +376,6 @@ class GameManager {
 
         // 보상 계산
         const rewards = this.enemy.calculateRewards();
-        console.log('보상:', rewards);
 
         // 다음 스테이지로 진행 또는 카드 선택
         this.showPostBattleCardSelection();
@@ -378,19 +397,23 @@ class GameManager {
     showPostBattleCardSelection() {
         this.changeGameState('cardSelection');
 
-        // 랜덤 카드 3장 제시 (현재는 마구때리기만)
-        const availableCards = ['bash', 'bash', 'bash']; // TODO: 다양한 카드 추가
-        this.cardSelection.showPostBattleSelection(availableCards);
+        // 모든 카드에서 랜덤 3장 제시
+        const availableCards = this.cardManager.getRandomCards(3);
+        this.cardSelection.setupRewardSelection(availableCards.map(cardId => CardDatabase.getCard(cardId)));
     }
 
-    // 카드 갤러리 표시
+    // 카드 갤러리 표시 (DOM 모달 사용)
     showCardGallery() {
-        this.cardGallery.show();
+        if (this.uiManager) {
+            this.uiManager.showCardGallery();
+        }
     }
 
-    // 카드 갤러리 숨기기
+    // 카드 갤러리 숨기기 (DOM 모달 사용)
     hideCardGallery() {
-        this.cardGallery.hide();
+        if (this.uiManager) {
+            this.uiManager.hideCardGallery();
+        }
     }
 
     // 키보드 이벤트 처리
@@ -416,17 +439,181 @@ class GameManager {
                 break;
 
             case 'g':
-                this.switchScreen('gallery');
+                this.showCardGallery();
                 break;
+        }
+    }
+
+    // 마우스/터치 좌표 계산 (레터박스 고려)
+    getCanvasCoordinates(event) {
+        const rect = this.canvas.getBoundingClientRect();
+
+        // 레터박스를 고려한 정확한 좌표 계산
+        const canvasX = (event.clientX - rect.left) / this.displayScale.x;
+        const canvasY = (event.clientY - rect.top) / this.displayScale.y;
+
+        // Canvas 경계 내부인지 확인
+        const isInBounds = canvasX >= 0 && canvasX <= GameConfig.canvas.width &&
+                          canvasY >= 0 && canvasY <= GameConfig.canvas.height;
+
+        return {
+            x: Math.max(0, Math.min(GameConfig.canvas.width, canvasX)),
+            y: Math.max(0, Math.min(GameConfig.canvas.height, canvasY)),
+            inBounds: isInBounds
+        };
+    }
+
+    // 터치 좌표 계산 (레터박스 고려)
+    getTouchCoordinates(touch) {
+        const rect = this.canvas.getBoundingClientRect();
+
+        // 레터박스를 고려한 정확한 좌표 계산
+        const canvasX = (touch.clientX - rect.left) / this.displayScale.x;
+        const canvasY = (touch.clientY - rect.top) / this.displayScale.y;
+
+        // Canvas 경계 내부인지 확인
+        const isInBounds = canvasX >= 0 && canvasX <= GameConfig.canvas.width &&
+                          canvasY >= 0 && canvasY <= GameConfig.canvas.height;
+
+        return {
+            x: Math.max(0, Math.min(GameConfig.canvas.width, canvasX)),
+            y: Math.max(0, Math.min(GameConfig.canvas.height, canvasY)),
+            inBounds: isInBounds
+        };
+    }
+
+    // 포인터 입력 처리 (마우스 클릭)
+    handlePointerInput(event) {
+        event.preventDefault();
+        const coords = this.getCanvasCoordinates(event);
+
+        // Canvas 경계 내에서만 입력 처리
+        if (coords.inBounds && this.currentScreen && this.currentScreen.handlePointerInput) {
+            this.currentScreen.handlePointerInput(coords.x, coords.y, this.canvas);
+        }
+    }
+
+    // 마우스 다운 이벤트
+    handleMouseDown(event) {
+        event.preventDefault();
+        const coords = this.getCanvasCoordinates(event);
+
+        // Canvas 경계 내에서만 입력 처리
+        if (coords.inBounds && this.currentScreen && this.currentScreen.handleMouseDown) {
+            this.currentScreen.handleMouseDown(coords.x, coords.y, this.canvas);
+        }
+    }
+
+    // 마우스 업 이벤트
+    handleMouseUp(event) {
+        event.preventDefault();
+        const coords = this.getCanvasCoordinates(event);
+
+        // Canvas 경계 내에서만 입력 처리
+        if (coords.inBounds && this.currentScreen && this.currentScreen.handleMouseUp) {
+            this.currentScreen.handleMouseUp(coords.x, coords.y, this.canvas);
+        }
+    }
+
+    // 터치 시작 이벤트
+    handleTouchStart(event) {
+        event.preventDefault();
+
+        if (event.touches.length > 0) {
+            const touch = event.touches[0];
+            const coords = this.getTouchCoordinates(touch);
+
+            // Canvas 경계 내에서만 입력 처리
+            if (coords.inBounds) {
+                // 현재 화면에 터치 시작 이벤트 전달
+                if (this.currentScreen && this.currentScreen.handleTouchStart) {
+                    this.currentScreen.handleTouchStart(coords.x, coords.y, this.canvas);
+                } else if (this.currentScreen && this.currentScreen.handlePointerInput) {
+                    // 터치를 포인터 입력으로 처리
+                    this.currentScreen.handlePointerInput(coords.x, coords.y, this.canvas);
+                }
+            }
+        }
+    }
+
+    // 터치 종료 이벤트
+    handleTouchEnd(event) {
+        event.preventDefault();
+
+        // 터치 종료는 changedTouches 사용
+        if (event.changedTouches.length > 0) {
+            const touch = event.changedTouches[0];
+            const coords = this.getTouchCoordinates(touch);
+
+            // Canvas 경계 내에서만 입력 처리 (클릭으로 처리)
+            if (coords.inBounds && this.currentScreen && this.currentScreen.handlePointerInput) {
+                this.currentScreen.handlePointerInput(coords.x, coords.y, this.canvas);
+            }
         }
     }
 
     // 화면 크기 변경 처리
     handleResize() {
+        this.updateCanvasSize();
+
         if (this.uiManager) {
             this.uiManager.handleResize();
         }
-        console.log('화면 크기 변경');
+
+    }
+
+    // Canvas 크기 동적 업데이트 (레터박스 방식)
+    updateCanvasSize() {
+        if (!this.canvas) return;
+
+        // game-wrapper를 참조 (Canvas와 UI 오버레이를 포함하는 컨테이너)
+        const gameWrapper = this.canvas.closest('.game-wrapper');
+        const container = gameWrapper || this.canvas.parentElement;
+        const containerRect = container.getBoundingClientRect();
+
+        // 기본 게임 비율 (16:9)
+        const gameAspectRatio = GameConfig.canvas.width / GameConfig.canvas.height;
+
+        // 컨테이너 크기
+        const containerWidth = containerRect.width;
+        const containerHeight = containerRect.height;
+        const containerAspectRatio = containerWidth / containerHeight;
+
+        let displayWidth, displayHeight;
+
+        // 레터박스 방식으로 크기 계산
+        if (containerAspectRatio > gameAspectRatio) {
+            // 컨테이너가 더 넓음 - 세로를 맞추고 양옆에 레터박스
+            displayHeight = Math.min(containerHeight * 0.9, 800); // 최대 높이 제한
+            displayWidth = displayHeight * gameAspectRatio;
+        } else {
+            // 컨테이너가 더 높음 - 가로를 맞추고 위아래에 레터박스
+            displayWidth = Math.min(containerWidth * 0.9, 1200); // 최대 너비 제한
+            displayHeight = displayWidth / gameAspectRatio;
+        }
+
+        // Canvas 표시 크기 설정 (CSS)
+        this.canvas.style.width = displayWidth + 'px';
+        this.canvas.style.height = displayHeight + 'px';
+
+        // Canvas 내부 해상도는 고정 유지
+        this.canvas.width = GameConfig.canvas.width;
+        this.canvas.height = GameConfig.canvas.height;
+
+        // 레터박스 오프셋 계산 (중앙 정렬을 위해)
+        this.letterboxOffset = {
+            x: (containerWidth - displayWidth) / 2,
+            y: (containerHeight - displayHeight) / 2
+        };
+
+        // 스케일 비율 저장 (입력 좌표 변환용)
+        this.displayScale = {
+            x: displayWidth / GameConfig.canvas.width,
+            y: displayHeight / GameConfig.canvas.height
+        };
+
+        console.log(`Canvas 크기 업데이트: ${displayWidth}x${displayHeight} (스케일: ${this.displayScale.x.toFixed(2)})`);
+        console.log(`레터박스 오프셋: ${this.letterboxOffset.x.toFixed(1)}x${this.letterboxOffset.y.toFixed(1)}`);
     }
 
     // 게임 속도 설정

@@ -54,9 +54,9 @@
       }
     }
   },
-  "card_battle_game": {
-    "title": "카드 배틀",
-    "page_title": "카드 배틀 - BinBox Games",
+  "auto_battle_card_game": {
+    "title": "자동전투 카드게임",
+    "page_title": "자동전투 카드게임 - BinBox Games",
     "description": "턴 기반 자동 전투 카드 게임! 카드 순서를 전략적으로 배치하고 5가지 속성의 상성을 활용하여 승리하세요!",
     "genre": "전략",
     "ui": {
@@ -71,7 +71,86 @@
       "card_gallery_title": "카드 갤러리",
       "select_card": "카드 선택",
       "skip": "건너뛰기",
-      "close": "닫기"
+      "close": "닫기",
+      "stage": "스테이지",
+      "victory": "승리!",
+      "defeat": "패배",
+      "damage": "대미지",
+      "multi_hit_damage": "연속 타격 대미지",
+      "miss": "빗나감!",
+      "combo": "콤보",
+      "turn": "턴",
+      "battle_speed": "전투 속도",
+      "cards": {
+        "random_bash": {
+          "name": "마구때리기",
+          "description": "상대에게 3~5번의 연속 공격을 가합니다. 각 타격은 대미지 1을 줍니다."
+        },
+        "heavy_strike": {
+          "name": "세게치기",
+          "description": "상대에게 강력한 일격을 가합니다. 대미지 5, 명중률 80%입니다."
+        },
+        "shield_bash": {
+          "name": "방패치기",
+          "description": "상대에게 현재 방어력만큼 대미지를 가합니다."
+        },
+        "concussion": {
+          "name": "뇌진탕",
+          "description": "상대에게 대미지 2를 가하고 일정 확률로 기절시킵니다."
+        },
+        "counter_attack": {
+          "name": "카운터어택",
+          "description": "상대에게 자신이 마지막 받은 대미지를 가합니다."
+        },
+        "raise_shield": {
+          "name": "방패들기",
+          "description": "자신에게 방어력 3을 추가합니다."
+        },
+        "wear_armor": {
+          "name": "갑옷입기",
+          "description": "자신에게 방어력 5를 추가합니다."
+        },
+        "crouch": {
+          "name": "웅크리기",
+          "description": "자신에게 방어력 10을 추가하고 턴을 넘깁니다."
+        },
+        "large_shield": {
+          "name": "거대방패",
+          "description": "자신에게 방어력 8을 추가합니다. 성공률 80%입니다."
+        },
+        "thorn_armor": {
+          "name": "가시갑옷",
+          "description": "자신에게 방어력 3을 추가하고 가시 1을 추가합니다."
+        },
+        "taunt": {
+          "name": "도발",
+          "description": "상대가 도발 상태가 됩니다. 도발에 걸리면 다가올 자신의 턴에서 공격카드만 발동됩니다."
+        }
+      },
+      "elements": {
+        "fire": "불",
+        "water": "물",
+        "electric": "전기",
+        "poison": "독",
+        "normal": "노멀"
+      },
+      "card_types": {
+        "attack": "공격",
+        "defense": "방어",
+        "buff": "버프",
+        "debuff": "디버프",
+        "special": "특수",
+        "status": "상태이상"
+      },
+      "shield_bash_damage": "방패치기 대미지",
+      "concussion_stun": "뇌진탕으로 기절시켰습니다!",
+      "counter_damage": "카운터어택 대미지",
+      "defense_gained": "방어력 증가",
+      "crouch_effect": "웅크리기로 방어력 증가 및 턴 스킵",
+      "shield_failed": "방패 사용 실패",
+      "thorn_armor_effect": "가시갑옷으로 방어력과 가시 추가",
+      "taunt_success": "도발 성공",
+      "taunt_failed": "도발 실패"
     }
   },
   "upcoming_games": {

@@ -55,10 +55,10 @@ class CardManager {
         return this.availableCards.attack.map(cardData => cardData.id);
     }
 
-    // 랜덤 카드 3장 선택 (스테이지 클리어 후)
+    // 랜덤 카드 3장 선택 (스테이지 클리어 후) - 모든 카드 타입에서
     getRandomCards(count = 3) {
         const selectedCards = [];
-        const availablePool = [...this.allCards];
+        const availablePool = [...this.allCards]; // 모든 카드 타입 포함 (공격, 방어, 상태이상)
 
         for (let i = 0; i < count && availablePool.length > 0; i++) {
             const randomIndex = Math.floor(Math.random() * availablePool.length);
@@ -66,6 +66,7 @@ class CardManager {
             selectedCards.push(selectedCard.id);
         }
 
+        console.log(`🎲 랜덤 카드 ${count}장 선택:`, selectedCards);
         return selectedCards;
     }
 
@@ -165,13 +166,12 @@ class CardManager {
         return CardDatabase.getCard(cardId);
     }
 
-    // 카드 갤러리용 모든 카드 정보
+    // 카드 갤러리용 모든 카드 정보 (Card 인스턴스 반환)
     getAllCardsForGallery() {
-        return this.allCards.map(cardData => ({
-            ...cardData,
-            element: GameConfig.elements[cardData.element],
-            type: GameConfig.cardTypes[cardData.type]
-        }));
+        return this.allCards.map(cardData => {
+            // Card 인스턴스 생성하여 반환
+            return CardDatabase.createCardInstance(cardData.id);
+        }).filter(card => card !== null);
     }
 
     // 타입별 카드 가져오기

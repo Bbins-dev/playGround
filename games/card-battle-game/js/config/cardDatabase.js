@@ -47,33 +47,428 @@ const CardDatabase = {
 
     // 기본 카드들 로드
     loadBasicCards: function() {
-        // 마구때리기 카드 (현재 유일한 구현 카드)
+        // 마구때리기 카드 (연속 공격 카드)
         this.addCard({
-            id: 'bash',
-            name: '마구때리기',
+            id: 'random_bash',
+            nameKey: 'auto_battle_card_game.ui.cards.random_bash.name',
             type: 'attack',
             element: 'normal',
-            power: 3,
+            power: 1,
             accuracy: 100,
+            cost: 1,
             activationCount: 1,
-            description: '상대에게 대미지 3을 가합니다.',
+            descriptionKey: 'auto_battle_card_game.ui.cards.random_bash.description',
+            getMinHits: function() { return 3; },
+            getMaxHits: function() { return 5; },
             effect: function(user, target, battleSystem) {
-                const damage = this.power;
+                const minHits = this.getMinHits();
+                const maxHits = this.getMaxHits();
+                const hitCount = Math.floor(Math.random() * (maxHits - minHits + 1)) + minHits;
+                const singleDamage = this.power;
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
-                const finalDamage = Math.floor(damage * effectiveness);
 
-                battleSystem.dealDamage(target, finalDamage);
+                let totalDamage = 0;
+                const hits = [];
+
+                for (let i = 0; i < hitCount; i++) {
+                    const finalDamage = Math.floor(singleDamage * effectiveness);
+                    hits.push(finalDamage);
+                    totalDamage += finalDamage;
+                }
+
+                // 전투 시스템을 통해 대미지 적용
+                if (battleSystem && battleSystem.dealDamage) {
+                    battleSystem.dealDamage(target, totalDamage);
+                } else {
+                    target.hp = Math.max(0, target.hp - totalDamage);
+                }
 
                 return {
                     success: true,
-                    message: `${this.name}으로 ${finalDamage} 대미지!`,
-                    damage: finalDamage
+                    messageKey: 'auto_battle_card_game.ui.multi_hit_damage',
+                    damage: totalDamage,
+                    hitCount: hitCount,
+                    hits: hits,
+                    element: this.element,
+                    effectiveness: effectiveness
                 };
             }
         });
 
-        // 추후 추가될 카드들을 위한 템플릿
-        // TODO: 나머지 24개 기본 카드와 10개 특수 카드 추가 예정
+        // 세게치기 카드 (강력한 단일 공격 카드)
+        this.addCard({
+            id: 'heavy_strike',
+            nameKey: 'auto_battle_card_game.ui.cards.heavy_strike.name',
+            type: 'attack',
+            element: 'normal',
+            power: 5,
+            accuracy: 80,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.heavy_strike.description',
+            effect: function(user, target, battleSystem) {
+                // 명중률 체크
+                const hitRoll = Math.random() * 100;
+                if (hitRoll > this.accuracy) {
+                    return {
+                        success: false,
+                        messageKey: 'auto_battle_card_game.ui.miss',
+                        element: this.element
+                    };
+                }
+
+                const damage = this.power;
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(damage * effectiveness);
+
+                // 전투 시스템을 통해 대미지 적용
+                if (battleSystem && battleSystem.dealDamage) {
+                    battleSystem.dealDamage(target, finalDamage);
+                } else {
+                    target.hp = Math.max(0, target.hp - finalDamage);
+                }
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
+        // 방패치기 카드 (현재 방어력만큼 대미지)
+        this.addCard({
+            id: 'shield_bash',
+            nameKey: 'auto_battle_card_game.ui.cards.shield_bash.name',
+            type: 'attack',
+            element: 'normal',
+            power: 0, // 실제 파워는 현재 방어력
+            accuracy: 80,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.shield_bash.description',
+            effect: function(user, target, battleSystem) {
+                // 명중률 체크
+                const hitRoll = Math.random() * 100;
+                if (hitRoll > this.accuracy) {
+                    return {
+                        success: false,
+                        messageKey: 'auto_battle_card_game.ui.miss',
+                        element: this.element
+                    };
+                }
+
+                const damage = user.defense; // 현재 방어력만큼 대미지
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(damage * effectiveness);
+
+                // 전투 시스템을 통해 대미지 적용
+                if (battleSystem && battleSystem.dealDamage) {
+                    battleSystem.dealDamage(target, finalDamage, user);
+                } else {
+                    target.takeDamage(finalDamage, user);
+                }
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.shield_bash_damage',
+                    damage: finalDamage,
+                    shieldValue: user.defense,
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
+        // 뇌진탕 카드 (대미지 2 + 40% 기절)
+        this.addCard({
+            id: 'concussion',
+            nameKey: 'auto_battle_card_game.ui.cards.concussion.name',
+            type: 'attack',
+            element: 'normal',
+            power: 2,
+            accuracy: 80,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.concussion.description',
+            stunChance: 40,
+            effect: function(user, target, battleSystem) {
+                // 명중률 체크
+                const hitRoll = Math.random() * 100;
+                if (hitRoll > this.accuracy) {
+                    return {
+                        success: false,
+                        messageKey: 'auto_battle_card_game.ui.miss',
+                        element: this.element
+                    };
+                }
+
+                const damage = this.power;
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(damage * effectiveness);
+
+                // 대미지 적용
+                if (battleSystem && battleSystem.dealDamage) {
+                    battleSystem.dealDamage(target, finalDamage, user);
+                } else {
+                    target.takeDamage(finalDamage, user);
+                }
+
+                // 기절 확률 체크
+                let stunned = false;
+                const stunRoll = Math.random() * 100;
+                if (stunRoll < this.stunChance) {
+                    target.addStatusEffect('stun', null, 1);
+                    stunned = true;
+                }
+
+                return {
+                    success: true,
+                    messageKey: stunned ? 'auto_battle_card_game.ui.concussion_stun' : 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    stunned: stunned,
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
+        // 카운터어택 카드 (마지막 받은 대미지 반환)
+        this.addCard({
+            id: 'counter_attack',
+            nameKey: 'auto_battle_card_game.ui.cards.counter_attack.name',
+            type: 'attack',
+            element: 'normal',
+            power: 0, // 실제 파워는 마지막 받은 대미지
+            accuracy: 80,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.counter_attack.description',
+            effect: function(user, target, battleSystem) {
+                // 명중률 체크
+                const hitRoll = Math.random() * 100;
+                if (hitRoll > this.accuracy) {
+                    return {
+                        success: false,
+                        messageKey: 'auto_battle_card_game.ui.miss',
+                        element: this.element
+                    };
+                }
+
+                const damage = user.lastDamageTaken; // 마지막 받은 대미지
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(damage * effectiveness);
+
+                // 대미지 적용
+                if (battleSystem && battleSystem.dealDamage) {
+                    battleSystem.dealDamage(target, finalDamage, user);
+                } else {
+                    target.takeDamage(finalDamage, user);
+                }
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.counter_damage',
+                    damage: finalDamage,
+                    counterValue: user.lastDamageTaken,
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
+        // 방패들기 카드 (방어력 3 추가)
+        this.addCard({
+            id: 'raise_shield',
+            nameKey: 'auto_battle_card_game.ui.cards.raise_shield.name',
+            type: 'defense',
+            element: 'normal',
+            power: 3,
+            accuracy: 100,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.raise_shield.description',
+            effect: function(user, target, battleSystem) {
+                const defenseValue = this.power;
+                user.addDefense(defenseValue);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.defense_gained',
+                    defenseValue: defenseValue,
+                    element: this.element
+                };
+            }
+        });
+
+        // 갑옷입기 카드 (방어력 5 추가)
+        this.addCard({
+            id: 'wear_armor',
+            nameKey: 'auto_battle_card_game.ui.cards.wear_armor.name',
+            type: 'defense',
+            element: 'normal',
+            power: 5,
+            accuracy: 100,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.wear_armor.description',
+            effect: function(user, target, battleSystem) {
+                const defenseValue = this.power;
+                user.addDefense(defenseValue);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.defense_gained',
+                    defenseValue: defenseValue,
+                    element: this.element
+                };
+            }
+        });
+
+        // 웅크리기 카드 (방어력 10 + 턴 넘김)
+        this.addCard({
+            id: 'crouch',
+            nameKey: 'auto_battle_card_game.ui.cards.crouch.name',
+            type: 'defense',
+            element: 'normal',
+            power: 10,
+            accuracy: 100,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.crouch.description',
+            skipTurn: true,
+            effect: function(user, target, battleSystem) {
+                const defenseValue = this.power;
+                user.addDefense(defenseValue);
+
+                // 턴 스킵 플래그 설정 (BattleSystem에서 처리)
+                if (battleSystem && battleSystem.setTurnSkip) {
+                    battleSystem.setTurnSkip(true);
+                }
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.crouch_effect',
+                    defenseValue: defenseValue,
+                    skipTurn: true,
+                    element: this.element
+                };
+            }
+        });
+
+        // 거대방패 카드 (방어력 8, 80% 성공률)
+        this.addCard({
+            id: 'large_shield',
+            nameKey: 'auto_battle_card_game.ui.cards.large_shield.name',
+            type: 'defense',
+            element: 'normal',
+            power: 8,
+            accuracy: 80,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.large_shield.description',
+            effect: function(user, target, battleSystem) {
+                // 성공률 체크
+                const successRoll = Math.random() * 100;
+                if (successRoll > this.accuracy) {
+                    return {
+                        success: false,
+                        messageKey: 'auto_battle_card_game.ui.shield_failed',
+                        element: this.element
+                    };
+                }
+
+                const defenseValue = this.power;
+                user.addDefense(defenseValue);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.defense_gained',
+                    defenseValue: defenseValue,
+                    element: this.element
+                };
+            }
+        });
+
+        // 가시갑옷 카드 (방어력 3 + 가시 1)
+        this.addCard({
+            id: 'thorn_armor',
+            nameKey: 'auto_battle_card_game.ui.cards.thorn_armor.name',
+            type: 'defense',
+            element: 'normal',
+            power: 3,
+            accuracy: 100,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.thorn_armor.description',
+            thornValue: 1,
+            effect: function(user, target, battleSystem) {
+                const defenseValue = this.power;
+                const thornValue = this.thornValue;
+
+                user.addDefense(defenseValue);
+                user.addThorns(thornValue);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.thorn_armor_effect',
+                    defenseValue: defenseValue,
+                    thornValue: thornValue,
+                    element: this.element
+                };
+            }
+        });
+
+        // 도발 카드 (상대를 도발 상태로)
+        this.addCard({
+            id: 'taunt',
+            nameKey: 'auto_battle_card_game.ui.cards.taunt.name',
+            type: 'status',
+            element: 'normal',
+            power: 0,
+            accuracy: 80,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.taunt.description',
+            effect: function(user, target, battleSystem) {
+                // 성공률 체크
+                const successRoll = Math.random() * 100;
+                if (successRoll > this.accuracy) {
+                    return {
+                        success: false,
+                        messageKey: 'auto_battle_card_game.ui.taunt_failed',
+                        element: this.element
+                    };
+                }
+
+                // 도발 상태 적용 (1턴)
+                target.addStatusEffect('taunt', null, 1);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.taunt_success',
+                    element: this.element
+                };
+            }
+        });
+    },
+
+    // i18n을 고려한 카드 이름 가져오기
+    getCardName: function(cardData) {
+        if (cardData.nameKey && typeof getI18nText === 'function') {
+            return getI18nText(cardData.nameKey) || cardData.name || cardData.id;
+        }
+        return cardData.name || cardData.id;
+    },
+
+    // i18n을 고려한 카드 설명 가져오기
+    getCardDescription: function(cardData) {
+        if (cardData.descriptionKey && typeof getI18nText === 'function') {
+            return getI18nText(cardData.descriptionKey) || cardData.description || '';
+        }
+        return cardData.description || '';
     }
 };
 

@@ -1,4 +1,4 @@
-// 카드 배틀 게임 메인 진입점
+// 자동전투 카드게임 메인 진입점
 
 class CardBattleGame {
     constructor() {
@@ -9,7 +9,7 @@ class CardBattleGame {
     // 게임 초기화 및 시작
     async init() {
         try {
-            console.log('🎴 카드 배틀 게임을 시작합니다.');
+            console.log('🎴 자동전투 카드게임을 시작합니다.');
 
             // i18n 시스템 초기화
             if (typeof initializeI18n === 'function') {
@@ -23,7 +23,7 @@ class CardBattleGame {
             this.setupEventListeners();
             this.initialized = true;
 
-            console.log('✅ 카드 배틀 게임 초기화 완료');
+            console.log('✅ 자동전투 카드게임 초기화 완료');
 
         } catch (error) {
             console.error('❌ 게임 초기화 실패:', error);
@@ -94,7 +94,7 @@ class CardBattleGame {
             this.gameManager = null;
         }
         this.initialized = false;
-        console.log('🔚 카드 배틀 게임 종료');
+        console.log('🔚 자동전투 카드게임 종료');
     }
 
     // 게임 상태 확인

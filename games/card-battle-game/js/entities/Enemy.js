@@ -65,14 +65,19 @@ class Enemy extends Player {
     buildDeck() {
         this.hand = [];
 
-        // 기본적으로 마구때리기 카드로 시작 (현재 유일한 구현 카드)
-        const basicCard = CardDatabase.createCardInstance('bash');
-        if (basicCard) {
-            this.addCard(basicCard);
+        // 1~30스테이지는 마구때리기 카드로 시작 (테스트용)
+        if (this.stage <= 30) {
+            const basicCard = CardDatabase.createCardInstance('random_bash');
+            if (basicCard) {
+                this.addCard(basicCard);
+            }
+        } else {
+            // 31스테이지 이후는 추후 변경 예정
+            const basicCard = CardDatabase.createCardInstance('bash');
+            if (basicCard) {
+                this.addCard(basicCard);
+            }
         }
-
-        // TODO: 스테이지별 특수 카드 추가
-        // 향후 스테이지가 높아질수록 더 강력한 카드들 추가 예정
 
         this.updateDefenseElement();
         console.log(`${this.name} 덱 구성 완료: ${this.hand.length}장`);
@@ -142,8 +147,6 @@ class Enemy extends Player {
     useSpecialAbility() {
         if (!this.hasSpecialAbility()) return null;
 
-        // TODO: 스테이지별 특수 능력 구현
-        // 예: 스테이지 3+ 에서 랜덤 버프/디버프 카드 사용
         console.log(`${this.name}이(가) 특수 능력을 사용했습니다!`);
 
         return {

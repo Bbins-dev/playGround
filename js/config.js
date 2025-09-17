@@ -20,7 +20,7 @@ const PlayGroundConfig = {
             featured: true
         },
         {
-            id: 'card-battle-game',
+            id: 'auto-battle-card-game',
             path: 'games/card-battle-game/',
             icon: '⚔️',
             genre: 'strategy',

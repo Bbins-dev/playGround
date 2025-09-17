@@ -16,6 +16,13 @@ class Player {
         this.turn = 0;
         this.defenseElement = GameConfig.player.defaultDefenseElement;
 
+        // 방어 시스템
+        this.defense = 0; // 현재 방어력
+        this.thorns = 0; // 가시 (상대 공격 시 반사 대미지)
+
+        // 대미지 추적
+        this.lastDamageTaken = 0; // 마지막에 받은 대미지 (카운터어택용)
+
         // 상태이상
         this.statusEffects = [];
 
@@ -25,12 +32,30 @@ class Player {
     }
 
     // HP 관련 메서드
-    takeDamage(amount) {
+    takeDamage(amount, attacker = null) {
         const previousHP = this.hp;
-        this.hp = Math.max(0, this.hp - amount);
+
+        // 방어력 적용 (방어력이 대미지를 줄임)
+        let finalDamage = Math.max(0, amount - this.defense);
+
+        // 실제 대미지 적용
+        this.hp = Math.max(0, this.hp - finalDamage);
         const actualDamage = previousHP - this.hp;
 
-        console.log(`${this.name}이(가) ${actualDamage} 대미지를 받았습니다. (${this.hp}/${this.maxHP})`);
+        // 마지막 받은 대미지 기록
+        this.lastDamageTaken = actualDamage;
+
+        console.log(`${this.name}이(가) ${actualDamage} 대미지를 받았습니다. (방어력: ${this.defense}) (${this.hp}/${this.maxHP})`);
+
+        // 가시 대미지 반사 (공격자가 있을 경우)
+        if (this.thorns > 0 && attacker && actualDamage > 0) {
+            console.log(`${this.name}의 가시로 ${attacker.name}에게 ${this.thorns} 반사 대미지!`);
+            // 가시 대미지는 방어력 무시하고 직접 적용
+            const attackerPreviousHP = attacker.hp;
+            attacker.hp = Math.max(0, attacker.hp - this.thorns);
+            const thornDamage = attackerPreviousHP - attacker.hp;
+            console.log(`${attacker.name}이(가) 가시로 ${thornDamage} 대미지를 받았습니다. (${attacker.hp}/${attacker.maxHP})`);
+        }
 
         return actualDamage;
     }
@@ -49,6 +74,40 @@ class Player {
 
     isDead() {
         return this.hp <= 0;
+    }
+
+    // 방어력 관련 메서드
+    addDefense(amount) {
+        this.defense += amount;
+        console.log(`${this.name}의 방어력이 ${amount} 증가했습니다. (현재: ${this.defense})`);
+        return amount;
+    }
+
+    removeDefense(amount) {
+        const previousDefense = this.defense;
+        this.defense = Math.max(0, this.defense - amount);
+        const actualReduction = previousDefense - this.defense;
+        if (actualReduction > 0) {
+            console.log(`${this.name}의 방어력이 ${actualReduction} 감소했습니다. (현재: ${this.defense})`);
+        }
+        return actualReduction;
+    }
+
+    // 가시 관련 메서드
+    addThorns(amount) {
+        this.thorns += amount;
+        console.log(`${this.name}의 가시가 ${amount} 증가했습니다. (현재: ${this.thorns})`);
+        return amount;
+    }
+
+    removeThorns(amount) {
+        const previousThorns = this.thorns;
+        this.thorns = Math.max(0, this.thorns - amount);
+        const actualReduction = previousThorns - this.thorns;
+        if (actualReduction > 0) {
+            console.log(`${this.name}의 가시가 ${actualReduction} 감소했습니다. (현재: ${this.thorns})`);
+        }
+        return actualReduction;
     }
 
     // 카드 관련 메서드

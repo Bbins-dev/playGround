@@ -25,6 +25,9 @@ class BattleSystem {
         // 게임 속도
         this.gameSpeed = 1;
 
+        // 턴 스킵 플래그
+        this.turnSkip = false;
+
         // 전투 통계
         this.battleStats = {
             totalTurns: 0,
@@ -129,6 +132,11 @@ class BattleSystem {
             const card = activatableCards[i];
             await this.activateCard(card, currentPlayer);
 
+            // 턴 스킵 체크 (웅크리기 등)
+            if (this.checkTurnSkip()) {
+                break; // 즉시 턴 종료
+            }
+
             // 전투가 종료되었으면 중단
             if (this.battlePhase === 'ended') {
                 return;
@@ -215,7 +223,6 @@ class BattleSystem {
                 break;
 
             default:
-                console.log('알 수 없는 카드 타입:', card.type);
         }
 
         // HP 바 업데이트
@@ -361,6 +368,40 @@ class BattleSystem {
         this.battlePhase = 'waiting';
         this.player = null;
         this.enemy = null;
+    }
+
+    // 대미지 처리 (방어력과 가시 대미지 포함)
+    dealDamage(target, amount, attacker = null) {
+        const actualDamage = target.takeDamage(amount, attacker);
+
+        // 전투 통계 업데이트
+        if (attacker === this.player) {
+            this.battleStats.totalDamageDealt += actualDamage;
+        } else if (attacker === this.enemy) {
+            this.battleStats.totalDamageReceived += actualDamage;
+        }
+
+        // HP 바 업데이트
+        if (this.hpBarSystem) {
+            this.hpBarSystem.updatePlayerInfo(this.player, this.enemy);
+        }
+
+        return actualDamage;
+    }
+
+    // 턴 스킵 설정
+    setTurnSkip(skip) {
+        this.turnSkip = skip;
+    }
+
+    // 턴 스킵 확인 및 처리
+    checkTurnSkip() {
+        if (this.turnSkip) {
+            console.log(`${this.turnProgress.currentPlayer.name}이(가) 턴을 스킵합니다.`);
+            this.turnSkip = false;
+            return true;
+        }
+        return false;
     }
 
     // 유틸리티: 대기

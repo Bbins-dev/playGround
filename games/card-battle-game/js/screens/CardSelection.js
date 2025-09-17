@@ -35,17 +35,27 @@ class CardSelection {
 
     // 초기 카드 선택 설정
     setupInitialSelection() {
+        console.log('🎯 초기 카드 선택 설정 시작');
         this.selectionType = 'initial';
-        this.maxSelections = 5;
-        this.minSelections = 3;
+        this.maxSelections = 1; // 공격 카드 1장만 선택
+        this.minSelections = 1;
 
-        // 초기 선택 가능한 카드들 (기본 카드들 위주)
+        // 초기 선택 가능한 카드들 (모든 공격 카드)
         if (this.gameManager.cardManager) {
-            this.availableCards = this.gameManager.cardManager.getInitialAttackCards()
-                .map(cardId => this.gameManager.cardManager.getCardInfo(cardId));
+            const attackCardIds = this.gameManager.cardManager.getInitialAttackCards();
+            console.log('📋 공격 카드 ID 목록:', attackCardIds);
+            this.availableCards = attackCardIds.map(cardId => {
+                const cardData = CardDatabase.getCard(cardId);
+                console.log(`🎴 카드 데이터 로드: ${cardId}`, cardData);
+                return cardData;
+            }).filter(Boolean);
         } else {
-            this.availableCards = CardDatabase.getAllCards().slice(0, 8);
+            // 폴백: 공격 카드만 필터링
+            console.log('⚠️ CardManager가 없어서 폴백 사용');
+            this.availableCards = CardDatabase.getAllCards().filter(card => card.type === 'attack');
         }
+
+        console.log(`✅ 선택 가능한 공격 카드 ${this.availableCards.length}장:`, this.availableCards.map(c => c.name));
 
         this.selectedCards = [];
         this.currentIndex = 0;
@@ -179,6 +189,20 @@ class CardSelection {
 
     // 선택 가능한 카드들 렌더링
     renderAvailableCards(ctx, canvas) {
+        console.log(`🎴 renderAvailableCards 시작 - ${this.availableCards.length}장의 카드`);
+
+        if (!this.availableCards || this.availableCards.length === 0) {
+            console.warn('⚠️ 렌더링할 카드가 없습니다');
+            // 카드가 없을 때 메시지 표시
+            ctx.save();
+            ctx.fillStyle = '#fff';
+            ctx.font = '24px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('카드를 로드 중...', canvas.width / 2, canvas.height / 2);
+            ctx.restore();
+            return;
+        }
+
         const startY = 180;
         const cardWidth = 140;
         const cardHeight = 190;
@@ -187,7 +211,11 @@ class CardSelection {
         const totalWidth = cols * spacing - (spacing - cardWidth);
         const startX = (canvas.width - totalWidth) / 2;
 
+        console.log(`📐 카드 배치: cols=${cols}, startX=${startX}, startY=${startY}`);
+
         this.availableCards.forEach((card, index) => {
+            console.log(`🎴 카드 ${index} 렌더링:`, card.name || card.id);
+
             const col = index % cols;
             const row = Math.floor(index / cols);
             const x = startX + col * spacing;
@@ -197,6 +225,8 @@ class CardSelection {
             const isHighlighted = index === this.currentIndex;
             const revealProgress = this.getCardRevealProgress(index);
 
+            console.log(`📍 카드 위치: x=${x}, y=${y}, selected=${isSelected}, highlighted=${isHighlighted}`);
+
             this.renderSelectableCard(ctx, card, x, y, cardWidth, cardHeight, {
                 isSelected,
                 isHighlighted,
@@ -204,6 +234,8 @@ class CardSelection {
                 index
             });
         });
+
+        console.log('✅ renderAvailableCards 완료');
     }
 
     // 선택 가능한 카드 렌더링
@@ -676,7 +708,7 @@ class CardSelection {
         ];
 
         if (this.selectionType === 'initial') {
-            base.unshift('시작할 덱을 구성하세요. 공격 카드가 최소 1장 필요합니다.');
+            base.unshift('시작할 공격 카드를 선택하세요.');
         } else if (this.selectionType === 'reward') {
             base.unshift('승리 보상으로 받을 카드를 선택하세요.');
         } else if (this.selectionType === 'replacement') {

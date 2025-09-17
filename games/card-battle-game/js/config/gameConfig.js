@@ -47,8 +47,8 @@ const GameConfig = {
         },
         normal: {
             name: '노멀',
-            color: '#95A5A6',      // 회색
-            emoji: '⭐',
+            color: '#F8F9FA',      // 밝은 회색/하얀색
+            emoji: '👊',
             strong: null,          // 강점 없음
             weak: null,           // 약점 없음
             immunity: null        // 면역 없음
@@ -170,6 +170,45 @@ const GameConfig = {
         cardActivation: { x: 640, y: 360 },      // 카드 발동 표시 위치 (화면 중앙)
         stageInfo: { x: 1200, y: 650 },          // 스테이지 정보 위치
         enemyName: { x: 1200, y: 50 }            // 적 이름 위치
+    },
+
+    // 메인 메뉴 레이아웃 설정
+    mainMenu: {
+        title: {
+            size: 56,                            // 제목 폰트 크기
+            y: 150,                              // 제목 Y 위치
+            shadowOffset: 4                      // 그림자 오프셋
+        },
+        subtitle: {
+            size: 20,                            // 부제목 폰트 크기
+            offsetY: 60                          // 제목으로부터의 Y 오프셋
+        },
+        menuItems: {
+            startY: 280,                         // 메뉴 시작 Y 위치
+            itemHeight: 60,                      // 메뉴 아이템 간격
+            width: 320,                          // 메뉴 아이템 너비
+            height: 50,                          // 메뉴 아이템 높이
+            iconSize: 28,                        // 아이콘 크기
+            textSize: {
+                normal: 18,                      // 일반 텍스트 크기
+                selected: 20                     // 선택된 텍스트 크기
+            },
+            // 위치는 렌더링 시 동적으로 계산 (중앙 정렬)
+            centerAligned: true                  // 완전 중앙 정렬 활성화
+        },
+        background: {
+            pattern: {
+                enabled: false,                  // 배경 패턴 활성화 여부
+                opacity: 0.03,                   // 패턴 투명도 (매우 낮음)
+                cardSize: { width: 40, height: 50 }, // 카드 크기
+                spacing: 120                     // 카드 간격
+            }
+        },
+        instructions: {
+            startY: -80,                         // 화면 하단으로부터의 오프셋
+            lineHeight: 20,                      // 줄 간격
+            fontSize: 14                         // 폰트 크기
+        }
     },
 
     // 색상 테마

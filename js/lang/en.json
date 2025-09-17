@@ -54,6 +54,96 @@
       }
     }
   },
+  "auto_battle_card_game": {
+    "title": "Auto Battle Card Game",
+    "page_title": "Auto Battle Card Game - BinBox Games",
+    "description": "Turn-based auto battle card game! Strategically arrange your card order and use the synergy of 5 different elements to achieve victory!",
+    "genre": "Strategy",
+    "ui": {
+      "start_game": "New Game",
+      "continue_game": "Continue",
+      "card_gallery": "Card Gallery",
+      "settings": "Settings",
+      "back_to_main": "← Back to Main",
+      "enemy": "Enemy",
+      "player": "Player",
+      "view_all_cards": "View All Cards",
+      "card_gallery_title": "Card Gallery",
+      "select_card": "Select Card",
+      "skip": "Skip",
+      "close": "Close",
+      "stage": "Stage",
+      "victory": "Victory!",
+      "defeat": "Defeat",
+      "damage": "Damage",
+      "multi_hit_damage": "Multi-Hit Damage",
+      "miss": "Miss!",
+      "combo": "Combo",
+      "turn": "Turn",
+      "battle_speed": "Battle Speed",
+      "cards": {
+        "random_bash": {
+          "name": "Random Bash",
+          "description": "Attack the opponent 3-5 times consecutively. Each hit deals 1 damage."
+        },
+        "heavy_strike": {
+          "name": "Heavy Strike",
+          "description": "Deliver a powerful strike to the opponent. 5 damage, 80% accuracy."
+        },
+        "shield_bash": {
+          "name": "Shield Bash",
+          "description": "Deal damage equal to your current defense to the opponent."
+        },
+        "concussion": {
+          "name": "Concussion",
+          "description": "Deal 2 damage to the opponent and have a chance to stun them."
+        },
+        "counter_attack": {
+          "name": "Counter Attack",
+          "description": "Deal damage equal to the last damage you took to the opponent."
+        },
+        "raise_shield": {
+          "name": "Raise Shield",
+          "description": "Add 3 defense to yourself."
+        },
+        "wear_armor": {
+          "name": "Wear Armor",
+          "description": "Add 5 defense to yourself."
+        },
+        "crouch": {
+          "name": "Crouch",
+          "description": "Add 10 defense to yourself and skip your turn."
+        },
+        "large_shield": {
+          "name": "Large Shield",
+          "description": "Add 8 defense to yourself. 80% success rate."
+        },
+        "thorn_armor": {
+          "name": "Thorn Armor",
+          "description": "Add 3 defense to yourself and add 1 thorn."
+        },
+        "taunt": {
+          "name": "Taunt",
+          "description": "Make the opponent taunted. When taunted, only attack cards will be activated on their next turn."
+        }
+      },
+      "elements": {
+        "fire": "Fire",
+        "water": "Water",
+        "electric": "Electric",
+        "poison": "Poison",
+        "normal": "Normal"
+      },
+      "card_types": {
+        "attack": "Attack",
+        "defense": "Defense",
+        "buff": "Buff",
+        "debuff": "Debuff",
+        "special": "Special",
+        "status": "Status"
+      }
+    }
+  },
   "upcoming_games": {
     "game2": {
       "title": "Second Game",
@@ -70,6 +160,7 @@
     "timing": "Timing",
     "action": "Action",
     "puzzle": "Puzzle",
+    "strategy": "Strategy",
     "tbd": "TBD"
   }
 }
