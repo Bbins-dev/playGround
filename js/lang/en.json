@@ -60,8 +60,8 @@
     "description": "Turn-based auto battle card game! Strategically arrange your card order and use the synergy of 5 different elements to achieve victory!",
     "genre": "Strategy",
     "ui": {
-      "start_game": "New Game",
-      "continue_game": "Continue",
+      "start_game": "Start Game",
+      "game_tutorial": "Game Guide",
       "card_gallery": "Card Gallery",
       "settings": "Settings",
       "back_to_main": "← Back to Main",
@@ -158,6 +158,13 @@
         "selected_count": "Selected",
         "no_cards_available": "No cards available for selection"
       }
+    },
+    "tutorial": {
+      "line1": "Select one attack card to start the game!",
+      "line2": "Cards activate automatically from left to right in your hand!",
+      "line3": "After clearing each stage, choose one of three randomly appearing cards to add to the left of your hand!",
+      "line4": "Maximum hand size is 10 cards! When clearing stages, you can choose to add a card, replace cards in your hand, or skip to the next stage!",
+      "line5": "How many stages can you reach? Test your luck!"
     }
   },
   "upcoming_games": {

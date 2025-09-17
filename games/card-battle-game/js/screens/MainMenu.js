@@ -13,10 +13,9 @@ class MainMenu {
                 icon: '⚔️'
             },
             {
-                text: 'continue-game',
-                action: () => this.continueGame(),
-                icon: '📖',
-                disabled: true // 저장된 게임이 있을 때만 활성화
+                text: 'game-tutorial',
+                action: () => this.showGameTutorial(),
+                icon: '📚'
             },
             {
                 text: 'card-gallery',
@@ -148,7 +147,7 @@ class MainMenu {
     renderTitle(ctx, canvas) {
         const config = GameConfig.mainMenu.title;
         const subtitleConfig = GameConfig.mainMenu.subtitle;
-        const centerX = canvas.width / 2;
+        const centerX = GameConfig.canvas.width / 2; // 버튼과 동일한 고정 중앙점 사용
         const titleY = config.y;
 
         // 제목 그림자 (더 진하게)
@@ -167,18 +166,6 @@ class MainMenu {
         ctx.strokeText(gameTitle, centerX, titleY);
         ctx.fillText(gameTitle, centerX, titleY);
 
-        // 제목 장식 - 제목 길이에 따라 동적 배치
-        ctx.fillStyle = '#FFD700';
-        ctx.font = 'bold 40px Arial';
-
-        // 제목 텍스트의 실제 너비 측정
-        const titleMetrics = ctx.measureText(gameTitle);
-        const titleWidth = titleMetrics.width;
-
-        // 제목 양옆에 적절한 간격으로 이모지 배치
-        const iconOffset = titleWidth / 2 + 60; // 제목 반폭 + 여유 공간
-        ctx.fillText('⚔️', centerX - iconOffset, titleY);
-        ctx.fillText('🛡️', centerX + iconOffset, titleY);
 
         // 부제목 (더 밝게)
         ctx.fillStyle = '#E0E0E0';
@@ -399,6 +386,27 @@ class MainMenu {
         }
     }
 
+    // 게임 설명 표시
+    showGameTutorial() {
+        const tutorialText = this.getGameTutorialText();
+
+        // 간단한 alert로 일단 표시 (나중에 모달로 개선 가능)
+        alert(tutorialText);
+    }
+
+    // 게임 설명 텍스트 가져오기
+    getGameTutorialText() {
+        const lines = [
+            this.getLocalizedText('tutorial-line1'),
+            this.getLocalizedText('tutorial-line2'),
+            this.getLocalizedText('tutorial-line3'),
+            this.getLocalizedText('tutorial-line4'),
+            this.getLocalizedText('tutorial-line5')
+        ];
+
+        return lines.join('\n\n');
+    }
+
     // 카드 갤러리 열기
     openCardGallery() {
 
@@ -448,19 +456,29 @@ class MainMenu {
         // i18n 키 매핑
         const i18nKeys = {
             'start-game': 'auto_battle_card_game.ui.start_game',
-            'continue-game': 'auto_battle_card_game.ui.continue_game',
+            'game-tutorial': 'auto_battle_card_game.ui.game_tutorial',
             'card-gallery': 'auto_battle_card_game.ui.card_gallery',
             'settings': 'auto_battle_card_game.ui.settings',
-            'back-to-main': 'auto_battle_card_game.ui.back_to_main'
+            'back-to-main': 'auto_battle_card_game.ui.back_to_main',
+            'tutorial-line1': 'auto_battle_card_game.tutorial.line1',
+            'tutorial-line2': 'auto_battle_card_game.tutorial.line2',
+            'tutorial-line3': 'auto_battle_card_game.tutorial.line3',
+            'tutorial-line4': 'auto_battle_card_game.tutorial.line4',
+            'tutorial-line5': 'auto_battle_card_game.tutorial.line5'
         };
 
         // 백업 번역
         const fallbackTranslations = {
-            'start-game': '새 게임',
-            'continue-game': '계속하기',
+            'start-game': '게임 시작',
+            'game-tutorial': '게임 설명',
             'card-gallery': '카드 갤러리',
             'settings': '설정',
-            'back-to-main': '메인으로'
+            'back-to-main': '메인으로',
+            'tutorial-line1': '공격카드 중 하나를 선택하여 게임을 시작하세요!',
+            'tutorial-line2': '카드는 손패 왼쪽부터 자동으로 발동됩니다!',
+            'tutorial-line3': '각 스테이지 클리어 시 랜덤으로 등장하는 세개의 카드 중에 하나를 선택하여 손패 왼쪽에 가져옵니다!',
+            'tutorial-line4': '최대 손패 카드는 10장입니다! 스테이지 클리어시 카드를 선택하여 추가, 손패의 카드와 교체, 다음 스테이지로 스킵 중에 선택 가능합니다!',
+            'tutorial-line5': '몇 스테이지까지 갈 수 있을까요! 당신의 운을 시험해보세요!'
         };
 
         const i18nKey = i18nKeys[key];

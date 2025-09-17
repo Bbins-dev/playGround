@@ -45,6 +45,8 @@ body {
     border-radius: 0;
     box-shadow: none;
     display: block;
+    pointer-events: auto; /* 클릭/터치 이벤트 명시적 허용 */
+    z-index: 1; /* 다른 요소보다 우선순위 확보 */
 }
 
 /* 언어 선택기 */
