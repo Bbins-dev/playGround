@@ -196,7 +196,8 @@ class UIManager {
         const elements = {
             speedControls: document.querySelector('.speed-controls'),
             cardGalleryBtn: document.getElementById('card-gallery-btn'),
-            backBtn: document.getElementById('back-to-main')
+            backBtn: document.getElementById('back-to-main'),
+            mainMenuButtons: document.getElementById('main-menu-buttons')
         };
 
         switch (this.currentScreen) {
@@ -204,18 +205,21 @@ class UIManager {
                 this.show(elements.cardGalleryBtn);
                 this.hide(elements.speedControls);
                 this.hide(elements.backBtn);
+                this.show(elements.mainMenuButtons);
                 break;
 
             case 'battle':
                 this.show(elements.speedControls);
                 this.show(elements.cardGalleryBtn);
                 this.show(elements.backBtn);
+                this.hide(elements.mainMenuButtons);
                 break;
 
             case 'cardSelection':
                 this.hide(elements.speedControls);
                 this.hide(elements.cardGalleryBtn);
                 this.show(elements.backBtn);
+                this.hide(elements.mainMenuButtons);
                 break;
         }
     }
@@ -390,8 +394,18 @@ class UIManager {
 
     // 메인으로 돌아가기
     backToMain() {
-        if (confirm('게임을 종료하고 메인으로 돌아가시겠습니까?')) {
-            window.location.href = '../../index.html';
+        if (confirm('게임을 종료하고 메인 메뉴로 돌아가시겠습니까?')) {
+            // 전투 종료
+            if (this.gameManager.battleSystem) {
+                this.gameManager.battleSystem.battlePhase = 'ended';
+            }
+
+            // 플레이어와 적 초기화
+            this.gameManager.player = null;
+            this.gameManager.enemy = null;
+
+            // 메인 메뉴로 이동
+            this.gameManager.showMainMenu();
         }
     }
 
@@ -531,14 +545,24 @@ class UIManager {
     // 요소 표시
     show(element) {
         if (element) {
-            element.style.display = '';
+            // hidden 클래스가 있다면 제거, 없다면 display 스타일 사용
+            if (element.classList.contains('hidden')) {
+                element.classList.remove('hidden');
+            } else {
+                element.style.display = '';
+            }
         }
     }
 
     // 요소 숨김
     hide(element) {
         if (element) {
-            element.style.display = 'none';
+            // hidden 클래스 시스템이 있다면 클래스 사용, 없다면 display 스타일 사용
+            if (element.id === 'main-menu-buttons' || element.classList.contains('modal')) {
+                element.classList.add('hidden');
+            } else {
+                element.style.display = 'none';
+            }
         }
     }
 
