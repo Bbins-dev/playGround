@@ -40,10 +40,17 @@ class CardSelection {
         this.maxSelections = 1; // 공격 카드 1장만 선택
         this.minSelections = 1;
 
+        // CardDatabase 상태 확인
+        console.log('🔍 CardDatabase 상태 확인');
+        const allCards = CardDatabase.getAllCards();
+        console.log(`📚 CardDatabase에 총 ${allCards.length}장의 카드 존재:`, allCards.map(c => c.id));
+
         // 초기 선택 가능한 카드들 (모든 공격 카드)
         if (this.gameManager.cardManager) {
+            console.log('✅ CardManager 사용');
             const attackCardIds = this.gameManager.cardManager.getInitialAttackCards();
             console.log('📋 공격 카드 ID 목록:', attackCardIds);
+
             this.availableCards = attackCardIds.map(cardId => {
                 const cardData = CardDatabase.getCard(cardId);
                 console.log(`🎴 카드 데이터 로드: ${cardId}`, cardData);
@@ -52,10 +59,19 @@ class CardSelection {
         } else {
             // 폴백: 공격 카드만 필터링
             console.log('⚠️ CardManager가 없어서 폴백 사용');
-            this.availableCards = CardDatabase.getAllCards().filter(card => card.type === 'attack');
+            const attackCards = CardDatabase.getAllCards().filter(card => card.type === 'attack');
+            console.log('🔍 필터링된 공격 카드들:', attackCards.map(c => c.id));
+            this.availableCards = attackCards;
         }
 
-        console.log(`✅ 선택 가능한 공격 카드 ${this.availableCards.length}장:`, this.availableCards.map(c => c.name));
+        console.log(`✅ 선택 가능한 공격 카드 ${this.availableCards.length}장:`);
+        this.availableCards.forEach(card => {
+            console.log(`  - ${card.id}: ${card.name || 'No name'} (type: ${card.type})`);
+        });
+
+        if (this.availableCards.length === 0) {
+            console.error('❌ 공격 카드가 하나도 없습니다! CardDatabase 초기화를 확인하세요.');
+        }
 
         this.selectedCards = [];
         this.currentIndex = 0;
@@ -150,20 +166,26 @@ class CardSelection {
 
     // 제목 렌더링
     renderTitle(ctx, canvas) {
-        const titles = {
-            initial: '시작 덱 구성',
-            reward: '보상 카드 선택',
-            replacement: '카드 교체'
+        const titleKeys = {
+            initial: 'auto_battle_card_game.ui.card_selection.initial_title',
+            reward: 'auto_battle_card_game.ui.card_selection.reward_title',
+            replacement: 'auto_battle_card_game.ui.card_selection.replacement_title'
         };
 
         ctx.save();
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 28px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText(titles[this.selectionType] || '카드 선택', canvas.width / 2, 50);
+
+        const titleKey = titleKeys[this.selectionType];
+        const title = (typeof getI18nText === 'function' && titleKey) ?
+            getI18nText(titleKey) || '카드 선택' : '카드 선택';
+        ctx.fillText(title, canvas.width / 2, 50);
 
         // 선택 진행상황
-        const progressText = `${this.selectedCards.length} / ${this.maxSelections} 선택됨`;
+        const selectedText = (typeof getI18nText === 'function') ?
+            getI18nText('auto_battle_card_game.ui.card_selection.selected_count') || '선택됨' : '선택됨';
+        const progressText = `${this.selectedCards.length} / ${this.maxSelections} ${selectedText}`;
         ctx.fillStyle = '#ffd700';
         ctx.font = '16px Arial';
         ctx.fillText(progressText, canvas.width / 2, 75);
@@ -296,12 +318,12 @@ class CardSelection {
             ctx.fillText(elementConfig.emoji, width/2, 40);
         }
 
-        // 카드 이름
+        // 카드 이름 (i18n 지원)
         ctx.font = 'bold 16px Arial';
         ctx.fillStyle = '#fff';
         ctx.textAlign = 'center';
 
-        let name = card.name;
+        let name = this.getCardDisplayName(card);
         if (name.length > 10) {
             name = name.substring(0, 9) + '...';
         }
@@ -324,13 +346,14 @@ class CardSelection {
         ctx.fillStyle = '#4caf50';
         ctx.fillText(`🎯 ${card.accuracy}%`, 10, height - 40);
 
-        // 설명
-        if (card.description) {
+        // 설명 (i18n 지원)
+        const description = this.getCardDisplayDescription(card);
+        if (description) {
             ctx.font = '10px Arial';
             ctx.fillStyle = '#ccc';
             ctx.textAlign = 'center';
 
-            const lines = this.wrapText(ctx, card.description, width - 20);
+            const lines = this.wrapText(ctx, description, width - 20);
             lines.slice(0, 3).forEach((line, lineIndex) => {
                 ctx.fillText(line, width/2, height - 25 + lineIndex * 12);
             });
@@ -402,11 +425,11 @@ class CardSelection {
         // 이름
         ctx.font = 'bold 10px Arial';
         ctx.fillStyle = '#fff';
-        let name = card.name;
-        if (name.length > 6) {
+        let name = this.getCardDisplayName(card);
+        if (name && name.length > 6) {
             name = name.substring(0, 5) + '...';
         }
-        ctx.fillText(name, x + width/2, y + 45);
+        ctx.fillText(name || 'Unknown', x + width/2, y + 45);
 
         // 스탯
         ctx.font = '8px Arial';
@@ -824,6 +847,22 @@ class CardSelection {
         ctx.lineTo(x, y + radius);
         ctx.quadraticCurveTo(x, y, x + radius, y);
         ctx.closePath();
+    }
+
+    // 카드 표시 이름 가져오기 (i18n 지원)
+    getCardDisplayName(card) {
+        if (card.nameKey && typeof getI18nText === 'function') {
+            return getI18nText(card.nameKey) || card.name || card.id;
+        }
+        return card.name || card.id;
+    }
+
+    // 카드 표시 설명 가져오기 (i18n 지원)
+    getCardDisplayDescription(card) {
+        if (card.descriptionKey && typeof getI18nText === 'function') {
+            return getI18nText(card.descriptionKey) || card.description || '';
+        }
+        return card.description || '';
     }
 
     // 정리

@@ -15,6 +15,10 @@ class UIManager {
         this.currentScreen = 'menu'; // 'menu' | 'battle' | 'cardSelection' | 'gallery'
         this.isInteractive = true;
 
+        // 렌더링 최적화
+        this.renderCount = 0;
+        this.lastLogTime = 0;
+
         // 이벤트 핸들러
         this.eventHandlers = new Map();
 
@@ -134,29 +138,30 @@ class UIManager {
         });
     }
 
-    // 메인 렌더링 루프
+    // 메인 렌더링 루프 (최적화)
     render() {
         const gameState = this.getGameState();
 
-        // 처음 몇 번만 로그 출력
-        if (!this.renderCount) this.renderCount = 0;
-        if (this.renderCount < 3) {
-            console.log(`🎨 UIManager render #${this.renderCount}, currentScreen:`, this.currentScreen);
-            this.renderCount++;
+        // 렌더링 카운터 업데이트
+        this.renderCount++;
+        const currentTime = performance.now();
+
+        // 1초마다 렌더링 통계 로그 (디버깅용)
+        if (currentTime - this.lastLogTime > 1000) {
+            console.log(`🎨 UIManager render #${this.renderCount}, currentScreen: ${this.currentScreen}`);
+            this.lastLogTime = currentTime;
         }
 
         // 화면별 렌더링
         if (this.currentScreen === 'menu' && this.gameManager.mainMenu) {
-            if (this.renderCount <= 3) console.log('📋 메인 메뉴 렌더링 시작');
-            // 메인 메뉴는 MainMenu 클래스에서 직접 렌더링
             this.gameManager.mainMenu.render(this.gameManager.ctx, this.gameManager.canvas);
-            if (this.renderCount <= 3) console.log('✅ 메인 메뉴 렌더링 완료');
+        } else if (this.currentScreen === 'cardSelection' && this.gameManager.cardSelection) {
+            // 카드 선택 화면은 CardSelection 클래스에서 직접 렌더링
+            this.gameManager.cardSelection.render(this.gameManager.ctx, this.gameManager.canvas);
         } else if (this.currentScreen === 'gallery' && this.gameManager.cardGallery) {
-            if (this.renderCount <= 3) console.log('🎴 카드 갤러리 렌더링');
             // 카드 갤러리는 CardGallery 클래스에서 직접 렌더링
             this.gameManager.cardGallery.render(this.gameManager.ctx, this.gameManager.canvas);
         } else {
-            if (this.renderCount <= 3) console.log('🎮 Renderer를 통한 렌더링, gameState:', gameState);
             // 기타 화면은 Renderer를 통해 렌더링
             this.renderer.render(gameState);
         }
@@ -266,11 +271,12 @@ class UIManager {
     handleCanvasClick(event) {
         if (!this.isInteractive) return;
 
-        const rect = this.canvas.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
+        // GameManager의 좌표 변환 메서드 사용
+        const coords = this.gameManager.getCanvasCoordinates(event);
 
-        this.processCanvasInteraction(x, y);
+        if (coords.inBounds) {
+            this.processCanvasInteraction(coords.x, coords.y);
+        }
     }
 
     // 캔버스 터치 처리
@@ -278,12 +284,12 @@ class UIManager {
         event.preventDefault();
         if (!this.isInteractive) return;
 
-        const rect = this.canvas.getBoundingClientRect();
-        const touch = event.touches[0];
-        const x = touch.clientX - rect.left;
-        const y = touch.clientY - rect.top;
+        // GameManager의 터치 좌표 변환 메서드 사용
+        const coords = this.gameManager.getTouchCoordinates(event.touches[0]);
 
-        this.processCanvasInteraction(x, y);
+        if (coords.inBounds) {
+            this.processCanvasInteraction(coords.x, coords.y);
+        }
     }
 
     // 캔버스 상호작용 처리
@@ -326,8 +332,10 @@ class UIManager {
 
     // 카드 선택 클릭 처리
     handleCardSelectionClick(x, y) {
-        // 카드 그리드 클릭 처리
-        // TODO: 구현 필요
+        // CardSelection 클래스에서 클릭 처리
+        if (this.gameManager.cardSelection && this.gameManager.cardSelection.handlePointerInput) {
+            this.gameManager.cardSelection.handlePointerInput(x, y, this.gameManager.canvas);
+        }
     }
 
     // 플레이어 카드 클릭 처리
@@ -344,6 +352,14 @@ class UIManager {
 
     // 키보드 입력 처리
     handleKeydown(event) {
+        // 각 화면의 특수 키 처리
+        if (this.currentScreen === 'menu' && this.gameManager.mainMenu && this.gameManager.mainMenu.handleInput) {
+            this.gameManager.mainMenu.handleInput(event.key);
+        } else if (this.currentScreen === 'cardSelection' && this.gameManager.cardSelection && this.gameManager.cardSelection.handleInput) {
+            this.gameManager.cardSelection.handleInput(event.key);
+        }
+
+        // 전역 키보드 단축키
         switch (event.key) {
             case 'Escape':
                 this.hideAllModals();

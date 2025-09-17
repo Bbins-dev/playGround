@@ -150,7 +150,14 @@
       "shield_failed": "방패 사용 실패",
       "thorn_armor_effect": "가시갑옷으로 방어력과 가시 추가",
       "taunt_success": "도발 성공",
-      "taunt_failed": "도발 실패"
+      "taunt_failed": "도발 실패",
+      "card_selection": {
+        "initial_title": "시작 덱 구성",
+        "reward_title": "보상 카드 선택",
+        "replacement_title": "카드 교체",
+        "selected_count": "선택됨",
+        "no_cards_available": "선택 가능한 카드가 없습니다"
+      }
     }
   },
   "upcoming_games": {

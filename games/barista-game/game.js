@@ -4387,3 +4387,44 @@ window.getMobileStats = () => {
 window.debugMobile = () => {
     gameInstance.mobileOptimizer.debugInfo();
 };
+
+// i18n 헬퍼 함수들 (호환성을 위해 추가)
+function initializeI18n() {
+    const savedLang = localStorage.getItem('selectedLanguage') || 'ko';
+
+    if (typeof window.i18n !== 'undefined') {
+        window.i18n.init(savedLang, '../../js/lang/');
+        window.i18n.loadSavedLanguage();
+    } else {
+        // I18n 클래스 사용
+        const i18n = new I18n();
+        i18n.init(savedLang, '../../js/lang/');
+        window.i18nSystem = i18n;
+    }
+
+    // 언어 선택기 동기화
+    const languageSelect = document.getElementById('languageSelect');
+    if (languageSelect) {
+        languageSelect.value = savedLang;
+    }
+
+    console.log(`🌐 i18n 시스템 초기화 완료: ${savedLang}`);
+}
+
+function changeLanguage(lang) {
+    if (typeof window.i18n !== 'undefined') {
+        window.i18n.setLanguage(lang);
+    } else if (window.i18nSystem) {
+        window.i18nSystem.setLanguage(lang);
+    }
+    console.log(`🌐 언어 변경: ${lang}`);
+}
+
+function getI18nText(key) {
+    if (typeof window.i18n !== 'undefined') {
+        return window.i18n.getTranslation(key);
+    } else if (window.i18nSystem) {
+        return window.i18nSystem.getTranslation(key);
+    }
+    return key;
+}

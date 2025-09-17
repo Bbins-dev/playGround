@@ -253,14 +253,14 @@ class GameManager {
 
         // 게임 상태를 메뉴로 강제 설정
         this.gameState = 'menu';
-        this.currentScreen = 'menu';
+        this.currentScreen = this.mainMenu; // 객체로 설정
 
         this.switchScreen('menu');
         if (this.mainMenu) {
             this.mainMenu.show();
         }
 
-        console.log(`✅ 메인 메뉴 설정 완료 - gameState: ${this.gameState}, currentScreen: ${this.currentScreen}`);
+        console.log(`✅ 메인 메뉴 설정 완료 - gameState: ${this.gameState}, currentScreen:`, this.currentScreen);
     }
 
     // 게임 상태 변경
@@ -608,9 +608,7 @@ class GameManager {
             y: 1
         };
 
-        console.log(`Canvas 고정 크기: ${GameConfig.canvas.width}x${GameConfig.canvas.height}`);
-        console.log(`스케일 비율: 1:1 (고정)`);
-        console.log(`중앙점: ${GameConfig.canvas.width/2}x${GameConfig.canvas.height/2}`);
+        // Canvas 고정 크기 설정 완료
     }
 
     // 게임 속도 설정
@@ -627,7 +625,7 @@ class GameManager {
             this.animationManager.setGlobalSpeed(speed);
         }
 
-        console.log(`⚡ 게임 속도: ${speed}x`);
+        // 게임 속도 설정 완료
     }
 
     // 게임 데이터 로드 (저장된 게임)

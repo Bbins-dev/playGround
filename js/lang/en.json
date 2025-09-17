@@ -141,6 +141,22 @@
         "debuff": "Debuff",
         "special": "Special",
         "status": "Status"
+      },
+      "shield_bash_damage": "Shield bash damage",
+      "concussion_stun": "Stunned by concussion!",
+      "counter_damage": "Counter attack damage",
+      "defense_gained": "Defense increased",
+      "crouch_effect": "Crouched for defense and skipped turn",
+      "shield_failed": "Shield failed",
+      "thorn_armor_effect": "Thorn armor added defense and thorns",
+      "taunt_success": "Taunt successful",
+      "taunt_failed": "Taunt failed",
+      "card_selection": {
+        "initial_title": "Initial Deck Setup",
+        "reward_title": "Reward Card Selection",
+        "replacement_title": "Card Replacement",
+        "selected_count": "Selected",
+        "no_cards_available": "No cards available for selection"
       }
     }
   },

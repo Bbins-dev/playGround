@@ -34,7 +34,7 @@ class CardBattleGame {
     // 이벤트 리스너 설정
     setupEventListeners() {
         // 언어 변경 이벤트 리스너
-        const languageSelect = document.getElementById('language-select');
+        const languageSelect = document.getElementById('languageSelect');
         if (languageSelect) {
             languageSelect.addEventListener('change', (e) => {
                 if (typeof changeLanguage === 'function') {
@@ -151,3 +151,33 @@ window.addEventListener('unhandledrejection', (event) => {
 
 // 개발자 도구용 전역 접근
 window.cardBattleGame = cardBattleGame;
+
+// i18n 헬퍼 함수들
+function initializeI18n() {
+    const savedLang = localStorage.getItem('selectedLanguage') || 'ko';
+    const i18n = new I18n();
+    i18n.init(savedLang, '../../js/lang/');
+    window.i18nSystem = i18n;
+
+    // 언어 선택기 동기화
+    const languageSelect = document.getElementById('languageSelect');
+    if (languageSelect) {
+        languageSelect.value = savedLang;
+    }
+
+    console.log(`🌐 i18n 시스템 초기화 완료: ${savedLang}`);
+}
+
+function changeLanguage(lang) {
+    if (window.i18nSystem) {
+        window.i18nSystem.setLanguage(lang);
+    }
+    console.log(`🌐 언어 변경: ${lang}`);
+}
+
+function getI18nText(key) {
+    if (window.i18nSystem) {
+        return window.i18nSystem.getTranslation(key);
+    }
+    return key;
+}

@@ -141,6 +141,22 @@
         "debuff": "デバフ",
         "special": "特殊",
         "status": "状態異常"
+      },
+      "shield_bash_damage": "シールドバッシュダメージ",
+      "concussion_stun": "脳震盪で気絶させました！",
+      "counter_damage": "カウンターアタックダメージ",
+      "defense_gained": "防御力増加",
+      "crouch_effect": "しゃがみで防御力増加とターンスキップ",
+      "shield_failed": "シールド使用失敗",
+      "thorn_armor_effect": "棘の鎧で防御力と棘を追加",
+      "taunt_success": "挑発成功",
+      "taunt_failed": "挑発失敗",
+      "card_selection": {
+        "initial_title": "初期デッキ構成",
+        "reward_title": "報酬カード選択",
+        "replacement_title": "カード交換",
+        "selected_count": "選択済み",
+        "no_cards_available": "選択可能なカードがありません"
       }
     }
   },

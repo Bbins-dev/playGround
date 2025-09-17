@@ -44,6 +44,10 @@ class MainMenu {
             speed: 0.02
         };
 
+        // 렌더링 최적화
+        this.needsRedraw = true;
+        this.lastRenderTime = 0;
+
         console.log('📋 메인 메뉴 초기화 완료');
     }
 
@@ -70,13 +74,25 @@ class MainMenu {
         }
     }
 
-    // 메뉴 렌더링
+    // 메뉴 렌더링 (최적화)
     render(ctx, canvas) {
+        const currentTime = performance.now();
+
+        // 애니메이션 업데이트 (항상 실행)
+        this.updateAnimations();
+
+        // 렌더링이 필요하거나 16ms 이상 지났을 때만 렌더링 (60fps 제한)
+        if (!this.needsRedraw && (currentTime - this.lastRenderTime < 16)) {
+            return;
+        }
+
         this.renderBackground(ctx, canvas);
         this.renderTitle(ctx, canvas);
         this.renderMenuItems(ctx, canvas);
         this.renderInstructions(ctx, canvas);
-        this.updateAnimations();
+
+        this.needsRedraw = false;
+        this.lastRenderTime = currentTime;
     }
 
     // 배경 렌더링
@@ -182,27 +198,17 @@ class MainMenu {
 
     // 메뉴 아이템 렌더링
     renderMenuItems(ctx, canvas) {
-        console.log(`📋 renderMenuItems 시작 - ${this.menuItems.length}개 아이템`);
-
         const config = GameConfig.mainMenu.menuItems;
         // 고정 크기 중앙점 (1247 / 2 = 623.5)
         const centerX = GameConfig.canvas.width / 2;
-
-        console.log(`📐 메뉴 설정: startY=${config.startY}, itemHeight=${config.itemHeight}, centerX=${centerX}`);
-        console.log(`📐 Canvas 논리적 크기: ${GameConfig.canvas.width}x${GameConfig.canvas.height}`);
-        console.log(`📐 Canvas 물리적 크기: ${canvas.width}x${canvas.height}`);
 
         this.menuItems.forEach((item, index) => {
             const y = config.startY + index * config.itemHeight;
             const isSelected = index === this.currentSelection;
             const isDisabled = item.disabled;
 
-            console.log(`📋 메뉴 아이템 ${index}: ${item.text}, y=${y}, selected=${isSelected}, disabled=${isDisabled}`);
-
             this.renderMenuItem(ctx, item, centerX, y, isSelected, isDisabled);
         });
-
-        console.log('✅ renderMenuItems 완료');
     }
 
     // 개별 메뉴 아이템 렌더링
