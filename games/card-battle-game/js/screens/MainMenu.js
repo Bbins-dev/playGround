@@ -37,7 +37,7 @@ class MainMenu {
             },
             {
                 text: 'back-to-main',
-                action: () => this.backToMain(),
+                action: () => { window.location.href = '../../index.html'; },
                 icon: '🏠',
                 id: 'back-to-main-menu-btn'
             }
@@ -380,7 +380,7 @@ class MainMenu {
                 this.selectCurrent();
                 break;
             case 'Escape':
-                this.backToMain();
+                window.location.href = '../../index.html';
                 break;
         }
     }
@@ -515,12 +515,6 @@ class MainMenu {
         }
     }
 
-    // 메인 페이지로 돌아가기
-    backToMain() {
-        if (confirm('메인 페이지로 돌아가시겠습니까?')) {
-            window.location.href = '../../index.html';
-        }
-    }
 
     // 현지화 텍스트 가져오기
     getLocalizedText(key) {

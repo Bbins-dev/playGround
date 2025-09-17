@@ -152,7 +152,7 @@
       "taunt_success": "Taunt successful",
       "taunt_failed": "Taunt failed",
       "card_selection": {
-        "initial_title": "Initial Deck Setup",
+        "initial_title": "Start Card Selection",
         "reward_title": "Reward Card Selection",
         "replacement_title": "Card Replacement",
         "selected_count": "Selected",

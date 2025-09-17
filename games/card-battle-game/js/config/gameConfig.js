@@ -211,6 +211,31 @@ const GameConfig = {
         }
     },
 
+    // 카드 선택 화면 설정
+    cardSelection: {
+        title: {
+            y: 50,              // 제목 Y 위치
+            fontSize: 28,       // 제목 폰트 크기
+            shadowOffset: 2     // 그림자 오프셋
+        },
+        progress: {
+            y: 75,              // 진행상황 Y 위치
+            fontSize: 16        // 진행상황 폰트 크기
+        },
+        instructions: {
+            startY: 100,        // 안내 메시지 시작 Y 위치
+            lineHeight: 18,     // 줄 간격
+            fontSize: 14        // 폰트 크기
+        },
+        cards: {
+            startY: 180,        // 카드 그리드 시작 Y 위치
+            width: 140,         // 카드 너비
+            height: 190,        // 카드 높이
+            spacing: 160,       // 카드 간격
+            maxCols: 5          // 최대 열 수
+        }
+    },
+
     // 색상 테마
     colors: {
         background: '#2C3E50',

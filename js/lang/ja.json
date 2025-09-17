@@ -152,7 +152,7 @@
       "taunt_success": "挑発成功",
       "taunt_failed": "挑発失敗",
       "card_selection": {
-        "initial_title": "初期デッキ構成",
+        "initial_title": "スタートカード選択",
         "reward_title": "報酬カード選択",
         "replacement_title": "カード交換",
         "selected_count": "選択済み",

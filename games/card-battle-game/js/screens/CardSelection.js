@@ -150,7 +150,7 @@ class CardSelection {
         ctx.restore();
     }
 
-    // 제목 렌더링
+    // 제목 렌더링 (동적 중앙 정렬)
     renderTitle(ctx, canvas) {
         const titleKeys = {
             initial: 'auto_battle_card_game.ui.card_selection.initial_title',
@@ -159,37 +159,59 @@ class CardSelection {
         };
 
         ctx.save();
+
+        // 설정값 사용
+        const config = GameConfig.cardSelection;
+        const centerX = GameConfig.canvas.width / 2;
+        const titleY = config.title.y;
+        const progressY = config.progress.y;
+
+        // 메인 제목
         ctx.fillStyle = '#fff';
-        ctx.font = 'bold 28px Arial';
+        ctx.font = `bold ${config.title.fontSize}px Arial`;
         ctx.textAlign = 'center';
 
         const titleKey = titleKeys[this.selectionType];
         const title = (typeof getI18nText === 'function' && titleKey) ?
             getI18nText(titleKey) || '카드 선택' : '카드 선택';
-        ctx.fillText(title, canvas.width / 2, 50);
+
+        // 제목 그림자 효과
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillText(title, centerX + config.title.shadowOffset, titleY + config.title.shadowOffset);
+
+        // 메인 제목
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillText(title, centerX, titleY);
 
         // 선택 진행상황
         const selectedText = (typeof getI18nText === 'function') ?
             getI18nText('auto_battle_card_game.ui.card_selection.selected_count') || '선택됨' : '선택됨';
         const progressText = `${this.selectedCards.length} / ${this.maxSelections} ${selectedText}`;
+
         ctx.fillStyle = '#ffd700';
-        ctx.font = '16px Arial';
-        ctx.fillText(progressText, canvas.width / 2, 75);
+        ctx.font = `bold ${config.progress.fontSize}px Arial`;
+        ctx.fillText(progressText, centerX, progressY);
 
         ctx.restore();
     }
 
-    // 안내 메시지 렌더링
+    // 안내 메시지 렌더링 (동적 중앙 정렬)
     renderInstructions(ctx, canvas) {
         const instructions = this.getInstructions();
 
         ctx.save();
+
+        // 설정값 사용
+        const config = GameConfig.cardSelection.instructions;
+        const centerX = GameConfig.canvas.width / 2;
+
         ctx.fillStyle = '#ccc';
-        ctx.font = '14px Arial';
+        ctx.font = `${config.fontSize}px Arial`;
         ctx.textAlign = 'center';
 
         instructions.forEach((instruction, index) => {
-            ctx.fillText(instruction, canvas.width / 2, 100 + index * 18);
+            const y = config.startY + index * config.lineHeight;
+            ctx.fillText(instruction, centerX, y);
         });
 
         ctx.restore();
@@ -209,11 +231,13 @@ class CardSelection {
             return;
         }
 
-        const startY = 180;
-        const cardWidth = 140;
-        const cardHeight = 190;
-        const spacing = 160;
-        const cols = Math.min(this.availableCards.length, 5);
+        // 설정값 사용
+        const config = GameConfig.cardSelection.cards;
+        const startY = config.startY;
+        const cardWidth = config.width;
+        const cardHeight = config.height;
+        const spacing = config.spacing;
+        const cols = Math.min(this.availableCards.length, config.maxCols);
         const totalWidth = cols * spacing - (spacing - cardWidth);
         const startX = (canvas.width - totalWidth) / 2;
 
@@ -740,12 +764,13 @@ class CardSelection {
             return;
         }
 
-        // 카드 클릭 체크
-        const startY = 180;
-        const cardWidth = 140;
-        const cardHeight = 190;
-        const spacing = 160;
-        const cols = Math.min(this.availableCards.length, 5);
+        // 카드 클릭 체크 (설정값 사용)
+        const config = GameConfig.cardSelection.cards;
+        const startY = config.startY;
+        const cardWidth = config.width;
+        const cardHeight = config.height;
+        const spacing = config.spacing;
+        const cols = Math.min(this.availableCards.length, config.maxCols);
         const totalWidth = cols * spacing - (spacing - cardWidth);
         const startX = (canvas.width - totalWidth) / 2;
 
