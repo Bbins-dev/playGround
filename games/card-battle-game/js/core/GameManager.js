@@ -54,8 +54,7 @@ class GameManager {
             // Canvas 초기화
             this.initCanvas();
 
-            // 레이아웃 안정화 대기
-            await this.waitForLayoutStabilization();
+            // 고정 크기이므로 레이아웃 안정화 대기 불필요
 
             // 데이터베이스 초기화 (시스템들보다 먼저)
             CardDatabase.initialize();
@@ -152,10 +151,9 @@ class GameManager {
             ['close-gallery', 'click', () => this.hideCardGallery()]
         ]);
 
-        // 키보드 이벤트
+        // 키보드 이벤트 (resize 이벤트 제거 - 고정 크기)
         this.addEventListeners([
-            [document, 'keydown', (e) => this.handleKeyDown(e)],
-            [window, 'resize', () => this.debouncedHandleResize()]
+            [document, 'keydown', (e) => this.handleKeyDown(e)]
         ]);
 
         // 마우스 및 터치 이벤트
@@ -600,50 +598,19 @@ class GameManager {
     updateCanvasSize() {
         if (!this.canvas) return;
 
-        // viewport 크기를 직접 읽음 (game-wrapper 크기에 의존하지 않음)
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-        const viewportAspectRatio = viewportWidth / viewportHeight;
+        // 고정 크기 설정 - 더 이상 반응형 없음
+        this.canvas.width = GameConfig.canvas.width;  // 1247
+        this.canvas.height = GameConfig.canvas.height; // 832
 
-        // 기본 게임 비율 (16:9)
-        const gameAspectRatio = GameConfig.canvas.width / GameConfig.canvas.height;
-
-        let displayWidth, displayHeight;
-
-        // 레터박스 방식으로 크기 계산
-        if (viewportAspectRatio > gameAspectRatio) {
-            // 뷰포트가 더 넓음 - 세로를 맞추고 양옆에 레터박스
-            displayHeight = Math.min(viewportHeight * 0.9, 800); // 최대 높이 제한
-            displayWidth = displayHeight * gameAspectRatio;
-        } else {
-            // 뷰포트가 더 높음 - 가로를 맞추고 위아래에 레터박스
-            displayWidth = Math.min(viewportWidth * 0.9, 1200); // 최대 너비 제한
-            displayHeight = displayWidth / gameAspectRatio;
-        }
-
-        // Canvas 표시 크기 설정 (CSS)
-        this.canvas.style.width = displayWidth + 'px';
-        this.canvas.style.height = displayHeight + 'px';
-
-        // Canvas 내부 해상도는 고정 유지
-        this.canvas.width = GameConfig.canvas.width;
-        this.canvas.height = GameConfig.canvas.height;
-
-        // UI 오버레이 크기를 Canvas와 정확히 일치시킴
-        const uiOverlay = document.querySelector('.ui-overlay');
-        if (uiOverlay) {
-            uiOverlay.style.width = displayWidth + 'px';
-            uiOverlay.style.height = displayHeight + 'px';
-        }
-
-        // 스케일 비율 저장 (입력 좌표 변환용)
+        // 스케일 비율은 1:1 고정 (반응형 제거)
         this.displayScale = {
-            x: displayWidth / GameConfig.canvas.width,
-            y: displayHeight / GameConfig.canvas.height
+            x: 1,
+            y: 1
         };
 
-        console.log(`Canvas 크기 업데이트: ${displayWidth}x${displayHeight} (스케일: ${this.displayScale.x.toFixed(2)})`);
-        console.log(`뷰포트 크기: ${viewportWidth}x${viewportHeight}`);
+        console.log(`Canvas 고정 크기: ${GameConfig.canvas.width}x${GameConfig.canvas.height}`);
+        console.log(`스케일 비율: 1:1 (고정)`);
+        console.log(`중앙점: ${GameConfig.canvas.width/2}x${GameConfig.canvas.height/2}`);
     }
 
     // 게임 속도 설정

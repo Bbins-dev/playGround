@@ -1,4 +1,4 @@
-/* 카드 배틀 게임 스타일 */
+/* 카드 배틀 게임 - 고정 크기 1247x832 */
 * {
     margin: 0;
     padding: 0;
@@ -12,39 +12,42 @@ body {
     overflow: hidden;
 }
 
+/* 고정 크기 게임 컨테이너 - 더 이상 반응형 없음 */
 .game-container {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #000000;                     /* 레터박스를 위한 검은 배경 */
+    position: fixed;
+    width: 1247px;
+    height: 832px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #000000;
+    overflow: hidden;
+    border: 2px solid #333;
+    border-radius: 8px;
 }
 
-/* 게임 래퍼 - Canvas와 UI를 묶는 컨테이너 */
+/* 게임 래퍼 - 고정 크기 */
 .game-wrapper {
     position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100vw;
-    height: 100vh;
+    width: 1247px;
+    height: 832px;
 }
 
-/* 캔버스 스타일 */
+/* 캔버스 고정 크기 */
 #gameCanvas {
+    position: absolute;
+    width: 1247px !important;
+    height: 832px !important;
+    top: 0;
+    left: 0;
     background: #2c3e50;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    object-fit: contain;                     /* 비율 유지하면서 컨테이너에 맞춤 */
-    image-rendering: auto;                   /* 부드러운 렌더링 */
-    image-rendering: crisp-edges;            /* 픽셀 선명도 유지 */
-    display: block;                          /* 블록 요소로 설정 */
-    flex-shrink: 0;                         /* flex 환경에서 크기 유지 */
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    display: block;
 }
 
-/* 언어 선택기 - game-wrapper 기준 위치 */
+/* 언어 선택기 */
 .language-selector {
     position: absolute;
     top: 20px;
@@ -66,22 +69,22 @@ body {
     background: rgba(0, 0, 0, 0.9);
 }
 
-/* UI 오버레이 - Canvas와 정확히 동일한 위치와 크기 */
+/* UI 오버레이 - Canvas와 정확히 동일한 크기 */
 .ui-overlay {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
+    width: 1247px;
+    height: 832px;
     pointer-events: none;
     z-index: 100;
-    /* Canvas와 동일한 크기로 설정 (JavaScript에서 동적 계산) */
 }
 
 .ui-overlay > * {
     pointer-events: auto;
 }
 
-/* 게임 속도 조절 - Canvas 중앙 기준 */
+/* 게임 속도 조절 */
 .speed-controls {
     position: absolute;
     top: 20px;
@@ -89,7 +92,6 @@ body {
     transform: translateX(-50%);
     display: flex;
     gap: 5px;
-    /* Canvas 내부 중앙 정렬 */
 }
 
 .speed-btn {
@@ -136,7 +138,6 @@ body {
     position: absolute;
     bottom: 20px;
     right: 20px;
-    /* Canvas 우하단 기준 */
 }
 
 .back-btn {
@@ -144,7 +145,6 @@ body {
     top: 20px;
     left: 20px;
     background: rgba(231, 76, 60, 0.9);
-    /* Canvas 좌상단 기준 */
 }
 
 .back-btn:hover {
@@ -298,7 +298,6 @@ body {
     font-weight: bold;
 }
 
-
 /* 카드 선택 그리드 */
 .card-selection-grid {
     display: flex;
@@ -329,69 +328,6 @@ body {
     transform: scale(1.05);
 }
 
-/* 반응형 디자인 */
-@media (max-width: 768px) {
-    .game-wrapper {
-        width: 100vw;
-        height: 100vh;
-    }
-
-    #gameCanvas {
-        width: 100%;
-        height: 100%;
-        border-radius: 0;
-    }
-
-    .language-selector {
-        top: 10px;
-        right: 10px;
-    }
-
-    .speed-controls {
-        top: 10px;
-    }
-
-    .speed-btn {
-        padding: 6px 12px;
-        font-size: 12px;
-    }
-
-    #card-gallery-btn {
-        bottom: 10px;
-        right: 10px;
-        padding: 10px 16px;
-        font-size: 12px;
-    }
-
-    .back-btn {
-        top: 10px;
-        left: 10px;
-        padding: 10px 16px;
-        font-size: 12px;
-    }
-
-    .modal-content {
-        padding: 20px;
-        margin: 10px;
-    }
-
-    .card-gallery-grid {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        gap: 10px;
-    }
-
-    .gallery-card {
-        width: 100px;
-        height: 140px;
-        padding: 6px;
-    }
-
-    .card-selection-item {
-        width: 120px;
-        height: 168px;
-    }
-}
-
 /* HP 바 시스템 */
 .hp-bar-container {
     position: absolute;
@@ -411,13 +347,11 @@ body {
 .hp-bar-enemy {
     top: 20px;
     left: 20%;
-    /* Canvas 기준 상단 HP 바 */
 }
 
 .hp-bar-player {
     bottom: 20px;
     left: 20%;
-    /* Canvas 기준 하단 HP 바 */
 }
 
 .hp-bar-fill {
@@ -486,7 +420,7 @@ body {
 
 /* 턴 인디케이터 */
 .turn-indicator {
-    position: fixed;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -553,7 +487,7 @@ body {
 
 /* 피격 효과 */
 .hit-flash {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -655,46 +589,4 @@ body {
 
 .card-flip {
     animation: cardFlip 0.6s ease-in-out;
-}
-
-/* 모바일 반응형 조정 */
-@media (max-width: 768px) {
-    .hp-bar-container {
-        width: 70%;
-        height: 25px;
-        left: 15%;
-    }
-
-    .hp-number {
-        font-size: 14px;
-    }
-
-    .hp-label {
-        font-size: 12px;
-    }
-
-    .turn-indicator {
-        font-size: 36px;
-    }
-
-    .damage-number {
-        font-size: 24px;
-    }
-
-    .effect-overlay {
-        font-size: 30px;
-    }
-
-    .status-icon {
-        font-size: 10px;
-        padding: 2px 6px;
-    }
-
-    .status-icon .icon {
-        font-size: 12px;
-    }
-
-    .status-icon .name {
-        font-size: 8px;
-    }
 }

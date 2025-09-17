@@ -4,10 +4,10 @@ const GameConfig = {
     // 게임 버전
     version: '1.0.0',
 
-    // 화면 설정
+    // 화면 설정 - 고정 크기 (반응형 제거)
     canvas: {
-        width: 1280,
-        height: 720,
+        width: 1247,
+        height: 832,
         targetFPS: 60
     },
 

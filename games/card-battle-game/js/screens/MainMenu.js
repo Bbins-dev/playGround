@@ -154,11 +154,18 @@ class MainMenu {
         ctx.strokeText(gameTitle, centerX, titleY);
         ctx.fillText(gameTitle, centerX, titleY);
 
-        // 제목 장식 (더 크게)
+        // 제목 장식 - 제목 길이에 따라 동적 배치
         ctx.fillStyle = '#FFD700';
         ctx.font = 'bold 40px Arial';
-        ctx.fillText('⚔️', centerX - 140, titleY);
-        ctx.fillText('🛡️', centerX + 140, titleY);
+
+        // 제목 텍스트의 실제 너비 측정
+        const titleMetrics = ctx.measureText(gameTitle);
+        const titleWidth = titleMetrics.width;
+
+        // 제목 양옆에 적절한 간격으로 이모지 배치
+        const iconOffset = titleWidth / 2 + 60; // 제목 반폭 + 여유 공간
+        ctx.fillText('⚔️', centerX - iconOffset, titleY);
+        ctx.fillText('🛡️', centerX + iconOffset, titleY);
 
         // 부제목 (더 밝게)
         ctx.fillStyle = '#E0E0E0';
@@ -178,10 +185,12 @@ class MainMenu {
         console.log(`📋 renderMenuItems 시작 - ${this.menuItems.length}개 아이템`);
 
         const config = GameConfig.mainMenu.menuItems;
-        const centerX = canvas.width / 2;
+        // 고정 크기 중앙점 (1247 / 2 = 623.5)
+        const centerX = GameConfig.canvas.width / 2;
 
         console.log(`📐 메뉴 설정: startY=${config.startY}, itemHeight=${config.itemHeight}, centerX=${centerX}`);
-        console.log(`📐 Canvas 크기: ${canvas.width}x${canvas.height}`);
+        console.log(`📐 Canvas 논리적 크기: ${GameConfig.canvas.width}x${GameConfig.canvas.height}`);
+        console.log(`📐 Canvas 물리적 크기: ${canvas.width}x${canvas.height}`);
 
         this.menuItems.forEach((item, index) => {
             const y = config.startY + index * config.itemHeight;
