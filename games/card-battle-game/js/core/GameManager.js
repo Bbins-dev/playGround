@@ -217,6 +217,22 @@ class GameManager {
         }
     }
 
+    // 메인 메뉴 표시
+    showMainMenu() {
+        console.log('🏠 메인 메뉴 표시');
+        this.switchScreen('menu');
+        if (this.mainMenu) {
+            this.mainMenu.show();
+        }
+    }
+
+    // 게임 상태 변경
+    changeGameState(newState) {
+        console.log(`🔄 게임 상태 변경: ${this.gameState} → ${newState}`);
+        this.gameState = newState;
+        this.switchScreen(newState);
+    }
+
     // 새 게임 초기화
     initializeNewGame() {
         console.log('🆕 새 게임 초기화');
@@ -375,17 +391,6 @@ class GameManager {
     // 카드 갤러리 숨기기
     hideCardGallery() {
         this.cardGallery.hide();
-    }
-
-    // 게임 속도 설정
-    setGameSpeed(speed) {
-        this.gameSpeed = speed;
-
-        // 속도 버튼 업데이트
-        document.querySelectorAll('.speed-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById(`speed-${speed}x`).classList.add('active');
-
-        console.log(`게임 속도: ${speed}x`);
     }
 
     // 키보드 이벤트 처리

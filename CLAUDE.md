@@ -53,13 +53,14 @@ class GameName {
   - Mobile optimization with touch events
   - Score validation/security system
 
-- **Card Battle Game** (`games/card-battle-game/`): 턴제 자동 카드 배틀 게임 [IN DEVELOPMENT]:
-  - 카드 순서 조합이 핵심인 전략 게임
-  - 5개 속성 시스템 (불, 물, 전기, 독, 노멀) + 상성 관계
-  - 자동 전투 시스템 (손패 왼쪽부터 순차 발동)
-  - 상태이상 시스템 (도발, 기절, 마비, 화상, 중독)
-  - 브랜치: `feature/card-battle-game`
-  - 현재 진행상황: 기본 구조 완료, 다음 단계는 전투 시스템 + UI 렌더링
+- **Card Battle Game** (`games/card-battle-game/`): 턴제 자동 카드 배틀 게임 [COMPLETED ✅]:
+  - 완전한 턴 기반 자동 전투 시스템
+  - 5개 속성 시스템 (불🔥, 물💧, 전기⚡, 독☠️, 노멀⭐) + 상성 관계 (1.5x/0.5x)
+  - Canvas + DOM 하이브리드 렌더링 시스템
+  - 메인 메뉴, 카드 갤러리, 카드 선택 화면 완료
+  - 완전한 애니메이션 시스템 (피격 효과, 상태이상, 카드 발동)
+  - 모바일 터치 지원 및 게임 속도 조절 (1x/2x/3x)
+  - 메인 사이트 통합 완료 (config.js + 언어 파일)
 
 ## Key Development Guidelines
 

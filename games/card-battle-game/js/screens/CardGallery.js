@@ -37,6 +37,54 @@ class CardGallery {
         console.log('🎴 카드 갤러리 초기화 완료');
     }
 
+    // 갤러리 표시
+    show() {
+        console.log('🎴 카드 갤러리 표시');
+        // DOM 갤러리 모달 표시
+        const modal = document.getElementById('card-gallery-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            this.loadAllCards();
+            this.applyFilters();
+            this.renderGalleryGrid();
+        }
+    }
+
+    // 갤러리 숨기기
+    hide() {
+        console.log('🎴 카드 갤러리 숨김');
+        // DOM 갤러리 모달 숨기기
+        const modal = document.getElementById('card-gallery-modal');
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    }
+
+    // 갤러리 그리드 렌더링 (DOM)
+    renderGalleryGrid() {
+        const grid = document.getElementById('card-gallery-grid');
+        if (!grid) return;
+
+        grid.innerHTML = '';
+
+        if (this.filteredCards.length === 0) {
+            grid.innerHTML = '<p style="text-align: center; color: #ccc;">카드가 없습니다.</p>';
+            return;
+        }
+
+        this.filteredCards.forEach(card => {
+            const cardElement = document.createElement('div');
+            cardElement.className = 'gallery-card';
+            cardElement.innerHTML = `
+                <div class="card-icon">${card.element?.icon || '⭐'}</div>
+                <div class="card-name">${card.name}</div>
+                <div class="card-cost">${card.cost || 0}</div>
+                <div class="card-description">${card.description}</div>
+            `;
+            grid.appendChild(cardElement);
+        });
+    }
+
     // 모든 카드 로드
     loadAllCards() {
         if (this.gameManager.cardManager) {

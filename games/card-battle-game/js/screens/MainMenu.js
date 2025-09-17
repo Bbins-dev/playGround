@@ -47,6 +47,18 @@ class MainMenu {
         console.log('📋 메인 메뉴 초기화 완료');
     }
 
+    // 메뉴 표시
+    show() {
+        console.log('📋 메인 메뉴 표시');
+        // 메뉴가 이미 렌더링되고 있으므로 추가 작업 불필요
+    }
+
+    // 메뉴 숨기기
+    hide() {
+        console.log('📋 메인 메뉴 숨김');
+        // 메뉴 숨김 처리
+    }
+
     // 저장된 게임 확인
     checkSavedGame() {
         const savedGame = localStorage.getItem('cardBattleGame_save');
