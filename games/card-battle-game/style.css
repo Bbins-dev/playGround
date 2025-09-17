@@ -25,9 +25,11 @@ body {
 /* 게임 래퍼 - Canvas와 UI를 묶는 컨테이너 */
 .game-wrapper {
     position: relative;
-    display: inline-block;
-    max-width: 100vw;
-    max-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
 }
 
 /* 캔버스 스타일 */
@@ -39,8 +41,7 @@ body {
     image-rendering: auto;                   /* 부드러운 렌더링 */
     image-rendering: crisp-edges;            /* 픽셀 선명도 유지 */
     display: block;                          /* 블록 요소로 설정 */
-    position: relative;                      /* 중앙 정렬을 위한 위치 설정 */
-    margin: auto;                           /* 자동 중앙 정렬 */
+    flex-shrink: 0;                         /* flex 환경에서 크기 유지 */
 }
 
 /* 언어 선택기 - game-wrapper 기준 위치 */
@@ -65,16 +66,15 @@ body {
     background: rgba(0, 0, 0, 0.9);
 }
 
-/* UI 오버레이 - Canvas 크기와 정확히 일치 */
+/* UI 오버레이 - Canvas와 정확히 동일한 위치와 크기 */
 .ui-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     pointer-events: none;
     z-index: 100;
-    /* game-wrapper 내부에서 Canvas와 동일한 크기로 오버레이 */
+    /* Canvas와 동일한 크기로 설정 (JavaScript에서 동적 계산) */
 }
 
 .ui-overlay > * {

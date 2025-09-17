@@ -41,15 +41,21 @@ class GameManager {
 
         // 디버그 모드
         this.debug = false;
+
+        // Debounce용 타이머
+        this.resizeTimeout = null;
     }
 
     // 게임 초기화
-    init() {
+    async init() {
         try {
             console.log('🎮 게임 매니저 초기화 시작');
 
             // Canvas 초기화
             this.initCanvas();
+
+            // 레이아웃 안정화 대기
+            await this.waitForLayoutStabilization();
 
             // 데이터베이스 초기화 (시스템들보다 먼저)
             CardDatabase.initialize();
@@ -86,6 +92,23 @@ class GameManager {
         this.updateCanvasSize();
 
         console.log(`Canvas 초기화: ${this.canvas.width}x${this.canvas.height}`);
+    }
+
+    // 레이아웃 안정화 대기
+    async waitForLayoutStabilization() {
+        console.log('⏳ 레이아웃 안정화 대기 중...');
+
+        return new Promise((resolve) => {
+            // requestAnimationFrame을 두 번 호출하여 레이아웃 재계산 완료 보장
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    // Canvas 크기를 다시 한 번 업데이트하여 최종 안정화
+                    this.updateCanvasSize();
+                    console.log('✅ 레이아웃 안정화 완료');
+                    resolve();
+                });
+            });
+        });
     }
 
     // 시스템들 초기화
@@ -132,7 +155,7 @@ class GameManager {
         // 키보드 이벤트
         this.addEventListeners([
             [document, 'keydown', (e) => this.handleKeyDown(e)],
-            [window, 'resize', () => this.handleResize()]
+            [window, 'resize', () => this.debouncedHandleResize()]
         ]);
 
         // 마우스 및 터치 이벤트
@@ -553,6 +576,17 @@ class GameManager {
     }
 
     // 화면 크기 변경 처리
+    // Debounced resize handler
+    debouncedHandleResize() {
+        if (this.resizeTimeout) {
+            clearTimeout(this.resizeTimeout);
+        }
+
+        this.resizeTimeout = setTimeout(() => {
+            this.handleResize();
+        }, 100); // 100ms debounce
+    }
+
     handleResize() {
         this.updateCanvasSize();
 
@@ -566,29 +600,24 @@ class GameManager {
     updateCanvasSize() {
         if (!this.canvas) return;
 
-        // game-wrapper를 참조 (Canvas와 UI 오버레이를 포함하는 컨테이너)
-        const gameWrapper = this.canvas.closest('.game-wrapper');
-        const container = gameWrapper || this.canvas.parentElement;
-        const containerRect = container.getBoundingClientRect();
+        // viewport 크기를 직접 읽음 (game-wrapper 크기에 의존하지 않음)
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const viewportAspectRatio = viewportWidth / viewportHeight;
 
         // 기본 게임 비율 (16:9)
         const gameAspectRatio = GameConfig.canvas.width / GameConfig.canvas.height;
 
-        // 컨테이너 크기
-        const containerWidth = containerRect.width;
-        const containerHeight = containerRect.height;
-        const containerAspectRatio = containerWidth / containerHeight;
-
         let displayWidth, displayHeight;
 
         // 레터박스 방식으로 크기 계산
-        if (containerAspectRatio > gameAspectRatio) {
-            // 컨테이너가 더 넓음 - 세로를 맞추고 양옆에 레터박스
-            displayHeight = Math.min(containerHeight * 0.9, 800); // 최대 높이 제한
+        if (viewportAspectRatio > gameAspectRatio) {
+            // 뷰포트가 더 넓음 - 세로를 맞추고 양옆에 레터박스
+            displayHeight = Math.min(viewportHeight * 0.9, 800); // 최대 높이 제한
             displayWidth = displayHeight * gameAspectRatio;
         } else {
-            // 컨테이너가 더 높음 - 가로를 맞추고 위아래에 레터박스
-            displayWidth = Math.min(containerWidth * 0.9, 1200); // 최대 너비 제한
+            // 뷰포트가 더 높음 - 가로를 맞추고 위아래에 레터박스
+            displayWidth = Math.min(viewportWidth * 0.9, 1200); // 최대 너비 제한
             displayHeight = displayWidth / gameAspectRatio;
         }
 
@@ -600,11 +629,12 @@ class GameManager {
         this.canvas.width = GameConfig.canvas.width;
         this.canvas.height = GameConfig.canvas.height;
 
-        // 레터박스 오프셋 계산 (중앙 정렬을 위해)
-        this.letterboxOffset = {
-            x: (containerWidth - displayWidth) / 2,
-            y: (containerHeight - displayHeight) / 2
-        };
+        // UI 오버레이 크기를 Canvas와 정확히 일치시킴
+        const uiOverlay = document.querySelector('.ui-overlay');
+        if (uiOverlay) {
+            uiOverlay.style.width = displayWidth + 'px';
+            uiOverlay.style.height = displayHeight + 'px';
+        }
 
         // 스케일 비율 저장 (입력 좌표 변환용)
         this.displayScale = {
@@ -613,7 +643,7 @@ class GameManager {
         };
 
         console.log(`Canvas 크기 업데이트: ${displayWidth}x${displayHeight} (스케일: ${this.displayScale.x.toFixed(2)})`);
-        console.log(`레터박스 오프셋: ${this.letterboxOffset.x.toFixed(1)}x${this.letterboxOffset.y.toFixed(1)}`);
+        console.log(`뷰포트 크기: ${viewportWidth}x${viewportHeight}`);
     }
 
     // 게임 속도 설정
