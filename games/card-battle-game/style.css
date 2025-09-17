@@ -304,7 +304,250 @@ body {
     }
 }
 
-/* 애니메이션 */
+/* HP 바 시스템 */
+.hp-bar-container {
+    position: absolute;
+    width: 60%;
+    height: 30px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #fff;
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.hp-bar-enemy {
+    top: 20px;
+    left: 20%;
+}
+
+.hp-bar-player {
+    bottom: 20px;
+    left: 20%;
+}
+
+.hp-bar-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #ff3333, #ff6666);
+    transition: width 0.5s ease-out;
+    border-radius: inherit;
+}
+
+.hp-bar-text {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+
+.hp-number {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.hp-label {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* 상태이상 표시 */
+.status-effects {
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 0;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    max-width: 200px;
+}
+
+.status-icon {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.status-icon .icon {
+    font-size: 14px;
+}
+
+.status-icon .name {
+    font-size: 10px;
+    font-weight: bold;
+}
+
+/* 턴 인디케이터 */
+.turn-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 48px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    pointer-events: none;
+    animation: turnChange 2s ease-out forwards;
+}
+
+/* 대미지/회복 숫자 */
+.damage-number {
+    position: absolute;
+    font-size: 32px;
+    font-weight: bold;
+    color: #FF3333;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    animation: floatUp 1s ease-out forwards;
+    pointer-events: none;
+    z-index: 500;
+}
+
+.heal-number {
+    color: #2ECC71;
+}
+
+.buff-number {
+    color: #2ECC71;
+}
+
+.debuff-number {
+    color: #E74C3C;
+}
+
+/* 효과 오버레이 */
+.effect-overlay {
+    position: absolute;
+    font-size: 40px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+    z-index: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.effect-overlay.buff {
+    color: #2ECC71;
+    animation: riseUp 0.8s ease-out forwards;
+}
+
+.effect-overlay.debuff {
+    color: #E74C3C;
+    animation: fallDown 0.8s ease-out forwards;
+}
+
+.effect-overlay.heal {
+    color: #2ECC71;
+    animation: pulse 0.6s ease-out forwards;
+}
+
+/* 피격 효과 */
+.hit-flash {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 400;
+    animation: elementFlash 0.3s ease-out;
+}
+
+/* 카드 하이라이트 */
+.card.next-to-activate {
+    border: 2px solid #FFD700 !important;
+    box-shadow: 0 0 10px #FFD700 !important;
+    animation: pulse-border 1s infinite;
+}
+
+/* 애니메이션 정의 */
+@keyframes turnChange {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+    20% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+    40% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+}
+
+@keyframes riseUp {
+    0% { transform: translateY(20px); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(-20px); opacity: 0; }
+}
+
+@keyframes fallDown {
+    0% { transform: translateY(-20px); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(20px); opacity: 0; }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0; }
+    25% { transform: scale(1.2); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.8; }
+}
+
+@keyframes hitBlink {
+    0%, 100% { opacity: 1; }
+    25%, 75% { opacity: 0; }
+    50% { opacity: 1; }
+}
+
+@keyframes elementFlash {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.6; }
+}
+
+@keyframes pulse-border {
+    0%, 100% {
+        box-shadow: 0 0 5px #FFD700;
+    }
+    50% {
+        box-shadow: 0 0 15px #FFD700;
+    }
+}
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
@@ -322,4 +565,46 @@ body {
 
 .card-flip {
     animation: cardFlip 0.6s ease-in-out;
+}
+
+/* 모바일 반응형 조정 */
+@media (max-width: 768px) {
+    .hp-bar-container {
+        width: 70%;
+        height: 25px;
+        left: 15%;
+    }
+
+    .hp-number {
+        font-size: 14px;
+    }
+
+    .hp-label {
+        font-size: 12px;
+    }
+
+    .turn-indicator {
+        font-size: 36px;
+    }
+
+    .damage-number {
+        font-size: 24px;
+    }
+
+    .effect-overlay {
+        font-size: 30px;
+    }
+
+    .status-icon {
+        font-size: 10px;
+        padding: 2px 6px;
+    }
+
+    .status-icon .icon {
+        font-size: 12px;
+    }
+
+    .status-icon .name {
+        font-size: 8px;
+    }
 }

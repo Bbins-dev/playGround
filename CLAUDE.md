@@ -17,7 +17,7 @@ This is a **Korean hyper-casual mini web games collection** - a single-page appl
 
 ### Core Systems
 
-1. **Main Hub** (`index.html`): 
+1. **Main Hub** (`index.html`):
    - Game cards grid with search functionality
    - Multi-language i18n system (Korean, English, Japanese)
    - Ad placement system (sidebars + game content)
@@ -52,6 +52,14 @@ class GameName {
   - Visual effects system for droplets/animations
   - Mobile optimization with touch events
   - Score validation/security system
+
+- **Card Battle Game** (`games/card-battle-game/`): 턴제 자동 카드 배틀 게임 [IN DEVELOPMENT]:
+  - 카드 순서 조합이 핵심인 전략 게임
+  - 5개 속성 시스템 (불, 물, 전기, 독, 노멀) + 상성 관계
+  - 자동 전투 시스템 (손패 왼쪽부터 순차 발동)
+  - 상태이상 시스템 (도발, 기절, 마비, 화상, 중독)
+  - 브랜치: `feature/card-battle-game`
+  - 현재 진행상황: 기본 구조 완료, 다음 단계는 전투 시스템 + UI 렌더링
 
 ## Key Development Guidelines
 
@@ -99,7 +107,7 @@ The project emphasizes modularity (each game is independent), Korean-first local
 
 **Example of the problem:**
 - Link: `games/barista-game` (no slash)
-- Browser URL: `http://localhost:8000/games/barista-game` 
+- Browser URL: `http://localhost:8000/games/barista-game`
 - `./style.css` resolves to: `http://localhost:8000/games/style.css` ❌ 404 Error
 
 **Solution:**
@@ -149,3 +157,53 @@ The project emphasizes modularity (each game is independent), Korean-first local
 4. **Dynamic content** - prefer generated content over static HTML
 
 **REMEMBER: This project prioritizes maintainability through configuration-driven development!**
+
+## 🎴 Card Battle Game Development Progress
+
+### Current Status (Branch: feature/card-battle-game)
+**Phase Completed:** 기본 구조 및 핵심 클래스 구현
+**Next Phase:** 전투 시스템 + UI 렌더링 구현
+
+### 구현 완료된 부분:
+1. **프로젝트 구조**: 체계적인 폴더 구조와 기본 파일들
+2. **게임 설정**:
+   - 5개 속성 시스템 (불🔥, 물💧, 전기⚡, 독☠️, 노멀⭐)
+   - 속성 상성 관계 (강점 1.5배, 약점 0.5배)
+   - 상태이상 시스템 (도발, 기절, 마비, 화상, 중독)
+3. **카드 시스템**:
+   - Card 클래스 및 카드 데이터베이스
+   - 마구때리기 카드 구현 (노멀 속성, 공격력 3)
+4. **캐릭터 시스템**:
+   - Player 클래스 (최대 손패 10장, HP 관리, 상태이상)
+   - Enemy 클래스 (최대 손패 20장, 스테이지별 특성)
+5. **게임 매니저**: 전체 게임 플로우 및 상태 관리
+
+### 다음 구현 예정:
+1. **전투 시스템** (`js/core/BattleSystem.js`)
+2. **Canvas 렌더링** (`js/ui/Renderer.js`)
+3. **UI 관리** (`js/ui/UIManager.js`, `js/ui/AnimationManager.js`)
+4. **화면들** (`js/screens/MainMenu.js`, `CardGallery.js`, `CardSelection.js`)
+5. **메인 config.js에 게임 등록**
+
+### 게임 핵심 메커니즘:
+- **자동 전투**: 손패 왼쪽부터 순차적으로 카드 발동
+- **카드 순서**: 플레이어가 카드 배치 순서를 전략적으로 구성
+- **속성 상성**: 공격 시 상성에 따른 데미지 배율 적용
+- **방어 속성**: 손패에서 가장 많은 속성으로 자동 결정
+- **스테이지 진행**: 승리 시 3장 중 카드 선택/교체/스킵
+- **무한 진행**: 카드는 소모되지 않고 매 턴 반복 발동
+
+### 개발 재개 시 체크리스트:
+1. `git checkout feature/card-battle-game`
+2. 브랜치 상태 확인: `git status`
+3. 다음 할 일: BattleSystem.js 구현부터 시작
+4. 테스트: 마구때리기 카드로 기본 전투 테스트
+
+# important-instruction-reminders
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
+
+
+      IMPORTANT: this context may or may not be relevant to your tasks. You should not respond to this context unless it is highly relevant to your task.

@@ -1,53 +1,153 @@
 // 카드 배틀 게임 메인 진입점
 
-let gameManager;
-
-// DOM이 로드되면 게임 초기화
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🎴 카드 배틀 게임을 시작합니다.');
-
-    // i18n 시스템 초기화
-    if (typeof initializeI18n === 'function') {
-        initializeI18n();
+class CardBattleGame {
+    constructor() {
+        this.gameManager = null;
+        this.initialized = false;
     }
 
-    // 게임 매니저 생성 및 초기화
-    gameManager = new GameManager();
-    gameManager.init();
+    // 게임 초기화 및 시작
+    async init() {
+        try {
+            console.log('🎴 카드 배틀 게임을 시작합니다.');
 
-    // 언어 변경 이벤트 리스너
-    const languageSelect = document.getElementById('language-select');
-    if (languageSelect) {
-        languageSelect.addEventListener('change', function() {
-            if (typeof changeLanguage === 'function') {
-                changeLanguage(this.value);
+            // i18n 시스템 초기화
+            if (typeof initializeI18n === 'function') {
+                initializeI18n();
             }
-        });
+
+            // 게임 매니저 생성 및 초기화
+            this.gameManager = new GameManager();
+            this.gameManager.init();
+
+            this.setupEventListeners();
+            this.initialized = true;
+
+            console.log('✅ 카드 배틀 게임 초기화 완료');
+
+        } catch (error) {
+            console.error('❌ 게임 초기화 실패:', error);
+            this.showErrorMessage(error);
+        }
     }
 
-    // 뒤로가기 버튼
-    const backButton = document.getElementById('back-to-main');
-    if (backButton) {
-        backButton.addEventListener('click', function() {
-            window.location.href = '../../index.html';
-        });
+    // 이벤트 리스너 설정
+    setupEventListeners() {
+        // 언어 변경 이벤트 리스너
+        const languageSelect = document.getElementById('language-select');
+        if (languageSelect) {
+            languageSelect.addEventListener('change', (e) => {
+                if (typeof changeLanguage === 'function') {
+                    changeLanguage(e.target.value);
+                }
+            });
+        }
+
+        // 뒤로가기 버튼
+        const backButton = document.getElementById('back-to-main');
+        if (backButton) {
+            backButton.addEventListener('click', () => {
+                window.location.href = '../../index.html';
+            });
+        }
     }
 
-    console.log('✅ 게임 초기화 완료');
+    // 에러 메시지 표시
+    showErrorMessage(error) {
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 68, 68, 0.95);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            z-index: 9999;
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        `;
+        errorDiv.innerHTML = `
+            <h3>🚨 게임 로드 오류</h3>
+            <p style="margin: 15px 0;">${error.message}</p>
+            <button onclick="location.reload()" style="
+                margin-top: 10px;
+                padding: 8px 20px;
+                background: #fff;
+                color: #ff4444;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-weight: bold;
+            ">새로고침</button>
+        `;
+        document.body.appendChild(errorDiv);
+    }
+
+    // 게임 종료
+    destroy() {
+        if (this.gameManager) {
+            this.gameManager.destroy();
+            this.gameManager = null;
+        }
+        this.initialized = false;
+        console.log('🔚 카드 배틀 게임 종료');
+    }
+
+    // 게임 상태 확인
+    isInitialized() {
+        return this.initialized;
+    }
+
+    // 게임 매니저 접근
+    getGameManager() {
+        return this.gameManager;
+    }
+}
+
+// 전역 게임 인스턴스
+let cardBattleGame = null;
+
+// DOM 로드 완료 시 게임 시작
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('📄 DOM 로드 완료');
+
+    // 잠시 대기 후 게임 시작 (모든 스크립트 로드 완료 대기)
+    setTimeout(async () => {
+        if (!cardBattleGame) {
+            cardBattleGame = new CardBattleGame();
+            await cardBattleGame.init();
+        }
+    }, 100);
 });
 
-// 게임 종료 시 리소스 정리
-window.addEventListener('beforeunload', function() {
-    if (gameManager) {
-        gameManager.destroy();
+// 페이지 언로드 시 게임 정리
+window.addEventListener('beforeunload', () => {
+    if (cardBattleGame) {
+        cardBattleGame.destroy();
     }
 });
 
 // 에러 핸들링
-window.addEventListener('error', function(event) {
-    console.error('🚨 게임 에러:', event.error);
-    // 에러 발생 시 메인 메뉴로 복구
-    if (gameManager) {
-        gameManager.showMainMenu();
+window.addEventListener('error', (event) => {
+    console.error('🚨 전역 에러:', event.error);
+
+    if (cardBattleGame && cardBattleGame.isInitialized()) {
+        const gameManager = cardBattleGame.getGameManager();
+        if (gameManager && gameManager.switchScreen) {
+            gameManager.switchScreen('menu');
+        }
     }
 });
+
+// 처리되지 않은 Promise 거부 처리
+window.addEventListener('unhandledrejection', (event) => {
+    console.error('🚨 처리되지 않은 Promise 에러:', event.reason);
+    event.preventDefault();
+});
+
+// 개발자 도구용 전역 접근
+window.cardBattleGame = cardBattleGame;

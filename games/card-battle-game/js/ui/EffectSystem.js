@@ -1,0 +1,298 @@
+// 효과 및 애니메이션 시스템 관리
+
+class EffectSystem {
+    constructor() {
+        this.effectsContainer = document.getElementById('effects-container');
+        this.numbersContainer = document.getElementById('numbers-container');
+
+        // 현재 진행 중인 효과들 추적
+        this.activeEffects = new Map();
+    }
+
+    // 피격 효과 (고전 게임 스타일)
+    async showHitEffect(targetPosition, element, damage = 0) {
+        // Step 1: 속성별 색상 플래시
+        if (element && element !== 'normal') {
+            await this.showElementFlash(element);
+        }
+
+        // Step 2: 피격 깜빡임 효과
+        await this.showHitBlink(targetPosition);
+
+        // Step 3: 대미지 숫자 표시 (동시에)
+        if (damage > 0) {
+            this.showDamageNumber(damage, targetPosition, 'damage');
+        }
+    }
+
+    // 속성별 색상 플래시
+    showElementFlash(element) {
+        return new Promise((resolve) => {
+            const elementConfig = GameConfig.elements[element];
+            if (!elementConfig) {
+                resolve();
+                return;
+            }
+
+            const flash = document.createElement('div');
+            flash.className = 'hit-flash';
+            flash.style.backgroundColor = elementConfig.color;
+
+            document.body.appendChild(flash);
+
+            setTimeout(() => {
+                flash.remove();
+                resolve();
+            }, 300);
+        });
+    }
+
+    // 피격 깜빡임 (고전 게임 스타일)
+    showHitBlink(targetPosition) {
+        return new Promise((resolve) => {
+            // 타겟 영역의 요소들 찾기
+            const isPlayerHit = targetPosition.y > window.innerHeight / 2;
+            const targetElements = [];
+
+            if (isPlayerHit) {
+                // 플레이어 영역
+                targetElements.push(document.getElementById('player-hp-bar'));
+                // 플레이어 손패 영역도 깜빡임 (Canvas 기반이므로 나중에 구현)
+            } else {
+                // 적 영역
+                targetElements.push(document.getElementById('enemy-hp-bar'));
+                // 적 손패 영역도 깜빡임 (Canvas 기반이므로 나중에 구현)
+            }
+
+            // 깜빡임 애니메이션 적용
+            targetElements.forEach(element => {
+                if (element) {
+                    element.style.animation = 'hitBlink 0.4s ease-out';
+                }
+            });
+
+            setTimeout(() => {
+                targetElements.forEach(element => {
+                    if (element) {
+                        element.style.animation = '';
+                    }
+                });
+                resolve();
+            }, 400);
+        });
+    }
+
+    // 버프/디버프/회복 효과 표시
+    showStatusEffect(type, targetPosition, power = 0) {
+        const effectConfig = this.getEffectConfig(type);
+        if (!effectConfig) return;
+
+        // 효과 오버레이 생성
+        const overlay = document.createElement('div');
+        overlay.className = `effect-overlay ${type}`;
+        overlay.style.left = (targetPosition.x - 50) + 'px'; // 중앙 정렬
+        overlay.style.top = (targetPosition.y - 20) + 'px';
+
+        // 아이콘과 텍스트
+        overlay.innerHTML = `
+            <span class="icon">${effectConfig.icon}</span>
+            <span class="text">${effectConfig.text}</span>
+        `;
+
+        this.effectsContainer.appendChild(overlay);
+
+        // 숫자 표시 (파워가 있는 경우)
+        if (power > 0) {
+            this.showDamageNumber(power, targetPosition, type);
+        }
+
+        // 애니메이션 완료 후 제거
+        setTimeout(() => {
+            if (overlay.parentNode) {
+                overlay.remove();
+            }
+        }, 800);
+    }
+
+    // 효과 설정 가져오기
+    getEffectConfig(type) {
+        const configs = {
+            buff: {
+                icon: '↑',
+                text: '버프',
+                color: '#2ECC71'
+            },
+            debuff: {
+                icon: '↓',
+                text: '디버프',
+                color: '#E74C3C'
+            },
+            heal: {
+                icon: '♥',
+                text: '회복',
+                color: '#2ECC71'
+            }
+        };
+
+        return configs[type];
+    }
+
+    // 대미지/회복/효과 숫자 표시
+    showDamageNumber(amount, position, type = 'damage') {
+        const numberElement = document.createElement('div');
+        let className = 'damage-number';
+
+        switch (type) {
+            case 'heal':
+                className += ' heal-number';
+                numberElement.textContent = `+${amount}`;
+                break;
+            case 'buff':
+                className += ' buff-number';
+                numberElement.textContent = `+${amount}`;
+                break;
+            case 'debuff':
+                className += ' debuff-number';
+                numberElement.textContent = `-${amount}`;
+                break;
+            default:
+                numberElement.textContent = `-${amount}`;
+        }
+
+        numberElement.className = className;
+
+        // 위치 설정 (약간의 랜덤성 추가)
+        const randomX = (Math.random() - 0.5) * 40; // -20 ~ +20px
+        numberElement.style.left = (position.x + randomX) + 'px';
+        numberElement.style.top = position.y + 'px';
+
+        this.numbersContainer.appendChild(numberElement);
+
+        // 애니메이션 완료 후 제거
+        setTimeout(() => {
+            if (numberElement.parentNode) {
+                numberElement.remove();
+            }
+        }, 1000);
+    }
+
+    // 카드 발동 효과 (중앙 확대)
+    showCardActivation(card, duration = 2000) {
+        return new Promise((resolve) => {
+            // 카드 확대 오버레이 생성
+            const cardOverlay = document.createElement('div');
+            cardOverlay.className = 'card-activation-overlay';
+            cardOverlay.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 300px;
+                height: 420px;
+                background: ${card.getColor()};
+                border: 3px solid #fff;
+                border-radius: 15px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 20px;
+                z-index: 999;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+                animation: cardZoomIn 0.3s ease-out;
+            `;
+
+            // 카드 내용
+            cardOverlay.innerHTML = `
+                <div style="text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 10px;">${card.getEmoji()}</div>
+                    <h2 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); margin: 0; font-size: 24px;">${card.name}</h2>
+                    <p style="color: rgba(255,255,255,0.9); text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin: 10px 0; font-size: 14px;">${card.type}</p>
+                </div>
+                <div style="text-align: center;">
+                    <p style="color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin: 0; font-size: 16px;">${card.description}</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); font-size: 20px; font-weight: bold;">
+                        공격력: ${card.power} | 명중률: ${card.accuracy}%
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(cardOverlay);
+
+            // 지속 시간 후 제거
+            setTimeout(() => {
+                cardOverlay.style.animation = 'cardZoomOut 0.3s ease-in forwards';
+                setTimeout(() => {
+                    if (cardOverlay.parentNode) {
+                        cardOverlay.remove();
+                    }
+                    resolve();
+                }, 300);
+            }, duration);
+        });
+    }
+
+    // 위치 계산 헬퍼 함수들
+    getPlayerPosition() {
+        const playerBar = document.getElementById('player-hp-bar');
+        const rect = playerBar.getBoundingClientRect();
+        return {
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2
+        };
+    }
+
+    getEnemyPosition() {
+        const enemyBar = document.getElementById('enemy-hp-bar');
+        const rect = enemyBar.getBoundingClientRect();
+        return {
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2
+        };
+    }
+
+    // 모든 효과 즉시 정리
+    clearAllEffects() {
+        this.effectsContainer.innerHTML = '';
+        this.numbersContainer.innerHTML = '';
+        this.activeEffects.clear();
+    }
+
+    // 복합 효과 (여러 효과 조합)
+    async showCombinedEffect(effects) {
+        const promises = effects.map(effect => {
+            switch (effect.type) {
+                case 'hit':
+                    return this.showHitEffect(effect.position, effect.element, effect.damage);
+                case 'status':
+                    this.showStatusEffect(effect.statusType, effect.position, effect.power);
+                    return Promise.resolve();
+                case 'card':
+                    return this.showCardActivation(effect.card, effect.duration);
+                default:
+                    return Promise.resolve();
+            }
+        });
+
+        await Promise.all(promises);
+    }
+}
+
+// CSS 애니메이션 추가 (동적으로)
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes cardZoomIn {
+        0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+        100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
+    @keyframes cardZoomOut {
+        0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    }
+`;
+document.head.appendChild(style);
+
+// 전역 객체로 등록
+window.EffectSystem = EffectSystem;

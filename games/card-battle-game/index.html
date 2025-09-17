@@ -22,6 +22,25 @@
 
         <!-- UI 오버레이 -->
         <div id="ui-overlay" class="ui-overlay">
+            <!-- HP 바들 -->
+            <div id="enemy-hp-bar" class="hp-bar-container hp-bar-enemy">
+                <div class="hp-bar-fill" style="width: 100%;"></div>
+                <div class="hp-bar-text">
+                    <span class="hp-label" data-i18n="enemy">적</span>
+                    <span class="hp-number">100/100</span>
+                </div>
+                <div class="status-effects" id="enemy-status-effects"></div>
+            </div>
+
+            <div id="player-hp-bar" class="hp-bar-container hp-bar-player">
+                <div class="hp-bar-fill" style="width: 100%;"></div>
+                <div class="hp-bar-text">
+                    <span class="hp-label" data-i18n="player">플레이어</span>
+                    <span class="hp-number">100/100</span>
+                </div>
+                <div class="status-effects" id="player-status-effects"></div>
+            </div>
+
             <!-- 게임 속도 조절 -->
             <div class="speed-controls">
                 <button id="speed-1x" class="speed-btn active">1x</button>
@@ -34,6 +53,15 @@
 
             <!-- 뒤로가기 버튼 -->
             <button id="back-to-main" class="ui-button back-btn" data-i18n="back-to-main">메인으로</button>
+
+            <!-- 턴 인디케이터 (동적으로 생성) -->
+            <div id="turn-indicator-container"></div>
+
+            <!-- 대미지/효과 숫자 컨테이너 (동적으로 생성) -->
+            <div id="numbers-container"></div>
+
+            <!-- 효과 오버레이 컨테이너 (동적으로 생성) -->
+            <div id="effects-container"></div>
         </div>
 
         <!-- 카드 갤러리 모달 -->

@@ -18,6 +18,15 @@ const PlayGroundConfig = {
             difficulty: 'easy',
             status: 'active',
             featured: true
+        },
+        {
+            id: 'card-battle-game',
+            path: 'games/card-battle-game/',
+            icon: '⚔️',
+            genre: 'strategy',
+            difficulty: 'medium',
+            status: 'active',
+            featured: true
         }
         // 새 게임은 여기에 추가
     ],
