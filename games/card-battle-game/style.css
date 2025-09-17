@@ -45,8 +45,7 @@ body {
     border-radius: 0;
     box-shadow: none;
     display: block;
-    pointer-events: auto; /* 클릭/터치 이벤트 명시적 허용 */
-    z-index: 1; /* 다른 요소보다 우선순위 확보 */
+    z-index: 1; /* 기본 렌더링 레이어 */
 }
 
 /* 언어 선택기 */
@@ -79,7 +78,7 @@ body {
     width: 1247px;
     height: 832px;
     pointer-events: none;
-    z-index: 100;
+    z-index: 100; /* Canvas 위에 배치 */
 }
 
 .ui-overlay > * {
@@ -94,6 +93,7 @@ body {
     transform: translateX(-50%);
     display: flex;
     gap: 5px;
+    z-index: 1000; /* UI 오버레이 위에 표시 */
 }
 
 .speed-btn {
@@ -140,6 +140,7 @@ body {
     position: absolute;
     bottom: 20px;
     right: 20px;
+    z-index: 1000; /* UI 오버레이 위에 표시 */
 }
 
 .back-btn {
@@ -147,6 +148,7 @@ body {
     top: 20px;
     left: 20px;
     background: rgba(231, 76, 60, 0.9);
+    z-index: 1000; /* UI 오버레이 위에 표시 */
 }
 
 .back-btn:hover {
@@ -344,6 +346,7 @@ body {
     justify-content: space-between;
     padding: 0 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000; /* UI 오버레이 위에 표시 */
 }
 
 .hp-bar-enemy {
@@ -386,6 +389,65 @@ body {
     font-size: 14px;
     color: rgba(255, 255, 255, 0.9);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* 메인 메뉴 DOM 버튼들 (Canvas 메뉴 대체) */
+.main-menu-container {
+    position: absolute;
+    left: 50%;
+    top: 280px; /* GameConfig.mainMenu.menuItems.startY와 동일 */
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* GameConfig.mainMenu.menuItems.itemHeight - height */
+    z-index: 1000;
+    pointer-events: auto;
+}
+
+.main-menu-container.hidden {
+    display: none;
+}
+
+.menu-button {
+    width: 300px; /* GameConfig.mainMenu.menuItems.width */
+    height: 60px; /* GameConfig.mainMenu.menuItems.height */
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6));
+    border: 2px solid #3498db;
+    border-radius: 10px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.menu-button:hover {
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.4), rgba(52, 152, 219, 0.2));
+    transform: translateX(10px);
+    border-color: #f39c12;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.menu-button:focus {
+    outline: 2px solid #f39c12;
+    outline-offset: 2px;
+}
+
+.menu-icon {
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+}
+
+.menu-text {
+    font-size: 18px;
+    font-weight: bold;
 }
 
 /* 상태이상 표시 */

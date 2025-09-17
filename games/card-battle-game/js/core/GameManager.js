@@ -150,26 +150,20 @@ class GameManager {
             [document, 'keydown', (e) => this.handleKeyDown(e)]
         ]);
 
-        // 마우스 및 터치 이벤트
-        this.addEventListeners([
-            [this.canvas, 'click', (e) => this.handlePointerInput(e)],
-            [this.canvas, 'touchstart', (e) => this.handleTouchStart(e)],
-            [this.canvas, 'touchend', (e) => this.handleTouchEnd(e)],
-            [this.canvas, 'mousedown', (e) => this.handleMouseDown(e)],
-            [this.canvas, 'mouseup', (e) => this.handleMouseUp(e)]
-        ]);
+        // Canvas 이벤트는 메뉴가 DOM으로 전환되어 더 이상 필요하지 않음
+        // 게임 플레이 중에만 필요한 Canvas 이벤트는 별도로 처리
     }
 
     // 이벤트 리스너 추가 (자동 해제를 위한 추적)
     addEventListeners(listeners) {
-        listeners.forEach(([elementOrId, event, handler]) => {
+        listeners.forEach(([elementOrId, event, handler, useCapture = false]) => {
             const element = typeof elementOrId === 'string'
                 ? document.getElementById(elementOrId)
                 : elementOrId;
 
             if (element) {
-                element.addEventListener(event, handler);
-                this.boundEventListeners.set(`${elementOrId}-${event}`, { element, event, handler });
+                element.addEventListener(event, handler, useCapture);
+                this.boundEventListeners.set(`${elementOrId}-${event}`, { element, event, handler, useCapture });
             }
         });
     }
@@ -480,6 +474,9 @@ class GameManager {
         };
     }
 
+    // Canvas 이벤트 핸들러들은 DOM 메뉴 전환으로 더 이상 필요하지 않음
+    // 게임 플레이 중 Canvas 이벤트가 필요한 경우 별도 구현
+
     // 포인터 입력 처리 (마우스 클릭)
     handlePointerInput(event) {
         event.preventDefault();
@@ -663,8 +660,8 @@ class GameManager {
         }
 
         // 이벤트 리스너 제거
-        this.boundEventListeners.forEach(({ element, event, handler }) => {
-            element.removeEventListener(event, handler);
+        this.boundEventListeners.forEach(({ element, event, handler, useCapture = false }) => {
+            element.removeEventListener(event, handler, useCapture);
         });
 
     }

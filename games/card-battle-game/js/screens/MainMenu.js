@@ -4,40 +4,52 @@ class MainMenu {
     constructor(gameManager) {
         this.gameManager = gameManager;
 
+        // DOM 요소 참조
+        this.menuContainer = null;
+        this.menuButtons = {};
+
         // 메뉴 상태
         this.currentSelection = 0;
         this.menuItems = [
             {
                 text: 'start-game',
                 action: () => this.startNewGame(),
-                icon: '⚔️'
+                icon: '⚔️',
+                id: 'start-game-btn'
             },
             {
                 text: 'game-tutorial',
                 action: () => this.showGameTutorial(),
-                icon: '📚'
+                icon: '📚',
+                id: 'game-tutorial-btn'
             },
             {
                 text: 'card-gallery',
                 action: () => this.openCardGallery(),
-                icon: '🃏'
+                icon: '🃏',
+                id: 'card-gallery-menu-btn'
             },
             {
                 text: 'settings',
                 action: () => this.openSettings(),
-                icon: '⚙️'
+                icon: '⚙️',
+                id: 'settings-btn'
             },
             {
                 text: 'back-to-main',
                 action: () => this.backToMain(),
-                icon: '🏠'
+                icon: '🏠',
+                id: 'back-to-main-menu-btn'
             }
         ];
+
+        // DOM 요소 초기화
+        this.initializeDOMElements();
 
         // 저장된 게임 체크
         this.checkSavedGame();
 
-        // 애니메이션 상태
+        // 애니메이션 상태 (제목용)
         this.titleAnimation = {
             offset: 0,
             speed: 0.02
@@ -49,14 +61,59 @@ class MainMenu {
 
     }
 
+    // DOM 요소 초기화
+    initializeDOMElements() {
+        this.menuContainer = document.getElementById('main-menu-buttons');
+
+        // 각 메뉴 버튼 참조 저장 및 이벤트 리스너 추가
+        this.menuItems.forEach((item, index) => {
+            const button = document.getElementById(item.id);
+            if (button) {
+                this.menuButtons[item.text] = button;
+
+                // 클릭 이벤트 리스너 추가
+                button.addEventListener('click', () => {
+                    this.currentSelection = index;
+                    this.selectCurrent();
+                });
+
+                // 키보드 포커스 이벤트 추가
+                button.addEventListener('focus', () => {
+                    this.currentSelection = index;
+                    this.updateButtonSelection();
+                });
+            }
+        });
+    }
+
     // 메뉴 표시
     show() {
-        // 메뉴가 이미 렌더링되고 있으므로 추가 작업 불필요
+        if (this.menuContainer) {
+            this.menuContainer.classList.remove('hidden');
+            this.updateButtonSelection();
+        }
     }
 
     // 메뉴 숨기기
     hide() {
-        // 메뉴 숨김 처리
+        if (this.menuContainer) {
+            this.menuContainer.classList.add('hidden');
+        }
+    }
+
+    // 버튼 선택 상태 업데이트
+    updateButtonSelection() {
+        Object.values(this.menuButtons).forEach((button, index) => {
+            if (index === this.currentSelection) {
+                button.classList.add('selected');
+                button.style.borderColor = '#f39c12';
+                button.style.background = 'linear-gradient(135deg, rgba(52, 152, 219, 0.4), rgba(52, 152, 219, 0.2))';
+            } else {
+                button.classList.remove('selected');
+                button.style.borderColor = '#3498db';
+                button.style.background = 'linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6))';
+            }
+        });
     }
 
     // 저장된 게임 확인
@@ -84,7 +141,8 @@ class MainMenu {
 
         this.renderBackground(ctx, canvas);
         this.renderTitle(ctx, canvas);
-        this.renderMenuItems(ctx, canvas);
+        // Canvas 메뉴 렌더링 비활성화 - DOM 버튼 사용
+        // this.renderMenuItems(ctx, canvas);
         this.renderInstructions(ctx, canvas);
 
         this.needsRedraw = false;
@@ -333,6 +391,8 @@ class MainMenu {
             this.currentSelection = (this.currentSelection - 1 + this.menuItems.length) % this.menuItems.length;
         } while (this.menuItems[this.currentSelection].disabled);
 
+        this.updateButtonSelection();
+        this.focusCurrentButton();
         this.playNavigationSound();
     }
 
@@ -342,7 +402,18 @@ class MainMenu {
             this.currentSelection = (this.currentSelection + 1) % this.menuItems.length;
         } while (this.menuItems[this.currentSelection].disabled);
 
+        this.updateButtonSelection();
+        this.focusCurrentButton();
         this.playNavigationSound();
+    }
+
+    // 현재 선택된 버튼에 포커스
+    focusCurrentButton() {
+        const currentItem = this.menuItems[this.currentSelection];
+        const button = this.menuButtons[currentItem.text];
+        if (button) {
+            button.focus();
+        }
     }
 
     // 현재 메뉴 선택

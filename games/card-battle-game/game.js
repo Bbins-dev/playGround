@@ -17,7 +17,10 @@ class CardBattleGame {
 
             // 게임 매니저 생성 및 초기화
             this.gameManager = new GameManager();
-            this.gameManager.init();
+            await this.gameManager.init();
+
+            // 전역 접근을 위한 안전한 참조 (치팅 방지 포함)
+            this.setupSecureGlobalAccess();
 
             this.setupEventListeners();
             this.initialized = true;
@@ -25,6 +28,164 @@ class CardBattleGame {
 
         } catch (error) {
             this.showErrorMessage(error);
+        }
+    }
+
+    // 안전한 전역 접근 설정 (치팅 방지)
+    setupSecureGlobalAccess() {
+        // GameManager를 전역에서 접근 가능하도록 하되, 중요 메서드 보호
+        window.gameManager = this.gameManager;
+
+        // 중요 게임 데이터 보호
+        this.protectGameData();
+    }
+
+    // 게임 데이터 보호 (치팅 방지)
+    protectGameData() {
+        try {
+            // 카드 데이터베이스 보호 (읽기 전용)
+            if (window.CardDatabase) {
+                Object.freeze(window.CardDatabase);
+                Object.freeze(window.CardDatabase.cards);
+                // 개별 카드 데이터 보호
+                Object.values(window.CardDatabase.cards).forEach(card => {
+                    Object.freeze(card);
+                });
+            }
+
+            // GameConfig 보호
+            if (window.GameConfig) {
+                Object.freeze(window.GameConfig);
+                Object.freeze(window.GameConfig.elements);
+                Object.freeze(window.GameConfig.cardTypes);
+                Object.freeze(window.GameConfig.canvas);
+                Object.freeze(window.GameConfig.ui);
+            }
+
+            // Player와 Enemy 클래스의 중요 메서드 보호
+            if (window.Player && window.Player.prototype) {
+                this.protectPlayerMethods();
+            }
+
+            if (window.Enemy && window.Enemy.prototype) {
+                this.protectEnemyMethods();
+            }
+
+            // 게임 무결성 검사 타이머 설정
+            this.setupIntegrityMonitoring();
+
+        } catch (error) {
+            console.warn('데이터 보호 설정 중 오류:', error);
+        }
+    }
+
+    // Player 메서드 보호
+    protectPlayerMethods() {
+        const originalSetHP = window.Player.prototype.setHP || function() {};
+        const originalTakeDamage = window.Player.prototype.takeDamage || function() {};
+
+        // HP 변경을 감시하고 보호
+        window.Player.prototype.setHP = function(value) {
+            // 유효한 범위 체크
+            if (typeof value !== 'number' || value < 0 || value > this.maxHP || value > 1000) {
+                console.warn('비정상적인 HP 값 감지:', value);
+                return;
+            }
+            return originalSetHP.call(this, value);
+        };
+
+        Object.freeze(window.Player.prototype.setHP);
+    }
+
+    // Enemy 메서드 보호
+    protectEnemyMethods() {
+        const originalSetHP = window.Enemy.prototype.setHP || function() {};
+        const originalTakeDamage = window.Enemy.prototype.takeDamage || function() {};
+
+        window.Enemy.prototype.setHP = function(value) {
+            if (typeof value !== 'number' || value < 0 || value > this.maxHP || value > 1000) {
+                console.warn('비정상적인 HP 값 감지:', value);
+                return;
+            }
+            return originalSetHP.call(this, value);
+        };
+
+        Object.freeze(window.Enemy.prototype.setHP);
+    }
+
+    // 게임 무결성 모니터링 시스템
+    setupIntegrityMonitoring() {
+        // 5초마다 무결성 검사
+        this.integrityTimer = setInterval(() => {
+            this.performIntegrityCheck();
+        }, 5000);
+
+        // 페이지 가시성 변경 시 검사
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                setTimeout(() => this.performIntegrityCheck(), 1000);
+            }
+        });
+    }
+
+    // 무결성 검사 수행
+    performIntegrityCheck() {
+        try {
+            // GameManager 존재 및 상태 확인
+            if (!this.gameManager || !this.gameManager.isGameRunning) {
+                return;
+            }
+
+            const gameManager = this.gameManager;
+
+            // Player/Enemy HP 범위 검사
+            if (gameManager.player && typeof gameManager.player.hp === 'number') {
+                if (gameManager.player.hp < 0 || gameManager.player.hp > gameManager.player.maxHP + 50) {
+                    console.warn('Player HP 비정상 값 감지:', gameManager.player.hp);
+                    this.resetToSafeState();
+                    return;
+                }
+            }
+
+            if (gameManager.enemy && typeof gameManager.enemy.hp === 'number') {
+                if (gameManager.enemy.hp < 0 || gameManager.enemy.hp > gameManager.enemy.maxHP + 50) {
+                    console.warn('Enemy HP 비정상 값 감지:', gameManager.enemy.hp);
+                    this.resetToSafeState();
+                    return;
+                }
+            }
+
+            // 중요 객체 변조 검사
+            if (window.CardDatabase && !Object.isFrozen(window.CardDatabase)) {
+                console.warn('CardDatabase 보호가 해제됨');
+                Object.freeze(window.CardDatabase);
+            }
+
+            if (window.GameConfig && !Object.isFrozen(window.GameConfig)) {
+                console.warn('GameConfig 보호가 해제됨');
+                Object.freeze(window.GameConfig);
+            }
+
+        } catch (error) {
+            console.warn('무결성 검사 중 오류:', error);
+        }
+    }
+
+    // 안전한 상태로 복원
+    resetToSafeState() {
+        try {
+            if (this.gameManager && this.gameManager.switchScreen) {
+                console.log('게임을 안전한 상태로 복원 중...');
+                this.gameManager.switchScreen('menu');
+            }
+        } catch (error) {
+            console.warn('안전 상태 복원 중 오류:', error);
+            // 최후 수단: 페이지 새로고침
+            setTimeout(() => {
+                if (confirm('게임에서 오류가 감지되었습니다. 새로고침하시겠습니까?')) {
+                    location.reload();
+                }
+            }, 100);
         }
     }
 
@@ -86,6 +247,12 @@ class CardBattleGame {
 
     // 게임 종료
     destroy() {
+        // 무결성 모니터링 타이머 정리
+        if (this.integrityTimer) {
+            clearInterval(this.integrityTimer);
+            this.integrityTimer = null;
+        }
+
         if (this.gameManager) {
             this.gameManager.destroy();
             this.gameManager = null;
