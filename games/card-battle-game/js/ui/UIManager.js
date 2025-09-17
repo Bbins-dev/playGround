@@ -40,7 +40,6 @@ class UIManager {
         this.setupModals();
         this.updateLanguage();
 
-        console.log('🎮 UI 매니저 초기화 완료');
     }
 
     // 이벤트 리스너 설정
@@ -112,7 +111,6 @@ class UIManager {
                     this.gameManager.battleSystem.setGameSpeed(speed);
                 }
 
-                console.log(`⚡ 게임 속도: ${speed}x`);
             });
         });
     }
@@ -146,11 +144,6 @@ class UIManager {
         this.renderCount++;
         const currentTime = performance.now();
 
-        // 1초마다 렌더링 통계 로그 (디버깅용)
-        if (currentTime - this.lastLogTime > 1000) {
-            console.log(`🎨 UIManager render #${this.renderCount}, currentScreen: ${this.currentScreen}`);
-            this.lastLogTime = currentTime;
-        }
 
         // 화면별 렌더링
         if (this.currentScreen === 'menu' && this.gameManager.mainMenu) {
@@ -188,7 +181,6 @@ class UIManager {
 
     // 화면 전환
     switchScreen(screenName) {
-        console.log(`🖥️ 화면 전환: ${this.currentScreen} → ${screenName}`);
 
         this.currentScreen = screenName;
 
@@ -340,7 +332,6 @@ class UIManager {
 
     // 플레이어 카드 클릭 처리
     handlePlayerCardClick(cardIndex) {
-        console.log(`🃏 플레이어 카드 ${cardIndex} 클릭`);
 
         // 카드 정보 표시 또는 상호작용
         const player = this.gameManager.player;
@@ -389,12 +380,10 @@ class UIManager {
         const newHeight = container.clientHeight;
 
         this.renderer.resize(newWidth, newHeight);
-        console.log(`📐 화면 크기 조정: ${newWidth}x${newHeight}`);
     }
 
     // 게임 시작
     startGame() {
-        console.log('🎮 게임 시작');
         this.gameManager.startGame();
         this.switchScreen('battle');
     }
@@ -498,8 +487,6 @@ class UIManager {
 
     // 카드 툴팁 표시
     showCardTooltip(card) {
-        // 간단한 툴팁 구현
-        console.log(`📋 카드 정보: ${card.name} - ${card.description}`);
     }
 
     // 색상 어둡게 하기 유틸리티
@@ -601,7 +588,6 @@ class UIManager {
             this.renderer.animations.clear();
         }
 
-        console.log('🧹 UI 매니저 정리 완료');
     }
 }
 

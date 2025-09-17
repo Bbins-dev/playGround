@@ -30,47 +30,33 @@ class CardSelection {
             maxSameElement: 3     // 같은 속성 최대 3장
         };
 
-        console.log('🎴 카드 선택 화면 초기화 완료');
     }
 
     // 초기 카드 선택 설정
     setupInitialSelection() {
-        console.log('🎯 초기 카드 선택 설정 시작');
         this.selectionType = 'initial';
         this.maxSelections = 1; // 공격 카드 1장만 선택
         this.minSelections = 1;
 
         // CardDatabase 상태 확인
-        console.log('🔍 CardDatabase 상태 확인');
         const allCards = CardDatabase.getAllCards();
-        console.log(`📚 CardDatabase에 총 ${allCards.length}장의 카드 존재:`, allCards.map(c => c.id));
 
         // 초기 선택 가능한 카드들 (모든 공격 카드)
         if (this.gameManager.cardManager) {
-            console.log('✅ CardManager 사용');
             const attackCardIds = this.gameManager.cardManager.getInitialAttackCards();
-            console.log('📋 공격 카드 ID 목록:', attackCardIds);
 
             this.availableCards = attackCardIds.map(cardId => {
                 const cardData = CardDatabase.getCard(cardId);
-                console.log(`🎴 카드 데이터 로드: ${cardId}`, cardData);
                 return cardData;
             }).filter(Boolean);
         } else {
             // 폴백: 공격 카드만 필터링
-            console.log('⚠️ CardManager가 없어서 폴백 사용');
             const attackCards = CardDatabase.getAllCards().filter(card => card.type === 'attack');
-            console.log('🔍 필터링된 공격 카드들:', attackCards.map(c => c.id));
             this.availableCards = attackCards;
         }
 
-        console.log(`✅ 선택 가능한 공격 카드 ${this.availableCards.length}장:`);
-        this.availableCards.forEach(card => {
-            console.log(`  - ${card.id}: ${card.name || 'No name'} (type: ${card.type})`);
-        });
 
         if (this.availableCards.length === 0) {
-            console.error('❌ 공격 카드가 하나도 없습니다! CardDatabase 초기화를 확인하세요.');
         }
 
         this.selectedCards = [];
@@ -211,10 +197,8 @@ class CardSelection {
 
     // 선택 가능한 카드들 렌더링
     renderAvailableCards(ctx, canvas) {
-        console.log(`🎴 renderAvailableCards 시작 - ${this.availableCards.length}장의 카드`);
 
         if (!this.availableCards || this.availableCards.length === 0) {
-            console.warn('⚠️ 렌더링할 카드가 없습니다');
             // 카드가 없을 때 메시지 표시
             ctx.save();
             ctx.fillStyle = '#fff';
@@ -233,10 +217,8 @@ class CardSelection {
         const totalWidth = cols * spacing - (spacing - cardWidth);
         const startX = (canvas.width - totalWidth) / 2;
 
-        console.log(`📐 카드 배치: cols=${cols}, startX=${startX}, startY=${startY}`);
 
         this.availableCards.forEach((card, index) => {
-            console.log(`🎴 카드 ${index} 렌더링:`, card.name || card.id);
 
             const col = index % cols;
             const row = Math.floor(index / cols);
@@ -247,7 +229,6 @@ class CardSelection {
             const isHighlighted = index === this.currentIndex;
             const revealProgress = this.getCardRevealProgress(index);
 
-            console.log(`📍 카드 위치: x=${x}, y=${y}, selected=${isSelected}, highlighted=${isHighlighted}`);
 
             this.renderSelectableCard(ctx, card, x, y, cardWidth, cardHeight, {
                 isSelected,
@@ -257,7 +238,6 @@ class CardSelection {
             });
         });
 
-        console.log('✅ renderAvailableCards 완료');
     }
 
     // 선택 가능한 카드 렌더링
@@ -619,7 +599,6 @@ class CardSelection {
     finalizeSelection() {
         if (!this.canConfirmSelection()) return;
 
-        console.log('🎴 카드 선택 완료:', this.selectedCards);
 
         // 게임 매니저에 선택 결과 전달
         if (this.selectionType === 'initial') {
@@ -869,7 +848,6 @@ class CardSelection {
     cleanup() {
         this.cardAnimations.clear();
         this.revealAnimation.started = false;
-        console.log('🧹 카드 선택 화면 정리 완료');
     }
 }
 

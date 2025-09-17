@@ -25,14 +25,12 @@ class CardManager {
     initialize() {
         this.loadAllCards();
         this.categorizeCards();
-        console.log('🎴 카드 매니저 초기화 완료');
     }
 
     // 모든 카드 로드
     loadAllCards() {
         // 현재는 마구때리기 카드만 존재
         this.allCards = CardDatabase.getAllCards();
-        console.log(`📚 총 ${this.allCards.length}장의 카드 로드됨`);
     }
 
     // 카드 분류
@@ -44,10 +42,6 @@ class CardManager {
             }
         });
 
-        console.log('📋 카드 분류 완료:');
-        Object.keys(this.availableCards).forEach(type => {
-            console.log(`  ${type}: ${this.availableCards[type].length}장`);
-        });
     }
 
     // 초기 카드 선택용 공격 카드 목록
@@ -66,7 +60,6 @@ class CardManager {
             selectedCards.push(selectedCard.id);
         }
 
-        console.log(`🎲 랜덤 카드 ${count}장 선택:`, selectedCards);
         return selectedCards;
     }
 
@@ -79,7 +72,6 @@ class CardManager {
     addCardToPlayer(player, cardId, position = 'left') {
         const card = this.createCard(cardId);
         if (!card) {
-            console.error('카드 생성 실패:', cardId);
             return false;
         }
 
@@ -94,20 +86,17 @@ class CardManager {
         // 방어 속성 업데이트
         player.updateDefenseElement();
 
-        console.log(`🃏 ${player.name}에게 ${card.name} 추가 (${position})`);
         return true;
     }
 
     // 카드 교체
     replacePlayerCard(player, oldCardIndex, newCardId) {
         if (oldCardIndex < 0 || oldCardIndex >= player.hand.length) {
-            console.error('잘못된 카드 인덱스:', oldCardIndex);
             return false;
         }
 
         const newCard = this.createCard(newCardId);
         if (!newCard) {
-            console.error('새 카드 생성 실패:', newCardId);
             return false;
         }
 
@@ -117,14 +106,12 @@ class CardManager {
         // 방어 속성 업데이트
         player.updateDefenseElement();
 
-        console.log(`🔄 ${player.name}의 ${oldCard.name} → ${newCard.name} 교체`);
         return true;
     }
 
     // 플레이어 손패에서 카드 제거
     removeCardFromPlayer(player, cardIndex) {
         if (cardIndex < 0 || cardIndex >= player.hand.length) {
-            console.error('잘못된 카드 인덱스:', cardIndex);
             return null;
         }
 
@@ -133,7 +120,6 @@ class CardManager {
         // 방어 속성 업데이트
         player.updateDefenseElement();
 
-        console.log(`🗑️ ${player.name}에서 ${removedCard.name} 제거`);
         return removedCard;
     }
 
@@ -142,7 +128,6 @@ class CardManager {
         const attackCards = player.hand.filter(card => card.type === 'attack');
 
         if (attackCards.length === 0) {
-            console.warn('⚠️ 공격 카드가 없습니다. 최소 1장 필요합니다.');
             return false;
         }
 
@@ -201,7 +186,6 @@ class CardManager {
     reorderPlayerHand(player, fromIndex, toIndex) {
         if (fromIndex < 0 || fromIndex >= player.hand.length ||
             toIndex < 0 || toIndex >= player.hand.length) {
-            console.error('잘못된 인덱스:', fromIndex, toIndex);
             return false;
         }
 
@@ -209,7 +193,6 @@ class CardManager {
         const card = player.hand.splice(fromIndex, 1)[0];
         player.hand.splice(toIndex, 0, card);
 
-        console.log(`🔄 ${player.name} 손패 순서 변경: ${fromIndex} → ${toIndex}`);
         return true;
     }
 
@@ -228,7 +211,6 @@ class CardManager {
             analysis.byElement[card.element] = (analysis.byElement[card.element] || 0) + 1;
         });
 
-        console.log(`📊 ${player.name} 손패 분석:`, analysis);
         return analysis;
     }
 
@@ -318,7 +300,6 @@ class CardManager {
 
         balance.averagePower = totalPower / this.allCards.length;
 
-        console.log('⚖️ 카드 밸런스 분석:', balance);
         return balance;
     }
 }

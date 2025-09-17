@@ -34,7 +34,6 @@ class Enemy extends Player {
         // 스테이지별 이름 설정
         this.name = this.generateEnemyName();
 
-        console.log(`스테이지 ${this.stage} 적 생성: ${this.name} (HP: ${this.hp})`);
     }
 
     // 적 이름 생성
@@ -80,7 +79,6 @@ class Enemy extends Player {
         }
 
         this.updateDefenseElement();
-        console.log(`${this.name} 덱 구성 완료: ${this.hand.length}장`);
     }
 
     // 적 AI 행동 (현재는 기본 자동 발동)
@@ -106,7 +104,6 @@ class Enemy extends Player {
         if (this.stage > 3) {
             const resistance = Math.min(0.3, (this.stage - 3) * 0.1);
             if (Math.random() < resistance) {
-                console.log(`${this.name}이(가) ${statusType}에 저항했습니다!`);
                 return false;
             }
         }
@@ -147,7 +144,6 @@ class Enemy extends Player {
     useSpecialAbility() {
         if (!this.hasSpecialAbility()) return null;
 
-        console.log(`${this.name}이(가) 특수 능력을 사용했습니다!`);
 
         return {
             used: true,

@@ -39,7 +39,6 @@ class BattleSystem {
 
     // 전투 시작
     startBattle(player, enemy) {
-        console.log('⚔️ 전투 시작:', player.name, 'vs', enemy.name);
 
         this.player = player;
         this.enemy = enemy;
@@ -73,7 +72,6 @@ class BattleSystem {
         const currentPlayer = this.currentTurn === 'player' ? this.player : this.enemy;
         const isPlayerTurn = this.currentTurn === 'player';
 
-        console.log(`🎯 ${currentPlayer.name}의 턴 시작`);
 
         this.battlePhase = 'turnTransition';
         this.turnProgress.currentPlayer = currentPlayer;
@@ -87,7 +85,6 @@ class BattleSystem {
         if (currentPlayer.hasStatusEffect('paralysis')) {
             const paralysisChance = currentPlayer.statusEffects.find(e => e.type === 'paralysis').power;
             if (Math.random() * 100 < paralysisChance) {
-                console.log(`⚡ ${currentPlayer.name}이(가) 마비로 턴을 넘김`);
 
                 // 마비 효과 표시
                 const position = isPlayerTurn ?
@@ -118,12 +115,10 @@ class BattleSystem {
         const activatableCards = currentPlayer.getActivatableCards();
 
         if (activatableCards.length === 0) {
-            console.log(`${currentPlayer.name}의 발동 가능한 카드가 없음`);
             this.endTurn();
             return;
         }
 
-        console.log(`🃏 ${currentPlayer.name}의 카드 발동 시작 (${activatableCards.length}장)`);
 
         // 카드를 순차적으로 발동
         for (let i = 0; i < activatableCards.length; i++) {
@@ -159,7 +154,6 @@ class BattleSystem {
         const target = user === this.player ? this.enemy : this.player;
         const isPlayerCard = user === this.player;
 
-        console.log(`🎴 ${user.name}이(가) ${card.name} 발동`);
 
         // 카드 발동 애니메이션
         const cardDuration = GameConfig.utils.applyGameSpeed(
@@ -174,13 +168,11 @@ class BattleSystem {
 
         if (result.success) {
             // 성공 로그
-            console.log(`✅ ${card.name} 성공: ${result.message}`);
 
             // 효과별 후처리
             await this.processCardResult(result, card, user, target);
         } else {
             // 실패 (빗나감)
-            console.log(`❌ ${card.name} 실패: ${result.message}`);
 
             const targetPosition = isPlayerCard ?
                 this.effectSystem.getEnemyPosition() :
@@ -280,14 +272,12 @@ class BattleSystem {
     // 대미지 계산 및 적용
     dealDamage(target, damage) {
         const actualDamage = target.takeDamage(damage);
-        console.log(`💥 ${target.name}이(가) ${actualDamage} 대미지를 받음`);
         return actualDamage;
     }
 
     // 회복 적용
     healTarget(target, amount) {
         const actualHealing = target.heal(amount);
-        console.log(`💚 ${target.name}이(가) ${actualHealing} 회복`);
         return actualHealing;
     }
 
@@ -295,7 +285,6 @@ class BattleSystem {
     endTurn() {
         const currentPlayer = this.turnProgress.currentPlayer;
 
-        console.log(`🏁 ${currentPlayer.name}의 턴 종료`);
 
         // 턴 종료 처리
         currentPlayer.endTurn();
@@ -330,12 +319,9 @@ class BattleSystem {
 
     // 전투 종료
     endBattle(winner) {
-        console.log(`🏆 전투 종료 - 승자: ${winner.name}`);
 
         this.battlePhase = 'ended';
 
-        // 전투 통계 로그
-        console.log('📊 전투 통계:', this.battleStats);
 
         // 게임 매니저에 결과 전달
         if (this.gameManager) {
@@ -352,7 +338,6 @@ class BattleSystem {
     // 게임 속도 설정
     setGameSpeed(speed) {
         this.gameSpeed = speed;
-        console.log(`⚡ 게임 속도: ${speed}x`);
     }
 
     // 전투 정리
@@ -397,7 +382,6 @@ class BattleSystem {
     // 턴 스킵 확인 및 처리
     checkTurnSkip() {
         if (this.turnSkip) {
-            console.log(`${this.turnProgress.currentPlayer.name}이(가) 턴을 스킵합니다.`);
             this.turnSkip = false;
             return true;
         }

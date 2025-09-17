@@ -45,16 +45,13 @@ class Player {
         // 마지막 받은 대미지 기록
         this.lastDamageTaken = actualDamage;
 
-        console.log(`${this.name}이(가) ${actualDamage} 대미지를 받았습니다. (방어력: ${this.defense}) (${this.hp}/${this.maxHP})`);
 
         // 가시 대미지 반사 (공격자가 있을 경우)
         if (this.thorns > 0 && attacker && actualDamage > 0) {
-            console.log(`${this.name}의 가시로 ${attacker.name}에게 ${this.thorns} 반사 대미지!`);
             // 가시 대미지는 방어력 무시하고 직접 적용
             const attackerPreviousHP = attacker.hp;
             attacker.hp = Math.max(0, attacker.hp - this.thorns);
             const thornDamage = attackerPreviousHP - attacker.hp;
-            console.log(`${attacker.name}이(가) 가시로 ${thornDamage} 대미지를 받았습니다. (${attacker.hp}/${attacker.maxHP})`);
         }
 
         return actualDamage;
@@ -65,9 +62,6 @@ class Player {
         this.hp = Math.min(this.maxHP, this.hp + amount);
         const actualHealing = this.hp - previousHP;
 
-        if (actualHealing > 0) {
-            console.log(`${this.name}이(가) ${actualHealing} 회복했습니다. (${this.hp}/${this.maxHP})`);
-        }
 
         return actualHealing;
     }
@@ -79,7 +73,6 @@ class Player {
     // 방어력 관련 메서드
     addDefense(amount) {
         this.defense += amount;
-        console.log(`${this.name}의 방어력이 ${amount} 증가했습니다. (현재: ${this.defense})`);
         return amount;
     }
 
@@ -87,16 +80,12 @@ class Player {
         const previousDefense = this.defense;
         this.defense = Math.max(0, this.defense - amount);
         const actualReduction = previousDefense - this.defense;
-        if (actualReduction > 0) {
-            console.log(`${this.name}의 방어력이 ${actualReduction} 감소했습니다. (현재: ${this.defense})`);
-        }
         return actualReduction;
     }
 
     // 가시 관련 메서드
     addThorns(amount) {
         this.thorns += amount;
-        console.log(`${this.name}의 가시가 ${amount} 증가했습니다. (현재: ${this.thorns})`);
         return amount;
     }
 
@@ -104,16 +93,12 @@ class Player {
         const previousThorns = this.thorns;
         this.thorns = Math.max(0, this.thorns - amount);
         const actualReduction = previousThorns - this.thorns;
-        if (actualReduction > 0) {
-            console.log(`${this.name}의 가시가 ${actualReduction} 감소했습니다. (현재: ${this.thorns})`);
-        }
         return actualReduction;
     }
 
     // 카드 관련 메서드
     addCard(card) {
         if (this.hand.length >= this.maxHandSize) {
-            console.warn(`${this.name}의 손패가 가득 참`);
             return false;
         }
 
@@ -150,7 +135,6 @@ class Player {
     addStatusEffect(statusType, power = null, duration = null) {
         // 면역 체크
         if (GameConfig.utils.isImmuneToStatus(this.defenseElement, statusType)) {
-            console.log(`${this.name}은(는) ${statusType}에 면역입니다.`);
             return false;
         }
 
@@ -159,7 +143,6 @@ class Player {
 
         const statusConfig = GameConfig.statusEffects[statusType];
         if (!statusConfig) {
-            console.error('알 수 없는 상태이상:', statusType);
             return false;
         }
 
@@ -171,7 +154,6 @@ class Player {
         };
 
         this.statusEffects.push(statusEffect);
-        console.log(`${this.name}이(가) ${statusConfig.name} 상태가 되었습니다.`);
         return true;
     }
 
@@ -179,7 +161,6 @@ class Player {
         const index = this.statusEffects.findIndex(effect => effect.type === statusType);
         if (index !== -1) {
             const removed = this.statusEffects.splice(index, 1)[0];
-            console.log(`${this.name}의 ${GameConfig.statusEffects[removed.type].name} 상태가 해제되었습니다.`);
             return true;
         }
         return false;
@@ -202,7 +183,6 @@ class Player {
         // 턴 시작 시 상태이상 처리 (화상)
         this.processStatusEffect('burn', 'start');
 
-        console.log(`${this.name}의 턴 ${this.turn} 시작`);
     }
 
     endTurn() {
@@ -212,7 +192,6 @@ class Player {
         // 상태이상 지속시간 감소
         this.updateStatusEffects();
 
-        console.log(`${this.name}의 턴 ${this.turn} 종료`);
     }
 
     // 다음 발동할 카드 가져오기

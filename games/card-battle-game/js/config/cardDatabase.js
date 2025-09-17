@@ -18,7 +18,6 @@ const CardDatabase = {
     createCardInstance: function(cardId) {
         const cardData = this.getCard(cardId);
         if (!cardData) {
-            console.error('카드를 찾을 수 없습니다:', cardId);
             return null;
         }
         return new Card(cardData);
@@ -42,7 +41,6 @@ const CardDatabase = {
     // 초기화 메서드
     initialize: function() {
         this.loadBasicCards();
-        console.log(`✅ 카드 데이터베이스 초기화 완료 - 총 ${Object.keys(this.cards).length}장의 카드`);
     },
 
     // 기본 카드들 로드

@@ -54,7 +54,6 @@ class Renderer {
     // 초기화
     initialize() {
         this.setupCanvas();
-        console.log('🎨 렌더러 초기화 완료');
     }
 
     // 캔버스 설정

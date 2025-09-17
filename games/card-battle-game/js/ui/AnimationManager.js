@@ -41,7 +41,6 @@ class AnimationManager {
         // RAF 핸들
         this.rafId = null;
 
-        console.log('🎬 애니메이션 매니저 초기화 완료');
     }
 
     // 애니메이션 시작
@@ -430,7 +429,6 @@ class AnimationManager {
     // 게임 속도 설정
     setGlobalSpeed(speed) {
         this.globalSpeed = speed;
-        console.log(`⚡ 애니메이션 속도: ${speed}x`);
     }
 
     // 특정 애니메이션 중지
@@ -522,7 +520,6 @@ class AnimationManager {
     cleanup() {
         this.stop();
         this.stopAllAnimations();
-        console.log('🧹 애니메이션 매니저 정리 완료');
     }
 }
 

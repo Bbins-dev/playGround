@@ -48,18 +48,15 @@ class MainMenu {
         this.needsRedraw = true;
         this.lastRenderTime = 0;
 
-        console.log('📋 메인 메뉴 초기화 완료');
     }
 
     // 메뉴 표시
     show() {
-        console.log('📋 메인 메뉴 표시');
         // 메뉴가 이미 렌더링되고 있으므로 추가 작업 불필요
     }
 
     // 메뉴 숨기기
     hide() {
-        console.log('📋 메인 메뉴 숨김');
         // 메뉴 숨김 처리
     }
 
@@ -372,7 +369,6 @@ class MainMenu {
 
     // 새 게임 시작
     startNewGame() {
-        console.log('🎮 새 게임 시작');
 
         // 초기 카드 선택 화면으로 이동
         if (this.gameManager.cardSelection) {
@@ -388,7 +384,6 @@ class MainMenu {
 
     // 게임 계속하기
     continueGame() {
-        console.log('📖 게임 계속하기');
 
         try {
             const savedData = localStorage.getItem('cardBattleGame_save');
@@ -397,30 +392,25 @@ class MainMenu {
                 this.gameManager.loadGameData(gameData);
                 this.gameManager.switchScreen('battle');
             } else {
-                console.warn('저장된 게임을 찾을 수 없습니다');
                 this.startNewGame();
             }
         } catch (error) {
-            console.error('게임 로드 실패:', error);
             this.startNewGame();
         }
     }
 
     // 카드 갤러리 열기
     openCardGallery() {
-        console.log('🃏 카드 갤러리 열기');
 
         // DOM 모달로 갤러리 표시 (통일된 방식)
         if (this.gameManager.uiManager) {
             this.gameManager.uiManager.showCardGallery();
         } else {
-            console.warn('UIManager를 찾을 수 없습니다');
         }
     }
 
     // 설정 열기
     openSettings() {
-        console.log('⚙️ 설정 열기');
 
         // 간단한 설정 메뉴 구현
         this.showSettingsDialog();
@@ -534,7 +524,6 @@ class MainMenu {
     // 정리
     cleanup() {
         // 이벤트 리스너 정리 등
-        console.log('🧹 메인 메뉴 정리 완료');
     }
 }
 

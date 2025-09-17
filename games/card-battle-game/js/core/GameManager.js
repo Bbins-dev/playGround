@@ -49,7 +49,6 @@ class GameManager {
     // 게임 초기화
     async init() {
         try {
-            console.log('🎮 게임 매니저 초기화 시작');
 
             // Canvas 초기화
             this.initCanvas();
@@ -71,9 +70,7 @@ class GameManager {
             // 게임 루프 시작
             this.startGameLoop();
 
-            console.log('✅ 게임 매니저 초기화 완료');
         } catch (error) {
-            console.error('❌ 게임 초기화 실패:', error);
         }
     }
 
@@ -90,12 +87,10 @@ class GameManager {
         // Canvas 크기 설정 및 반응형 업데이트
         this.updateCanvasSize();
 
-        console.log(`Canvas 초기화: ${this.canvas.width}x${this.canvas.height}`);
     }
 
     // 레이아웃 안정화 대기
     async waitForLayoutStabilization() {
-        console.log('⏳ 레이아웃 안정화 대기 중...');
 
         return new Promise((resolve) => {
             // requestAnimationFrame을 두 번 호출하여 레이아웃 재계산 완료 보장
@@ -103,7 +98,6 @@ class GameManager {
                 requestAnimationFrame(() => {
                     // Canvas 크기를 다시 한 번 업데이트하여 최종 안정화
                     this.updateCanvasSize();
-                    console.log('✅ 레이아웃 안정화 완료');
                     resolve();
                 });
             });
@@ -182,7 +176,6 @@ class GameManager {
 
     // 게임 루프 시작
     startGameLoop() {
-        console.log('🔄 게임 루프 시작');
         this.lastTime = performance.now();
 
         const gameLoop = (currentTime) => {
@@ -196,7 +189,6 @@ class GameManager {
         };
 
         this.gameLoop = requestAnimationFrame(gameLoop);
-        console.log('✅ 게임 루프 등록 완료');
     }
 
     // 게임 업데이트
@@ -215,7 +207,6 @@ class GameManager {
     // 렌더링
     render() {
         if (!this.uiManager) {
-            console.warn('⚠️ UIManager가 없어서 렌더링 건너뜀');
             return;
         }
 
@@ -225,7 +216,6 @@ class GameManager {
 
     // 화면 전환
     switchScreen(screenName) {
-        console.log(`🖥️ 화면 전환: ${this.gameState} → ${screenName}`);
 
         this.gameState = screenName;
 
@@ -249,7 +239,6 @@ class GameManager {
 
     // 메인 메뉴 표시
     showMainMenu() {
-        console.log('🏠 메인 메뉴 표시');
 
         // 게임 상태를 메뉴로 강제 설정
         this.gameState = 'menu';
@@ -260,26 +249,22 @@ class GameManager {
             this.mainMenu.show();
         }
 
-        console.log(`✅ 메인 메뉴 설정 완료 - gameState: ${this.gameState}, currentScreen:`, this.currentScreen);
     }
 
     // 게임 상태 변경
     changeGameState(newState) {
-        console.log(`🔄 게임 상태 변경: ${this.gameState} → ${newState}`);
         this.gameState = newState;
         this.switchScreen(newState);
     }
 
     // 새 게임 초기화
     initializeNewGame() {
-        console.log('🆕 새 게임 초기화');
 
         // 플레이어 생성
         this.player = new Player('플레이어', true);
 
         // 기본 카드 추가 (카드 선택을 건너뛴 경우의 폴백)
         if (this.player.hand.length === 0) {
-            console.log('⚠️ 카드가 없어서 기본 카드 추가');
             const bashCard = this.cardManager.createCard('bash');
             if (bashCard) {
                 this.player.hand.push(bashCard);
@@ -292,13 +277,11 @@ class GameManager {
 
     // 게임 시작 (카드 선택 완료 후)
     startGame() {
-        console.log('🎮 게임 시작');
         this.initializeNewGame();
     }
 
     // 초기 카드 설정
     setInitialCards(cardIds) {
-        console.log('🃏 초기 카드 설정:', cardIds);
 
         if (this.player) {
             this.player.hand = [];
@@ -312,7 +295,6 @@ class GameManager {
 
     // 보상 카드 추가 (손패 왼쪽에 추가)
     addRewardCard(cardId) {
-        console.log('🎁 보상 카드 추가:', cardId);
 
         if (this.player && this.cardManager) {
             // 'left' 옵션으로 손패 왼쪽에 추가
@@ -324,14 +306,15 @@ class GameManager {
 
     // 카드 교체
     replaceCard(newCardId) {
-        console.log('🔄 카드 교체:', newCardId);
-        // TODO: 구현 필요
+        if (this.player && this.cardManager) {
+            // 첫 번째 카드를 새 카드로 교체
+            this.cardManager.replacePlayerCard(this.player, 0, newCardId);
+        }
         this.continueToNextStage();
     }
 
     // 카드 선택 건너뛰기
     skipCardSelection() {
-        console.log('⏭️ 카드 선택 건너뛰기');
         this.continueToNextStage();
     }
 
@@ -346,7 +329,6 @@ class GameManager {
         const selectedCard = CardDatabase.createCardInstance(selectedCardId);
         if (selectedCard) {
             this.player.addCard(selectedCard);
-            console.log(`초기 카드 선택: ${selectedCard.name}`);
 
             // 첫 번째 스테이지 시작
             this.startStage(1);
@@ -355,7 +337,6 @@ class GameManager {
 
     // 스테이지 시작
     startStage(stageNumber) {
-        console.log(`🏟️ 스테이지 ${stageNumber} 시작`);
 
         this.currentStage = stageNumber;
 
@@ -369,7 +350,6 @@ class GameManager {
 
     // 전투 시작
     startBattle() {
-        console.log('⚔️ 전투 시작');
 
         this.changeGameState('battle');
 
@@ -380,7 +360,6 @@ class GameManager {
 
     // 전투 종료
     endBattle(winner) {
-        console.log(`🏁 전투 종료 - 승자: ${winner.name}`);
 
         if (winner === this.player) {
             // 플레이어 승리
@@ -393,7 +372,6 @@ class GameManager {
 
     // 플레이어 승리 처리
     handlePlayerVictory() {
-        console.log('🎉 플레이어 승리!');
 
         // 보상 계산
         const rewards = this.enemy.calculateRewards();
@@ -404,7 +382,6 @@ class GameManager {
 
     // 플레이어 패배 처리
     handlePlayerDefeat() {
-        console.log('💀 플레이어 패배');
 
         this.changeGameState('gameOver');
 
@@ -631,10 +608,31 @@ class GameManager {
     // 게임 데이터 로드 (저장된 게임)
     loadGameData(data) {
         try {
-            // TODO: 저장된 게임 데이터 로드 구현
-            console.log('📖 게임 데이터 로드:', data);
+            if (data && data.currentStage && data.player) {
+                this.currentStage = data.currentStage;
+
+                // 플레이어 복원
+                this.player = new Player(data.player.name, true);
+                this.player.hp = data.player.hp;
+                this.player.maxHP = data.player.maxHP;
+
+                // 손패 복원
+                if (data.player.hand && this.cardManager) {
+                    this.player.hand = [];
+                    data.player.hand.forEach(cardId => {
+                        const card = this.cardManager.createCard(cardId);
+                        if (card) {
+                            this.player.hand.push(card);
+                        }
+                    });
+                }
+
+                // 다음 스테이지 시작
+                this.startStage(this.currentStage);
+            }
         } catch (error) {
-            console.error('게임 데이터 로드 실패:', error);
+            // 로드 실패시 새 게임 시작
+            this.initializeNewGame();
         }
     }
 
@@ -653,9 +651,7 @@ class GameManager {
             };
 
             localStorage.setItem('cardBattleGame_save', JSON.stringify(saveData));
-            console.log('💾 게임 데이터 저장 완료');
         } catch (error) {
-            console.error('게임 데이터 저장 실패:', error);
         }
     }
 
@@ -671,7 +667,6 @@ class GameManager {
             element.removeEventListener(event, handler);
         });
 
-        console.log('🔚 게임 매니저 파괴 완료');
     }
 }
 

@@ -9,7 +9,6 @@ class CardBattleGame {
     // 게임 초기화 및 시작
     async init() {
         try {
-            console.log('🎴 자동전투 카드게임을 시작합니다.');
 
             // i18n 시스템 초기화
             if (typeof initializeI18n === 'function') {
@@ -23,10 +22,8 @@ class CardBattleGame {
             this.setupEventListeners();
             this.initialized = true;
 
-            console.log('✅ 자동전투 카드게임 초기화 완료');
 
         } catch (error) {
-            console.error('❌ 게임 초기화 실패:', error);
             this.showErrorMessage(error);
         }
     }
@@ -94,7 +91,6 @@ class CardBattleGame {
             this.gameManager = null;
         }
         this.initialized = false;
-        console.log('🔚 자동전투 카드게임 종료');
     }
 
     // 게임 상태 확인
@@ -113,7 +109,6 @@ let cardBattleGame = null;
 
 // DOM 로드 완료 시 게임 시작
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('📄 DOM 로드 완료');
 
     // 잠시 대기 후 게임 시작 (모든 스크립트 로드 완료 대기)
     setTimeout(async () => {
@@ -133,7 +128,6 @@ window.addEventListener('beforeunload', () => {
 
 // 에러 핸들링
 window.addEventListener('error', (event) => {
-    console.error('🚨 전역 에러:', event.error);
 
     if (cardBattleGame && cardBattleGame.isInitialized()) {
         const gameManager = cardBattleGame.getGameManager();
@@ -145,7 +139,6 @@ window.addEventListener('error', (event) => {
 
 // 처리되지 않은 Promise 거부 처리
 window.addEventListener('unhandledrejection', (event) => {
-    console.error('🚨 처리되지 않은 Promise 에러:', event.reason);
     event.preventDefault();
 });
 
@@ -165,14 +158,12 @@ function initializeI18n() {
         languageSelect.value = savedLang;
     }
 
-    console.log(`🌐 i18n 시스템 초기화 완료: ${savedLang}`);
 }
 
 function changeLanguage(lang) {
     if (window.i18nSystem) {
         window.i18nSystem.setLanguage(lang);
     }
-    console.log(`🌐 언어 변경: ${lang}`);
 }
 
 function getI18nText(key) {

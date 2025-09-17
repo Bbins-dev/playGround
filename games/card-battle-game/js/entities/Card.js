@@ -52,7 +52,6 @@ class Card {
 
             return result;
         } catch (error) {
-            console.error('카드 발동 에러:', error);
             return {
                 success: false,
                 message: `${this.name} 발동 실패`,
