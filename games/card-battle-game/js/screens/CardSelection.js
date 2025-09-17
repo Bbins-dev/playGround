@@ -239,7 +239,8 @@ class CardSelection {
         const spacing = config.spacing;
         const cols = Math.min(this.availableCards.length, config.maxCols);
         const totalWidth = cols * spacing - (spacing - cardWidth);
-        const startX = (canvas.width - totalWidth) / 2;
+        const centerX = GameConfig.canvas.width / 2;
+        const startX = centerX - totalWidth / 2;
 
 
         this.availableCards.forEach((card, index) => {
@@ -772,7 +773,8 @@ class CardSelection {
         const spacing = config.spacing;
         const cols = Math.min(this.availableCards.length, config.maxCols);
         const totalWidth = cols * spacing - (spacing - cardWidth);
-        const startX = (canvas.width - totalWidth) / 2;
+        const centerX = GameConfig.canvas.width / 2;
+        const startX = centerX - totalWidth / 2;
 
         this.availableCards.forEach((card, index) => {
             const col = index % cols;
@@ -783,7 +785,14 @@ class CardSelection {
             if (x >= cardX && x <= cardX + cardWidth &&
                 y >= cardY && y <= cardY + cardHeight) {
                 this.currentIndex = index;
-                this.toggleCardSelection();
+
+                // 초기 카드 선택 모드일 때는 클릭 즉시 게임 시작
+                if (this.selectionType === 'initial') {
+                    this.selectedCards = [card.id];
+                    this.finalizeSelection();
+                } else {
+                    this.toggleCardSelection();
+                }
             }
         });
     }
