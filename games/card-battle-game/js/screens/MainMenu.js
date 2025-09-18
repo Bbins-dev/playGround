@@ -427,16 +427,21 @@ class MainMenu {
 
     // 새 게임 시작
     startNewGame() {
+        console.log('MainMenu: 새 게임 시작 요청');
 
-        // 초기 카드 선택 화면으로 이동
-        if (this.gameManager.cardSelection) {
-            // 카드 선택 화면 초기화
-            this.gameManager.cardSelection.setupInitialSelection();
-            this.gameManager.switchScreen('cardSelection');
+        // GameManager의 startNewGame() 메서드 호출
+        if (this.gameManager && this.gameManager.startNewGame) {
+            this.gameManager.startNewGame();
         } else {
-            // 카드 선택 없이 바로 시작
-            this.gameManager.initializeNewGame();
-            this.gameManager.switchScreen('battle');
+            console.error('GameManager의 startNewGame() 메서드를 찾을 수 없습니다');
+            // 폴백: 기존 방식으로 시작
+            if (this.gameManager.cardSelection) {
+                this.gameManager.cardSelection.setupInitialSelection();
+                this.gameManager.switchScreen('cardSelection');
+            } else {
+                this.gameManager.initializeNewGame();
+                this.gameManager.switchScreen('battle');
+            }
         }
     }
 

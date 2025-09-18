@@ -103,12 +103,12 @@ const GameConfig = {
 
     // 카드 타입
     cardTypes: {
-        attack: { name: '공격', color: '#E74C3C' },
-        defense: { name: '수비', color: '#3498DB' },
-        status: { name: '상태이상', color: '#9B59B6' },
-        buff: { name: '버프', color: '#2ECC71' },
-        debuff: { name: '디버프', color: '#E67E22' },
-        special: { name: '특수', color: '#F39C12' }
+        attack: { nameKey: 'auto_battle_card_game.ui.card_types.attack', name: '공격', color: '#E74C3C' },
+        defense: { nameKey: 'auto_battle_card_game.ui.card_types.defense', name: '방어', color: '#3498DB' },
+        status: { nameKey: 'auto_battle_card_game.ui.card_types.status', name: '상태이상', color: '#9B59B6' },
+        buff: { nameKey: 'auto_battle_card_game.ui.card_types.buff', name: '버프', color: '#2ECC71' },
+        debuff: { nameKey: 'auto_battle_card_game.ui.card_types.debuff', name: '디버프', color: '#E67E22' },
+        special: { nameKey: 'auto_battle_card_game.ui.card_types.special', name: '특수', color: '#F39C12' }
     },
 
     // 플레이어 설정

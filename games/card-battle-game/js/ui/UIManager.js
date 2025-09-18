@@ -448,13 +448,18 @@ class UIManager {
         const elementColor = card.getColor ? card.getColor() : (GameConfig.elements[card.element]?.color || '#666');
         const typeConfig = GameConfig.cardTypes[card.type];
 
+        // 카드 타입 이름 i18n 적용
+        const typeName = typeConfig?.nameKey && typeof getI18nText === 'function'
+            ? getI18nText(typeConfig.nameKey) || typeConfig.name
+            : typeConfig?.name || card.type;
+
         // card-preview 중복 제거하고 직접 gallery-card에 콘텐츠 추가
         div.style.background = `linear-gradient(135deg, ${elementColor}, ${this.darkenColor(elementColor, 0.3)})`;
 
         div.innerHTML = `
             <div class="card-emoji">${emoji}</div>
             <div class="card-name">${cardName}</div>
-            <div class="card-type">${typeConfig?.name || card.type}</div>
+            <div class="card-type">${typeName}</div>
             <div class="card-stats">
                 <span class="card-power">⚔${card.power}</span>
                 <span class="card-accuracy">🎯${card.accuracy}%</span>

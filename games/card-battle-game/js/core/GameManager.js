@@ -269,6 +269,23 @@ class GameManager {
         this.startStage(1);
     }
 
+    // 새 게임 시작 (메인 메뉴에서 호출)
+    startNewGame() {
+        console.log('GameManager: 새 게임 시작');
+
+        // 플레이어 생성
+        this.player = new Player('플레이어', true);
+
+        // 카드 선택 화면으로 이동
+        if (this.cardSelection) {
+            this.cardSelection.setupInitialSelection();
+            this.switchScreen('cardSelection');
+        } else {
+            console.error('카드 선택 시스템이 초기화되지 않았습니다');
+            this.initializeNewGame();
+        }
+    }
+
     // 게임 시작 (카드 선택 완료 후)
     startGame() {
         this.initializeNewGame();
@@ -276,12 +293,20 @@ class GameManager {
 
     // 초기 카드 설정
     setInitialCards(cardIds) {
+        console.log('GameManager: 초기 카드 설정', cardIds);
+
+        // 플레이어가 없으면 생성
+        if (!this.player) {
+            console.log('플레이어가 없어서 생성합니다');
+            this.player = new Player('플레이어', true);
+        }
 
         if (this.player) {
             this.player.hand = [];
             cardIds.forEach(cardId => {
                 this.cardManager.addCardToPlayer(this.player, cardId);
             });
+            console.log('카드 추가 완료. 현재 손패:', this.player.hand);
         }
 
         this.startStage(1);
