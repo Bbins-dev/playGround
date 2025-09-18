@@ -301,6 +301,14 @@ class UIManager {
                 this.show(elements.backToMenuBtn);
                 this.hide(elements.mainMenuButtons);
                 break;
+
+            case 'gameOver':
+                this.hide(elements.speedControls);
+                this.hide(elements.cardGalleryBtn);
+                this.hide(elements.backToHomepageBtn);
+                this.hide(elements.backToMenuBtn);
+                this.hide(elements.mainMenuButtons);
+                break;
         }
     }
 
@@ -709,13 +717,19 @@ class UIManager {
             this.modalState.alpha = 1 - fadeOutProgress;
 
             if (fadeOutProgress >= 1) {
-                // 페이드아웃 완료, 전환 딜레이 후 콜백 실행
+                // 페이드아웃 완료, 콜백 저장 후 모달 정리
+                const savedCallback = this.modalState.callback;
+                const modalType = this.modalState.type;
+
+                this.modalState.isAnimating = false;
+                this.modalState = null;
+                this.isInteractive = true;
+
+                // 전환 딜레이 후 콜백 실행 (메인 메뉴 표시)
                 setTimeout(() => {
-                    if (this.modalState.callback) {
-                        this.modalState.callback();
+                    if (savedCallback && typeof savedCallback === 'function') {
+                        savedCallback();
                     }
-                    this.modalState = null;
-                    this.isInteractive = true;
                 }, config.transitionDelay);
                 return;
             }
