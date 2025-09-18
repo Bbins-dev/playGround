@@ -216,7 +216,7 @@ class DOMCardRenderer {
             color: #ffeb3b;
             ${this.getTextOutlineStyle()}
         `;
-        powerElement.textContent = `⚔${card.power}`;
+        powerElement.textContent = `💪${card.power}`;
 
         // 발동횟수 (중앙)
         const activationElement = document.createElement('span');
