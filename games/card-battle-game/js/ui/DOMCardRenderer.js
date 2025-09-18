@@ -86,7 +86,7 @@ class DOMCardRenderer {
         content.appendChild(this.createElementEmoji(card, emojiSize, height));
 
         // 카드 이름
-        content.appendChild(this.createCardName(card, nameSize, height));
+        content.appendChild(this.createCardName(card, nameSize, height, width));
 
         // 카드 타입
         content.appendChild(this.createCardType(card, typeSize, height));
@@ -99,6 +99,8 @@ class DOMCardRenderer {
             content.appendChild(this.createCardDescription(card, width, height, descSize));
         }
 
+        // 속성 라벨 (오버레이로 추가)
+        content.appendChild(this.createElementLabel(card, width, height));
 
         return content;
     }
@@ -126,35 +128,90 @@ class DOMCardRenderer {
         return emoji;
     }
 
-    // 카드 이름 (CardRenderer.drawCardName과 동일)
-    createCardName(card, fontSize, cardHeight) {
-        const name = card.getDisplayName ? card.getDisplayName() : card.name;
+    // 카드 이름 (개선된 동적 크기 조절)
+    createCardName(card, fontSize, cardHeight, cardWidth) {
+        let name;
+        if (card.getDisplayName) {
+            name = card.getDisplayName();
+        } else if (card.name) {
+            name = card.name;
+        } else if (card.nameKey && typeof getI18nText === 'function') {
+            name = getI18nText(card.nameKey);
+        }
         if (!name) return document.createTextNode('');
 
-        const nameElement = document.createElement('div');
+        const config = this.style.cardName;
         const y = cardHeight * this.style.layout.name.y;
 
-        // 이름이 너무 길면 줄임 (CardRenderer와 동일 로직)
-        let displayName = name;
-        const maxWidth = 120;
-        // DOM에서는 정확한 측정이 어려우므로 글자 수로 대략 계산
-        if (displayName.length > 8) {
-            displayName = displayName.substring(0, 8) + '...';
-        }
+        const nameElement = document.createElement('div');
 
-        nameElement.style.cssText = `
-            position: absolute;
-            left: 50%;
-            top: ${y}px;
-            transform: translate(-50%, -50%);
-            font-size: ${fontSize}px;
-            font-family: Arial;
-            font-weight: bold;
-            text-align: center;
-            white-space: nowrap;
-            ${this.getTextOutlineStyle()}
-        `;
-        nameElement.textContent = displayName;
+        if (config.dynamicSizing) {
+            // 동적 크기 조절 (간단한 버전)
+            let adjustedFontSize = fontSize;
+            let lines = [];
+
+            // 긴 이름을 두 줄로 나누기
+            const maxLength = Math.ceil(cardWidth / (fontSize * 0.6)); // 대략적인 계산
+            if (name.length > maxLength) {
+                const words = name.split(' ');
+                if (words.length > 1) {
+                    // 단어별로 나누기
+                    const mid = Math.ceil(words.length / 2);
+                    lines = [
+                        words.slice(0, mid).join(' '),
+                        words.slice(mid).join(' ')
+                    ];
+                } else {
+                    // 긴 단어를 강제로 나누기
+                    const mid = Math.ceil(name.length / 2);
+                    lines = [name.substring(0, mid), name.substring(mid)];
+                }
+
+                // 폰트 크기 조절
+                adjustedFontSize = Math.max(
+                    cardHeight * config.minFontRatio,
+                    fontSize * 0.9 // 약간 줄임
+                );
+            } else {
+                lines = [name];
+            }
+
+            nameElement.style.cssText = `
+                position: absolute;
+                left: 50%;
+                top: ${y}px;
+                transform: translate(-50%, -50%);
+                font-size: ${adjustedFontSize}px;
+                font-family: Arial;
+                font-weight: bold;
+                text-align: center;
+                line-height: ${config.lineSpacing};
+                width: ${cardWidth * config.maxWidthRatio}px;
+                ${this.getTextOutlineStyle()}
+            `;
+
+            nameElement.innerHTML = lines.join('<br>');
+        } else {
+            // 기존 방식 (줄임표)
+            let displayName = name;
+            if (displayName.length > 8) {
+                displayName = displayName.substring(0, 8) + '...';
+            }
+
+            nameElement.style.cssText = `
+                position: absolute;
+                left: 50%;
+                top: ${y}px;
+                transform: translate(-50%, -50%);
+                font-size: ${fontSize}px;
+                font-family: Arial;
+                font-weight: bold;
+                text-align: center;
+                white-space: nowrap;
+                ${this.getTextOutlineStyle()}
+            `;
+            nameElement.textContent = displayName;
+        }
 
         return nameElement;
     }
@@ -309,6 +366,94 @@ class DOMCardRenderer {
                 -${this.style.textOutline.width}px ${this.style.textOutline.width}px 0 ${this.style.textOutline.color},
                 ${this.style.textOutline.width}px ${this.style.textOutline.width}px 0 ${this.style.textOutline.color};
         `;
+    }
+
+    // 속성 라벨 생성 (CardRenderer.drawElementLabel과 동일)
+    createElementLabel(card, width, height) {
+        const elementConfig = GameConfig.elements[card.element];
+        if (!elementConfig) return document.createTextNode('');
+
+        const config = this.style.elementLabel;
+
+        // 속성명 가져오기 (간단한 다국어 지원)
+        let elementName = elementConfig.name || card.element;
+
+        // 현재 언어가 영어인 경우 영어 속성명 사용
+        const langSelect = document.getElementById('languageSelect');
+        if (langSelect && langSelect.value === 'en') {
+            const englishNames = {
+                'fire': 'Fire',
+                'water': 'Water',
+                'electric': 'Electric',
+                'poison': 'Poison',
+                'normal': 'Normal'
+            };
+            elementName = englishNames[card.element] || elementName;
+        } else if (langSelect && langSelect.value === 'ja') {
+            const japaneseNames = {
+                'fire': '火',
+                'water': '水',
+                'electric': '電気',
+                'poison': '毒',
+                'normal': 'ノーマル'
+            };
+            elementName = japaneseNames[card.element] || elementName;
+        }
+
+        // 폰트 크기 계산
+        const fontSize = Math.floor(height * config.fontSize);
+
+        // 배경색 계산 (속성색을 어둡게)
+        const backgroundColor = this.darkenColor(elementConfig.color, config.darkenFactor);
+
+        // 라벨 위치 계산 (카드 좌상단)
+        const labelX = width * config.position.x;
+        const labelY = height * config.position.y;
+
+        const labelElement = document.createElement('div');
+        labelElement.style.cssText = `
+            position: absolute;
+            left: ${labelX}px;
+            top: ${labelY}px;
+            background-color: ${backgroundColor};
+            opacity: ${config.backgroundOpacity};
+            padding: ${config.padding.y}px ${config.padding.x}px;
+            border-radius: ${config.borderRadius}px;
+            font-size: ${fontSize}px;
+            font-family: Arial;
+            font-weight: bold;
+            color: ${config.textColor};
+            text-align: center;
+            white-space: nowrap;
+            z-index: 10;
+            ${config.textOutline.enabled ? `
+                text-shadow:
+                    -${config.textOutline.width}px -${config.textOutline.width}px 0 ${config.textOutline.color},
+                    ${config.textOutline.width}px -${config.textOutline.width}px 0 ${config.textOutline.color},
+                    -${config.textOutline.width}px ${config.textOutline.width}px 0 ${config.textOutline.color},
+                    ${config.textOutline.width}px ${config.textOutline.width}px 0 ${config.textOutline.color};
+            ` : ''}
+        `;
+        labelElement.textContent = elementName;
+
+        return labelElement;
+    }
+
+    // 색상 어둡게 하기 (CardRenderer.darkenColor와 동일)
+    darkenColor(color, factor) {
+        if (color.startsWith('#')) {
+            const hex = color.slice(1);
+            const r = parseInt(hex.slice(0, 2), 16);
+            const g = parseInt(hex.slice(2, 4), 16);
+            const b = parseInt(hex.slice(4, 6), 16);
+
+            const newR = Math.floor(r * (1 - factor));
+            const newG = Math.floor(g * (1 - factor));
+            const newB = Math.floor(b * (1 - factor));
+
+            return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
+        }
+        return color;
     }
 
     // 색상 밝게 하기 (CardRenderer.lightenColor와 동일)

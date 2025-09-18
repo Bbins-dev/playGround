@@ -26,6 +26,9 @@ class CardRenderer {
         // 카드 내용 그리기
         this.drawCardContent(ctx, card, x, y, width, height);
 
+        // 속성 라벨 그리기 (카드 내용 위에 오버레이)
+        this.drawElementLabel(ctx, card, x, y, width, height);
+
         ctx.restore();
     }
 
@@ -83,7 +86,7 @@ class CardRenderer {
         this.drawElementEmoji(ctx, card, centerX, emojiY, emojiSize);
 
         // 카드 이름
-        this.drawCardName(ctx, card, centerX, nameY, nameSize);
+        this.drawCardName(ctx, card, centerX, nameY, nameSize, width);
 
         // 카드 타입
         this.drawCardType(ctx, card, centerX, typeY, typeSize);
@@ -111,8 +114,8 @@ class CardRenderer {
         this.drawTextWithOutline(ctx, elementConfig.emoji, x, y);
     }
 
-    // 카드 이름 그리기
-    drawCardName(ctx, card, x, y, fontSize) {
+    // 카드 이름 그리기 (개선된 동적 크기 조절)
+    drawCardName(ctx, card, x, y, fontSize, width) {
         let name;
         if (card.getDisplayName) {
             name = card.getDisplayName();
@@ -123,22 +126,80 @@ class CardRenderer {
         }
         if (!name) return;
 
-        ctx.font = `bold ${fontSize}px Arial`;
-        ctx.fillStyle = '#fff';
+        const config = this.style.cardName;
+        const maxWidth = width * config.maxWidthRatio;
+
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#fff';
 
-        // 이름이 너무 길면 줄임
-        let displayName = name;
-        const maxWidth = 120; // 카드 너비에 따라 조정
-        if (ctx.measureText(displayName).width > maxWidth) {
-            while (ctx.measureText(displayName + '...').width > maxWidth && displayName.length > 0) {
-                displayName = displayName.slice(0, -1);
+        if (config.dynamicSizing) {
+            // 동적 폰트 크기 조절
+            let adjustedFontSize = fontSize;
+            let lines = [];
+
+            // 먼저 기본 폰트 크기로 시도
+            ctx.font = `bold ${adjustedFontSize}px Arial`;
+
+            // 텍스트가 한 줄에 들어가는지 확인
+            if (ctx.measureText(name).width <= maxWidth) {
+                // 한 줄에 들어감
+                lines = [name];
+            } else {
+                // 두 줄로 나누어야 함
+                const words = name.split(' ');
+                if (words.length > 1) {
+                    // 단어별로 나누기 시도
+                    const firstLine = words.slice(0, Math.ceil(words.length / 2)).join(' ');
+                    const secondLine = words.slice(Math.ceil(words.length / 2)).join(' ');
+                    lines = [firstLine, secondLine];
+                } else {
+                    // 긴 단어를 강제로 나누기
+                    const mid = Math.ceil(name.length / 2);
+                    lines = [name.substring(0, mid), name.substring(mid)];
+                }
+
+                // 두 줄 모두 너비에 맞는지 확인하고 폰트 크기 조절
+                const maxLineWidth = Math.max(
+                    ctx.measureText(lines[0]).width,
+                    ctx.measureText(lines[1]).width
+                );
+
+                if (maxLineWidth > maxWidth) {
+                    // 폰트 크기를 줄여야 함
+                    const minFontSize = width * config.minFontRatio;
+                    const scaleFactor = maxWidth / maxLineWidth;
+                    adjustedFontSize = Math.max(minFontSize, adjustedFontSize * scaleFactor);
+                    ctx.font = `bold ${adjustedFontSize}px Arial`;
+                }
             }
-            displayName += '...';
-        }
 
-        this.drawTextWithOutline(ctx, displayName, x, y);
+            // 텍스트 그리기
+            if (lines.length === 1) {
+                this.drawTextWithOutline(ctx, lines[0], x, y);
+            } else {
+                // 두 줄로 그리기
+                const lineHeight = adjustedFontSize * config.lineSpacing;
+                const startY = y - lineHeight / 2;
+
+                lines.forEach((line, index) => {
+                    const lineY = startY + index * lineHeight;
+                    this.drawTextWithOutline(ctx, line, x, lineY);
+                });
+            }
+        } else {
+            // 기존 방식 (줄임표 사용)
+            let displayName = name;
+            if (ctx.measureText(displayName).width > maxWidth) {
+                while (ctx.measureText(displayName + '...').width > maxWidth && displayName.length > 0) {
+                    displayName = displayName.slice(0, -1);
+                }
+                displayName += '...';
+            }
+
+            ctx.font = `bold ${fontSize}px Arial`;
+            this.drawTextWithOutline(ctx, displayName, x, y);
+        }
     }
 
     // 카드 타입 그리기
@@ -290,6 +351,104 @@ class CardRenderer {
         ctx.lineTo(x, y + radius);
         ctx.quadraticCurveTo(x, y, x + radius, y);
         ctx.closePath();
+    }
+
+    // 속성 라벨 그리기
+    drawElementLabel(ctx, card, x, y, width, height) {
+        const elementConfig = GameConfig.elements[card.element];
+        if (!elementConfig) return;
+
+        const config = this.style.elementLabel;
+
+        // 속성명 가져오기 (간단한 다국어 지원)
+        let elementName = elementConfig.name || card.element;
+
+        // 현재 언어가 영어인 경우 영어 속성명 사용
+        const langSelect = document.getElementById('languageSelect');
+        if (langSelect && langSelect.value === 'en') {
+            const englishNames = {
+                'fire': 'Fire',
+                'water': 'Water',
+                'electric': 'Electric',
+                'poison': 'Poison',
+                'normal': 'Normal'
+            };
+            elementName = englishNames[card.element] || elementName;
+        } else if (langSelect && langSelect.value === 'ja') {
+            const japaneseNames = {
+                'fire': '火',
+                'water': '水',
+                'electric': '電気',
+                'poison': '毒',
+                'normal': 'ノーマル'
+            };
+            elementName = japaneseNames[card.element] || elementName;
+        }
+
+        // 폰트 크기 계산
+        const fontSize = Math.floor(height * config.fontSize);
+        ctx.font = `bold ${fontSize}px Arial`;
+
+        // 텍스트 크기 측정
+        const textMetrics = ctx.measureText(elementName);
+        const textWidth = textMetrics.width;
+
+        // 라벨 크기 계산
+        const labelWidth = textWidth + config.padding.x * 2;
+        const labelHeight = fontSize + config.padding.y * 2;
+
+        // 라벨 위치 계산 (카드 좌상단)
+        const labelX = x + width * config.position.x;
+        const labelY = y + height * config.position.y;
+
+        // 배경색 계산 (속성색을 어둡게)
+        const backgroundColor = this.darkenColor(elementConfig.color, config.darkenFactor);
+
+        ctx.save();
+
+        // 라벨 배경 그리기
+        ctx.fillStyle = backgroundColor;
+        ctx.globalAlpha = config.backgroundOpacity;
+        this.roundRect(ctx, labelX, labelY, labelWidth, labelHeight, config.borderRadius);
+        ctx.fill();
+
+        // 텍스트 그리기
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = config.textColor;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        const textX = labelX + labelWidth / 2;
+        const textY = labelY + labelHeight / 2;
+
+        if (config.textOutline.enabled) {
+            // 외곽선
+            ctx.strokeStyle = config.textOutline.color;
+            ctx.lineWidth = config.textOutline.width;
+            ctx.strokeText(elementName, textX, textY);
+        }
+
+        // 메인 텍스트
+        ctx.fillText(elementName, textX, textY);
+
+        ctx.restore();
+    }
+
+    // 색상 어둡게 하기
+    darkenColor(color, factor) {
+        if (color.startsWith('#')) {
+            const hex = color.slice(1);
+            const r = parseInt(hex.slice(0, 2), 16);
+            const g = parseInt(hex.slice(2, 4), 16);
+            const b = parseInt(hex.slice(4, 6), 16);
+
+            const newR = Math.floor(r * (1 - factor));
+            const newG = Math.floor(g * (1 - factor));
+            const newB = Math.floor(b * (1 - factor));
+
+            return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
+        }
+        return color;
     }
 
     // 색상 밝게 하기

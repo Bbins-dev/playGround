@@ -15,6 +15,7 @@ const GameConfig = {
     elements: {
         fire: {
             name: '불',
+            nameKey: 'auto_battle_card_game.elements.fire',
             color: '#FF6B6B',      // 코랄/주황색
             emoji: '🔥',
             strong: 'poison',       // 독에 강함
@@ -23,6 +24,7 @@ const GameConfig = {
         },
         water: {
             name: '물',
+            nameKey: 'auto_battle_card_game.elements.water',
             color: '#87CEEB',      // 하늘색
             emoji: '💧',
             strong: 'fire',        // 불에 강함
@@ -31,6 +33,7 @@ const GameConfig = {
         },
         electric: {
             name: '전기',
+            nameKey: 'auto_battle_card_game.elements.electric',
             color: '#FFD700',      // 노랑색
             emoji: '⚡',
             strong: 'water',       // 물에 강함
@@ -39,6 +42,7 @@ const GameConfig = {
         },
         poison: {
             name: '독',
+            nameKey: 'auto_battle_card_game.elements.poison',
             color: '#9B59B6',      // 보라색
             emoji: '☠️',
             strong: 'electric',    // 전기에 강함
@@ -47,6 +51,7 @@ const GameConfig = {
         },
         normal: {
             name: '노멀',
+            nameKey: 'auto_battle_card_game.elements.normal',
             color: '#F8F9FA',      // 밝은 회색/하얀색
             emoji: '👊',
             strong: null,          // 강점 없음
@@ -203,6 +208,30 @@ const GameConfig = {
             type: { y: 0.38 },       // 상단에서 38% (위로 이동)
             stats: { y: 0.84 },      // 하단에서 16%
             description: { y: 0.58 } // 상단에서 58% (크게 위로 이동하여 stats와 겹치지 않게)
+        },
+        // 속성 라벨 설정
+        elementLabel: {
+            position: { x: 0.08, y: 0.08 },  // 카드 크기 대비 비율 (좌상단)
+            fontSize: 0.045,                  // 카드 높이 대비 폰트 크기
+            padding: { x: 6, y: 3 },          // 라벨 내부 패딩
+            backgroundOpacity: 0.9,           // 배경 투명도
+            darkenFactor: 0.3,                // 속성색을 어둡게 하는 비율
+            borderRadius: 4,                  // 모서리 둥글기
+            textColor: '#fff',                // 텍스트 색상
+            textOutline: {
+                enabled: true,
+                color: '#000',
+                width: 0.5
+            }
+        },
+        // 카드 이름 개선 설정
+        cardName: {
+            maxLines: 2,                      // 최대 2줄
+            minFontRatio: 0.05,               // 최소 폰트 크기 비율
+            maxFontRatio: 0.074,              // 최대 폰트 크기 비율 (기존값)
+            lineSpacing: 1.1,                 // 줄 간격
+            maxWidthRatio: 0.85,              // 카드 너비 대비 최대 텍스트 너비
+            dynamicSizing: true               // 동적 크기 조절 활성화
         },
         shadows: {
             card: '0 4px 8px rgba(0, 0, 0, 0.3)',
