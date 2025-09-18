@@ -277,6 +277,64 @@ const GameConfig = {
             speed: 50,          // 스크롤 속도
             maxVisibleRows: 2,  // 한 번에 표시할 최대 행 수
             viewportHeight: 550 // 가시 영역 높이 (카드 영역에 맞게 조정)
+        },
+        // 카드 확대 팝업 설정
+        popup: {
+            background: {
+                overlay: 'rgba(0, 0, 0, 0.7)',  // 오버레이 배경색
+                modal: '#2a2a3e',                // 팝업 배경색
+                borderColor: '#4a5568',          // 팝업 테두리 색
+                borderWidth: 3                   // 팝업 테두리 두께
+            },
+            card: {
+                width: 320,                      // 팝업 내 카드 너비
+                height: 448,                     // 팝업 내 카드 높이
+                x: 0,                           // 카드 X 위치 (동적 계산)
+                y: 80                           // 카드 Y 위치 (팝업 상단에서)
+            },
+            size: {
+                width: 500,                      // 팝업 너비
+                height: 600,                     // 팝업 높이
+                borderRadius: 15                 // 팝업 모서리 둥글기
+            },
+            title: {
+                text: '카드 선택',               // 팝업 제목
+                fontSize: 24,                    // 제목 폰트 크기
+                y: 30,                          // 제목 Y 위치
+                color: '#ffffff'                 // 제목 색상
+            },
+            buttons: {
+                width: 120,                      // 버튼 너비
+                height: 40,                      // 버튼 높이
+                spacing: 20,                     // 버튼 간격
+                y: 540,                         // 버튼 Y 위치
+                borderRadius: 8,                 // 버튼 모서리 둥글기
+                fontSize: 16,                    // 버튼 폰트 크기
+                select: {
+                    color: '#4CAF50',           // 선택 버튼 색상
+                    textColor: '#ffffff',       // 선택 버튼 텍스트 색상
+                    text: '선택'                 // 선택 버튼 텍스트
+                },
+                cancel: {
+                    color: '#666666',           // 취소 버튼 색상
+                    textColor: '#ffffff',       // 취소 버튼 텍스트 색상
+                    text: '취소'                 // 취소 버튼 텍스트
+                }
+            },
+            animation: {
+                duration: 300,                   // 팝업 애니메이션 지속시간 (ms)
+                easing: 'easeOutQuart'          // 애니메이션 이징
+            }
+        },
+        // 클릭 연출 애니메이션 설정
+        clickEffect: {
+            duration: 200,                       // 클릭 연출 지속시간 (ms)
+            scaleMax: 1.05,                     // 최대 확대 비율
+            scaleMin: 0.98,                     // 최소 축소 비율
+            phases: {
+                expand: 0.4,                    // 확대 단계 비율 (40%)
+                contract: 0.6                   // 축소 단계 비율 (60%)
+            }
         }
     },
 

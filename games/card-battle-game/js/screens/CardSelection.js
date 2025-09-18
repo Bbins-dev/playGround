@@ -16,6 +16,19 @@ class CardSelection {
         this.showConfirmation = false;
         this.scrollY = 0;  // 스크롤 위치
 
+        // 팝업 상태
+        this.showCardPopup = false;
+        this.selectedCardForPopup = null;
+        this.popupAnimation = {
+            progress: 0,
+            startTime: 0,
+            isShowing: false,
+            isHiding: false
+        };
+
+        // 클릭 애니메이션 상태
+        this.clickAnimations = new Map(); // 카드 인덱스별 클릭 애니메이션
+
         // 애니메이션 상태
         this.cardAnimations = new Map();
         this.revealAnimation = {
@@ -65,6 +78,9 @@ class CardSelection {
         this.selectedCards = [];
         this.currentIndex = 0;
         this.scrollY = 0;  // 스크롤 초기화
+        this.showCardPopup = false;
+        this.selectedCardForPopup = null;
+        this.clickAnimations.clear();
         this.startRevealAnimation();
     }
 
@@ -77,6 +93,9 @@ class CardSelection {
         this.selectedCards = [];
         this.currentIndex = 0;
         this.scrollY = 0;  // 스크롤 초기화
+        this.showCardPopup = false;
+        this.selectedCardForPopup = null;
+        this.clickAnimations.clear();
         this.startRevealAnimation();
     }
 
@@ -90,6 +109,9 @@ class CardSelection {
         this.selectedCards = [];
         this.currentIndex = 0;
         this.scrollY = 0;  // 스크롤 초기화
+        this.showCardPopup = false;
+        this.selectedCardForPopup = null;
+        this.clickAnimations.clear();
         this.startRevealAnimation();
     }
 
@@ -108,6 +130,10 @@ class CardSelection {
 
         if (this.showConfirmation) {
             this.renderConfirmation(ctx, canvas);
+        }
+
+        if (this.showCardPopup) {
+            this.renderCardPopup(ctx, canvas);
         }
 
         this.updateAnimations();
@@ -276,6 +302,20 @@ class CardSelection {
 
         ctx.save();
 
+        // 클릭 애니메이션 적용
+        const clickAnim = this.clickAnimations.get(index);
+        let scale = 1;
+        if (clickAnim && clickAnim.active) {
+            scale = this.getClickAnimationScale(clickAnim);
+
+            // 카드 중심점 기준으로 스케일 적용
+            const centerX = x + width / 2;
+            const centerY = y + height / 2;
+            ctx.translate(centerX, centerY);
+            ctx.scale(scale, scale);
+            ctx.translate(-centerX, -centerY);
+        }
+
         // 통일된 카드 렌더러 사용
         this.cardRenderer.renderCard(ctx, card, x, y, width, height, {
             isSelected,
@@ -443,6 +483,106 @@ class CardSelection {
         ctx.restore();
     }
 
+    // 카드 확대 팝업 렌더링
+    renderCardPopup(ctx, canvas) {
+        if (!this.selectedCardForPopup) return;
+
+        const config = GameConfig.cardSelection.popup;
+
+        ctx.save();
+
+        // 애니메이션 진행도 계산
+        const animProgress = this.getPopupAnimationProgress();
+        const scale = this.easeOutQuart(animProgress);
+        const opacity = animProgress;
+
+        // 오버레이 배경
+        ctx.fillStyle = config.background.overlay;
+        ctx.globalAlpha = opacity * 0.7;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // 팝업 위치 계산 (중앙 정렬)
+        const popupWidth = config.size.width;
+        const popupHeight = config.size.height;
+        const popupX = (canvas.width - popupWidth) / 2;
+        const popupY = (canvas.height - popupHeight) / 2;
+
+        // 팝업 중심점 계산
+        const centerX = popupX + popupWidth / 2;
+        const centerY = popupY + popupHeight / 2;
+
+        // 팝업 스케일 애니메이션 적용 (중심점 기준)
+        ctx.translate(centerX, centerY);
+        ctx.scale(scale, scale);
+        ctx.translate(-centerX, -centerY);
+
+        ctx.globalAlpha = opacity;
+
+        // 팝업 배경 (실제 위치에 그리기)
+        ctx.fillStyle = config.background.modal;
+        this.roundRect(ctx, popupX, popupY, popupWidth, popupHeight, config.size.borderRadius);
+        ctx.fill();
+
+        // 팝업 테두리 (실제 위치에 그리기)
+        ctx.strokeStyle = config.background.borderColor;
+        ctx.lineWidth = config.background.borderWidth;
+        this.roundRect(ctx, popupX, popupY, popupWidth, popupHeight, config.size.borderRadius);
+        ctx.stroke();
+
+        // 팝업 제목 (실제 위치 기준)
+        ctx.fillStyle = config.title.color;
+        ctx.font = `bold ${config.title.fontSize}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.fillText(config.title.text, centerX, popupY + config.title.y);
+
+        // 카드 렌더링 (팝업 중앙에 크게)
+        const cardX = popupX + (popupWidth - config.card.width) / 2;
+        const cardY = popupY + config.card.y;
+
+        this.cardRenderer.renderCard(ctx, this.selectedCardForPopup,
+            cardX, cardY, config.card.width, config.card.height, {
+                isSelected: false,
+                isHighlighted: true,
+                opacity: 1
+            });
+
+        // 버튼들 렌더링 (실제 팝업 위치 전달)
+        this.renderPopupButtons(ctx, config, popupX, popupY);
+
+        ctx.restore();
+    }
+
+    // 팝업 버튼들 렌더링
+    renderPopupButtons(ctx, config, popupX, popupY) {
+        const buttonConfig = config.buttons;
+        const popupWidth = config.size.width;
+
+        // 버튼 위치 계산 (팝업 내에서 중앙 정렬, 절대 좌표)
+        const totalButtonWidth = buttonConfig.width * 2 + buttonConfig.spacing;
+        const startX = popupX + (popupWidth - totalButtonWidth) / 2;
+        const buttonY = popupY + buttonConfig.y;
+
+        // 선택 버튼 (절대 좌표)
+        const selectX = startX;
+        ctx.fillStyle = buttonConfig.select.color;
+        this.roundRect(ctx, selectX, buttonY, buttonConfig.width, buttonConfig.height, buttonConfig.borderRadius);
+        ctx.fill();
+
+        ctx.fillStyle = buttonConfig.select.textColor;
+        ctx.font = `bold ${buttonConfig.fontSize}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.fillText(buttonConfig.select.text, selectX + buttonConfig.width / 2, buttonY + buttonConfig.height / 2 + 6);
+
+        // 취소 버튼 (절대 좌표)
+        const cancelX = startX + buttonConfig.width + buttonConfig.spacing;
+        ctx.fillStyle = buttonConfig.cancel.color;
+        this.roundRect(ctx, cancelX, buttonY, buttonConfig.width, buttonConfig.height, buttonConfig.borderRadius);
+        ctx.fill();
+
+        ctx.fillStyle = buttonConfig.cancel.textColor;
+        ctx.fillText(buttonConfig.cancel.text, cancelX + buttonConfig.width / 2, buttonY + buttonConfig.height / 2 + 6);
+    }
+
     // 입력 처리 (키보드 네비게이션 제거, 클릭 전용)
     handleInput(key) {
         // 키보드 입력 무시 - 클릭으로만 선택 가능
@@ -598,13 +738,51 @@ class CardSelection {
 
     // 애니메이션 업데이트
     updateAnimations() {
+        const now = Date.now();
+
         // 공개 애니메이션 업데이트
         if (this.revealAnimation.started) {
-            const elapsed = Date.now() - this.revealAnimation.startTime;
+            const elapsed = now - this.revealAnimation.startTime;
             const totalDuration = this.revealAnimation.duration + (this.availableCards.length * 200);
 
             if (elapsed >= totalDuration) {
                 this.revealAnimation.started = false;
+            }
+        }
+
+        // 클릭 애니메이션 업데이트
+        this.clickAnimations.forEach((anim, index) => {
+            if (anim.active) {
+                const elapsed = now - anim.startTime;
+                const config = GameConfig.cardSelection.clickEffect;
+
+                if (elapsed >= config.duration) {
+                    anim.active = false;
+                    anim.progress = 1;
+                } else {
+                    anim.progress = elapsed / config.duration;
+                }
+            }
+        });
+
+        // 팝업 애니메이션 업데이트
+        if (this.popupAnimation.isShowing || this.popupAnimation.isHiding) {
+            const elapsed = now - this.popupAnimation.startTime;
+            const config = GameConfig.cardSelection.popup;
+
+            if (elapsed >= config.animation.duration) {
+                if (this.popupAnimation.isShowing) {
+                    this.popupAnimation.isShowing = false;
+                    this.popupAnimation.progress = 1;
+                } else if (this.popupAnimation.isHiding) {
+                    this.popupAnimation.isHiding = false;
+                    this.showCardPopup = false;
+                    this.selectedCardForPopup = null;
+                    this.popupAnimation.progress = 0;
+                }
+            } else {
+                const progress = elapsed / config.animation.duration;
+                this.popupAnimation.progress = this.popupAnimation.isHiding ? 1 - progress : progress;
             }
         }
     }
@@ -613,6 +791,11 @@ class CardSelection {
     handlePointerInput(x, y, canvas) {
         if (this.showConfirmation) {
             this.handleConfirmationPointerInput(x, y, canvas);
+            return;
+        }
+
+        if (this.showCardPopup) {
+            this.handleCardPopupInput(x, y, canvas);
             return;
         }
 
@@ -638,12 +821,17 @@ class CardSelection {
                 y >= cardY && y <= cardY + cardHeight) {
                 this.currentIndex = index;
 
-                // 초기 카드 선택 모드일 때는 클릭 즉시 게임 시작
+                // 클릭 애니메이션 시작
+                this.startClickAnimation(index);
+
+                // 초기 카드 선택 모드일 때는 팝업으로 확인
                 if (this.selectionType === 'initial') {
-                    this.selectedCards = [card.id];
-                    this.finalizeSelection();
+                    this.showCardPopupForSelection(card);
                 } else {
-                    this.toggleCardSelection();
+                    // 다른 모드에서는 기존 로직
+                    setTimeout(() => {
+                        this.toggleCardSelection();
+                    }, GameConfig.cardSelection.clickEffect.duration);
                 }
             }
         });
@@ -745,10 +933,123 @@ class CardSelection {
         return card.description || '';
     }
 
+    // 클릭 애니메이션 시작
+    startClickAnimation(index) {
+        this.clickAnimations.set(index, {
+            active: true,
+            startTime: Date.now(),
+            progress: 0
+        });
+    }
+
+    // 클릭 애니메이션 스케일 계산
+    getClickAnimationScale(clickAnim) {
+        const config = GameConfig.cardSelection.clickEffect;
+        const progress = clickAnim.progress;
+
+        if (progress <= config.phases.expand) {
+            // 확대 단계
+            const expandProgress = progress / config.phases.expand;
+            return 1 + (config.scaleMax - 1) * expandProgress;
+        } else {
+            // 축소 단계
+            const contractProgress = (progress - config.phases.expand) / config.phases.contract;
+            const currentScale = config.scaleMax + (config.scaleMin - config.scaleMax) * contractProgress;
+            return Math.max(config.scaleMin, currentScale);
+        }
+    }
+
+    // 카드 선택 팝업 표시
+    showCardPopupForSelection(card) {
+        setTimeout(() => {
+            this.selectedCardForPopup = card;
+            this.showCardPopup = true;
+            this.popupAnimation.isShowing = true;
+            this.popupAnimation.isHiding = false;
+            this.popupAnimation.startTime = Date.now();
+            this.popupAnimation.progress = 0;
+        }, GameConfig.cardSelection.clickEffect.duration);
+    }
+
+    // 팝업 애니메이션 진행도 계산
+    getPopupAnimationProgress() {
+        return Math.max(0, Math.min(1, this.popupAnimation.progress));
+    }
+
+    // 이징 함수 - easeOutQuart
+    easeOutQuart(t) {
+        return 1 - (1 - t) * (1 - t) * (1 - t) * (1 - t);
+    }
+
+    // 카드 팝업 입력 처리
+    handleCardPopupInput(x, y, canvas) {
+        const config = GameConfig.cardSelection.popup;
+
+        // 팝업 위치 계산
+        const popupWidth = config.size.width;
+        const popupHeight = config.size.height;
+        const popupX = (canvas.width - popupWidth) / 2;
+        const popupY = (canvas.height - popupHeight) / 2;
+
+        const buttonConfig = config.buttons;
+        const totalButtonWidth = buttonConfig.width * 2 + buttonConfig.spacing;
+        const startX = popupX + (popupWidth - totalButtonWidth) / 2;
+        const buttonY = popupY + buttonConfig.y;
+
+        // 선택 버튼 클릭 체크
+        const selectX = startX;
+        if (x >= selectX && x <= selectX + buttonConfig.width &&
+            y >= buttonY && y <= buttonY + buttonConfig.height) {
+            this.confirmCardSelection();
+            return;
+        }
+
+        // 취소 버튼 클릭 체크
+        const cancelX = startX + buttonConfig.width + buttonConfig.spacing;
+        if (x >= cancelX && x <= cancelX + buttonConfig.width &&
+            y >= buttonY && y <= buttonY + buttonConfig.height) {
+            this.cancelCardPopup();
+            return;
+        }
+
+        // 팝업 외부 클릭 시 취소
+        if (x < popupX || x > popupX + popupWidth ||
+            y < popupY || y > popupY + popupHeight) {
+            this.cancelCardPopup();
+        }
+    }
+
+    // 카드 선택 확인
+    confirmCardSelection() {
+        if (this.selectedCardForPopup && this.selectionType === 'initial') {
+            this.selectedCards = [this.selectedCardForPopup.id];
+            this.hideCardPopup();
+            // 약간의 지연 후 게임 시작
+            setTimeout(() => {
+                this.finalizeSelection();
+            }, 200);
+        }
+    }
+
+    // 카드 팝업 취소
+    cancelCardPopup() {
+        this.hideCardPopup();
+    }
+
+    // 카드 팝업 숨기기
+    hideCardPopup() {
+        this.popupAnimation.isShowing = false;
+        this.popupAnimation.isHiding = true;
+        this.popupAnimation.startTime = Date.now();
+    }
+
     // 정리
     cleanup() {
         this.cardAnimations.clear();
+        this.clickAnimations.clear();
         this.revealAnimation.started = false;
+        this.showCardPopup = false;
+        this.selectedCardForPopup = null;
     }
 }
 
