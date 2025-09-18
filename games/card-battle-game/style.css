@@ -143,6 +143,31 @@ body {
     z-index: 1000; /* UI 오버레이 위에 표시 */
 }
 
+/* 홈페이지로 돌아가기 버튼 (기존 위치 - 상단) */
+.back-btn.homepage-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(231, 76, 60, 0.9);
+    z-index: 1000; /* UI 오버레이 위에 표시 */
+}
+.back-btn.homepage-btn:hover {
+    background: rgba(231, 76, 60, 1);
+}
+
+/* 메뉴화면으로 돌아가기 버튼 (새 위치 - 홈페이지 버튼 아래) */
+.back-btn.menu-btn {
+    position: absolute;
+    top: 80px; /* 홈페이지 버튼 아래 60px 간격 */
+    left: 20px;
+    background: rgba(52, 152, 219, 0.9); /* 파란색 계열 */
+    z-index: 1000; /* UI 오버레이 위에 표시 */
+}
+.back-btn.menu-btn:hover {
+    background: rgba(52, 152, 219, 1);
+}
+
+/* 이전 버전 호환성을 위한 기본 back-btn 스타일 */
 .back-btn {
     position: absolute;
     top: 20px;
