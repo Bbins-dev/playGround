@@ -161,19 +161,49 @@ class EffectSystem {
 
         numberElement.className = className;
 
-        // 위치 설정 (약간의 랜덤성 추가)
-        const randomX = (Math.random() - 0.5) * 40; // -20 ~ +20px
-        numberElement.style.left = (position.x + randomX) + 'px';
-        numberElement.style.top = position.y + 'px';
+        // 새로운 위치 계산 시스템 (gameConfig 기반)
+        const config = GameConfig.cardSelection.damageNumber;
+        const isPlayerDamage = position.y > GameConfig.canvas.height / 2;
+
+        // 전투 영역 중앙 기준으로 위치 계산
+        const centerX = GameConfig.canvas.width / 2;
+        const targetY = isPlayerDamage ?
+            GameConfig.canvas.height * config.position.playerY :
+            GameConfig.canvas.height * config.position.enemyY;
+
+        // 랜덤 분산 적용
+        const randomX = (Math.random() - 0.5) * config.position.randomX * 2; // -60 ~ +60px
+        const randomY = (Math.random() - 0.5) * config.position.randomY * 2; // -20 ~ +20px
+
+        numberElement.style.left = (centerX + randomX) + 'px';
+        numberElement.style.top = (targetY + randomY) + 'px';
+
+        // 반응형 폰트 크기 설정
+        const fontSize = this.getResponsiveFontSize();
+        numberElement.style.fontSize = fontSize + 'px';
 
         this.numbersContainer.appendChild(numberElement);
 
-        // 애니메이션 완료 후 제거
+        // 애니메이션 완료 후 제거 (config 기반 지속시간)
         setTimeout(() => {
             if (numberElement.parentNode) {
                 numberElement.remove();
             }
-        }, 1000);
+        }, config.animation.duration);
+    }
+
+    // 반응형 폰트 크기 계산
+    getResponsiveFontSize() {
+        const config = GameConfig.cardSelection.damageNumber.fontSize;
+        const screenWidth = window.innerWidth;
+
+        if (screenWidth <= 768) {
+            return config.mobile;
+        } else if (screenWidth <= 1024) {
+            return config.medium;
+        } else {
+            return config.large;
+        }
     }
 
     // 카드 발동 효과 (중앙 확대) - 통일된 DOMCardRenderer 사용

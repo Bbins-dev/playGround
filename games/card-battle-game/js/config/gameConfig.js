@@ -337,6 +337,35 @@ const GameConfig = {
             }
         },
         // 확인 대화상자 설정
+        // 피격 숫자 표시 설정
+        damageNumber: {
+            fontSize: {
+                large: 72,      // 큰 화면
+                medium: 60,     // 중간 화면
+                mobile: 50      // 모바일
+            },
+            position: {
+                // 전투 영역 기준 위치 (캔버스 상하 1/3 지점)
+                playerY: 0.75,  // 캔버스 높이의 75% 지점 (하단 1/3)
+                enemyY: 0.25,   // 캔버스 높이의 25% 지점 (상단 1/3)
+                randomX: 60,    // X축 랜덤 분산 범위 (-60 ~ +60px)
+                randomY: 20     // Y축 랜덤 분산 범위 (-20 ~ +20px)
+            },
+            animation: {
+                duration: 1200, // 애니메이션 지속 시간 (ms)
+                scaleStart: 0.5,
+                scaleMax: 1.3,
+                scaleEnd: 0.8,
+                moveDistance: 60 // 위로 이동하는 거리
+            },
+            colors: {
+                damage: '#FF0000',
+                heal: '#2ECC71',
+                buff: '#2ECC71',
+                debuff: '#E74C3C'
+            }
+        },
+
         confirmationModal: {
             size: {
                 width: 400,
