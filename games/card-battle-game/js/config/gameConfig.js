@@ -335,6 +335,48 @@ const GameConfig = {
                 expand: 0.4,                    // 확대 단계 비율 (40%)
                 contract: 0.6                   // 축소 단계 비율 (60%)
             }
+        },
+        // 확인 대화상자 설정
+        confirmationModal: {
+            size: {
+                width: 400,
+                height: 200,
+                borderRadius: 15
+            },
+            background: {
+                overlay: 'rgba(0, 0, 0, 0.7)',
+                modal: '#2a2a3e',
+                borderColor: '#666',
+                borderWidth: 2
+            },
+            title: {
+                y: 50,
+                fontSize: 18,
+                color: '#fff'
+            },
+            description: {
+                y: 80,
+                fontSize: 14,
+                color: '#ccc'
+            },
+            buttons: {
+                y: 150,
+                width: 100,
+                height: 30,
+                spacing: 20,
+                borderRadius: 5,
+                fontSize: 14,
+                confirm: {
+                    color: '#4caf50',
+                    textColor: '#fff',
+                    text: '확인'
+                },
+                cancel: {
+                    color: '#666',
+                    textColor: '#fff',
+                    text: '취소'
+                }
+            }
         }
     },
 

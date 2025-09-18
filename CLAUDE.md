@@ -54,16 +54,17 @@ Without trailing slash, relative paths like `./style.css` resolve incorrectly.
 
 1. **UI 위치값 하드코딩 금지**:
    - ❌ `x = 640`, `y = 280` 같은 고정 픽셀값 사용 금지
-   - ✅ `canvas.width / 2`, `config.startY + index * config.itemHeight` 사용
+   - ✅ `GameConfig.canvas.width / 2`, `config.startY + index * config.itemHeight` 사용
    - ✅ 텍스트 크기 측정 후 동적 중앙 정렬 계산
 
 2. **설정값 하드코딩 금지**:
    - ❌ 코드 내부에 직접 숫자, 색상, 크기 작성 금지
    - ✅ 모든 값은 `gameConfig.js` 또는 설정 파일에서 가져오기
 
-3. **반응형 대응 필수**:
-   - ✅ 모든 화면 크기에서 작동하는 비율 기반 계산
-   - ✅ Canvas resize 이벤트 처리
+3. **Canvas 좌표계 일관성 (레티나 디스플레이 대응)**:
+   - ❌ `canvas.width`, `canvas.height` 직접 사용 금지 (실제 픽셀 크기)
+   - ✅ `GameConfig.canvas.width`, `GameConfig.canvas.height` 사용 필수 (논리적 크기)
+   - ✅ 모든 팝업, UI 위치 계산을 GameConfig 기준으로 통일
 
 ## Key Configuration Files
 
@@ -97,7 +98,7 @@ Without trailing slash, relative paths like `./style.css` resolve incorrectly.
 - **Responsive Canvas**: updateCanvasSize() 메서드로 반응형 처리
 - Consistent event handling with `addEventListener`
 
-## Card Battle Game - Recent Updates (2025-09-17)
+## Card Battle Game - Recent Updates (2025-09-18)
 
 ### 완성된 시스템들 ✅
 - **카드 선택 화면**: 동적 중앙 정렬 시스템 완료
@@ -130,7 +131,7 @@ cardSelection: {
 ```
 
 ### UI 일관성 원칙
-- 모든 화면에서 `GameConfig.canvas.width / 2` 사용하여 중앙 정렬
+- 모든 화면에서 `GameConfig.canvas.width / 2` 사용하여 중앙 정렬 (레티나 디스플레이 대응)
 - measureText()로 텍스트 크기 측정 후 동적 배치
 - 설정값 변경만으로 전체 레이아웃 조정 가능
 

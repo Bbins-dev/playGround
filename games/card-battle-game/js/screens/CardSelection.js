@@ -147,7 +147,7 @@ class CardSelection {
         gradient.addColorStop(1, '#0f0f23');
 
         ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, GameConfig.canvas.width, GameConfig.canvas.height);
 
         // 선택 테이블 느낌의 배경 패턴
         this.renderTablePattern(ctx, canvas);
@@ -162,17 +162,17 @@ class CardSelection {
 
         // 격자 패턴
         const gridSize = 50;
-        for (let x = 0; x < canvas.width; x += gridSize) {
+        for (let x = 0; x < GameConfig.canvas.width; x += gridSize) {
             ctx.beginPath();
             ctx.moveTo(x, 0);
-            ctx.lineTo(x, canvas.height);
+            ctx.lineTo(x, GameConfig.canvas.height);
             ctx.stroke();
         }
 
-        for (let y = 0; y < canvas.height; y += gridSize) {
+        for (let y = 0; y < GameConfig.canvas.height; y += gridSize) {
             ctx.beginPath();
             ctx.moveTo(0, y);
-            ctx.lineTo(canvas.width, y);
+            ctx.lineTo(GameConfig.canvas.width, y);
             ctx.stroke();
         }
 
@@ -246,7 +246,7 @@ class CardSelection {
             ctx.fillStyle = '#fff';
             ctx.font = '24px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('카드를 로드 중...', canvas.width / 2, canvas.height / 2);
+            ctx.fillText('카드를 로드 중...', GameConfig.canvas.width / 2, GameConfig.canvas.height / 2);
             ctx.restore();
             return;
         }
@@ -267,7 +267,7 @@ class CardSelection {
         // 뷰포트 클리핑 설정
         ctx.save();
         ctx.beginPath();
-        ctx.rect(0, startY, canvas.width, scrollConfig.viewportHeight);
+        ctx.rect(0, startY, GameConfig.canvas.width, scrollConfig.viewportHeight);
         ctx.clip();
 
         this.availableCards.forEach((card, index) => {
@@ -343,24 +343,24 @@ class CardSelection {
     renderSelectedCards(ctx, canvas) {
         if (this.selectedCards.length === 0) return;
 
-        const startY = canvas.height - 120;
+        const startY = GameConfig.canvas.height - 120;
         const cardWidth = 80;
         const cardHeight = 110;
         const spacing = 90;
         const totalWidth = this.selectedCards.length * spacing - (spacing - cardWidth);
-        const startX = (canvas.width - totalWidth) / 2;
+        const startX = (GameConfig.canvas.width - totalWidth) / 2;
 
         ctx.save();
 
         // 선택된 카드 영역 배경
         ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-        ctx.fillRect(0, startY - 20, canvas.width, 140);
+        ctx.fillRect(0, startY - 20, GameConfig.canvas.width, 140);
 
         // 라벨
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 14px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('선택된 카드', canvas.width / 2, startY - 5);
+        ctx.fillText('선택된 카드', GameConfig.canvas.width / 2, startY - 5);
 
         // 선택된 카드들
         this.selectedCards.forEach((cardId, index) => {
@@ -388,7 +388,7 @@ class CardSelection {
 
     // 선택 상태 렌더링
     renderSelectionStatus(ctx, canvas) {
-        const y = canvas.height - 60;
+        const y = GameConfig.canvas.height - 60;
 
         ctx.save();
         ctx.fillStyle = '#fff';
@@ -409,7 +409,7 @@ class CardSelection {
             ctx.fillStyle = '#4caf50';
         }
 
-        ctx.fillText(statusText, canvas.width / 2, y);
+        ctx.fillText(statusText, GameConfig.canvas.width / 2, y);
 
         // 제약 조건 검사
         const violations = this.checkConstraintViolations();
@@ -417,7 +417,7 @@ class CardSelection {
             ctx.fillStyle = '#ff6b6b';
             ctx.font = '12px Arial';
             violations.forEach((violation, index) => {
-                ctx.fillText(violation, canvas.width / 2, y + 20 + index * 15);
+                ctx.fillText(violation, GameConfig.canvas.width / 2, y + 20 + index * 15);
             });
         }
 
@@ -426,59 +426,66 @@ class CardSelection {
 
     // 확인 대화상자 렌더링
     renderConfirmation(ctx, canvas) {
-        const modalWidth = 400;
-        const modalHeight = 200;
-        const x = (canvas.width - modalWidth) / 2;
-        const y = (canvas.height - modalHeight) / 2;
+        const config = GameConfig.cardSelection.confirmationModal;
 
         ctx.save();
 
         // 배경 오버레이
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = config.background.overlay;
+        ctx.fillRect(0, 0, GameConfig.canvas.width, GameConfig.canvas.height);
+
+        // 모달 위치 계산 (중앙 정렬)
+        const modalWidth = config.size.width;
+        const modalHeight = config.size.height;
+        const x = (GameConfig.canvas.width - modalWidth) / 2;
+        const y = (GameConfig.canvas.height - modalHeight) / 2;
 
         // 모달 배경
-        ctx.fillStyle = '#2a2a3e';
-        this.roundRect(ctx, x, y, modalWidth, modalHeight, 15);
+        ctx.fillStyle = config.background.modal;
+        this.roundRect(ctx, x, y, modalWidth, modalHeight, config.size.borderRadius);
         ctx.fill();
 
-        ctx.strokeStyle = '#666';
-        ctx.lineWidth = 2;
-        this.roundRect(ctx, x, y, modalWidth, modalHeight, 15);
+        // 모달 테두리
+        ctx.strokeStyle = config.background.borderColor;
+        ctx.lineWidth = config.background.borderWidth;
+        this.roundRect(ctx, x, y, modalWidth, modalHeight, config.size.borderRadius);
         ctx.stroke();
 
         // 제목
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 18px Arial';
+        ctx.fillStyle = config.title.color;
+        ctx.font = `bold ${config.title.fontSize}px Arial`;
         ctx.textAlign = 'center';
-        ctx.fillText('선택을 완료하시겠습니까?', x + modalWidth/2, y + 50);
+        ctx.fillText('선택을 완료하시겠습니까?', x + modalWidth/2, y + config.title.y);
 
         // 선택된 카드 수
-        ctx.font = '14px Arial';
-        ctx.fillStyle = '#ccc';
-        ctx.fillText(`${this.selectedCards.length}장의 카드가 선택되었습니다.`, x + modalWidth/2, y + 80);
+        ctx.font = `${config.description.fontSize}px Arial`;
+        ctx.fillStyle = config.description.color;
+        ctx.fillText(`${this.selectedCards.length}장의 카드가 선택되었습니다.`, x + modalWidth/2, y + config.description.y);
 
         // 버튼들
-        const buttonY = y + modalHeight - 50;
-        const buttonWidth = 100;
-        const buttonHeight = 30;
+        const buttonConfig = config.buttons;
+        const buttonY = y + buttonConfig.y;
+        const totalButtonWidth = buttonConfig.width * 2 + buttonConfig.spacing;
+        const buttonStartX = x + (modalWidth - totalButtonWidth) / 2;
 
         // 확인 버튼
-        ctx.fillStyle = '#4caf50';
-        this.roundRect(ctx, x + modalWidth/2 - buttonWidth - 10, buttonY, buttonWidth, buttonHeight, 5);
+        const confirmX = buttonStartX;
+        ctx.fillStyle = buttonConfig.confirm.color;
+        this.roundRect(ctx, confirmX, buttonY, buttonConfig.width, buttonConfig.height, buttonConfig.borderRadius);
         ctx.fill();
 
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 14px Arial';
-        ctx.fillText('확인', x + modalWidth/2 - buttonWidth/2 - 10, buttonY + 20);
+        ctx.fillStyle = buttonConfig.confirm.textColor;
+        ctx.font = `bold ${buttonConfig.fontSize}px Arial`;
+        ctx.fillText(buttonConfig.confirm.text, confirmX + buttonConfig.width/2, buttonY + buttonConfig.height/2 + 6);
 
         // 취소 버튼
-        ctx.fillStyle = '#666';
-        this.roundRect(ctx, x + modalWidth/2 + 10, buttonY, buttonWidth, buttonHeight, 5);
+        const cancelX = buttonStartX + buttonConfig.width + buttonConfig.spacing;
+        ctx.fillStyle = buttonConfig.cancel.color;
+        this.roundRect(ctx, cancelX, buttonY, buttonConfig.width, buttonConfig.height, buttonConfig.borderRadius);
         ctx.fill();
 
-        ctx.fillStyle = '#fff';
-        ctx.fillText('취소', x + modalWidth/2 + buttonWidth/2 + 10, buttonY + 20);
+        ctx.fillStyle = buttonConfig.cancel.textColor;
+        ctx.fillText(buttonConfig.cancel.text, cancelX + buttonConfig.width/2, buttonY + buttonConfig.height/2 + 6);
 
         ctx.restore();
     }
@@ -499,13 +506,13 @@ class CardSelection {
         // 오버레이 배경
         ctx.fillStyle = config.background.overlay;
         ctx.globalAlpha = opacity * 0.7;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, GameConfig.canvas.width, GameConfig.canvas.height);
 
         // 팝업 위치 계산 (중앙 정렬)
         const popupWidth = config.size.width;
         const popupHeight = config.size.height;
-        const popupX = (canvas.width - popupWidth) / 2;
-        const popupY = (canvas.height - popupHeight) / 2;
+        const popupX = (GameConfig.canvas.width - popupWidth) / 2;
+        const popupY = (GameConfig.canvas.height - popupHeight) / 2;
 
         // 팝업 중심점 계산
         const centerX = popupX + popupWidth / 2;
@@ -854,26 +861,30 @@ class CardSelection {
 
     // 확인 대화상자 포인터 입력 처리
     handleConfirmationPointerInput(x, y, canvas) {
-        const modalWidth = 400;
-        const modalHeight = 200;
-        const modalX = (canvas.width - modalWidth) / 2;
-        const modalY = (canvas.height - modalHeight) / 2;
+        const config = GameConfig.cardSelection.confirmationModal;
 
-        const buttonY = modalY + modalHeight - 50;
-        const buttonWidth = 100;
-        const buttonHeight = 30;
+        // 모달 위치 계산 (중앙 정렬)
+        const modalWidth = config.size.width;
+        const modalHeight = config.size.height;
+        const modalX = (GameConfig.canvas.width - modalWidth) / 2;
+        const modalY = (GameConfig.canvas.height - modalHeight) / 2;
+
+        const buttonConfig = config.buttons;
+        const buttonY = modalY + buttonConfig.y;
+        const totalButtonWidth = buttonConfig.width * 2 + buttonConfig.spacing;
+        const buttonStartX = modalX + (modalWidth - totalButtonWidth) / 2;
 
         // 확인 버튼
-        const confirmX = modalX + modalWidth/2 - buttonWidth - 10;
-        if (x >= confirmX && x <= confirmX + buttonWidth &&
-            y >= buttonY && y <= buttonY + buttonHeight) {
+        const confirmX = buttonStartX;
+        if (x >= confirmX && x <= confirmX + buttonConfig.width &&
+            y >= buttonY && y <= buttonY + buttonConfig.height) {
             this.finalizeSelection();
         }
 
         // 취소 버튼
-        const cancelX = modalX + modalWidth/2 + 10;
-        if (x >= cancelX && x <= cancelX + buttonWidth &&
-            y >= buttonY && y <= buttonY + buttonHeight) {
+        const cancelX = buttonStartX + buttonConfig.width + buttonConfig.spacing;
+        if (x >= cancelX && x <= cancelX + buttonConfig.width &&
+            y >= buttonY && y <= buttonY + buttonConfig.height) {
             this.showConfirmation = false;
         }
     }
@@ -988,8 +999,8 @@ class CardSelection {
         // 팝업 위치 계산
         const popupWidth = config.size.width;
         const popupHeight = config.size.height;
-        const popupX = (canvas.width - popupWidth) / 2;
-        const popupY = (canvas.height - popupHeight) / 2;
+        const popupX = (GameConfig.canvas.width - popupWidth) / 2;
+        const popupY = (GameConfig.canvas.height - popupHeight) / 2;
 
         const buttonConfig = config.buttons;
         const totalButtonWidth = buttonConfig.width * 2 + buttonConfig.spacing;
