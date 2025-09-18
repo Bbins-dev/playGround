@@ -241,9 +241,9 @@ class CardRenderer {
         const originalFillStyle = ctx.fillStyle;
 
         if (this.style.textOutline.enabled) {
-            // 외곽선
+            // 외곽선 (Canvas에서만 3배 두껍게)
             ctx.strokeStyle = this.style.textOutline.color;
-            ctx.lineWidth = this.style.textOutline.width;
+            ctx.lineWidth = this.style.textOutline.width * 3;
             ctx.strokeText(text, x, y);
         }
 
