@@ -26,9 +26,14 @@ class Enemy extends Player {
 
     // 스테이지별 특성 설정
     setupStageCharacteristics() {
-        // 스테이지가 높을수록 HP 증가
-        const hpMultiplier = 1 + (this.stage - 1) * 0.3;
-        this.maxHP = Math.floor(GameConfig.enemy.startingHP * hpMultiplier);
+        // 1-30스테이지는 HP 10으로 고정
+        if (this.stage <= 30) {
+            this.maxHP = GameConfig.enemy.startingHP; // 10으로 고정
+        } else {
+            // 31스테이지 이후는 기존 방식
+            const hpMultiplier = 1 + (this.stage - 31) * 0.3;
+            this.maxHP = Math.floor(GameConfig.enemy.startingHP * hpMultiplier);
+        }
         this.hp = this.maxHP;
 
         // 스테이지별 이름 설정
@@ -36,28 +41,30 @@ class Enemy extends Player {
 
     }
 
-    // 적 이름 생성
+    // 적 이름 생성 (다국어 지원)
     generateEnemyName() {
-        const enemyNames = [
-            '훈련용 허수아비',
-            '야생 늑대',
-            '오크 전사',
-            '어둠의 마법사',
-            '고블린 왕',
-            '화염 골렘',
-            '독 거미',
-            '전기 엘리멘탈',
-            '얼음 거인',
-            '드래곤 새끼',
-            '언데드 기사',
-            '암흑 마도사',
-            '크리스탈 골렘',
-            '화염 드레이크',
-            '최종 보스'
-        ];
+        // 스테이지 번호를 30개 범위 내로 제한
+        const enemyStage = Math.min(this.stage, 30);
 
-        const index = Math.min(this.stage - 1, enemyNames.length - 1);
-        return enemyNames[index];
+        // i18n 시스템을 통해 적 이름 가져오기
+        const nameKey = `auto_battle_card_game.ui.enemy_names.${enemyStage}`;
+
+        // 전역 i18n 함수가 있는지 확인하고 사용
+        if (typeof window.i18n !== 'undefined' && window.i18n.t) {
+            return window.i18n.t(nameKey);
+        }
+
+        // i18n이 로드되지 않은 경우 기본 이름 반환
+        const fallbackNames = {
+            1: "Training Dummy", 2: "Wooden Puppet", 3: "Straw Monster", 4: "Practice Golem", 5: "Beginner's Nightmare",
+            6: "Hungry Wolf", 7: "Enraged Boar", 8: "Poison Fang Snake", 9: "Shadow Leopard", 10: "Forest Predator",
+            11: "Apprentice Mage", 12: "Fire Caster", 13: "Ice Witch", 14: "Lightning Summoner", 15: "Elemental Master",
+            16: "Zombie Soldier", 17: "Skeleton Archer", 18: "Ghost Knight", 19: "Lich Priest", 20: "Death Lord",
+            21: "Dragon Hatchling", 22: "Fire Drake", 23: "Frost Wyvern", 24: "Storm Dragon", 25: "Ancient Dragon King",
+            26: "Fallen Hero", 27: "Betrayer Knight Captain", 28: "Demon Summoner", 29: "Avatar of Chaos", 30: "Final Examiner"
+        };
+
+        return fallbackNames[enemyStage] || `Enemy ${enemyStage}`;
     }
 
     // 적 덱 구성 (스테이지별)

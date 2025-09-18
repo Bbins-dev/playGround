@@ -526,6 +526,207 @@ body {
     gap: 3px;
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* 상태이상 강화 애니메이션 */
+.status-icon.pulse {
+    animation: statusPulse 2s infinite;
+}
+
+@keyframes statusPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+.status-icon .countdown {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #e74c3c;
+    color: white;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid white;
+}
+
+/* 방어력 바 시스템 */
+.defense-bar-container {
+    position: relative;
+    width: 100%;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.defense-bar {
+    flex: 1;
+    height: 8px;
+    background: #34495e;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.defense-bar-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #3498db, #2980b9);
+    transition: width 0.3s ease;
+    border-radius: inherit;
+}
+
+.defense-info {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.defense-icon {
+    font-size: 16px;
+}
+
+.defense-number {
+    font-weight: bold;
+    min-width: 20px;
+    text-align: center;
+}
+
+.thorns-info {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: 8px;
+    transition: opacity 0.3s ease;
+}
+
+.thorns-info.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.thorns-icon {
+    font-size: 14px;
+}
+
+.thorns-number {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* 방어력 깨지는 애니메이션 */
+@keyframes shieldBreak {
+    0% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(1.2) rotate(-5deg); }
+    50% { transform: scale(0.8) rotate(5deg); }
+    75% { transform: scale(1.1) rotate(-2deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+.defense-info.break-animation {
+    animation: shieldBreak 0.3s ease-out;
+}
+
+/* 대미지 플로팅 숫자 */
+.damage-number {
+    position: absolute;
+    font-weight: bold;
+    font-size: 24px;
+    color: #e74c3c;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+    z-index: 1000;
+    animation: floatUp 1.5s ease-out forwards;
+}
+
+.heal-number {
+    color: #2ecc71;
+}
+
+.shield-number {
+    color: #3498db;
+}
+
+.critical-number {
+    color: #f39c12;
+    font-size: 36px;
+}
+
+@keyframes floatUp {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(0.5);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(-30px) scale(1.3);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-60px) scale(0.8);
+    }
+}
+
+/* 화면 효과 */
+.screen-flash {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.1s ease;
+}
+
+.screen-flash.damage {
+    background: rgba(231, 76, 60, 0.3);
+}
+
+.screen-flash.heal {
+    background: rgba(46, 204, 113, 0.3);
+}
+
+.screen-flash.critical {
+    background: rgba(243, 156, 18, 0.3);
+}
+
+/* 화면 흔들림 */
+@keyframes screenShake {
+    0%, 100% { transform: translate(0, 0); }
+    10% { transform: translate(-2px, -1px); }
+    20% { transform: translate(2px, 1px); }
+    30% { transform: translate(-1px, 2px); }
+    40% { transform: translate(1px, -2px); }
+    50% { transform: translate(-2px, 1px); }
+    60% { transform: translate(2px, -1px); }
+    70% { transform: translate(-1px, -2px); }
+    80% { transform: translate(1px, 2px); }
+    90% { transform: translate(-2px, -1px); }
+}
+
+.game-container.shake {
+    animation: screenShake 0.2s ease-in-out;
 }
 
 .status-icon .icon {

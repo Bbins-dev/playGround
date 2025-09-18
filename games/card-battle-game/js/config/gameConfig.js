@@ -119,14 +119,14 @@ const GameConfig = {
     // 플레이어 설정
     player: {
         maxHandSize: 10,
-        startingHP: 100,
+        startingHP: 10,
         defaultDefenseElement: 'normal'
     },
 
     // 적 설정
     enemy: {
         maxHandSize: 20,
-        startingHP: 100,
+        startingHP: 10,
         defaultDefenseElement: 'normal'
     },
 
@@ -449,6 +449,102 @@ const GameConfig = {
         danger: '#E74C3C',
         success: '#2ECC71',
         warning: '#F39C12'
+    },
+
+    // 방어력 UI 설정
+    defenseUI: {
+        bar: {
+            height: 8,
+            borderRadius: 4,
+            backgroundColor: '#34495e',
+            fillColor: 'linear-gradient(90deg, #3498db, #2980b9)',
+            maxDisplay: 20  // 최대 표시 방어력
+        },
+        icons: {
+            shield: '🛡️',
+            thorns: '⚔️',
+            fontSize: 16,
+            spacing: 4
+        },
+        animation: {
+            duration: 300,
+            breakEffect: {
+                enabled: true,
+                particles: 5,
+                color: '#3498db'
+            }
+        }
+    },
+
+    // 상태이상 UI 강화 설정
+    statusEffectsUI: {
+        icons: {
+            size: 32,
+            borderWidth: 2,
+            borderRadius: 8,
+            spacing: 8,
+            maxVisible: 6
+        },
+        animation: {
+            pulse: {
+                enabled: true,
+                duration: 2000,
+                intensity: 0.2
+            },
+            countdown: {
+                enabled: true,
+                fontSize: 12,
+                fontWeight: 'bold',
+                color: '#ffffff'
+            }
+        },
+        screenEffects: {
+            enabled: true,
+            borderFlash: {
+                duration: 500,
+                opacity: 0.3
+            }
+        }
+    },
+
+    // 전투 정보 HUD 설정
+    battleHUD: {
+        damageNumbers: {
+            enabled: true,
+            fontSize: {
+                normal: 24,
+                critical: 36
+            },
+            floatDistance: 50,
+            duration: 1500,
+            colors: {
+                damage: '#e74c3c',
+                heal: '#2ecc71',
+                shield: '#3498db',
+                critical: '#f39c12'
+            }
+        },
+        combatLog: {
+            enabled: true,
+            maxEntries: 3,
+            fadeTime: 3000,
+            position: { x: 20, y: 200 }
+        },
+        screenEffects: {
+            shake: {
+                enabled: true,
+                intensity: 8,
+                duration: 200
+            },
+            flash: {
+                enabled: true,
+                colors: {
+                    damage: 'rgba(231, 76, 60, 0.3)',
+                    heal: 'rgba(46, 204, 113, 0.3)',
+                    critical: 'rgba(243, 156, 18, 0.3)'
+                }
+            }
+        }
     }
 };
 
