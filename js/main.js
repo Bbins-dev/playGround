@@ -12,18 +12,31 @@ document.addEventListener('DOMContentLoaded', function() {
 /**
  * 앱 초기화
  */
-function initializeApp() {
-    // 게임 레지스트리 초기화 (우선순위 최고)
+async function initializeApp() {
+    // i18n 시스템 먼저 초기화 (번역이 gameRegistry보다 우선)
+    if (window.i18n) {
+        const storageKey = window.PlayGroundConfig?.site.languageStorageKey || 'selectedLanguage';
+        const defaultLang = window.PlayGroundConfig?.site.defaultLanguage || 'ko';
+        const savedLang = localStorage.getItem(storageKey) || defaultLang;
+        await window.i18n.init(savedLang, 'js/lang/');
+    }
+
+    // 게임 레지스트리 초기화
     if (window.gameRegistry) {
         gameRegistry.init();
     }
-    
+
+    // 게임 카드가 생성된 후 번역 재적용
+    if (window.i18n) {
+        window.i18n.applyTranslations();
+    }
+
     // 애니메이션 효과 추가
     addAnimationEffects();
-    
+
     // 광고 영역 설정
     setupAds();
-    
+
     // 스크롤 효과
     setupScrollEffects();
 }

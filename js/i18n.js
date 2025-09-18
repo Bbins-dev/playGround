@@ -159,15 +159,15 @@ if (!window.i18n) {
     window.i18n = new I18n();
 }
 
-// Auto-initialize for main page and games
-if (window.location.pathname === '/' || window.location.pathname.endsWith('index.html') || window.location.pathname.includes('/games/')) {
+// Auto-initialize for games only (main page is handled by main.js)
+if (window.location.pathname.includes('/games/')) {
     document.addEventListener('DOMContentLoaded', async () => {
         const storageKey = window.PlayGroundConfig?.site.languageStorageKey || 'selectedLanguage';
         const defaultLang = window.PlayGroundConfig?.site.defaultLanguage || 'ko';
         const savedLang = localStorage.getItem(storageKey) || defaultLang;
-        
+
         // For games, use relative path for language files
-        const basePath = window.location.pathname.includes('/games/') ? '../../js/lang/' : 'js/lang/';
+        const basePath = '../../js/lang/';
         await window.i18n.init(savedLang, basePath);
         // Update language selectors to match saved language
         window.i18n.updateLanguageSelectors(savedLang);

@@ -272,7 +272,7 @@ class GameRegistry {
      */
     launchGame(gameId) {
         const game = this.config.utils.getGameInfo(gameId);
-        
+
         if (!game) {
             console.error(`게임을 찾을 수 없습니다: ${gameId}`);
             return;
@@ -283,8 +283,12 @@ class GameRegistry {
             return;
         }
 
-        const gameUrl = this.config.utils.getGameUrl(gameId);
+        let gameUrl = this.config.utils.getGameUrl(gameId);
         if (gameUrl) {
+            // Trailing slash 확인 및 추가 (CSS 경로 해결을 위해 필수)
+            if (!gameUrl.endsWith('/')) {
+                gameUrl += '/';
+            }
             window.location.href = gameUrl;
         } else {
             console.error(`게임 URL을 찾을 수 없습니다: ${gameId}`);
