@@ -39,6 +39,9 @@ class Card {
     // 카드 발동
     activate(user, target, battleSystem) {
         try {
+            // 발동 횟수 증가 (먼저 차감)
+            this.currentActivations++;
+
             // 명중률 체크
             if (!this.checkAccuracy()) {
                 return {
@@ -50,9 +53,6 @@ class Card {
 
             // 카드 효과 실행
             const result = this.effect.call(this, user, target, battleSystem);
-
-            // 발동 횟수 증가
-            this.currentActivations++;
 
             return result;
         } catch (error) {

@@ -88,10 +88,11 @@ body {
 /* 게임 속도 조절 */
 .speed-controls {
     position: absolute;
-    top: 20px;
+    top: 60px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
+    flex-direction: column;
     gap: 5px;
     z-index: 1000; /* UI 오버레이 위에 표시 */
 }
@@ -875,6 +876,18 @@ body {
         2px -2px 0 #000,
         -2px -2px 0 #000,
         0 0 8px rgba(149, 165, 166, 0.5) !important; /* 회색 글로우 */
+}
+
+.zero-number {
+    color: #FFA500 !important;
+    font-size: 56px !important;
+    font-weight: bold !important;
+    text-shadow:
+        3px 3px 0 #000,
+        -3px 3px 0 #000,
+        3px -3px 0 #000,
+        -3px -3px 0 #000,
+        0 0 10px rgba(255, 165, 0, 0.6); /* 오렌지 글로우 */
 }
 
 /* 반응형 폰트 크기 */

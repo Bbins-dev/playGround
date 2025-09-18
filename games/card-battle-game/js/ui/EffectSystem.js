@@ -164,6 +164,10 @@ class EffectSystem {
                     numberElement.textContent = '빗나감!';
                 }
                 break;
+            case 'zero':
+                className += ' zero-number';
+                numberElement.textContent = '0';
+                break;
             default:
                 numberElement.textContent = `-${amount}`;
         }

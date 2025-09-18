@@ -134,6 +134,9 @@ class UIManager {
                 if (this.gameManager.battleSystem) {
                     this.gameManager.battleSystem.setGameSpeed(speed);
                 }
+                if (this.gameManager) {
+                    this.gameManager.setGameSpeed(speed);
+                }
 
             });
         });

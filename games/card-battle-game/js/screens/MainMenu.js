@@ -430,6 +430,12 @@ class MainMenu {
     startNewGame() {
         console.log('MainMenu: 새 게임 시작 요청');
 
+        // 저장된 속도 설정 적용
+        const savedSpeed = parseInt(localStorage.getItem('cardBattle_gameSpeed') || '1');
+        if (this.gameManager) {
+            this.gameManager.setGameSpeed(savedSpeed);
+        }
+
         // GameManager의 startNewGame() 메서드 호출
         if (this.gameManager && this.gameManager.startNewGame) {
             this.gameManager.startNewGame();

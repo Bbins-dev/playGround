@@ -254,6 +254,9 @@ class BattleSystem {
             } else {
                 this.battleStats.totalDamageReceived += damage;
             }
+        } else if (damage === 0) {
+            // 0 데미지 표시 (방어력으로 무효화된 경우 등)
+            this.effectSystem.showDamageNumber(0, targetPosition, 'zero');
         }
     }
 
