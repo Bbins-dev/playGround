@@ -99,8 +99,6 @@ class DOMCardRenderer {
             content.appendChild(this.createCardDescription(card, width, height, descSize));
         }
 
-        // 카드 비용 (우상단)
-        content.appendChild(this.createCardCost(card, height));
 
         return content;
     }
@@ -213,7 +211,7 @@ class DOMCardRenderer {
         // 공격력 (좌측)
         const powerElement = document.createElement('span');
         powerElement.style.cssText = `
-            color: #ffeb3b;
+            color: #fff;
             ${this.getTextOutlineStyle()}
         `;
         powerElement.textContent = `💪${card.power}`;
@@ -221,7 +219,7 @@ class DOMCardRenderer {
         // 발동횟수 (중앙)
         const activationElement = document.createElement('span');
         activationElement.style.cssText = `
-            color: #ff9800;
+            color: #fff;
             ${this.getTextOutlineStyle()}
         `;
         const activationCount = card.getDisplayActivationCount ? card.getDisplayActivationCount() : card.activationCount;
@@ -230,7 +228,7 @@ class DOMCardRenderer {
         // 명중률 (우측)
         const accuracyElement = document.createElement('span');
         accuracyElement.style.cssText = `
-            color: #4caf50;
+            color: #fff;
             ${this.getTextOutlineStyle()}
         `;
         accuracyElement.textContent = `🎯${card.accuracy}%`;

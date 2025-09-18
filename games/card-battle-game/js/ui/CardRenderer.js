@@ -96,8 +96,6 @@ class CardRenderer {
             this.drawCardDescription(ctx, card, x, y, width, height, descSize);
         }
 
-        // 카드 비용 (우상단)
-        this.drawCardCost(ctx, card, x + width - 18, y + 18, Math.floor(height * 0.08));
     }
 
     // 속성 이모지 그리기
@@ -173,18 +171,18 @@ class CardRenderer {
 
         // 공격력 (좌측)
         ctx.textAlign = 'left';
-        ctx.fillStyle = '#ffeb3b';
+        ctx.fillStyle = '#fff';
         this.drawTextWithOutline(ctx, `💪${card.power}`, leftX, statsY);
 
         // 발동횟수 (중앙)
         ctx.textAlign = 'center';
-        ctx.fillStyle = '#ff9800';
+        ctx.fillStyle = '#fff';
         const activationCount = card.getDisplayActivationCount ? card.getDisplayActivationCount() : card.activationCount;
         this.drawTextWithOutline(ctx, `🔄${activationCount}`, centerX, statsY);
 
         // 명중률 (우측)
         ctx.textAlign = 'right';
-        ctx.fillStyle = '#4caf50';
+        ctx.fillStyle = '#fff';
         this.drawTextWithOutline(ctx, `🎯${card.accuracy}%`, rightX, statsY);
     }
 
@@ -239,6 +237,9 @@ class CardRenderer {
 
     // 외곽선이 있는 텍스트 그리기
     drawTextWithOutline(ctx, text, x, y) {
+        // fillStyle 색상 백업
+        const originalFillStyle = ctx.fillStyle;
+
         if (this.style.textOutline.enabled) {
             // 외곽선
             ctx.strokeStyle = this.style.textOutline.color;
@@ -246,7 +247,8 @@ class CardRenderer {
             ctx.strokeText(text, x, y);
         }
 
-        // 메인 텍스트
+        // 메인 텍스트 (색상 복원)
+        ctx.fillStyle = originalFillStyle;
         ctx.fillText(text, x, y);
     }
 
