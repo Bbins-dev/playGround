@@ -48,13 +48,13 @@ class CardSelection {
             const attackCardIds = this.gameManager.cardManager.getInitialAttackCards();
 
             this.availableCards = attackCardIds.map(cardId => {
-                const cardData = CardDatabase.getCard(cardId);
-                return cardData;
+                const cardInstance = CardDatabase.createCardInstance(cardId);
+                return cardInstance;
             }).filter(Boolean);
         } else {
-            // 폴백: 공격 카드만 필터링
+            // 폴백: 공격 카드만 필터링하고 Card 인스턴스 생성
             const attackCards = CardDatabase.getAllCards().filter(card => card.type === 'attack');
-            this.availableCards = attackCards;
+            this.availableCards = attackCards.map(cardData => new Card(cardData));
         }
 
 
@@ -100,10 +100,7 @@ class CardSelection {
     render(ctx, canvas) {
         this.renderBackground(ctx, canvas);
         this.renderTitle(ctx, canvas);
-        this.renderInstructions(ctx, canvas);
         this.renderAvailableCards(ctx, canvas);
-        this.renderSelectedCards(ctx, canvas);
-        this.renderSelectionStatus(ctx, canvas);
 
         if (this.showConfirmation) {
             this.renderConfirmation(ctx, canvas);
@@ -184,15 +181,6 @@ class CardSelection {
         // 메인 제목
         ctx.fillStyle = '#FFFFFF';
         ctx.fillText(title, centerX, titleY);
-
-        // 선택 진행상황
-        const selectedText = (typeof getI18nText === 'function') ?
-            getI18nText('auto_battle_card_game.ui.card_selection.selected_count') || '선택됨' : '선택됨';
-        const progressText = `${this.selectedCards.length} / ${this.maxSelections} ${selectedText}`;
-
-        ctx.fillStyle = '#ffd700';
-        ctx.font = `bold ${config.progress.fontSize}px Arial`;
-        ctx.fillText(progressText, centerX, progressY);
 
         ctx.restore();
     }
@@ -284,12 +272,7 @@ class CardSelection {
             y = 0;
         }
 
-        // 하이라이트 효과
-        if (isHighlighted) {
-            ctx.strokeStyle = '#ffd700';
-            ctx.lineWidth = 3;
-            ctx.strokeRect(x - 5, y - 5, width + 10, height + 10);
-        }
+        // 하이라이트 효과 제거 (클릭으로만 선택)
 
         // 통일된 카드 렌더러 사용
         this.cardRenderer.renderCard(ctx, card, x, y, width, height, {
@@ -458,38 +441,10 @@ class CardSelection {
         ctx.restore();
     }
 
-    // 입력 처리
+    // 입력 처리 (키보드 네비게이션 제거, 클릭 전용)
     handleInput(key) {
-        if (this.showConfirmation) {
-            this.handleConfirmationInput(key);
-            return;
-        }
-
-        switch (key) {
-            case 'ArrowLeft':
-                this.selectPrevious();
-                break;
-            case 'ArrowRight':
-                this.selectNext();
-                break;
-            case 'ArrowUp':
-                this.selectUp();
-                break;
-            case 'ArrowDown':
-                this.selectDown();
-                break;
-            case 'Enter':
-            case ' ':
-                this.toggleCardSelection();
-                break;
-            case 'c':
-            case 'C':
-                this.confirmSelection();
-                break;
-            case 'Escape':
-                this.cancelSelection();
-                break;
-        }
+        // 키보드 입력 무시 - 클릭으로만 선택 가능
+        return;
     }
 
     // 확인 대화상자 입력 처리
@@ -508,23 +463,11 @@ class CardSelection {
         }
     }
 
-    // 카드 선택/해제 토글
+    // 카드 선택/해제 토글 (간소화 - 클릭으로만 사용)
     toggleCardSelection() {
-        const card = this.availableCards[this.currentIndex];
-        if (!card) return;
-
-        const cardId = card.id;
-        const isSelected = this.selectedCards.includes(cardId);
-
-        if (isSelected) {
-            // 선택 해제
-            this.selectedCards = this.selectedCards.filter(id => id !== cardId);
-        } else {
-            // 선택
-            if (this.selectedCards.length < this.maxSelections) {
-                this.selectedCards.push(cardId);
-            }
-        }
+        // 키보드 네비게이션 제거로 이 메서드는 더 이상 사용되지 않음
+        // 클릭 처리는 handlePointerInput에서 직접 처리
+        return;
     }
 
     // 선택 확인
@@ -643,20 +586,18 @@ class CardSelection {
 
     // 안내 메시지 가져오기
     getInstructions() {
-        const base = [
-            '방향키로 카드 선택, Enter로 선택/해제',
-            'C키 또는 Enter로 완료, ESC로 취소'
-        ];
+        // 새로운 안내 메시지만 표시
+        const instructions = [];
 
         if (this.selectionType === 'initial') {
-            base.unshift('시작할 공격 카드를 선택하세요.');
+            instructions.push('게임 시작 시 들고 갈 공격 카드를 선택하세요!');
         } else if (this.selectionType === 'reward') {
-            base.unshift('승리 보상으로 받을 카드를 선택하세요.');
+            instructions.push('승리 보상으로 받을 카드를 선택하세요.');
         } else if (this.selectionType === 'replacement') {
-            base.unshift('교체할 카드를 선택하세요. 건너뛸 수도 있습니다.');
+            instructions.push('교체할 카드를 선택하세요. 건너뛸 수도 있습니다.');
         }
 
-        return base;
+        return instructions;
     }
 
     // 애니메이션 업데이트

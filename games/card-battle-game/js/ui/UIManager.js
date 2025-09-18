@@ -34,7 +34,12 @@ class UIManager {
 
     // 초기화
     initialize() {
-        this.renderer.initialize();
+        try {
+            this.renderer.initialize();
+        } catch (error) {
+            console.warn('Renderer initialization failed:', error);
+            // Continue initialization even if renderer fails
+        }
         this.setupEventListeners();
         this.setupSpeedControls();
         this.setupModals();
@@ -436,39 +441,28 @@ class UIManager {
         });
     }
 
-    // 갤러리 카드 요소 생성
+    // 갤러리 카드 요소 생성 (통일된 DOMCardRenderer 사용)
     createCardGalleryElement(card) {
-        const div = document.createElement('div');
-        div.className = 'gallery-card';
+        // DOMCardRenderer 인스턴스 생성
+        if (!this.domCardRenderer) {
+            this.domCardRenderer = new DOMCardRenderer();
+        }
 
-        // Card 인스턴스의 메서드 사용
-        const cardName = card.getDisplayName ? card.getDisplayName() : card.name;
-        const cardDescription = card.getDisplayDescription ? card.getDisplayDescription() : card.description;
-        const emoji = card.getEmoji ? card.getEmoji() : (GameConfig.elements[card.element]?.emoji || '❓');
-        const elementColor = card.getColor ? card.getColor() : (GameConfig.elements[card.element]?.color || '#666');
-        const typeConfig = GameConfig.cardTypes[card.type];
+        // 갤러리 카드 크기 (gameConfig에서 가져오기)
+        const cardSize = GameConfig.cardSizes.preview;
 
-        // 카드 타입 이름 i18n 적용
-        const typeName = typeConfig?.nameKey && typeof getI18nText === 'function'
-            ? getI18nText(typeConfig.nameKey) || typeConfig.name
-            : typeConfig?.name || card.type;
+        // 통일된 카드 렌더러로 카드 생성
+        const cardElement = this.domCardRenderer.createCard(card, cardSize.width, cardSize.height, {
+            isSelected: false,
+            isHighlighted: false,
+            isNextActive: false,
+            opacity: 1
+        });
 
-        // card-preview 중복 제거하고 직접 gallery-card에 콘텐츠 추가
-        div.style.background = `linear-gradient(135deg, ${elementColor}, ${this.darkenColor(elementColor, 0.3)})`;
+        // 갤러리 스타일 클래스 추가
+        cardElement.className += ' gallery-card';
 
-        div.innerHTML = `
-            <div class="card-emoji">${emoji}</div>
-            <div class="card-name">${cardName}</div>
-            <div class="card-type">${typeName}</div>
-            <div class="card-stats">
-                <span class="card-power">⚔${card.power}</span>
-                <span class="card-accuracy">🎯${card.accuracy}%</span>
-            </div>
-            <div class="card-description">${cardDescription}</div>
-            <div class="card-cost">${card.cost || 0}</div>
-        `;
-
-        return div;
+        return cardElement;
     }
 
     // 카드 갤러리 숨기기

@@ -127,9 +127,9 @@ const GameConfig = {
 
     // 카드 크기 설정
     cardSizes: {
-        hand: { width: 60, height: 84 },        // 손패 카드 크기
+        hand: { width: 100, height: 140 },       // 손패 카드 크기 (설명 표시를 위해 증가)
         enlarged: { width: 300, height: 420 },   // 발동 시 확대 크기
-        preview: { width: 120, height: 168 }     // 갤러리 미리보기 크기
+        preview: { width: 180, height: 252 }     // 갤러리 미리보기 크기 (50% 증가)
     },
 
     // 손패 겹침 설정
@@ -191,7 +191,7 @@ const GameConfig = {
             name: 0.074,    // 높이의 7.4%
             type: 0.058,    // 높이의 5.8%
             stats: 0.058,   // 높이의 5.8%
-            description: 0.058 // 높이의 5.8%
+            description: 0.052 // 높이의 5.2% (약간 축소)
         },
         padding: {
             x: 8,
@@ -199,10 +199,10 @@ const GameConfig = {
         },
         layout: {
             emoji: { y: 0.13 },      // 상단에서 13%
-            name: { y: 0.37 },       // 상단에서 37%
-            type: { y: 0.47 },       // 상단에서 47%
+            name: { y: 0.30 },       // 상단에서 30% (위로 이동)
+            type: { y: 0.38 },       // 상단에서 38% (위로 이동)
             stats: { y: 0.84 },      // 하단에서 16%
-            description: { y: 0.75 } // 하단에서 25%
+            description: { y: 0.58 } // 상단에서 58% (크게 위로 이동하여 stats와 겹치지 않게)
         },
         shadows: {
             card: '0 4px 8px rgba(0, 0, 0, 0.3)',

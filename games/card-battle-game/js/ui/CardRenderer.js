@@ -91,7 +91,7 @@ class CardRenderer {
         // 스탯 정보
         this.drawCardStats(ctx, card, x, y, width, height, statsSize);
 
-        // 카드 설명 (일정 크기 이상일 때만)
+        // 카드 설명 (손패, 선택화면, 확대화면에서 표시)
         if (width >= 100) {
             this.drawCardDescription(ctx, card, x, y, width, height, descSize);
         }
@@ -115,7 +115,14 @@ class CardRenderer {
 
     // 카드 이름 그리기
     drawCardName(ctx, card, x, y, fontSize) {
-        const name = card.getDisplayName ? card.getDisplayName() : card.name;
+        let name;
+        if (card.getDisplayName) {
+            name = card.getDisplayName();
+        } else if (card.name) {
+            name = card.name;
+        } else if (card.nameKey && typeof getI18nText === 'function') {
+            name = getI18nText(card.nameKey);
+        }
         if (!name) return;
 
         ctx.font = `bold ${fontSize}px Arial`;
@@ -176,7 +183,14 @@ class CardRenderer {
 
     // 카드 설명 그리기
     drawCardDescription(ctx, card, x, y, width, height, fontSize) {
-        const description = card.getDisplayDescription ? card.getDisplayDescription() : card.description;
+        let description;
+        if (card.getDisplayDescription) {
+            description = card.getDisplayDescription();
+        } else if (card.description) {
+            description = card.description;
+        } else if (card.descriptionKey && typeof getI18nText === 'function') {
+            description = getI18nText(card.descriptionKey);
+        }
         if (!description) return;
 
         ctx.font = `${fontSize}px Arial`;

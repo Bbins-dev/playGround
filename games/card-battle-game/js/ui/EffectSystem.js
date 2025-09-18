@@ -176,10 +176,26 @@ class EffectSystem {
         }, 1000);
     }
 
-    // 카드 발동 효과 (중앙 확대)
+    // 카드 발동 효과 (중앙 확대) - 통일된 DOMCardRenderer 사용
     showCardActivation(card, duration = 2000) {
         return new Promise((resolve) => {
-            // 카드 확대 오버레이 생성
+            // DOMCardRenderer 인스턴스 생성
+            if (!this.domCardRenderer) {
+                this.domCardRenderer = new DOMCardRenderer();
+            }
+
+            // 확대 카드 크기 (gameConfig에서 가져오기)
+            const cardSize = GameConfig.cardSizes.enlarged;
+
+            // 통일된 카드 렌더러로 카드 생성
+            const cardElement = this.domCardRenderer.createCard(card, cardSize.width, cardSize.height, {
+                isSelected: false,
+                isHighlighted: true, // 확대 시 하이라이트 효과
+                isNextActive: false,
+                opacity: 1
+            });
+
+            // 오버레이 컨테이너 생성
             const cardOverlay = document.createElement('div');
             cardOverlay.className = 'card-activation-overlay';
             cardOverlay.style.cssText = `
@@ -187,37 +203,13 @@ class EffectSystem {
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
-                width: 280px;
-                height: 380px;
-                background: ${card.getColor()};
-                border: 3px solid #fff;
-                border-radius: 15px;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                padding: 20px;
                 z-index: 999;
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
                 animation: cardZoomIn 0.3s ease-out;
             `;
 
-            // 카드 내용
-            cardOverlay.innerHTML = `
-                <div style="text-align: center;">
-                    <div style="font-size: 48px; margin-bottom: 10px;">${card.getEmoji()}</div>
-                    <h2 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); margin: 0; font-size: 24px;">${card.name}</h2>
-                    <p style="color: rgba(255,255,255,0.9); text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin: 10px 0; font-size: 14px;">${card.type}</p>
-                </div>
-                <div style="text-align: center;">
-                    <p style="color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin: 0; font-size: 16px;">${card.description}</p>
-                </div>
-                <div style="text-align: center;">
-                    <div style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); font-size: 20px; font-weight: bold;">
-                        공격력: ${card.power} | 명중률: ${card.accuracy}%
-                    </div>
-                </div>
-            `;
-
+            // 통일된 카드를 오버레이에 추가
+            cardOverlay.appendChild(cardElement);
             document.body.appendChild(cardOverlay);
 
             // 지속 시간 후 제거
