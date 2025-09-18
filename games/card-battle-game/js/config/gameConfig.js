@@ -207,7 +207,7 @@ const GameConfig = {
             name: { y: 0.30 },       // 상단에서 30% (위로 이동)
             type: { y: 0.38 },       // 상단에서 38% (위로 이동)
             stats: { y: 0.84 },      // 하단에서 16%
-            description: { y: 0.58 } // 상단에서 58% (크게 위로 이동하여 stats와 겹치지 않게)
+            description: { y: 0.46 } // 상단에서 46% (카드 중앙에 더 가깝게 위치)
         },
         // 속성 라벨 설정
         elementLabel: {

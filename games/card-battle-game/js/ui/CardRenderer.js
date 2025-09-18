@@ -225,9 +225,9 @@ class CardRenderer {
         ctx.font = `bold ${fontSize}px Arial`;
         ctx.textBaseline = 'middle';
 
-        const leftX = x + 10;
+        const leftX = x + 15;
         const centerX = x + width / 2;
-        const rightX = x + width - 10;
+        const rightX = x + width - 15;
         const statsY = y + height * this.style.layout.stats.y;
 
         // 공격력 (좌측)
