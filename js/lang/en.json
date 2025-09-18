@@ -56,6 +56,7 @@
   },
   "auto_battle_card_game": {
     "title": "Auto Battle Card Game",
+    "subtitle": "Turn-based Auto Battle Card Game!",
     "page_title": "Auto Battle Card Game - BinBox Games",
     "description": "Turn-based auto battle card game! Strategically arrange your card order and use the synergy of 5 different elements to achieve victory!",
     "genre": "Strategy",

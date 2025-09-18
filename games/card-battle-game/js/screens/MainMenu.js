@@ -228,7 +228,8 @@ class MainMenu {
         // 부제목 (더 밝게)
         ctx.fillStyle = '#E0E0E0';
         ctx.font = `bold ${subtitleConfig.size}px Arial`;
-        const gameDescription = '턴 기반 자동 전투 카드 게임!';
+        const gameDescription = (typeof getI18nText === 'function') ?
+            getI18nText('auto_battle_card_game.subtitle') || '턴 기반 자동 전투 카드 게임!' : '턴 기반 자동 전투 카드 게임!';
         ctx.strokeStyle = '#000000';
         ctx.lineWidth = 1;
         const subtitleY = titleY + subtitleConfig.offsetY;
