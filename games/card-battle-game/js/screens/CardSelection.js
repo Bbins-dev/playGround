@@ -30,6 +30,8 @@ class CardSelection {
             maxSameElement: 3     // 같은 속성 최대 3장
         };
 
+        // 통일된 카드 렌더러
+        this.cardRenderer = new CardRenderer();
     }
 
     // 초기 카드 선택 설정
@@ -278,90 +280,35 @@ class CardSelection {
             ctx.translate(x + width/2, y + height/2);
             ctx.scale(scale, scale);
             ctx.translate(-width/2, -height/2);
-        } else {
-            ctx.translate(x, y);
+            x = 0;
+            y = 0;
         }
 
         // 하이라이트 효과
         if (isHighlighted) {
             ctx.strokeStyle = '#ffd700';
             ctx.lineWidth = 3;
-            ctx.strokeRect(-5, -5, width + 10, height + 10);
+            ctx.strokeRect(x - 5, y - 5, width + 10, height + 10);
         }
+
+        // 통일된 카드 렌더러 사용
+        this.cardRenderer.renderCard(ctx, card, x, y, width, height, {
+            isSelected,
+            isHighlighted,
+            opacity: 1
+        });
 
         // 선택 표시
         if (isSelected) {
             ctx.fillStyle = 'rgba(255, 215, 0, 0.3)';
-            ctx.fillRect(0, 0, width, height);
+            ctx.fillRect(x, y, width, height);
 
             // 체크마크
             ctx.fillStyle = '#ffd700';
             ctx.font = 'bold 24px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('✓', width - 20, 25);
-        }
-
-        // 카드 배경
-        const elementConfig = GameConfig.elements[card.element];
-        const bgColor = elementConfig?.color || '#666';
-
-        ctx.fillStyle = bgColor;
-        this.roundRect(ctx, 0, 0, width, height, 12);
-        ctx.fill();
-
-        // 카드 테두리
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 2;
-        this.roundRect(ctx, 0, 0, width, height, 12);
-        ctx.stroke();
-
-        // 속성 아이콘
-        if (elementConfig?.emoji) {
-            ctx.font = '32px Arial';
-            ctx.fillStyle = '#fff';
-            ctx.textAlign = 'center';
-            ctx.fillText(elementConfig.emoji, width/2, 40);
-        }
-
-        // 카드 이름 (i18n 지원)
-        ctx.font = 'bold 16px Arial';
-        ctx.fillStyle = '#fff';
-        ctx.textAlign = 'center';
-
-        let name = this.getCardDisplayName(card);
-        if (name.length > 10) {
-            name = name.substring(0, 9) + '...';
-        }
-        ctx.fillText(name, width/2, 70);
-
-        // 카드 타입
-        const typeConfig = GameConfig.cardTypes[card.type];
-        if (typeConfig) {
-            ctx.font = '12px Arial';
-            ctx.fillStyle = '#ddd';
-            ctx.fillText(typeConfig.name, width/2, 90);
-        }
-
-        // 스탯
-        ctx.font = 'bold 14px Arial';
-        ctx.textAlign = 'left';
-        ctx.fillStyle = '#ffeb3b';
-        ctx.fillText(`⚔ ${card.power}`, 10, height - 60);
-
-        ctx.fillStyle = '#4caf50';
-        ctx.fillText(`🎯 ${card.accuracy}%`, 10, height - 40);
-
-        // 설명 (i18n 지원)
-        const description = this.getCardDisplayDescription(card);
-        if (description) {
-            ctx.font = '10px Arial';
-            ctx.fillStyle = '#ccc';
-            ctx.textAlign = 'center';
-
-            const lines = this.wrapText(ctx, description, width - 20);
-            lines.slice(0, 3).forEach((line, lineIndex) => {
-                ctx.fillText(line, width/2, height - 25 + lineIndex * 12);
-            });
+            ctx.textBaseline = 'middle';
+            ctx.fillText('✓', x + width - 20, y + 25);
         }
 
         ctx.restore();
@@ -406,45 +353,12 @@ class CardSelection {
 
     // 미니 카드 렌더링
     renderMiniCard(ctx, card, x, y, width, height) {
-        const elementConfig = GameConfig.elements[card.element];
-
-        // 배경
-        ctx.fillStyle = elementConfig?.color || '#666';
-        this.roundRect(ctx, x, y, width, height, 8);
-        ctx.fill();
-
-        // 테두리
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 1;
-        this.roundRect(ctx, x, y, width, height, 8);
-        ctx.stroke();
-
-        // 속성 아이콘
-        if (elementConfig?.emoji) {
-            ctx.font = '20px Arial';
-            ctx.fillStyle = '#fff';
-            ctx.textAlign = 'center';
-            ctx.fillText(elementConfig.emoji, x + width/2, y + 25);
-        }
-
-        // 이름
-        ctx.font = 'bold 10px Arial';
-        ctx.fillStyle = '#fff';
-        let name = this.getCardDisplayName(card);
-        if (name && name.length > 6) {
-            name = name.substring(0, 5) + '...';
-        }
-        ctx.fillText(name || 'Unknown', x + width/2, y + 45);
-
-        // 스탯
-        ctx.font = '8px Arial';
-        ctx.textAlign = 'left';
-        ctx.fillStyle = '#ffeb3b';
-        ctx.fillText(`⚔${card.power}`, x + 5, y + height - 15);
-
-        ctx.textAlign = 'right';
-        ctx.fillStyle = '#4caf50';
-        ctx.fillText(`🎯${card.accuracy}%`, x + width - 5, y + height - 15);
+        // 통일된 카드 렌더러 사용
+        this.cardRenderer.renderCard(ctx, card, x, y, width, height, {
+            isSelected: false,
+            isHighlighted: false,
+            opacity: 1
+        });
     }
 
     // 선택 상태 렌더링

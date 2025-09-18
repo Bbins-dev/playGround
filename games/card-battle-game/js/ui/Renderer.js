@@ -49,6 +49,9 @@ class Renderer {
             showCardDetails: true,
             highlightNextCard: true
         };
+
+        // 통일된 카드 렌더러
+        this.cardRenderer = new CardRenderer();
     }
 
     // 초기화
@@ -184,120 +187,16 @@ class Renderer {
     renderCard(card, x, y, size, options = {}) {
         const { isPlayer = true, isNextActive = false, index = 0 } = options;
 
-        // 카드 배경
-        this.drawCardBackground(card, x, y, size, isNextActive);
-
-        // 카드 속성 표시
-        this.drawCardElement(card, x, y, size);
-
-        // 카드 이름
-        this.drawCardName(card, x, y, size);
-
-        // 카드 스탯
-        this.drawCardStats(card, x, y, size);
-
-        // 카드 테두리
-        this.drawCardBorder(card, x, y, size, isNextActive);
-
-        // 플레이어 카드인 경우 상세 정보
-        if (isPlayer && this.options.showCardDetails) {
-            this.drawCardDetails(card, x, y, size);
-        }
+        // 통일된 카드 렌더러 사용
+        this.cardRenderer.renderCard(this.ctx, card, x, y, size.width, size.height, {
+            isSelected: false,
+            isHighlighted: false,
+            isNextActive,
+            opacity: 1
+        });
     }
 
-    // 카드 배경 그리기
-    drawCardBackground(card, x, y, size, isActive = false) {
-        const elementConfig = GameConfig.elements[card.element];
-
-        // 배경 색상
-        let bgColor = elementConfig ? elementConfig.color : '#666';
-        if (isActive) {
-            bgColor = this.lightenColor(bgColor, 0.3);
-        }
-
-        // 카드 배경
-        this.ctx.fillStyle = bgColor;
-        this.roundRect(x, y, size.width, size.height, 8);
-        this.ctx.fill();
-
-        // 그라데이션 오버레이
-        const gradient = this.ctx.createLinearGradient(x, y, x, y + size.height);
-        gradient.addColorStop(0, 'rgba(255, 255, 255, 0.1)');
-        gradient.addColorStop(1, 'rgba(0, 0, 0, 0.2)');
-
-        this.ctx.fillStyle = gradient;
-        this.roundRect(x, y, size.width, size.height, 8);
-        this.ctx.fill();
-    }
-
-    // 카드 속성 이모지 표시
-    drawCardElement(card, x, y, size) {
-        const elementConfig = GameConfig.elements[card.element];
-        if (!elementConfig) return;
-
-        this.ctx.font = '24px Arial';
-        this.ctx.fillStyle = '#fff';
-        this.ctx.fillText(
-            elementConfig.emoji,
-            x + size.width / 2,
-            y + 25
-        );
-    }
-
-    // 카드 이름 표시
-    drawCardName(card, x, y, size) {
-        this.ctx.font = 'bold 12px Arial';
-        this.ctx.fillStyle = '#fff';
-        this.ctx.textAlign = 'center';
-
-        // 텍스트가 길면 줄임
-        let name = card.name;
-        if (name.length > 8) {
-            name = name.substring(0, 7) + '...';
-        }
-
-        this.ctx.fillText(name, x + size.width / 2, y + 50);
-    }
-
-    // 카드 스탯 표시
-    drawCardStats(card, x, y, size) {
-        const statY = y + size.height - 25;
-
-        // 공격력
-        this.ctx.font = 'bold 10px Arial';
-        this.ctx.fillStyle = '#ffeb3b';
-        this.ctx.textAlign = 'left';
-        this.ctx.fillText(`⚔${card.power}`, x + 5, statY);
-
-        // 명중률
-        this.ctx.fillStyle = '#4caf50';
-        this.ctx.textAlign = 'right';
-        this.ctx.fillText(`🎯${card.accuracy}%`, x + size.width - 5, statY);
-    }
-
-    // 카드 테두리
-    drawCardBorder(card, x, y, size, isActive = false) {
-        this.ctx.strokeStyle = isActive ? '#ffd700' : '#fff';
-        this.ctx.lineWidth = isActive ? 3 : 1;
-        this.roundRect(x, y, size.width, size.height, 8);
-        this.ctx.stroke();
-    }
-
-    // 카드 상세 정보 (플레이어만)
-    drawCardDetails(card, x, y, size) {
-        // 카드 타입 표시
-        const typeConfig = GameConfig.cardTypes[card.type];
-        if (typeConfig) {
-            this.ctx.font = '8px Arial';
-            this.ctx.fillStyle = '#ccc';
-            this.ctx.textAlign = 'center';
-            this.ctx.fillText(
-                typeConfig.name,
-                x + size.width / 2,
-                y + 70
-            );
-        }
-    }
+    // 개별 카드 그리기 메서드들은 CardRenderer로 통합되어 제거됨
 
     // 전투 상태 표시
     renderBattleStatus(battleSystem) {
@@ -449,20 +348,7 @@ class Renderer {
         this.ctx.closePath();
     }
 
-    // 색상 밝게 하기
-    lightenColor(color, factor) {
-        // 간단한 색상 조정 (실제로는 더 정교한 알고리즘 필요)
-        const hex = color.replace('#', '');
-        const r = parseInt(hex.substr(0, 2), 16);
-        const g = parseInt(hex.substr(2, 2), 16);
-        const b = parseInt(hex.substr(4, 2), 16);
-
-        const newR = Math.min(255, Math.floor(r + (255 - r) * factor));
-        const newG = Math.min(255, Math.floor(g + (255 - g) * factor));
-        const newB = Math.min(255, Math.floor(b + (255 - b) * factor));
-
-        return `rgb(${newR}, ${newG}, ${newB})`;
-    }
+    // 색상 처리는 CardRenderer로 통합됨
 
     // 이징 함수
     easeInOutQuad(t) {

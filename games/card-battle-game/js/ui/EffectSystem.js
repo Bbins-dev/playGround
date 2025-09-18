@@ -187,8 +187,8 @@ class EffectSystem {
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
-                width: 300px;
-                height: 420px;
+                width: 280px;
+                height: 380px;
                 background: ${card.getColor()};
                 border: 3px solid #fff;
                 border-radius: 15px;

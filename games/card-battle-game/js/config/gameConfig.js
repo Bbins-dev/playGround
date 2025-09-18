@@ -172,6 +172,44 @@ const GameConfig = {
         enemyName: { x: 1200, y: 50 }            // 적 이름 위치
     },
 
+    // 카드 스타일 통일 설정
+    cardStyle: {
+        borderRadius: 8,
+        borderWidth: 2,
+        borderColor: '#3498db',
+        backgroundColor: {
+            default: 'linear-gradient(135deg, rgba(52, 73, 94, 0.9), rgba(44, 62, 80, 0.9))',
+            element: true // 속성별 색상 사용
+        },
+        textOutline: {
+            enabled: true,
+            color: '#000',
+            width: 1
+        },
+        fontRatio: {
+            emoji: 0.17,    // 높이의 17%
+            name: 0.074,    // 높이의 7.4%
+            type: 0.058,    // 높이의 5.8%
+            stats: 0.058,   // 높이의 5.8%
+            description: 0.058 // 높이의 5.8%
+        },
+        padding: {
+            x: 8,
+            y: 8
+        },
+        layout: {
+            emoji: { y: 0.13 },      // 상단에서 13%
+            name: { y: 0.37 },       // 상단에서 37%
+            type: { y: 0.47 },       // 상단에서 47%
+            stats: { y: 0.84 },      // 하단에서 16%
+            description: { y: 0.75 } // 하단에서 25%
+        },
+        shadows: {
+            card: '0 4px 8px rgba(0, 0, 0, 0.3)',
+            hover: '0 8px 16px rgba(0, 0, 0, 0.4)'
+        }
+    },
+
     // 메인 메뉴 레이아웃 설정
     mainMenu: {
         title: {
