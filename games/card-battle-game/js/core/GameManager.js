@@ -215,6 +215,10 @@ class GameManager {
 
         switch (screenName) {
             case 'menu':
+                // 메뉴로 전환 시 전투 시스템 완전 정리
+                if (this.battleSystem) {
+                    this.battleSystem.cleanup();
+                }
                 this.currentScreen = this.mainMenu;
                 break;
             case 'battle':

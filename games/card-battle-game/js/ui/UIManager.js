@@ -76,10 +76,16 @@ class UIManager {
             galleryBtn.addEventListener('click', () => this.showCardGallery());
         }
 
-        // 뒤로가기 버튼
-        const backBtn = document.getElementById('back-to-main');
-        if (backBtn) {
-            backBtn.addEventListener('click', () => this.backToMain());
+        // 홈페이지로 돌아가기 버튼
+        const backToHomepageBtn = document.getElementById('back-to-homepage');
+        if (backToHomepageBtn) {
+            backToHomepageBtn.addEventListener('click', () => this.backToHomepage());
+        }
+
+        // 메뉴화면으로 돌아가기 버튼
+        const backToMenuBtn = document.getElementById('back-to-menu');
+        if (backToMenuBtn) {
+            backToMenuBtn.addEventListener('click', () => this.backToMenu());
         }
 
         // 갤러리 닫기
@@ -201,7 +207,8 @@ class UIManager {
         const elements = {
             speedControls: document.querySelector('.speed-controls'),
             cardGalleryBtn: document.getElementById('card-gallery-btn'),
-            backBtn: document.getElementById('back-to-main'),
+            backToHomepageBtn: document.getElementById('back-to-homepage'),
+            backToMenuBtn: document.getElementById('back-to-menu'),
             mainMenuButtons: document.getElementById('main-menu-buttons')
         };
 
@@ -209,21 +216,24 @@ class UIManager {
             case 'menu':
                 this.show(elements.cardGalleryBtn);
                 this.hide(elements.speedControls);
-                this.hide(elements.backBtn);
+                this.hide(elements.backToHomepageBtn);
+                this.hide(elements.backToMenuBtn);
                 this.show(elements.mainMenuButtons);
                 break;
 
             case 'battle':
                 this.show(elements.speedControls);
                 this.show(elements.cardGalleryBtn);
-                this.show(elements.backBtn);
+                this.show(elements.backToHomepageBtn);
+                this.show(elements.backToMenuBtn);
                 this.hide(elements.mainMenuButtons);
                 break;
 
             case 'cardSelection':
                 this.hide(elements.speedControls);
                 this.hide(elements.cardGalleryBtn);
-                this.show(elements.backBtn);
+                this.show(elements.backToHomepageBtn);
+                this.show(elements.backToMenuBtn);
                 this.hide(elements.mainMenuButtons);
                 break;
         }
@@ -397,21 +407,60 @@ class UIManager {
         this.switchScreen('battle');
     }
 
-    // 메인으로 돌아가기
-    backToMain() {
-        if (confirm('게임을 종료하고 메인 메뉴로 돌아가시겠습니까?')) {
-            // 전투 종료
-            if (this.gameManager.battleSystem) {
-                this.gameManager.battleSystem.battlePhase = 'ended';
-            }
+    // i18n 텍스트 가져오기 헬퍼 메서드
+    getI18nText(key) {
+        if (window.I18n && typeof window.I18n.getText === 'function') {
+            return window.I18n.getText(key);
+        } else if (typeof getI18nText === 'function') {
+            return getI18nText(key);
+        }
+        // 기본값 반환 (한국어)
+        const fallbacks = {
+            'auto_battle_card_game.ui.confirm_back_to_homepage': '진행중인 게임은 저장되지 않습니다. 그래도 홈페이지로 돌아가시겠습니까?',
+            'auto_battle_card_game.ui.confirm_back_to_menu': '진행중인 게임은 저장되지 않습니다. 그래도 메뉴화면으로 돌아가시겠습니까?'
+        };
+        return fallbacks[key] || key;
+    }
 
-            // 플레이어와 적 초기화
-            this.gameManager.player = null;
-            this.gameManager.enemy = null;
+    // 홈페이지로 돌아가기 (게임 허브로)
+    backToHomepage() {
+        const confirmMessage = this.getI18nText('auto_battle_card_game.ui.confirm_back_to_homepage');
+        if (confirm(confirmMessage)) {
+            // 게임 상태 정리
+            this.cleanupGameState();
 
-            // 메인 메뉴로 이동
+            // 홈페이지로 이동 (상위 디렉터리)
+            window.location.href = '../../';
+        }
+    }
+
+    // 메뉴화면으로 돌아가기 (게임 내 메인 메뉴로)
+    backToMenu() {
+        const confirmMessage = this.getI18nText('auto_battle_card_game.ui.confirm_back_to_menu');
+        if (confirm(confirmMessage)) {
+            // 게임 상태 정리
+            this.cleanupGameState();
+
+            // 게임 내 메인 메뉴로 이동
             this.gameManager.showMainMenu();
         }
+    }
+
+    // 게임 상태 정리 (공통 로직 - 개선된 타이머 정리 포함)
+    cleanupGameState() {
+        // 전투 시스템 완전 정리 (타이머 포함)
+        if (this.gameManager.battleSystem) {
+            this.gameManager.battleSystem.cleanup();
+        }
+
+        // 플레이어와 적 초기화
+        this.gameManager.player = null;
+        this.gameManager.enemy = null;
+    }
+
+    // 메인으로 돌아가기 (이전 버전 호환성)
+    backToMain() {
+        this.backToMenu();
     }
 
     // 카드 갤러리 표시

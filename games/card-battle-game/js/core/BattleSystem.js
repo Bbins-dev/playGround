@@ -35,6 +35,10 @@ class BattleSystem {
             totalDamageReceived: 0,
             cardsActivated: 0
         };
+
+        // 타이머 추적 시스템
+        this.activeTimers = [];
+        this.abortController = null;
     }
 
     // 전투 시작
@@ -295,10 +299,19 @@ class BattleSystem {
 
         // 전투 종료 체크
         if (!this.checkBattleEnd()) {
-            // 다음 턴 시작
-            setTimeout(() => {
-                this.startTurn();
+            // 다음 턴 시작 (타이머 추적)
+            const timerId = setTimeout(() => {
+                // 타이머 완료 후 배열에서 제거
+                this.activeTimers = this.activeTimers.filter(id => id !== timerId);
+
+                // 전투가 아직 진행 중인 경우에만 다음 턴 시작
+                if (this.battlePhase !== 'ended') {
+                    this.startTurn();
+                }
             }, 1000 / this.gameSpeed);
+
+            // 활성 타이머 목록에 추가
+            this.activeTimers.push(timerId);
         }
     }
 
@@ -340,8 +353,24 @@ class BattleSystem {
         this.gameSpeed = speed;
     }
 
-    // 전투 정리
+    // 전투 정리 (강화된 타이머 정리 포함)
     cleanup() {
+        // 전투 상태를 먼저 끝남으로 설정하여 새로운 타이머 생성 방지
+        this.battlePhase = 'ended';
+
+        // 모든 활성 타이머 정리
+        this.activeTimers.forEach(timerId => {
+            clearTimeout(timerId);
+        });
+        this.activeTimers = [];
+
+        // AbortController가 있다면 신호 전송
+        if (this.abortController) {
+            this.abortController.abort();
+            this.abortController = null;
+        }
+
+        // UI 시스템 정리
         if (this.hpBarSystem) {
             this.hpBarSystem.hide();
         }
@@ -350,6 +379,7 @@ class BattleSystem {
             this.effectSystem.clearAllEffects();
         }
 
+        // 전투 상태 초기화
         this.battlePhase = 'waiting';
         this.player = null;
         this.enemy = null;
@@ -388,9 +418,24 @@ class BattleSystem {
         return false;
     }
 
-    // 유틸리티: 대기
+    // 유틸리티: 대기 (개선된 타이머 추적 버전)
     wait(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise(resolve => {
+            // 전투가 이미 종료되었으면 즉시 resolve
+            if (this.battlePhase === 'ended') {
+                resolve();
+                return;
+            }
+
+            const timerId = setTimeout(() => {
+                // 타이머 완료 후 배열에서 제거
+                this.activeTimers = this.activeTimers.filter(id => id !== timerId);
+                resolve();
+            }, ms);
+
+            // 활성 타이머 목록에 추가
+            this.activeTimers.push(timerId);
+        });
     }
 
     // 전투 통계 가져오기
