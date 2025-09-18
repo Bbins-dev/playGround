@@ -278,13 +278,32 @@ class CardRenderer {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
 
-        const maxWidth = width - 20;
+        const maxWidth = width * 0.85;
         const lineHeight = fontSize * 1.2;
         const maxLines = 3;
         const startY = y + height * this.style.layout.description.y;
 
         const lines = this.wrapText(ctx, description, maxWidth);
-        const displayLines = lines.slice(0, maxLines);
+        let displayLines = lines.slice(0, maxLines);
+
+        // 텍스트가 잘렸을 때 말줄임표 추가
+        if (lines.length > maxLines) {
+            const lastLine = displayLines[maxLines - 1];
+            const ellipsis = '...';
+
+            // 마지막 줄에 말줄임표를 추가할 공간이 있는지 확인
+            const testText = lastLine + ellipsis;
+            if (ctx.measureText(testText).width <= maxWidth) {
+                displayLines[maxLines - 1] = testText;
+            } else {
+                // 공간이 없으면 텍스트를 줄이고 말줄임표 추가
+                let trimmedLine = lastLine;
+                while (ctx.measureText(trimmedLine + ellipsis).width > maxWidth && trimmedLine.length > 0) {
+                    trimmedLine = trimmedLine.slice(0, -1);
+                }
+                displayLines[maxLines - 1] = trimmedLine + ellipsis;
+            }
+        }
 
         displayLines.forEach((line, index) => {
             const lineY = startY + index * lineHeight;
@@ -327,8 +346,22 @@ class CardRenderer {
         ctx.fillText(text, x, y);
     }
 
-    // 텍스트 줄바꿈 처리
+    // 텍스트 줄바꿈 처리 (다국어 지원)
     wrapText(ctx, text, maxWidth) {
+        // 일본어/중국어 문자 포함 여부 체크
+        const hasAsianChars = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/.test(text);
+
+        if (hasAsianChars) {
+            // 아시아 언어의 경우 문자 단위로 줄바꿈
+            return this.wrapAsianText(ctx, text, maxWidth);
+        } else {
+            // 영어/기타 언어는 단어 단위로 줄바꿈
+            return this.wrapWesternText(ctx, text, maxWidth);
+        }
+    }
+
+    // 서구 언어 텍스트 줄바꿈 (기존 방식)
+    wrapWesternText(ctx, text, maxWidth) {
         const words = text.split(' ');
         const lines = [];
         let currentLine = '';
@@ -340,6 +373,63 @@ class CardRenderer {
             if (metrics.width > maxWidth && currentLine) {
                 lines.push(currentLine);
                 currentLine = word;
+
+                // 단어가 너무 긴 경우 강제 줄바꿈
+                if (ctx.measureText(currentLine).width > maxWidth) {
+                    const brokenWord = this.breakLongWord(ctx, currentLine, maxWidth);
+                    lines.push(...brokenWord.slice(0, -1));
+                    currentLine = brokenWord[brokenWord.length - 1];
+                }
+            } else {
+                currentLine = testLine;
+            }
+        }
+
+        if (currentLine) {
+            lines.push(currentLine);
+        }
+
+        return lines;
+    }
+
+    // 아시아 언어 텍스트 줄바꿈 (문자 단위)
+    wrapAsianText(ctx, text, maxWidth) {
+        const lines = [];
+        let currentLine = '';
+
+        for (let i = 0; i < text.length; i++) {
+            const char = text[i];
+            const testLine = currentLine + char;
+            const metrics = ctx.measureText(testLine);
+
+            if (metrics.width > maxWidth && currentLine) {
+                lines.push(currentLine);
+                currentLine = char;
+            } else {
+                currentLine = testLine;
+            }
+        }
+
+        if (currentLine) {
+            lines.push(currentLine);
+        }
+
+        return lines;
+    }
+
+    // 긴 단어 강제 줄바꿈
+    breakLongWord(ctx, word, maxWidth) {
+        const lines = [];
+        let currentLine = '';
+
+        for (let i = 0; i < word.length; i++) {
+            const char = word[i];
+            const testLine = currentLine + char;
+            const metrics = ctx.measureText(testLine);
+
+            if (metrics.width > maxWidth && currentLine) {
+                lines.push(currentLine);
+                currentLine = char;
             } else {
                 currentLine = testLine;
             }
