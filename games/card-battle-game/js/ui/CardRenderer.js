@@ -174,7 +174,7 @@ class CardRenderer {
         // 공격력 (좌측)
         ctx.textAlign = 'left';
         ctx.fillStyle = '#ffeb3b';
-        this.drawTextWithOutline(ctx, `⚔${card.power}`, leftX, statsY);
+        this.drawTextWithOutline(ctx, `💪${card.power}`, leftX, statsY);
 
         // 발동횟수 (중앙)
         ctx.textAlign = 'center';
