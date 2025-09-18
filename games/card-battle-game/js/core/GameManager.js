@@ -44,6 +44,9 @@ class GameManager {
 
         // Debounce용 타이머
         this.resizeTimeout = null;
+
+        // 게임 통계 수집
+        this.gameStats = null;
     }
 
     // 게임 초기화
@@ -259,6 +262,9 @@ class GameManager {
     // 새 게임 초기화
     initializeNewGame() {
 
+        // 게임 통계 초기화
+        this.initializeGameStats();
+
         // 플레이어 생성
         this.player = new Player('플레이어', true);
 
@@ -277,6 +283,9 @@ class GameManager {
     // 새 게임 시작 (메인 메뉴에서 호출)
     startNewGame() {
         console.log('GameManager: 새 게임 시작');
+
+        // 게임 통계 초기화
+        this.initializeGameStats();
 
         // 플레이어 생성
         this.player = new Player('플레이어', true);
@@ -396,23 +405,39 @@ class GameManager {
 
     // 플레이어 승리 처리
     handlePlayerVictory() {
-
         // 보상 계산
         const rewards = this.enemy.calculateRewards();
 
-        // 다음 스테이지로 진행 또는 카드 선택
-        this.showPostBattleCardSelection();
+        // 승리 모달 표시 후 카드 선택으로 이동
+        this.uiManager.showVictoryModal(this.stage, () => {
+            this.showPostBattleCardSelection();
+        });
     }
 
     // 플레이어 패배 처리
     handlePlayerDefeat() {
-
         this.changeGameState('gameOver');
 
-        // 게임 오버 처리
-        setTimeout(() => {
+        // 통계 마무리 및 사망 원인 설정
+        this.finalizeGameStats();
+        this.setDeathCause(this.determineCauseOfDeath());
+
+        // 패배 모달 표시 후 메인 메뉴로 이동
+        this.uiManager.showDefeatModal(() => {
             this.showMainMenu();
-        }, 3000);
+        });
+    }
+
+    // 사망 원인 판단
+    determineCauseOfDeath() {
+        if (!this.player) return 'unknown';
+
+        // 상태이상으로 인한 사망 체크
+        if (this.player.hasStatusEffect('burn')) return 'burn';
+        if (this.player.hasStatusEffect('poisoned')) return 'poison';
+
+        // 일반 공격으로 사망
+        return 'normal_attack';
     }
 
     // 전투 후 카드 선택
@@ -704,6 +729,191 @@ class GameManager {
             element.removeEventListener(event, handler, useCapture);
         });
 
+    }
+
+    // 게임 통계 초기화
+    initializeGameStats() {
+        this.gameStats = {
+            // 기본 통계
+            gameStartTime: Date.now(),
+            finalStage: 1,
+            totalTurns: 0,
+            totalDamageDealt: 0,
+            totalDamageTaken: 0,
+            totalDefenseBuilt: 0,
+            wastedDefense: 0,
+
+            // 카드 사용 통계
+            cardUsageCount: {}, // cardId -> count
+            cardDamageDealt: {}, // cardId -> total damage
+            cardsNeverUsed: [], // cardId[]
+
+            // 유머 통계
+            missCount: 0,
+            enemyMissCount: 0,
+            crouchCount: 0, // 쉬기 카드 사용 횟수
+            maxHPReached: GameConfig.player.startingHP,
+            overkillDamage: 0, // 이미 죽은 적에게 가한 추가 데미지
+
+            // 플레이 스타일 분석
+            attackCardUsage: 0,
+            defenseCardUsage: 0,
+
+            // 특별한 순간들
+            closeCallMoments: [], // HP 1-2일 때의 상황들
+            deathCause: '', // 사망 원인
+
+            // 최종 손패 (패배 시점)
+            finalHand: []
+        };
+    }
+
+    // 카드 사용 통계 업데이트
+    updateCardUsageStats(card, damage = 0) {
+        if (!this.gameStats || !card) return;
+
+        const cardId = card.id || card.name;
+
+        // 사용 횟수 증가
+        this.gameStats.cardUsageCount[cardId] = (this.gameStats.cardUsageCount[cardId] || 0) + 1;
+
+        // 데미지 누적
+        if (damage > 0) {
+            this.gameStats.cardDamageDealt[cardId] = (this.gameStats.cardDamageDealt[cardId] || 0) + damage;
+            this.gameStats.totalDamageDealt += damage;
+        }
+
+        // 카드 타입별 사용 통계
+        if (card.type === 'attack') {
+            this.gameStats.attackCardUsage++;
+        } else if (card.type === 'defense') {
+            this.gameStats.defenseCardUsage++;
+        }
+
+        // 특별한 카드 추적
+        if (cardId === 'crouch' || card.name === '쉬기') {
+            this.gameStats.crouchCount++;
+        }
+    }
+
+    // 데미지 관련 통계 업데이트
+    updateDamageStats(damage, isPlayerDamage = false, isMiss = false) {
+        if (!this.gameStats) return;
+
+        if (isMiss) {
+            if (isPlayerDamage) {
+                this.gameStats.missCount++;
+            } else {
+                this.gameStats.enemyMissCount++;
+            }
+        } else if (damage > 0) {
+            if (isPlayerDamage) {
+                this.gameStats.totalDamageTaken += damage;
+
+                // 클로즈콜 체크 (HP가 낮을 때)
+                if (this.player && this.player.hp <= 2 && this.player.hp > 0) {
+                    this.gameStats.closeCallMoments.push({
+                        hp: this.player.hp,
+                        stage: this.currentStage,
+                        turn: this.gameStats.totalTurns
+                    });
+                }
+            }
+        }
+    }
+
+    // 방어력 통계 업데이트
+    updateDefenseStats(defenseGained, isWasted = false) {
+        if (!this.gameStats) return;
+
+        this.gameStats.totalDefenseBuilt += defenseGained;
+
+        if (isWasted) {
+            this.gameStats.wastedDefense += defenseGained;
+        }
+    }
+
+    // 턴 통계 업데이트
+    updateTurnStats() {
+        if (!this.gameStats) return;
+        this.gameStats.totalTurns++;
+    }
+
+    // 사망 원인 설정
+    setDeathCause(cause) {
+        if (!this.gameStats) return;
+        this.gameStats.deathCause = cause;
+    }
+
+    // 최종 손패 저장
+    saveFinalHand() {
+        if (!this.gameStats || !this.player) return;
+
+        this.gameStats.finalHand = this.player.hand.map(card => ({
+            id: card.id || card.name,
+            name: card.name,
+            element: card.element,
+            type: card.type
+        }));
+
+        this.gameStats.finalStage = this.currentStage;
+    }
+
+    // 사용하지 않은 카드 찾기
+    findUnusedCards() {
+        if (!this.gameStats || !this.player) return;
+
+        const usedCardIds = Object.keys(this.gameStats.cardUsageCount);
+        this.gameStats.cardsNeverUsed = this.player.hand
+            .filter(card => !usedCardIds.includes(card.id || card.name))
+            .map(card => card.id || card.name);
+    }
+
+    // 플레이 스타일 분석
+    getPlayStyle() {
+        if (!this.gameStats) return 'unknown';
+
+        const totalCardUsage = this.gameStats.attackCardUsage + this.gameStats.defenseCardUsage;
+        if (totalCardUsage === 0) return 'peaceful'; // 평화주의자
+
+        const defenseRatio = this.gameStats.defenseCardUsage / totalCardUsage;
+
+        if (defenseRatio >= 0.6) return 'turtle'; // 거북이 전사
+        if (defenseRatio <= 0.3) return 'reckless'; // 무모한 돌격대장
+        return 'balanced'; // 우유부단한 전략가
+    }
+
+    // MVP/LVP 카드 찾기
+    getMVPCard() {
+        if (!this.gameStats) return null;
+
+        let maxUsage = 0;
+        let mvpCard = null;
+
+        for (const [cardId, count] of Object.entries(this.gameStats.cardUsageCount)) {
+            if (count > maxUsage) {
+                maxUsage = count;
+                mvpCard = cardId;
+            }
+        }
+
+        return mvpCard ? { cardId: mvpCard, usage: maxUsage } : null;
+    }
+
+    getLVPCard() {
+        if (!this.gameStats || this.gameStats.cardsNeverUsed.length === 0) return null;
+        return this.gameStats.cardsNeverUsed[0]; // 첫 번째 미사용 카드
+    }
+
+    // 최종 통계 계산 (패배 시 호출)
+    finalizeGameStats() {
+        if (!this.gameStats) return;
+
+        this.saveFinalHand();
+        this.findUnusedCards();
+
+        // 게임 시간 계산
+        this.gameStats.gameDuration = Date.now() - this.gameStats.gameStartTime;
     }
 }
 

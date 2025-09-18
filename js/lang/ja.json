@@ -197,6 +197,29 @@
         "replacement_title": "カード交換",
         "selected_count": "選択済み",
         "no_cards_available": "選択可能なカードがありません"
+      },
+      "battle_result": {
+        "victory_title": "勝利！",
+        "victory_message": "ステージ {stage} クリア！",
+        "victory_button": "続ける",
+        "defeat_title": "敗北",
+        "defeat_message": "残念ながら敗北しました",
+        "defeat_subtitle": "もう一度挑戦してください！",
+        "defeat_button": "再開"
+      },
+      "defeat_stats": {
+        "final_hand": "最終手札（順序通り）",
+        "stage_reached": "到達ステージ",
+        "turns_survived": "{turns}ターン生存",
+        "total_damage_dealt": "与えた総ダメージ",
+        "total_damage_taken": "受けた総ダメージ",
+        "total_defense_built": "構築した防御力",
+        "wasted_defense": "無駄にした防御力",
+        "death_cause": "死因",
+        "play_style": "プレイスタイル",
+        "mvp_card": "MVPカード",
+        "lazy_card": "最も怠惰なカード",
+        "confirm_button": "再挑戦"
       }
     },
     "tutorial": {

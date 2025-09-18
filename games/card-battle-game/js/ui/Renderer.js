@@ -419,6 +419,605 @@ class Renderer {
             y += 15;
         });
     }
+
+    // 글래스모피즘 모달 렌더링 (승리/패배 팝업)
+    renderModal(modalConfig, options = {}) {
+        const {
+            type,      // 'victory' 또는 'defeat'
+            alpha = 1.0,
+            stage = 1,
+            animationTime = 0,  // 애니메이션 시간 (ms)
+            gameStats = null,   // 게임 통계 (패배 시)
+            finalHand = null,   // 최종 손패 (패배 시)
+            buttonHovered = false  // 버튼 호버 상태
+        } = options;
+
+        if (!modalConfig || !type) return;
+
+        const config = modalConfig.modal;
+        const typeConfig = modalConfig[type];
+
+        // 모달 크기 (패배 시 더 큰 모달 사용)
+        const modalWidth = type === 'defeat' && typeConfig.layout ? typeConfig.layout.modal.width : config.size.width;
+        const modalHeight = type === 'defeat' && typeConfig.layout ? typeConfig.layout.modal.height : config.size.height;
+        const borderRadius = type === 'defeat' && typeConfig.layout ? typeConfig.layout.modal.borderRadius : config.size.borderRadius;
+
+        // 모달 중앙 위치 계산
+        const modalX = GameConfig.canvas.width / 2 - modalWidth / 2;
+        const modalY = GameConfig.canvas.height / 2 - modalHeight / 2;
+
+        // 배경 오버레이 (글래스모피즘 블러 효과)
+        this.drawGlassmorphismOverlay(alpha, config.background.overlay);
+
+        // 글래스모피즘 모달 배경
+        this.drawGlassmorphismModal(
+            modalX, modalY,
+            modalWidth, modalHeight,
+            borderRadius,
+            typeConfig, alpha
+        );
+
+        // 파티클 효과 (승리 시)
+        if (type === 'victory' && typeConfig.particles.enabled) {
+            this.drawParticles(modalX, modalY, config.size.width, config.size.height, typeConfig.particles, animationTime);
+        }
+
+        // 애니메이션 아이콘 렌더링
+        this.drawAnimatedIcon(
+            modalX + modalWidth / 2,
+            modalY + typeConfig.icon.y,
+            typeConfig.icon,
+            animationTime,
+            alpha
+        );
+
+        // 글로우 효과가 있는 제목 렌더링
+        const titleKey = `auto_battle_card_game.ui.battle_result.${type}_title`;
+        const titleText = window.getI18nText ? window.getI18nText(titleKey) :
+                         (type === 'victory' ? 'Victory!' : 'Defeat');
+
+        this.drawTextWithGlow(
+            titleText,
+            modalX + modalWidth / 2,
+            modalY + typeConfig.title.y,
+            typeConfig.title,
+            typeConfig.colors.title,
+            typeConfig.colors.glow,
+            alpha
+        );
+
+        // 메시지 렌더링
+        if (type === 'victory') {
+            const messageKey = 'auto_battle_card_game.ui.battle_result.victory_message';
+            const messageText = window.getI18nText ?
+                               window.getI18nText(messageKey).replace('{stage}', stage) :
+                               `Stage ${stage} Clear!`;
+
+            this.drawTextWithGlow(
+                messageText,
+                modalX + modalWidth / 2,
+                modalY + typeConfig.message.y,
+                typeConfig.message,
+                typeConfig.colors.message,
+                null, // 메시지는 글로우 없이
+                alpha
+            );
+        } else {
+            // 패배 메시지와 부제목
+            const messageKey = 'auto_battle_card_game.ui.battle_result.defeat_message';
+            const subtitleKey = 'auto_battle_card_game.ui.battle_result.defeat_subtitle';
+
+            const messageText = window.getI18nText ? window.getI18nText(messageKey) : 'Unfortunately defeated';
+            const subtitleText = window.getI18nText ? window.getI18nText(subtitleKey) : 'Try again!';
+
+            this.drawTextWithGlow(
+                messageText,
+                modalX + config.size.width / 2,
+                modalY + typeConfig.message.y - 15,
+                typeConfig.message,
+                typeConfig.colors.message,
+                null,
+                alpha
+            );
+
+            this.drawTextWithGlow(
+                subtitleText,
+                modalX + modalWidth / 2,
+                modalY + typeConfig.message.y + 15,
+                typeConfig.message,
+                typeConfig.colors.message,
+                null,
+                alpha
+            );
+
+            // 패배 화면 추가 요소들 (통계, 손패, 버튼)
+            if (alpha >= 0.8) { // 모달이 충분히 나타났을 때만 표시
+                // 최종 손패 렌더링
+                if (finalHand && finalHand.length > 0) {
+                    this.renderFinalHand(finalHand, typeConfig);
+                }
+
+                // 게임 통계 렌더링
+                if (gameStats) {
+                    this.renderGameStats(gameStats, typeConfig);
+                }
+
+                // 확인 버튼 렌더링
+                this.renderConfirmButton(typeConfig, buttonHovered);
+            }
+        }
+    }
+
+    // 글래스모피즘 오버레이 배경
+    drawGlassmorphismOverlay(alpha, overlayColor) {
+        this.ctx.save();
+        this.ctx.globalAlpha = alpha * 0.8;
+        this.ctx.fillStyle = overlayColor;
+        this.ctx.fillRect(0, 0, GameConfig.canvas.width, GameConfig.canvas.height);
+        this.ctx.restore();
+    }
+
+    // 글래스모피즘 모달 배경
+    drawGlassmorphismModal(x, y, width, height, borderRadius, typeConfig, alpha) {
+        this.ctx.save();
+        this.ctx.globalAlpha = alpha;
+
+        // 그라디언트 배경 (글래스모피즘)
+        const gradient = this.ctx.createLinearGradient(x, y, x, y + height);
+        gradient.addColorStop(0, typeConfig.colors.gradient.start);
+        gradient.addColorStop(1, typeConfig.colors.gradient.end);
+
+        // 메인 배경
+        this.ctx.fillStyle = gradient;
+        this.drawRoundedRect(x, y, width, height, borderRadius);
+        this.ctx.fill();
+
+        // 글래스 효과 오버레이
+        this.ctx.fillStyle = typeConfig.colors.background;
+        this.drawRoundedRect(x, y, width, height, borderRadius);
+        this.ctx.fill();
+
+        // 테두리
+        this.ctx.strokeStyle = typeConfig.colors.border;
+        this.ctx.lineWidth = 1;
+        this.ctx.stroke();
+
+        // 내부 하이라이트 (글래스 효과)
+        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        this.ctx.lineWidth = 0.5;
+        this.drawRoundedRect(x + 1, y + 1, width - 2, height - 2, borderRadius - 1);
+        this.ctx.stroke();
+
+        this.ctx.restore();
+    }
+
+    // 파티클 효과
+    drawParticles(modalX, modalY, modalWidth, modalHeight, particleConfig, animationTime) {
+        if (!particleConfig.enabled) return;
+
+        this.ctx.save();
+
+        const time = animationTime * 0.001; // 초 단위로 변환
+        const particleCount = particleConfig.count;
+
+        for (let i = 0; i < particleCount; i++) {
+            // 각 파티클의 고유한 시드
+            const seed = i / particleCount;
+            const phase = seed * Math.PI * 2;
+
+            // 파티클 위치 계산 (원형 분산)
+            const radius = 100 + Math.sin(time * 2 + phase) * 50;
+            const angle = time * 0.5 + phase;
+            const x = modalX + modalWidth / 2 + Math.cos(angle) * radius;
+            const y = modalY + modalHeight / 2 + Math.sin(angle) * radius * 0.6;
+
+            // 파티클 크기와 색상
+            const size = particleConfig.size.min +
+                        Math.sin(time * 3 + phase) * (particleConfig.size.max - particleConfig.size.min);
+            const colorIndex = Math.floor(seed * particleConfig.colors.length);
+            const color = particleConfig.colors[colorIndex];
+
+            // 파티클 투명도 (페이드 효과)
+            const lifetime = (time + phase) % (particleConfig.lifetime * 0.001);
+            const fadeTime = particleConfig.lifetime * 0.001 * 0.3;
+            let particleAlpha = 1;
+
+            if (lifetime < fadeTime) {
+                particleAlpha = lifetime / fadeTime;
+            } else if (lifetime > particleConfig.lifetime * 0.001 - fadeTime) {
+                particleAlpha = (particleConfig.lifetime * 0.001 - lifetime) / fadeTime;
+            }
+
+            // 파티클 렌더링
+            this.ctx.globalAlpha = particleAlpha * 0.8;
+            this.ctx.fillStyle = color;
+            this.ctx.beginPath();
+            this.ctx.arc(x, y, size, 0, Math.PI * 2);
+            this.ctx.fill();
+
+            // 글로우 효과
+            this.ctx.shadowColor = color;
+            this.ctx.shadowBlur = size * 2;
+            this.ctx.fill();
+            this.ctx.shadowBlur = 0;
+        }
+
+        this.ctx.restore();
+    }
+
+    // 애니메이션 아이콘
+    drawAnimatedIcon(x, y, iconConfig, animationTime, alpha) {
+        this.ctx.save();
+        this.ctx.globalAlpha = alpha;
+
+        const time = animationTime * 0.001;
+
+        // 애니메이션 적용
+        if (iconConfig.animation) {
+            this.ctx.translate(x, y);
+
+            if (iconConfig.animation.type === 'rotate') {
+                const rotation = (time * 2 * Math.PI) / (iconConfig.animation.duration * 0.001);
+                this.ctx.rotate(rotation);
+            } else if (iconConfig.animation.type === 'shake') {
+                const shakeX = Math.sin(time * 10) * iconConfig.animation.intensity;
+                const shakeY = Math.cos(time * 10) * iconConfig.animation.intensity;
+                this.ctx.translate(shakeX, shakeY);
+            }
+
+            this.ctx.translate(-x, -y);
+        }
+
+        // 아이콘 렌더링
+        this.ctx.font = `${iconConfig.fontSize}px Arial`;
+        this.ctx.fillStyle = '#FFFFFF';
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+
+        // 글로우 효과
+        this.ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+        this.ctx.shadowBlur = 15;
+        this.ctx.fillText(iconConfig.emoji, x, y);
+        this.ctx.shadowBlur = 0;
+
+        this.ctx.restore();
+    }
+
+    // 글로우 효과가 있는 텍스트
+    drawTextWithGlow(text, x, y, textConfig, textColor, glowConfig, alpha) {
+        this.ctx.save();
+        this.ctx.globalAlpha = alpha;
+
+        // 폰트 설정
+        const fontWeight = textConfig.fontWeight || 'bold';
+        const fontSize = textConfig.fontSize;
+        this.ctx.font = `${fontWeight} ${fontSize}px Arial`;
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        this.ctx.fillStyle = textColor;
+
+        // 글로우 효과 (제목만)
+        if (glowConfig) {
+            this.ctx.shadowColor = glowConfig.color;
+            this.ctx.shadowBlur = glowConfig.blur;
+            for (let i = 0; i < glowConfig.spread; i++) {
+                this.ctx.fillText(text, x, y);
+            }
+        }
+
+        // 텍스트 쉐도우 (설정에 있는 경우)
+        if (textConfig.textShadow) {
+            this.ctx.shadowColor = textConfig.textShadow.color;
+            this.ctx.shadowBlur = textConfig.textShadow.blur;
+        }
+
+        // 메인 텍스트
+        this.ctx.fillText(text, x, y);
+
+        this.ctx.shadowBlur = 0;
+        this.ctx.restore();
+    }
+
+    // 둥근 사각형 그리기 유틸리티
+    drawRoundedRect(x, y, width, height, radius) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(x + radius, y);
+        this.ctx.lineTo(x + width - radius, y);
+        this.ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        this.ctx.lineTo(x + width, y + height - radius);
+        this.ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        this.ctx.lineTo(x + radius, y + height);
+        this.ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        this.ctx.lineTo(x, y + radius);
+        this.ctx.quadraticCurveTo(x, y, x + radius, y);
+        this.ctx.closePath();
+    }
+
+    // 미니 카드 렌더링 (패배 화면용)
+    renderMiniCard(card, x, y, scale = 0.35) {
+        if (!card) return;
+
+        const width = 80 * scale;
+        const height = 110 * scale;
+        const fontSize = 10 * scale;
+        const smallFontSize = 8 * scale;
+
+        // 카드 배경
+        this.ctx.save();
+
+        // 카드 테두리와 배경
+        this.ctx.fillStyle = '#2a2a2a';
+        this.ctx.strokeStyle = this.getElementColor(card.element);
+        this.ctx.lineWidth = 1;
+        this.roundRect(x, y, width, height, 4);
+        this.ctx.fill();
+        this.ctx.stroke();
+
+        // 속성 아이콘 (작은 크기)
+        this.ctx.font = `${fontSize * 1.2}px Arial`;
+        this.ctx.fillStyle = this.getElementColor(card.element);
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(
+            this.getElementIcon(card.element),
+            x + width / 2,
+            y + fontSize * 1.8
+        );
+
+        // 카드 이름 (작은 폰트)
+        this.ctx.font = `${smallFontSize}px Arial`;
+        this.ctx.fillStyle = '#FFFFFF';
+        this.ctx.textAlign = 'center';
+
+        const name = card.name || card.id;
+        const maxWidth = width - 4;
+        const truncatedName = this.truncateText(name, maxWidth, smallFontSize);
+
+        this.ctx.fillText(
+            truncatedName,
+            x + width / 2,
+            y + height - smallFontSize
+        );
+
+        this.ctx.restore();
+    }
+
+    // 텍스트 자르기 유틸리티
+    truncateText(text, maxWidth, fontSize) {
+        this.ctx.font = `${fontSize}px Arial`;
+        if (this.ctx.measureText(text).width <= maxWidth) {
+            return text;
+        }
+
+        for (let i = text.length - 1; i > 0; i--) {
+            const truncated = text.substring(0, i) + '...';
+            if (this.ctx.measureText(truncated).width <= maxWidth) {
+                return truncated;
+            }
+        }
+        return '...';
+    }
+
+    // 최종 손패 렌더링 (패배 화면용)
+    renderFinalHand(cards, config) {
+        if (!cards || cards.length === 0) return;
+
+        const layout = config.layout.handDisplay;
+        const startX = (GameConfig.canvas.width - (cards.length * layout.spacing)) / 2;
+        const y = layout.startY;
+
+        // 제목
+        this.ctx.save();
+        this.ctx.font = `16px Arial`;
+        this.ctx.fillStyle = config.colors.stats;
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(
+            I18n.t('auto_battle_card_game.ui.defeat_stats.final_hand'),
+            GameConfig.canvas.width / 2,
+            y - 20
+        );
+
+        // 카드들 렌더링
+        cards.forEach((card, index) => {
+            const x = startX + (index * layout.spacing);
+            this.renderMiniCard(card, x, y, layout.cardScale);
+        });
+
+        this.ctx.restore();
+    }
+
+    // 게임 통계 렌더링 (패배 화면용)
+    renderGameStats(gameStats, config) {
+        if (!gameStats) return;
+
+        const layout = config.layout.stats;
+        let currentY = layout.startY;
+
+        this.ctx.save();
+        this.ctx.textAlign = 'left';
+
+        // 기본 통계 (왼쪽 열)
+        this.renderStatsColumn([
+            {
+                label: I18n.t('auto_battle_card_game.ui.defeat_stats.stage_reached'),
+                value: `${gameStats.finalStage}`,
+                isValue: true
+            },
+            {
+                label: I18n.t('auto_battle_card_game.ui.defeat_stats.turns_survived'),
+                value: `${gameStats.totalTurns}`,
+                isValue: true
+            },
+            {
+                label: I18n.t('auto_battle_card_game.ui.defeat_stats.total_damage_dealt'),
+                value: `${gameStats.totalDamageDealt}`,
+                isValue: true
+            },
+            {
+                label: I18n.t('auto_battle_card_game.ui.defeat_stats.total_defense_built'),
+                value: `${gameStats.totalDefenseBuilt}`,
+                isValue: true
+            }
+        ], layout.leftColumn, currentY, config);
+
+        // 유머 통계 (오른쪽 열)
+        const humorStats = this.generateHumorStats(gameStats);
+        this.renderStatsColumn(humorStats, layout.rightColumn, currentY, config, true);
+
+        this.ctx.restore();
+    }
+
+    // 통계 열 렌더링
+    renderStatsColumn(stats, x, startY, config, isHumor = false) {
+        const layout = config.layout.stats;
+        const fontSize = isHumor ? layout.humorFontSize : layout.fontSize;
+
+        stats.forEach((stat, index) => {
+            const y = startY + (index * layout.spacing);
+
+            this.ctx.font = `${fontSize}px Arial`;
+
+            // 라벨
+            this.ctx.fillStyle = isHumor ? config.colors.humor : config.colors.stats;
+            this.ctx.fillText(stat.label, x, y);
+
+            // 값 (있는 경우)
+            if (stat.value !== undefined) {
+                this.ctx.fillStyle = stat.isValue ? config.colors.statValue : config.colors.stats;
+                this.ctx.fillText(stat.value, x + 200, y);
+            }
+        });
+    }
+
+    // 유머 통계 생성
+    generateHumorStats(gameStats) {
+        const stats = [];
+
+        // 플레이 스타일
+        const playStyle = this.getPlayStyleText(gameStats);
+        stats.push({
+            label: I18n.t('auto_battle_card_game.ui.defeat_stats.play_style'),
+            value: playStyle
+        });
+
+        // 사망 원인
+        const deathCause = this.getDeathCauseText(gameStats.deathCause);
+        stats.push({
+            label: I18n.t('auto_battle_card_game.ui.defeat_stats.death_cause'),
+            value: deathCause
+        });
+
+        // MVP 카드
+        const mvp = this.getMVPText(gameStats);
+        if (mvp) {
+            stats.push({
+                label: I18n.t('auto_battle_card_game.ui.defeat_stats.mvp_card'),
+                value: mvp
+            });
+        }
+
+        // 게으른 카드 (쉬기 카드 사용 횟수)
+        if (gameStats.crouchCount > 0) {
+            stats.push({
+                label: I18n.t('auto_battle_card_game.ui.defeat_stats.lazy_card'),
+                value: `${gameStats.crouchCount}번`
+            });
+        }
+
+        // 버린 방어력
+        if (gameStats.wastedDefense > 0) {
+            stats.push({
+                label: I18n.t('auto_battle_card_game.ui.defeat_stats.wasted_defense'),
+                value: `${gameStats.wastedDefense}`
+            });
+        }
+
+        // 적이 미스한 횟수
+        if (gameStats.enemyMissCount > 0) {
+            stats.push({
+                label: '운은 좋았는데...',
+                value: `적 미스 ${gameStats.enemyMissCount}번`
+            });
+        }
+
+        return stats;
+    }
+
+    // 플레이 스타일 텍스트
+    getPlayStyleText(gameStats) {
+        const totalCards = gameStats.attackCardUsage + gameStats.defenseCardUsage;
+        if (totalCards === 0) return '😴 평화주의자';
+
+        const defenseRatio = gameStats.defenseCardUsage / totalCards;
+
+        if (defenseRatio >= 0.6) return '🐢 거북이 전사';
+        if (defenseRatio <= 0.3) return '🗡️ 무모한 돌격대장';
+        return '⚖️ 우유부단한 전략가';
+    }
+
+    // 사망 원인 텍스트
+    getDeathCauseText(cause) {
+        switch(cause) {
+            case 'burn': return '🔥 뜨거운 최후';
+            case 'poison': return '🤢 서서히 스며든 패배';
+            case 'normal_attack': return '😅 화려하지 못한 최후';
+            default: return '❓ 미스터리한 최후';
+        }
+    }
+
+    // MVP 카드 텍스트
+    getMVPText(gameStats) {
+        let maxUsage = 0;
+        let mvpCard = null;
+
+        for (const [cardId, count] of Object.entries(gameStats.cardUsageCount)) {
+            if (count > maxUsage) {
+                maxUsage = count;
+                mvpCard = cardId;
+            }
+        }
+
+        return mvpCard ? `${mvpCard} (${maxUsage}번)` : null;
+    }
+
+    // 확인 버튼 렌더링
+    renderConfirmButton(config, isHovered = false) {
+        const button = config.layout.confirmButton;
+        const colors = config.colors.button;
+
+        const x = (GameConfig.canvas.width - button.width) / 2;
+        const y = button.y;
+
+        this.ctx.save();
+
+        // 버튼 배경 (글래스모피즘)
+        this.ctx.fillStyle = isHovered ? colors.hover : colors.background;
+        this.ctx.strokeStyle = colors.border;
+        this.ctx.lineWidth = 1;
+        this.roundRect(x, y, button.width, button.height, button.borderRadius);
+        this.ctx.fill();
+        this.ctx.stroke();
+
+        // 버튼 텍스트
+        this.ctx.font = `${button.fontSize}px Arial`;
+        this.ctx.fillStyle = colors.text;
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        this.ctx.fillText(
+            I18n.t('auto_battle_card_game.ui.defeat_stats.confirm_button'),
+            x + button.width / 2,
+            y + button.height / 2
+        );
+
+        this.ctx.restore();
+
+        // 버튼 영역 반환 (클릭 감지용)
+        return {
+            x: x,
+            y: y,
+            width: button.width,
+            height: button.height
+        };
+    }
 }
 
 // 전역 객체로 등록

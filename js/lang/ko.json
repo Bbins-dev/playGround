@@ -197,6 +197,29 @@
         "replacement_title": "카드 교체",
         "selected_count": "선택됨",
         "no_cards_available": "선택 가능한 카드가 없습니다"
+      },
+      "battle_result": {
+        "victory_title": "승리!",
+        "victory_message": "스테이지 {stage} 클리어!",
+        "victory_button": "계속하기",
+        "defeat_title": "패배",
+        "defeat_message": "아쉽게 패배했습니다",
+        "defeat_subtitle": "다시 도전해보세요!",
+        "defeat_button": "다시 시작"
+      },
+      "defeat_stats": {
+        "final_hand": "최종 손패 (순서대로)",
+        "stage_reached": "도달 스테이지",
+        "turns_survived": "{turns}턴 생존",
+        "total_damage_dealt": "준 총 데미지",
+        "total_damage_taken": "받은 총 데미지",
+        "total_defense_built": "쌓은 방어력",
+        "wasted_defense": "버린 방어력",
+        "death_cause": "사망 원인",
+        "play_style": "플레이 스타일",
+        "mvp_card": "MVP 카드",
+        "lazy_card": "가장 게으른 카드",
+        "confirm_button": "다시 도전하기"
       }
     },
     "tutorial": {

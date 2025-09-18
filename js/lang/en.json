@@ -197,6 +197,29 @@
         "replacement_title": "Card Replacement",
         "selected_count": "Selected",
         "no_cards_available": "No cards available for selection"
+      },
+      "battle_result": {
+        "victory_title": "Victory!",
+        "victory_message": "Stage {stage} Clear!",
+        "victory_button": "Continue",
+        "defeat_title": "Defeat",
+        "defeat_message": "Unfortunately defeated",
+        "defeat_subtitle": "Try again!",
+        "defeat_button": "Restart"
+      },
+      "defeat_stats": {
+        "final_hand": "Final Hand (in order)",
+        "stage_reached": "Stage Reached",
+        "turns_survived": "Survived {turns} turns",
+        "total_damage_dealt": "Total Damage Dealt",
+        "total_damage_taken": "Total Damage Taken",
+        "total_defense_built": "Total Defense Built",
+        "wasted_defense": "Wasted Defense",
+        "death_cause": "Cause of Death",
+        "play_style": "Play Style",
+        "mvp_card": "MVP Card",
+        "lazy_card": "Laziest Card",
+        "confirm_button": "Try Again"
       }
     },
     "tutorial": {

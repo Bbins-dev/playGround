@@ -31,6 +31,9 @@ class UIManager {
             cardSelection: document.getElementById('card-selection-modal')
         };
 
+        // 모달 상태
+        this.modalState = null;
+
         // 초기화
         this.initialize();
     }
@@ -55,6 +58,7 @@ class UIManager {
         // 캔버스 클릭/터치 이벤트
         this.canvas.addEventListener('click', (e) => this.handleCanvasClick(e));
         this.canvas.addEventListener('touchstart', (e) => this.handleCanvasTouch(e));
+        this.canvas.addEventListener('mousemove', (e) => this.handleCanvasMouseMove(e));
 
         // 키보드 이벤트
         document.addEventListener('keydown', (e) => this.handleKeydown(e));
@@ -108,6 +112,9 @@ class UIManager {
     setupSpeedControls() {
         const speedButtons = document.querySelectorAll('.speed-btn');
 
+        // localStorage에서 저장된 속도 설정 불러오기
+        const savedSpeed = parseInt(localStorage.getItem('cardBattle_gameSpeed') || '1');
+
         speedButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 // 모든 버튼에서 active 클래스 제거
@@ -120,6 +127,9 @@ class UIManager {
                 const speedText = e.target.textContent;
                 const speed = parseInt(speedText.replace('x', ''));
 
+                // localStorage에 속도 설정 저장
+                localStorage.setItem('cardBattle_gameSpeed', speed.toString());
+
                 // 게임 속도 설정
                 if (this.gameManager.battleSystem) {
                     this.gameManager.battleSystem.setGameSpeed(speed);
@@ -127,6 +137,28 @@ class UIManager {
 
             });
         });
+
+        // 초기 속도 설정 적용
+        this.applyInitialSpeedSetting(savedSpeed);
+    }
+
+    // 초기 속도 설정 적용
+    applyInitialSpeedSetting(speed) {
+        const speedButtons = document.querySelectorAll('.speed-btn');
+
+        // 저장된 속도에 해당하는 버튼 활성화
+        speedButtons.forEach(btn => {
+            btn.classList.remove('active');
+            const btnSpeed = parseInt(btn.textContent.replace('x', ''));
+            if (btnSpeed === speed) {
+                btn.classList.add('active');
+            }
+        });
+
+        // 전투 시스템이 있으면 속도 설정
+        if (this.gameManager.battleSystem) {
+            this.gameManager.battleSystem.setGameSpeed(speed);
+        }
     }
 
     // 모달 설정
@@ -171,6 +203,33 @@ class UIManager {
         } else {
             // 기타 화면은 Renderer를 통해 렌더링
             this.renderer.render(gameState);
+        }
+
+        // 모달이 활성화된 경우 렌더링 (글래스모피즘 버전)
+        if (this.modalState && (this.modalState.isAnimating || this.modalState.waitingForConfirm)) {
+            const renderOptions = {
+                type: this.modalState.type,
+                alpha: this.modalState.alpha,
+                stage: this.modalState.stage || 1,
+                animationTime: this.modalState.animationTime || 0
+            };
+
+            // 패배 모달의 경우 추가 정보 전달
+            if (this.modalState.type === 'defeat') {
+                renderOptions.gameStats = this.modalState.gameStats;
+                renderOptions.finalHand = this.modalState.finalHand;
+                renderOptions.buttonHovered = this.modalState.buttonHovered;
+            }
+
+            this.renderer.renderModal(this.modalState.config, renderOptions);
+
+            // 패배 모달에서 버튼 영역 업데이트
+            if (this.modalState.type === 'defeat' && this.modalState.alpha >= 0.8) {
+                this.modalState.buttonArea = this.renderer.renderConfirmButton(
+                    this.modalState.config.defeat,
+                    this.modalState.buttonHovered
+                );
+            }
         }
     }
 
@@ -283,6 +342,21 @@ class UIManager {
 
     // 캔버스 클릭 처리
     handleCanvasClick(event) {
+        // 패배 모달에서 확인 버튼 클릭 체크
+        if (this.modalState && this.modalState.type === 'defeat' && this.modalState.waitingForConfirm) {
+            const coords = this.gameManager.getCanvasCoordinates(event);
+            if (coords.inBounds && this.modalState.buttonArea) {
+                const { x, y } = coords;
+                const button = this.modalState.buttonArea;
+
+                if (x >= button.x && x <= button.x + button.width &&
+                    y >= button.y && y <= button.y + button.height) {
+                    this.handleDefeatConfirm();
+                    return;
+                }
+            }
+        }
+
         if (!this.isInteractive) return;
 
         // GameManager의 좌표 변환 메서드 사용
@@ -570,6 +644,104 @@ class UIManager {
         }
     }
 
+    // 승리 모달 표시
+    showVictoryModal(stage, callback) {
+        // 모달 상태 설정
+        this.modalState = {
+            type: 'victory',
+            stage: stage || 1,
+            alpha: 0,
+            isAnimating: true,
+            callback: callback,
+            animationStart: Date.now(),
+            config: GameConfig.battleResult
+        };
+
+        this.isInteractive = false;
+
+        // 페이드인 애니메이션 시작
+        this.animateModal();
+    }
+
+    // 패배 모달 표시
+    showDefeatModal(callback) {
+        // 게임 통계와 최종 손패 가져오기
+        const gameStats = this.gameManager.gameStats;
+        const finalHand = gameStats ? gameStats.finalHand : [];
+
+        // 모달 상태 설정
+        this.modalState = {
+            type: 'defeat',
+            alpha: 0,
+            isAnimating: true,
+            callback: callback,
+            animationStart: Date.now(),
+            config: GameConfig.battleResult,
+            gameStats: gameStats,
+            finalHand: finalHand,
+            buttonHovered: false,
+            waitingForConfirm: false, // 확인 대기 상태
+            buttonArea: null // 버튼 클릭 영역
+        };
+
+        this.isInteractive = false;
+
+        // 페이드인 애니메이션 시작
+        this.animateModal();
+    }
+
+    // 모달 애니메이션 처리 (글래스모피즘 버전)
+    animateModal() {
+        if (!this.modalState || !this.modalState.isAnimating) return;
+
+        const elapsed = Date.now() - this.modalState.animationStart;
+        const config = this.modalState.config.modal.animation;
+
+        // 애니메이션 시간 업데이트 (파티클 효과용)
+        this.modalState.animationTime = elapsed;
+
+        if (this.modalState.phase === 'fadeOut') {
+            // 페이드아웃 단계
+            const fadeOutProgress = Math.min(elapsed / config.fadeOut, 1);
+            this.modalState.alpha = 1 - fadeOutProgress;
+
+            if (fadeOutProgress >= 1) {
+                // 페이드아웃 완료, 전환 딜레이 후 콜백 실행
+                setTimeout(() => {
+                    if (this.modalState.callback) {
+                        this.modalState.callback();
+                    }
+                    this.modalState = null;
+                    this.isInteractive = true;
+                }, config.transitionDelay);
+                return;
+            }
+        } else {
+            // 페이드인 -> 표시 -> 페이드아웃 단계
+            if (elapsed < config.fadeIn) {
+                // 페이드인 단계
+                const fadeInProgress = elapsed / config.fadeIn;
+                this.modalState.alpha = fadeInProgress;
+            } else if (this.modalState.type === 'defeat') {
+                // 패배 모달: 표시 완료 후 확인 버튼 대기
+                this.modalState.alpha = 1;
+                this.modalState.waitingForConfirm = true;
+                // 더 이상 자동 진행하지 않음
+                return;
+            } else if (elapsed < config.fadeIn + config.display) {
+                // 승리 모달: 표시 단계
+                this.modalState.alpha = 1;
+            } else {
+                // 승리 모달: 페이드아웃 시작
+                this.modalState.phase = 'fadeOut';
+                this.modalState.animationStart = Date.now();
+            }
+        }
+
+        // 다음 프레임에서 계속
+        requestAnimationFrame(() => this.animateModal());
+    }
+
     // 카드 툴팁 표시
     showCardTooltip(card) {
     }
@@ -683,6 +855,43 @@ class UIManager {
             this.renderer.animations.clear();
         }
 
+    }
+
+    // 마우스 무브 처리 (패배 모달 버튼 호버)
+    handleCanvasMouseMove(event) {
+        if (this.modalState && this.modalState.type === 'defeat' && this.modalState.waitingForConfirm) {
+            const coords = this.gameManager.getCanvasCoordinates(event);
+            if (coords.inBounds && this.modalState.buttonArea) {
+                const { x, y } = coords;
+                const button = this.modalState.buttonArea;
+
+                const isHovered = x >= button.x && x <= button.x + button.width &&
+                                y >= button.y && y <= button.y + button.height;
+
+                if (this.modalState.buttonHovered !== isHovered) {
+                    this.modalState.buttonHovered = isHovered;
+                    // 호버 상태 변경 시 커서 스타일 변경
+                    this.canvas.style.cursor = isHovered ? 'pointer' : 'default';
+                }
+            }
+        }
+    }
+
+    // 패배 확인 버튼 클릭 처리
+    handleDefeatConfirm() {
+        if (!this.modalState || this.modalState.type !== 'defeat') return;
+
+        // 페이드아웃 시작
+        this.modalState.phase = 'fadeOut';
+        this.modalState.animationStart = Date.now();
+        this.modalState.waitingForConfirm = false;
+        this.modalState.isAnimating = true;
+
+        // 커서 스타일 리셋
+        this.canvas.style.cursor = 'default';
+
+        // 애니메이션 재시작
+        this.animateModal();
     }
 }
 

@@ -621,6 +621,173 @@ const GameConfig = {
                 }
             }
         }
+    },
+
+    // 전투 결과 팝업 설정 - 글래스모피즘 디자인
+    battleResult: {
+        // 공통 모달 설정
+        modal: {
+            size: {
+                width: 600,              // 크기 확대
+                height: 400,
+                borderRadius: 30         // 더 부드러운 모서리
+            },
+            position: {
+                centerX: true,
+                centerY: true
+            },
+            background: {
+                overlay: 'rgba(0, 0, 0, 0.6)',    // 더 밝은 오버레이
+                blur: 15,                          // 배경 블러 효과 (글래스모피즘)
+                borderWidth: 1                     // 얇은 테두리
+            },
+            animation: {
+                fadeIn: 400,             // 더 부드러운 페이드인
+                display: 2000,           // 버튼 없이 자동 전환
+                fadeOut: 600,            // 부드러운 페이드아웃
+                transitionDelay: 300     // 짧은 딜레이
+            }
+        },
+        // 승리 팝업 설정 - 글래스모피즘
+        victory: {
+            colors: {
+                background: 'rgba(255, 255, 255, 0.15)',     // 반투명 백색 글래스
+                gradient: {
+                    start: 'rgba(134, 239, 172, 0.3)',       // 연한 초록
+                    end: 'rgba(59, 130, 246, 0.3)'           // 연한 파랑
+                },
+                border: 'rgba(255, 255, 255, 0.3)',          // 반투명 테두리
+                title: '#FFFFFF',
+                message: 'rgba(255, 255, 255, 0.9)',
+                glow: {
+                    color: 'rgba(134, 239, 172, 0.6)',       // 글로우 효과
+                    blur: 20,
+                    spread: 3
+                }
+            },
+            title: {
+                fontSize: 56,            // 크게 키운 타이틀
+                y: 120,
+                fontWeight: '900',
+                letterSpacing: 2,
+                textShadow: {
+                    blur: 10,
+                    color: 'rgba(134, 239, 172, 0.8)'
+                }
+            },
+            message: {
+                fontSize: 28,            // 크게 키운 메시지
+                y: 200,
+                lineHeight: 35,
+                textShadow: {
+                    blur: 5,
+                    color: 'rgba(255, 255, 255, 0.5)'
+                }
+            },
+            particles: {                 // 파티클 효과 추가
+                enabled: true,
+                count: 30,
+                colors: ['#86EF8C', '#3B82F6', '#FBBF24'],
+                size: { min: 2, max: 6 },
+                speed: { min: 0.5, max: 2 },
+                lifetime: 2000
+            },
+            icon: {
+                emoji: '✨',
+                fontSize: 72,            // 더 큰 아이콘
+                y: 60,
+                animation: {
+                    type: 'rotate',      // 회전 애니메이션
+                    duration: 2000,
+                    easing: 'ease-in-out'
+                }
+            }
+        },
+        // 패배 팝업 설정 - 글래스모피즘
+        defeat: {
+            layout: {
+                modal: {
+                    width: 800,
+                    height: 650, // 더 큰 모달
+                    borderRadius: 30
+                },
+                stats: {
+                    startY: 280, // 통계 시작 위치
+                    spacing: 32, // 통계 항목 간격
+                    fontSize: 18,
+                    humorFontSize: 16, // 유머 통계는 약간 작게
+                    leftColumn: 80,
+                    rightColumn: 420,
+                    columnWidth: 300
+                },
+                handDisplay: {
+                    startY: 180,
+                    cardScale: 0.35, // 미니 카드 크기
+                    spacing: 55,
+                    maxCards: 10
+                },
+                confirmButton: {
+                    y: 570,
+                    width: 180,
+                    height: 50,
+                    fontSize: 20,
+                    borderRadius: 25
+                }
+            },
+            colors: {
+                background: 'rgba(0, 0, 0, 0.2)',            // 반투명 다크 글래스
+                gradient: {
+                    start: 'rgba(239, 68, 68, 0.2)',         // 연한 빨강
+                    end: 'rgba(109, 40, 217, 0.2)'           // 연한 보라
+                },
+                border: 'rgba(255, 255, 255, 0.2)',
+                title: '#FFFFFF',
+                message: 'rgba(255, 255, 255, 0.8)',
+                stats: 'rgba(255, 255, 255, 0.85)',
+                statValue: '#FFD700', // 황금색으로 값 강조
+                humor: 'rgba(255, 255, 255, 0.7)', // 유머 텍스트는 조금 연하게
+                button: {
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    border: 'rgba(255, 255, 255, 0.3)',
+                    text: '#FFFFFF',
+                    hover: 'rgba(255, 255, 255, 0.25)'
+                },
+                glow: {
+                    color: 'rgba(239, 68, 68, 0.4)',
+                    blur: 15,
+                    spread: 2
+                }
+            },
+            title: {
+                fontSize: 56,
+                y: 80, // 위로 올림
+                fontWeight: '900',
+                letterSpacing: 2,
+                textShadow: {
+                    blur: 8,
+                    color: 'rgba(239, 68, 68, 0.6)'
+                }
+            },
+            message: {
+                fontSize: 24, // 조금 작게
+                y: 130, // 위로 올림
+                lineHeight: 30,
+                textShadow: {
+                    blur: 5,
+                    color: 'rgba(255, 255, 255, 0.3)'
+                }
+            },
+            icon: {
+                emoji: '😢',
+                fontSize: 64, // 조금 작게
+                y: 45, // 위로 올림
+                animation: {
+                    type: 'shake',       // 흔들림 애니메이션
+                    duration: 1000,
+                    intensity: 3
+                }
+            }
+        }
     }
 };
 
