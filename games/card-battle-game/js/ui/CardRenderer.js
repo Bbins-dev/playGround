@@ -167,6 +167,7 @@ class CardRenderer {
         ctx.textBaseline = 'middle';
 
         const leftX = x + 10;
+        const centerX = x + width / 2;
         const rightX = x + width - 10;
         const statsY = y + height * this.style.layout.stats.y;
 
@@ -174,6 +175,12 @@ class CardRenderer {
         ctx.textAlign = 'left';
         ctx.fillStyle = '#ffeb3b';
         this.drawTextWithOutline(ctx, `⚔${card.power}`, leftX, statsY);
+
+        // 발동횟수 (중앙)
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#ff9800';
+        const activationCount = card.getDisplayActivationCount ? card.getDisplayActivationCount() : card.activationCount;
+        this.drawTextWithOutline(ctx, `🔄${activationCount}`, centerX, statsY);
 
         // 명중률 (우측)
         ctx.textAlign = 'right';

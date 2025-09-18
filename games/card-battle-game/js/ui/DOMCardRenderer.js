@@ -203,6 +203,7 @@ class DOMCardRenderer {
             transform: translateY(-50%);
             display: flex;
             justify-content: space-between;
+            align-items: center;
             padding: 0 10px;
             font-size: ${fontSize}px;
             font-family: Arial;
@@ -217,6 +218,15 @@ class DOMCardRenderer {
         `;
         powerElement.textContent = `⚔${card.power}`;
 
+        // 발동횟수 (중앙)
+        const activationElement = document.createElement('span');
+        activationElement.style.cssText = `
+            color: #ff9800;
+            ${this.getTextOutlineStyle()}
+        `;
+        const activationCount = card.getDisplayActivationCount ? card.getDisplayActivationCount() : card.activationCount;
+        activationElement.textContent = `🔄${activationCount}`;
+
         // 명중률 (우측)
         const accuracyElement = document.createElement('span');
         accuracyElement.style.cssText = `
@@ -226,6 +236,7 @@ class DOMCardRenderer {
         accuracyElement.textContent = `🎯${card.accuracy}%`;
 
         statsContainer.appendChild(powerElement);
+        statsContainer.appendChild(activationElement);
         statsContainer.appendChild(accuracyElement);
 
         return statsContainer;

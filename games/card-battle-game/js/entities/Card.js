@@ -15,6 +15,10 @@ class Card {
         this.descriptionKey = cardData.descriptionKey; // i18n 키
         this.description = cardData.description || ''; // 백업용
 
+        // 마구때리기 카드 특수 속성
+        this.isRandomBash = cardData.isRandomBash || false;
+        this.getRandomActivationCount = cardData.getRandomActivationCount;
+
         // 카드 효과 (함수)
         this.effect = cardData.effect || this.defaultEffect;
 
@@ -117,6 +121,14 @@ class Card {
     // 카드가 발동 가능한지 체크
     canActivate() {
         return this.isActive && this.currentActivations < this.activationCount;
+    }
+
+    // 발동횟수 표시용 (마구때리기 카드는 "3-5", 일반 카드는 숫자)
+    getDisplayActivationCount() {
+        if (this.isRandomBash) {
+            return "3-5";
+        }
+        return this.activationCount.toString();
     }
 
     // 카드 복사 (새 인스턴스 생성)
