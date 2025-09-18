@@ -14,6 +14,7 @@ class CardSelection {
         // UI 상태
         this.currentIndex = 0;
         this.showConfirmation = false;
+        this.scrollY = 0;  // 스크롤 위치
 
         // 애니메이션 상태
         this.cardAnimations = new Map();
@@ -63,6 +64,7 @@ class CardSelection {
 
         this.selectedCards = [];
         this.currentIndex = 0;
+        this.scrollY = 0;  // 스크롤 초기화
         this.startRevealAnimation();
     }
 
@@ -74,6 +76,7 @@ class CardSelection {
         this.availableCards = rewardCards;
         this.selectedCards = [];
         this.currentIndex = 0;
+        this.scrollY = 0;  // 스크롤 초기화
         this.startRevealAnimation();
     }
 
@@ -86,13 +89,14 @@ class CardSelection {
         this.replaceableCards = replaceableCards;
         this.selectedCards = [];
         this.currentIndex = 0;
+        this.scrollY = 0;  // 스크롤 초기화
         this.startRevealAnimation();
     }
 
-    // 공개 애니메이션 시작
+    // 공개 애니메이션 시작 (비활성화)
     startRevealAnimation() {
-        this.revealAnimation.started = true;
-        this.revealAnimation.progress = 0;
+        this.revealAnimation.started = false;
+        this.revealAnimation.progress = 1;
         this.revealAnimation.startTime = Date.now();
     }
 
@@ -223,27 +227,37 @@ class CardSelection {
 
         // 설정값 사용
         const config = GameConfig.cardSelection.cards;
+        const scrollConfig = GameConfig.cardSelection.scroll;
         const startY = config.startY;
         const cardWidth = config.width;
         const cardHeight = config.height;
         const spacing = config.spacing;
+        const rowSpacing = config.rowSpacing;
         const cols = Math.min(this.availableCards.length, config.maxCols);
         const totalWidth = cols * spacing - (spacing - cardWidth);
         const centerX = GameConfig.canvas.width / 2;
         const startX = centerX - totalWidth / 2;
 
+        // 뷰포트 클리핑 설정
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(0, startY, canvas.width, scrollConfig.viewportHeight);
+        ctx.clip();
 
         this.availableCards.forEach((card, index) => {
-
             const col = index % cols;
             const row = Math.floor(index / cols);
             const x = startX + col * spacing;
-            const y = startY + row * (cardHeight + 30);
+            const y = startY + row * (cardHeight + rowSpacing) - this.scrollY;
+
+            // 뷰포트 밖의 카드는 렌더링 생략 (성능 최적화)
+            if (y + cardHeight < startY || y > startY + scrollConfig.viewportHeight) {
+                return;
+            }
 
             const isSelected = this.selectedCards.includes(card.id);
             const isHighlighted = index === this.currentIndex;
             const revealProgress = this.getCardRevealProgress(index);
-
 
             this.renderSelectableCard(ctx, card, x, y, cardWidth, cardHeight, {
                 isSelected,
@@ -253,6 +267,7 @@ class CardSelection {
             });
         });
 
+        ctx.restore();
     }
 
     // 선택 가능한 카드 렌더링
@@ -260,19 +275,6 @@ class CardSelection {
         const { isSelected, isHighlighted, revealProgress, index } = options;
 
         ctx.save();
-
-        // 카드 공개 애니메이션
-        if (revealProgress < 1) {
-            ctx.globalAlpha = revealProgress;
-            const scale = 0.5 + revealProgress * 0.5;
-            ctx.translate(x + width/2, y + height/2);
-            ctx.scale(scale, scale);
-            ctx.translate(-width/2, -height/2);
-            x = 0;
-            y = 0;
-        }
-
-        // 하이라이트 효과 제거 (클릭으로만 선택)
 
         // 통일된 카드 렌더러 사용
         this.cardRenderer.renderCard(ctx, card, x, y, width, height, {
@@ -573,15 +575,9 @@ class CardSelection {
         }
     }
 
-    // 카드 공개 진행도 가져오기
+    // 카드 공개 진행도 가져오기 (애니메이션 비활성화)
     getCardRevealProgress(index) {
-        if (!this.revealAnimation.started) return 1;
-
-        const elapsed = Date.now() - this.revealAnimation.startTime;
-        const delay = index * 200; // 카드별 200ms 딜레이
-        const progress = Math.max(0, (elapsed - delay) / 800); // 800ms 애니메이션
-
-        return Math.min(1, progress);
+        return 1; // 항상 완전히 표시
     }
 
     // 안내 메시지 가져오기
@@ -626,6 +622,7 @@ class CardSelection {
         const cardWidth = config.width;
         const cardHeight = config.height;
         const spacing = config.spacing;
+        const rowSpacing = config.rowSpacing;
         const cols = Math.min(this.availableCards.length, config.maxCols);
         const totalWidth = cols * spacing - (spacing - cardWidth);
         const centerX = GameConfig.canvas.width / 2;
@@ -635,7 +632,7 @@ class CardSelection {
             const col = index % cols;
             const row = Math.floor(index / cols);
             const cardX = startX + col * spacing;
-            const cardY = startY + row * (cardHeight + 30);
+            const cardY = startY + row * (cardHeight + rowSpacing) - this.scrollY;
 
             if (x >= cardX && x <= cardX + cardWidth &&
                 y >= cardY && y <= cardY + cardHeight) {
@@ -650,6 +647,21 @@ class CardSelection {
                 }
             }
         });
+    }
+
+    // 휠 입력 처리 (스크롤)
+    handleWheelInput(deltaY) {
+        const scrollConfig = GameConfig.cardSelection.scroll;
+        const config = GameConfig.cardSelection.cards;
+
+        // 총 행 수 계산
+        const cols = Math.min(this.availableCards.length, config.maxCols);
+        const totalRows = Math.ceil(this.availableCards.length / cols);
+        const maxScrollY = Math.max(0, (totalRows * (config.height + config.rowSpacing)) - scrollConfig.viewportHeight);
+
+        // 스크롤 위치 업데이트
+        this.scrollY += deltaY > 0 ? scrollConfig.speed : -scrollConfig.speed;
+        this.scrollY = Math.max(0, Math.min(maxScrollY, this.scrollY));
     }
 
     // 확인 대화상자 포인터 입력 처리

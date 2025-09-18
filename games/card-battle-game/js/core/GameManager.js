@@ -147,7 +147,8 @@ class GameManager {
 
         // 키보드 이벤트 (resize 이벤트 제거 - 고정 크기)
         this.addEventListeners([
-            [document, 'keydown', (e) => this.handleKeyDown(e)]
+            [document, 'keydown', (e) => this.handleKeyDown(e)],
+            [this.canvas, 'wheel', (e) => this.handleWheelInput(e)]
         ]);
 
         // Canvas 이벤트는 메뉴가 DOM으로 전환되어 더 이상 필요하지 않음
@@ -462,6 +463,16 @@ class GameManager {
             case 'g':
                 this.showCardGallery();
                 break;
+        }
+    }
+
+    // 휠 이벤트 처리 (스크롤)
+    handleWheelInput(event) {
+        event.preventDefault(); // 페이지 스크롤 방지
+
+        // 현재 화면에 휠 이벤트 전달
+        if (this.currentScreen && this.currentScreen.handleWheelInput) {
+            this.currentScreen.handleWheelInput(event.deltaY);
         }
     }
 

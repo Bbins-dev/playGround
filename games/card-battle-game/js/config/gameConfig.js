@@ -267,10 +267,16 @@ const GameConfig = {
         },
         cards: {
             startY: 180,        // 카드 그리드 시작 Y 위치
-            width: 140,         // 카드 너비
-            height: 190,        // 카드 높이
-            spacing: 160,       // 카드 간격
-            maxCols: 5          // 최대 열 수
+            width: 240,         // 카드 너비 (갤러리와 동일)
+            height: 336,        // 카드 높이 (갤러리와 동일)
+            spacing: 260,       // 카드 간격
+            maxCols: 4,         // 최대 열 수 (큰 카드에 맞게 조정)
+            rowSpacing: 40      // 카드 행 간격
+        },
+        scroll: {
+            speed: 50,          // 스크롤 속도
+            maxVisibleRows: 2,  // 한 번에 표시할 최대 행 수
+            viewportHeight: 550 // 가시 영역 높이 (카드 영역에 맞게 조정)
         }
     },
 
