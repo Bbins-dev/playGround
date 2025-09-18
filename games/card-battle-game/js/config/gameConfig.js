@@ -211,7 +211,7 @@ const GameConfig = {
         },
         // 속성 라벨 설정
         elementLabel: {
-            position: { x: 0.08, y: 0.08 },  // 카드 크기 대비 비율 (좌상단)
+            position: { x: 0.04, y: 0.08 },  // 카드 크기 대비 비율 (좌상단)
             fontSize: 0.045,                  // 카드 높이 대비 폰트 크기
             padding: { x: 6, y: 3 },          // 라벨 내부 패딩
             backgroundOpacity: 0.9,           // 배경 투명도
