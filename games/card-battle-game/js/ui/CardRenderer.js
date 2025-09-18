@@ -82,8 +82,8 @@ class CardRenderer {
         const statsY = y + height * this.style.layout.stats.y;
         const descY = y + height * this.style.layout.description.y;
 
-        // 속성 이모지
-        this.drawElementEmoji(ctx, card, centerX, emojiY, emojiSize);
+        // 카드 종류 이모지
+        this.drawTypeEmoji(ctx, card, centerX, emojiY, emojiSize);
 
         // 카드 이름
         this.drawCardName(ctx, card, centerX, nameY, nameSize, width);
@@ -101,17 +101,17 @@ class CardRenderer {
 
     }
 
-    // 속성 이모지 그리기
-    drawElementEmoji(ctx, card, x, y, fontSize) {
-        const elementConfig = GameConfig.elements[card.element];
-        if (!elementConfig?.emoji) return;
+    // 카드 종류 이모지 그리기
+    drawTypeEmoji(ctx, card, x, y, fontSize) {
+        const typeConfig = GameConfig.cardTypes[card.type];
+        if (!typeConfig?.emoji) return;
 
         ctx.font = `${fontSize}px Arial`;
         ctx.fillStyle = '#fff';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
-        this.drawTextWithOutline(ctx, elementConfig.emoji, x, y);
+        this.drawTextWithOutline(ctx, typeConfig.emoji, x, y);
     }
 
     // 카드 이름 그리기 (개선된 동적 크기 조절)

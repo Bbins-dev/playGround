@@ -82,8 +82,8 @@ class DOMCardRenderer {
         const statsSize = Math.floor(height * this.style.fontRatio.stats);
         const descSize = Math.floor(height * this.style.fontRatio.description);
 
-        // 속성 이모지
-        content.appendChild(this.createElementEmoji(card, emojiSize, height));
+        // 카드 종류 이모지
+        content.appendChild(this.createTypeEmoji(card, emojiSize, height));
 
         // 카드 이름
         content.appendChild(this.createCardName(card, nameSize, height, width));
@@ -105,10 +105,10 @@ class DOMCardRenderer {
         return content;
     }
 
-    // 속성 이모지 (CardRenderer.drawElementEmoji와 동일)
-    createElementEmoji(card, fontSize, cardHeight) {
-        const elementConfig = GameConfig.elements[card.element];
-        if (!elementConfig?.emoji) return document.createTextNode('');
+    // 카드 종류 이모지 (CardRenderer.drawTypeEmoji와 동일)
+    createTypeEmoji(card, fontSize, cardHeight) {
+        const typeConfig = GameConfig.cardTypes[card.type];
+        if (!typeConfig?.emoji) return document.createTextNode('');
 
         const emoji = document.createElement('div');
         const y = cardHeight * this.style.layout.emoji.y;
@@ -123,7 +123,7 @@ class DOMCardRenderer {
             text-align: center;
             ${this.getTextOutlineStyle()}
         `;
-        emoji.textContent = elementConfig.emoji;
+        emoji.textContent = typeConfig.emoji;
 
         return emoji;
     }
