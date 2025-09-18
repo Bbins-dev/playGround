@@ -15,6 +15,9 @@ class UIManager {
         this.currentScreen = 'menu'; // 'menu' | 'battle' | 'cardSelection' | 'gallery'
         this.isInteractive = true;
 
+        // 갤러리에서 전투 일시정지 상태 추적
+        this.battleWasPaused = false;
+
         // 렌더링 최적화
         this.renderCount = 0;
         this.lastLogTime = 0;
@@ -469,6 +472,14 @@ class UIManager {
         const grid = document.getElementById('card-gallery-grid');
 
         if (modal && grid) {
+            // 전투 중이면 게임 일시정지
+            if (this.gameManager.gameState === 'battle' && this.gameManager.battleSystem) {
+                this.gameManager.battleSystem.pause();
+                this.battleWasPaused = true; // 갤러리에서 일시정지했음을 기록
+            } else {
+                this.battleWasPaused = false;
+            }
+
             // 갤러리 내용 생성
             this.populateCardGallery(grid);
             this.showModal(modal);
@@ -517,6 +528,12 @@ class UIManager {
     // 카드 갤러리 숨기기
     hideCardGallery() {
         this.hideModal(this.modals.cardGallery);
+
+        // 갤러리에서 일시정지했던 전투라면 재개
+        if (this.battleWasPaused && this.gameManager.gameState === 'battle' && this.gameManager.battleSystem) {
+            this.gameManager.battleSystem.resume();
+            this.battleWasPaused = false;
+        }
     }
 
     // 카드 선택 건너뛰기
@@ -545,6 +562,12 @@ class UIManager {
         Object.values(this.modals).forEach(modal => {
             this.hideModal(modal);
         });
+
+        // 갤러리에서 일시정지했던 전투라면 재개
+        if (this.battleWasPaused && this.gameManager.gameState === 'battle' && this.gameManager.battleSystem) {
+            this.gameManager.battleSystem.resume();
+            this.battleWasPaused = false;
+        }
     }
 
     // 카드 툴팁 표시

@@ -28,6 +28,9 @@ class BattleSystem {
         // 턴 스킵 플래그
         this.turnSkip = false;
 
+        // 일시정지 상태
+        this.isPaused = false;
+
         // 전투 통계
         this.battleStats = {
             totalTurns: 0,
@@ -309,14 +312,24 @@ class BattleSystem {
         // 전투 종료 체크
         if (!this.checkBattleEnd()) {
             // 다음 턴 시작 (타이머 추적)
-            const timerId = setTimeout(() => {
-                // 타이머 완료 후 배열에서 제거
-                this.activeTimers = this.activeTimers.filter(id => id !== timerId);
+            const checkAndStartTurn = () => {
+                // 일시정지 중이면 다시 체크
+                if (this.isPaused) {
+                    const timerId = setTimeout(checkAndStartTurn, 100);
+                    this.activeTimers.push(timerId);
+                    return;
+                }
 
                 // 전투가 아직 진행 중인 경우에만 다음 턴 시작
                 if (this.battlePhase !== 'ended') {
                     this.startTurn();
                 }
+            };
+
+            const timerId = setTimeout(() => {
+                // 타이머 완료 후 배열에서 제거
+                this.activeTimers = this.activeTimers.filter(id => id !== timerId);
+                checkAndStartTurn();
             }, 1000 / this.gameSpeed);
 
             // 활성 타이머 목록에 추가
@@ -353,6 +366,11 @@ class BattleSystem {
 
     // 업데이트 (게임 루프에서 호출)
     update(deltaTime) {
+        // 일시정지 상태에서는 업데이트하지 않음
+        if (this.isPaused) {
+            return;
+        }
+
         // 현재는 턴 기반이므로 특별한 업데이트 없음
         // 추후 애니메이션 동기화 등에 사용 가능
     }
@@ -360,6 +378,21 @@ class BattleSystem {
     // 게임 속도 설정
     setGameSpeed(speed) {
         this.gameSpeed = speed;
+    }
+
+    // 전투 일시정지
+    pause() {
+        this.isPaused = true;
+    }
+
+    // 전투 재개
+    resume() {
+        this.isPaused = false;
+    }
+
+    // 일시정지 상태 체크
+    isPausedState() {
+        return this.isPaused;
     }
 
     // 전투 정리 (강화된 타이머 정리 포함)
@@ -436,10 +469,21 @@ class BattleSystem {
                 return;
             }
 
-            const timerId = setTimeout(() => {
+            const checkAndResolve = () => {
+                // 일시정지 중이면 다시 체크
+                if (this.isPaused) {
+                    const timerId = setTimeout(checkAndResolve, 100);
+                    this.activeTimers.push(timerId);
+                    return;
+                }
+
                 // 타이머 완료 후 배열에서 제거
-                this.activeTimers = this.activeTimers.filter(id => id !== timerId);
                 resolve();
+            };
+
+            const timerId = setTimeout(() => {
+                this.activeTimers = this.activeTimers.filter(id => id !== timerId);
+                checkAndResolve();
             }, ms);
 
             // 활성 타이머 목록에 추가
