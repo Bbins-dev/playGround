@@ -9,24 +9,26 @@ class HPBarSystem {
         // HP 바 내부 요소들
         this.playerFill = this.playerHPBar.querySelector('.hp-bar-fill');
         this.playerNumber = this.playerHPBar.querySelector('.hp-number');
+        this.playerName = this.playerHPBar.querySelector('.entity-name');
+        this.playerDefenseInfo = this.playerHPBar.querySelector('.defense-info');
         this.playerStatus = document.getElementById('player-status-effects');
 
         this.enemyFill = this.enemyHPBar.querySelector('.hp-bar-fill');
         this.enemyNumber = this.enemyHPBar.querySelector('.hp-number');
+        this.enemyName = this.enemyHPBar.querySelector('.entity-name');
+        this.enemyDefenseInfo = this.enemyHPBar.querySelector('.defense-info');
         this.enemyStatus = document.getElementById('enemy-status-effects');
 
-        // 방어력 바 요소들
-        this.playerDefenseBar = this.playerHPBar.querySelector('.defense-bar-fill');
-        this.playerDefenseNumber = this.playerHPBar.querySelector('.defense-number');
+        // 방어력 오버레이 요소들
+        this.playerDefenseOverlay = this.playerHPBar.querySelector('.defense-overlay');
+        this.playerDefenseNumber = this.playerHPBar.querySelector('.defense-number-overlay');
         this.playerThornsInfo = this.playerHPBar.querySelector('.thorns-info');
         this.playerThornsNumber = this.playerHPBar.querySelector('.thorns-number');
-        this.playerDefenseInfo = this.playerHPBar.querySelector('.defense-info');
 
-        this.enemyDefenseBar = this.enemyHPBar.querySelector('.defense-bar-fill');
-        this.enemyDefenseNumber = this.enemyHPBar.querySelector('.defense-number');
+        this.enemyDefenseOverlay = this.enemyHPBar.querySelector('.defense-overlay');
+        this.enemyDefenseNumber = this.enemyHPBar.querySelector('.defense-number-overlay');
         this.enemyThornsInfo = this.enemyHPBar.querySelector('.thorns-info');
         this.enemyThornsNumber = this.enemyHPBar.querySelector('.thorns-number');
-        this.enemyDefenseInfo = this.enemyHPBar.querySelector('.defense-info');
 
         // 애니메이션 상태 추적
         this.animating = {
@@ -131,29 +133,45 @@ class HPBarSystem {
         });
     }
 
-    // 방어력 업데이트
+    // 방어력 오버레이 업데이트
     updateDefense(player, isPlayer = true) {
         const targetElements = isPlayer ? {
-            bar: this.playerDefenseBar,
+            overlay: this.playerDefenseOverlay,
             number: this.playerDefenseNumber,
+            defenseInfo: this.playerDefenseInfo,
             thornsInfo: this.playerThornsInfo,
-            thornsNumber: this.playerThornsNumber,
-            defenseInfo: this.playerDefenseInfo
+            thornsNumber: this.playerThornsNumber
         } : {
-            bar: this.enemyDefenseBar,
+            overlay: this.enemyDefenseOverlay,
             number: this.enemyDefenseNumber,
+            defenseInfo: this.enemyDefenseInfo,
             thornsInfo: this.enemyThornsInfo,
-            thornsNumber: this.enemyThornsNumber,
-            defenseInfo: this.enemyDefenseInfo
+            thornsNumber: this.enemyThornsNumber
         };
 
-        // 방어력 바 업데이트
-        const maxDisplay = GameConfig.defenseUI.bar.maxDisplay;
-        const percentage = Math.min((player.defense / maxDisplay) * 100, 100);
-        targetElements.bar.style.width = percentage + '%';
+        if (player.defense > 0) {
+            // 방어력 오버레이 표시 및 크기 조정
+            // 최대 HP까지는 100% 비율로 표시, 그 이상은 100%로 고정
+            const maxHP = player.maxHP;
+            const percentage = Math.min((player.defense / maxHP) * 100, 100);
+            targetElements.overlay.style.width = percentage + '%';
 
-        // 방어력 숫자 업데이트
-        targetElements.number.textContent = player.defense;
+            // 방어력이 maxHP와 같거나 클 때 최대 효과 적용
+            if (player.defense >= maxHP) {
+                targetElements.overlay.classList.add('max-defense');
+            } else {
+                targetElements.overlay.classList.remove('max-defense');
+            }
+
+            // 방어력 정보 표시
+            targetElements.defenseInfo.classList.remove('hidden');
+            targetElements.number.textContent = player.defense;
+        } else {
+            // 방어력이 0일 때 숨김
+            targetElements.overlay.style.width = '0%';
+            targetElements.overlay.classList.remove('max-defense');
+            targetElements.defenseInfo.classList.add('hidden');
+        }
 
         // 가시 정보 업데이트
         if (player.thorns > 0) {
@@ -166,12 +184,12 @@ class HPBarSystem {
 
     // 방어력 깨지는 애니메이션
     showDefenseBreakEffect(isPlayer = true) {
-        const defenseInfo = isPlayer ? this.playerDefenseInfo : this.enemyDefenseInfo;
+        const defenseOverlay = isPlayer ? this.playerDefenseOverlay : this.enemyDefenseOverlay;
 
-        defenseInfo.classList.add('break-animation');
+        defenseOverlay.classList.add('shatter-animation');
         setTimeout(() => {
-            defenseInfo.classList.remove('break-animation');
-        }, 300);
+            defenseOverlay.classList.remove('shatter-animation');
+        }, 400); // gameConfig의 애니메이션 시간과 일치
     }
 
     // 화면 테두리 효과
@@ -228,6 +246,9 @@ class HPBarSystem {
         this.updateHP(player, true);
         this.updateHP(enemy, false);
 
+        // 이름 업데이트
+        this.updateNames(player, enemy);
+
         // 방어력 업데이트
         this.updateDefense(player, true);
         this.updateDefense(enemy, false);
@@ -235,6 +256,16 @@ class HPBarSystem {
         // 상태이상 업데이트
         this.updateStatusEffects(player, true);
         this.updateStatusEffects(enemy, false);
+    }
+
+    // 이름 업데이트
+    updateNames(player, enemy) {
+        if (this.playerName && player.name) {
+            this.playerName.textContent = player.name;
+        }
+        if (this.enemyName && enemy.name) {
+            this.enemyName.textContent = enemy.name;
+        }
     }
 
     // 대미지 숫자 표시 (강화 버전)
@@ -346,15 +377,17 @@ class HPBarSystem {
         this.playerNumber.textContent = '10/10';
         this.enemyNumber.textContent = '10/10';
 
-        // 방어력 바 리셋
-        if (this.playerDefenseBar) {
-            this.playerDefenseBar.style.width = '0%';
-            this.playerDefenseNumber.textContent = '0';
+        // 방어력 오버레이 리셋
+        if (this.playerDefenseOverlay) {
+            this.playerDefenseOverlay.style.width = '0%';
+            this.playerDefenseOverlay.classList.remove('max-defense');
+            this.playerDefenseNumber.classList.add('hidden');
             this.playerThornsInfo.classList.add('hidden');
         }
-        if (this.enemyDefenseBar) {
-            this.enemyDefenseBar.style.width = '0%';
-            this.enemyDefenseNumber.textContent = '0';
+        if (this.enemyDefenseOverlay) {
+            this.enemyDefenseOverlay.style.width = '0%';
+            this.enemyDefenseOverlay.classList.remove('max-defense');
+            this.enemyDefenseNumber.classList.add('hidden');
             this.enemyThornsInfo.classList.add('hidden');
         }
 

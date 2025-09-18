@@ -453,12 +453,52 @@ const GameConfig = {
 
     // 방어력 UI 설정
     defenseUI: {
+        // 오버레이 시스템 설정
+        overlay: {
+            background: 'linear-gradient(90deg, #c0c7d1, #f5f7fa, #e8eaf0)', // 은색 메탈릭 그라데이션
+            opacity: 0.9,
+            borderColor: 'rgba(169, 169, 169, 0.6)',
+            borderWidth: 1,
+            transition: 'width 0.4s ease-out',
+            shadows: {
+                inset: 'inset 0 1px 3px rgba(255, 255, 255, 0.6), inset 0 -1px 3px rgba(0, 0, 0, 0.2)',
+                outer: '0 1px 2px rgba(0, 0, 0, 0.1)'
+            },
+            maxDefense: {
+                background: 'linear-gradient(90deg, #b8c6db, #f5f7fa, #c0c7d1)',
+                shadow: '0 2px 4px rgba(0, 0, 0, 0.2), 0 0 8px rgba(169, 169, 169, 0.4)'
+            }
+        },
+        numbers: {
+            fontSize: 14,
+            fontWeight: 'bold',
+            color: '#2c3e50', // 어두운 색으로 HP와 구분
+            textShadow: '1px 1px 0 rgba(255, 255, 255, 0.8), -1px -1px 0 rgba(0, 0, 0, 0.2)',
+            position: { right: 8 }
+        },
+        animations: {
+            shatter: {
+                name: 'defenseShatter',
+                duration: '0.4s',
+                timing: 'ease-out'
+            }
+        },
+        thorns: {
+            position: { top: -25, right: 0 }, // HP 바 위쪽에 표시
+            background: 'rgba(0, 0, 0, 0.8)',
+            padding: '2px 6px',
+            borderRadius: 8,
+            fontSize: 12,
+            iconSize: 12,
+            numberSize: 11
+        },
+        // 레거시 설정 (제거 예정)
         bar: {
             height: 8,
             borderRadius: 4,
             backgroundColor: '#34495e',
             fillColor: 'linear-gradient(90deg, #3498db, #2980b9)',
-            maxDisplay: 20  // 최대 표시 방어력
+            maxDisplay: 20  // HP 최대값과 동일하게 설정 (10 기준)
         },
         icons: {
             shield: '🛡️',

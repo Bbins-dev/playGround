@@ -424,13 +424,10 @@ body {
     border-radius: inherit;
 }
 
-.hp-bar-text {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    align-items: center;
+.hp-label {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .hp-number {
@@ -438,12 +435,6 @@ body {
     font-weight: bold;
     color: white;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-}
-
-.hp-label {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.9);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 /* 메인 메뉴 DOM 버튼들 (Canvas 메뉴 대체) */
@@ -563,60 +554,107 @@ body {
     border: 1px solid white;
 }
 
-/* 방어력 바 시스템 */
-.defense-bar-container {
-    position: relative;
-    width: 100%;
-    margin-top: 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.defense-bar {
-    flex: 1;
-    height: 8px;
-    background: #34495e;
-    border-radius: 4px;
-    overflow: hidden;
-    position: relative;
-}
-
-.defense-bar-fill {
+/* 방어력 오버레이 시스템 */
+.defense-overlay {
     position: absolute;
-    left: 0;
+    right: 0; /* 오른쪽 정렬 */
     top: 0;
     height: 100%;
-    background: linear-gradient(90deg, #3498db, #2980b9);
-    transition: width 0.3s ease;
+    background: linear-gradient(90deg, #c0c7d1, #f5f7fa, #e8eaf0); /* 은색 메탈릭 그라데이션 */
     border-radius: inherit;
+    z-index: 2; /* HP 바 위에 표시 */
+    transition: width 0.4s ease-out;
+    opacity: 0.9;
+    border: 1px solid rgba(169, 169, 169, 0.6);
+    box-shadow:
+        inset 0 1px 3px rgba(255, 255, 255, 0.6),
+        inset 0 -1px 3px rgba(0, 0, 0, 0.2),
+        0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 방어력 수치 오버레이 */
+.defense-number-overlay {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    font-weight: bold;
+    color: #2c3e50; /* 어두운 색으로 HP와 구분 */
+    text-shadow:
+        1px 1px 0 rgba(255, 255, 255, 0.8),
+        -1px -1px 0 rgba(0, 0, 0, 0.2);
+    z-index: 3;
+    transition: opacity 0.3s ease;
+}
+
+.defense-number-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* HP 바 텍스트 위치 조정 */
+.hp-bar-text {
+    position: relative;
+    z-index: 3; /* 방어력 오버레이 위에 표시 */
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    padding: 0 8px;
+}
+
+.hp-info {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.entity-name {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    white-space: nowrap;
 }
 
 .defense-info {
     display: flex;
     align-items: center;
-    gap: 4px;
-    font-size: 14px;
-    color: white;
+    flex-shrink: 0;
+    color: #3498db;
+    font-size: 12px;
+    font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-.defense-icon {
-    font-size: 16px;
+.defense-info.hidden {
+    display: none;
 }
 
-.defense-number {
-    font-weight: bold;
-    min-width: 20px;
-    text-align: center;
-}
-
+/* 가시 정보 재배치 */
 .thorns-info {
+    position: absolute;
+    top: -25px; /* HP 바 위쪽에 표시 */
+    right: 0;
     display: flex;
     align-items: center;
-    gap: 2px;
-    margin-left: 8px;
+    gap: 3px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
     transition: opacity 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .thorns-info.hidden {
@@ -625,25 +663,52 @@ body {
 }
 
 .thorns-icon {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .thorns-number {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: bold;
 }
 
 /* 방어력 깨지는 애니메이션 */
-@keyframes shieldBreak {
-    0% { transform: scale(1) rotate(0deg); }
-    25% { transform: scale(1.2) rotate(-5deg); }
-    50% { transform: scale(0.8) rotate(5deg); }
-    75% { transform: scale(1.1) rotate(-2deg); }
-    100% { transform: scale(1) rotate(0deg); }
+@keyframes defenseShatter {
+    0% {
+        transform: scale(1);
+        opacity: 0.9;
+    }
+    25% {
+        transform: scale(1.05) rotateX(5deg);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scale(0.95) rotateX(-5deg);
+        opacity: 0.5;
+        filter: brightness(1.3);
+    }
+    75% {
+        transform: scale(1.02) rotateX(2deg);
+        opacity: 0.3;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.9;
+        filter: brightness(1);
+    }
 }
 
-.defense-info.break-animation {
-    animation: shieldBreak 0.3s ease-out;
+.defense-overlay.shatter-animation {
+    animation: defenseShatter 0.4s ease-out;
+}
+
+/* 방어력 오버레이가 최대일 때 효과 */
+.defense-overlay.max-defense {
+    background: linear-gradient(90deg, #b8c6db, #f5f7fa, #c0c7d1);
+    box-shadow:
+        inset 0 1px 4px rgba(255, 255, 255, 0.8),
+        inset 0 -1px 4px rgba(0, 0, 0, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.2),
+        0 0 8px rgba(169, 169, 169, 0.4);
 }
 
 /* 대미지 플로팅 숫자 */
@@ -799,6 +864,17 @@ body {
         3px -3px 0 #000,
         -3px -3px 0 #000,
         0 0 10px rgba(231, 76, 60, 0.5); /* 빨간 글로우 */
+}
+
+.miss-number {
+    color: #95a5a6 !important;
+    font-size: 48px !important;
+    text-shadow:
+        2px 2px 0 #000,
+        -2px 2px 0 #000,
+        2px -2px 0 #000,
+        -2px -2px 0 #000,
+        0 0 8px rgba(149, 165, 166, 0.5) !important; /* 회색 글로우 */
 }
 
 /* 반응형 폰트 크기 */
