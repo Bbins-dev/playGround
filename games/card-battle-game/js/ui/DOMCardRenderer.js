@@ -265,13 +265,29 @@ class DOMCardRenderer {
             font-weight: bold;
         `;
 
-        // 공격력 (좌측)
+        // 카드 타입별 이모티콘 가져오기
+        const cardType = GameConfig.cardTypes[card.type] || GameConfig.cardTypes.attack;
+        const powerEmoji = cardType.statEmojis ? cardType.statEmojis.power : '💪';
+        const accuracyEmoji = cardType.statEmojis ? cardType.statEmojis.accuracy : '🎯';
+
+        // 주 스탯 (좌측) - 타입별 처리
         const powerElement = document.createElement('span');
         powerElement.style.cssText = `
             color: #fff;
             ${this.getTextOutlineStyle()}
         `;
-        powerElement.textContent = `💪${card.power}`;
+
+        if (card.type === 'status' && card.power === 0) {
+            // 상태이상 카드에서 주 스탯이 없는 경우 (도발 등)
+            powerElement.textContent = '';
+            powerElement.style.display = 'none';
+        } else if (card.type === 'status' && card.activationCount > 1) {
+            // 상태이상 카드에서 턴 기반인 경우
+            powerElement.textContent = `${powerEmoji}${card.activationCount}턴`;
+        } else {
+            // 일반적인 경우 (공격력, 방어력, 버프/디버프 수치)
+            powerElement.textContent = `${powerEmoji}${card.power}`;
+        }
 
         // 발동횟수 (중앙)
         const activationElement = document.createElement('span');
@@ -282,13 +298,13 @@ class DOMCardRenderer {
         const activationCount = card.getDisplayActivationCount ? card.getDisplayActivationCount() : card.activationCount;
         activationElement.textContent = `🔄${activationCount}`;
 
-        // 명중률 (우측)
+        // 발동률 (우측)
         const accuracyElement = document.createElement('span');
         accuracyElement.style.cssText = `
             color: #fff;
             ${this.getTextOutlineStyle()}
         `;
-        accuracyElement.textContent = `🎯${card.accuracy}%`;
+        accuracyElement.textContent = `${accuracyEmoji}${card.accuracy}%`;
 
         statsContainer.appendChild(powerElement);
         statsContainer.appendChild(activationElement);

@@ -230,10 +230,24 @@ class CardRenderer {
         const rightX = x + width - 15;
         const statsY = y + height * this.style.layout.stats.y;
 
-        // 공격력 (좌측)
+        // 카드 타입별 이모티콘 가져오기
+        const cardType = GameConfig.cardTypes[card.type] || GameConfig.cardTypes.attack;
+        const powerEmoji = cardType.statEmojis ? cardType.statEmojis.power : '💪';
+        const accuracyEmoji = cardType.statEmojis ? cardType.statEmojis.accuracy : '🎯';
+
+        // 주 스탯 (좌측) - 타입별 처리
         ctx.textAlign = 'left';
         ctx.fillStyle = '#fff';
-        this.drawTextWithOutline(ctx, `💪${card.power}`, leftX, statsY);
+        if (card.type === 'status' && card.power === 0) {
+            // 상태이상 카드에서 주 스탯이 없는 경우 (도발 등)
+            // 주 스탯 표시 안 함
+        } else if (card.type === 'status' && card.activationCount > 1) {
+            // 상태이상 카드에서 턴 기반인 경우
+            this.drawTextWithOutline(ctx, `${powerEmoji}${card.activationCount}턴`, leftX, statsY);
+        } else {
+            // 일반적인 경우 (공격력, 방어력, 버프/디버프 수치)
+            this.drawTextWithOutline(ctx, `${powerEmoji}${card.power}`, leftX, statsY);
+        }
 
         // 발동횟수 (중앙)
         ctx.textAlign = 'center';
@@ -241,10 +255,10 @@ class CardRenderer {
         const activationCount = card.getDisplayActivationCount ? card.getDisplayActivationCount() : card.activationCount;
         this.drawTextWithOutline(ctx, `🔄${activationCount}`, centerX, statsY);
 
-        // 명중률 (우측)
+        // 발동률 (우측)
         ctx.textAlign = 'right';
         ctx.fillStyle = '#fff';
-        this.drawTextWithOutline(ctx, `🎯${card.accuracy}%`, rightX, statsY);
+        this.drawTextWithOutline(ctx, `${accuracyEmoji}${card.accuracy}%`, rightX, statsY);
     }
 
     // 카드 설명 그리기

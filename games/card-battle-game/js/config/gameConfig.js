@@ -108,12 +108,48 @@ const GameConfig = {
 
     // 카드 타입
     cardTypes: {
-        attack: { nameKey: 'auto_battle_card_game.ui.card_types.attack', name: '공격', color: '#E74C3C', emoji: '⚔️' },
-        defense: { nameKey: 'auto_battle_card_game.ui.card_types.defense', name: '방어', color: '#3498DB', emoji: '🛡️' },
-        status: { nameKey: 'auto_battle_card_game.ui.card_types.status', name: '상태이상', color: '#9B59B6', emoji: '💀' },
-        buff: { nameKey: 'auto_battle_card_game.ui.card_types.buff', name: '버프', color: '#2ECC71', emoji: '⭐' },
-        debuff: { nameKey: 'auto_battle_card_game.ui.card_types.debuff', name: '디버프', color: '#E67E22', emoji: '💔' },
-        special: { nameKey: 'auto_battle_card_game.ui.card_types.special', name: '특수', color: '#F39C12', emoji: '💎' }
+        attack: {
+            nameKey: 'auto_battle_card_game.ui.card_types.attack',
+            name: '공격',
+            color: '#E74C3C',
+            emoji: '⚔️',
+            statEmojis: { power: '⚔️', accuracy: '🎯' }
+        },
+        defense: {
+            nameKey: 'auto_battle_card_game.ui.card_types.defense',
+            name: '방어',
+            color: '#3498DB',
+            emoji: '🛡️',
+            statEmojis: { power: '🛡️', accuracy: '✅' }
+        },
+        status: {
+            nameKey: 'auto_battle_card_game.ui.card_types.status',
+            name: '상태이상',
+            color: '#9B59B6',
+            emoji: '💀',
+            statEmojis: { power: '⏱️', accuracy: '✅' }
+        },
+        buff: {
+            nameKey: 'auto_battle_card_game.ui.card_types.buff',
+            name: '버프',
+            color: '#2ECC71',
+            emoji: '⭐',
+            statEmojis: { power: '⬆️', accuracy: '✅' }
+        },
+        debuff: {
+            nameKey: 'auto_battle_card_game.ui.card_types.debuff',
+            name: '디버프',
+            color: '#E67E22',
+            emoji: '💔',
+            statEmojis: { power: '⬇️', accuracy: '✅' }
+        },
+        special: {
+            nameKey: 'auto_battle_card_game.ui.card_types.special',
+            name: '특수',
+            color: '#F39C12',
+            emoji: '💎',
+            statEmojis: { power: '💎', accuracy: '✅' }
+        }
     },
 
     // 플레이어 설정
