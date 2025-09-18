@@ -159,7 +159,7 @@ class EffectSystem {
                 className += ' miss-number';
                 // i18n 사용능여부 확인 후 빗나감 텍스트 설정
                 if (typeof window.i18n !== 'undefined' && window.i18n.t) {
-                    numberElement.textContent = window.i18n.t('auto_battle_card_game.battle.miss');
+                    numberElement.textContent = window.i18n.t('auto_battle_card_game.ui.miss');
                 } else {
                     numberElement.textContent = '빗나감!';
                 }
