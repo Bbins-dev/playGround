@@ -180,6 +180,17 @@ class Player {
         this.currentCardIndex = 0;
         this.cardsActivatedThisTurn = 0;
 
+        // 턴 시작 시 마구때리기 카드 activationCount 리셋
+        this.hand.forEach(card => {
+            if (card.isRandomBash && card.getRandomActivationCount) {
+                card.activationCount = card.getRandomActivationCount();
+                card.currentActivations = 0;
+            } else {
+                // 일반 카드들은 currentActivations만 리셋
+                card.currentActivations = 0;
+            }
+        });
+
         // 턴 시작 시 상태이상 처리 (화상)
         this.processStatusEffect('burn', 'start');
 

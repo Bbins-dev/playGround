@@ -129,16 +129,25 @@ class BattleSystem {
             if (this.battlePhase !== 'cardActivation') break;
 
             const card = activatableCards[i];
-            await this.activateCard(card, currentPlayer);
 
-            // 턴 스킵 체크 (웅크리기 등)
-            if (this.checkTurnSkip()) {
-                break; // 즉시 턴 종료
-            }
+            // 카드의 activationCount만큼 반복 발동
+            while (card.canActivate() && this.battlePhase === 'cardActivation') {
+                await this.activateCard(card, currentPlayer);
 
-            // 전투가 종료되었으면 중단
-            if (this.battlePhase === 'ended') {
-                return;
+                // 턴 스킵 체크 (웅크리기 등)
+                if (this.checkTurnSkip()) {
+                    break; // 즉시 턴 종료
+                }
+
+                // 전투가 종료되었으면 중단
+                if (this.battlePhase === 'ended') {
+                    return;
+                }
+
+                // 같은 카드의 연속 발동 간 짧은 딜레이
+                if (card.canActivate()) {
+                    await this.wait(300 / this.gameSpeed);
+                }
             }
 
             this.turnProgress.cardsActivated++;

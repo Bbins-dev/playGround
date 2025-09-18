@@ -54,39 +54,28 @@ const CardDatabase = {
             power: 1,
             accuracy: 100,
             cost: 1,
-            activationCount: 1,
+            activationCount: 3, // 기본값, 턴 시작 시 동적으로 3-5로 설정됨
             descriptionKey: 'auto_battle_card_game.ui.cards.random_bash.description',
-            getMinHits: function() { return 3; },
-            getMaxHits: function() { return 5; },
+            isRandomBash: true, // 마구때리기 카드임을 표시
+            getRandomActivationCount: function() {
+                return Math.floor(Math.random() * 3) + 3; // 3-5 랜덤
+            },
             effect: function(user, target, battleSystem) {
-                const minHits = this.getMinHits();
-                const maxHits = this.getMaxHits();
-                const hitCount = Math.floor(Math.random() * (maxHits - minHits + 1)) + minHits;
                 const singleDamage = this.power;
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
-
-                let totalDamage = 0;
-                const hits = [];
-
-                for (let i = 0; i < hitCount; i++) {
-                    const finalDamage = Math.floor(singleDamage * effectiveness);
-                    hits.push(finalDamage);
-                    totalDamage += finalDamage;
-                }
+                const finalDamage = Math.floor(singleDamage * effectiveness);
 
                 // 전투 시스템을 통해 대미지 적용
                 if (battleSystem && battleSystem.dealDamage) {
-                    battleSystem.dealDamage(target, totalDamage);
+                    battleSystem.dealDamage(target, finalDamage);
                 } else {
-                    target.hp = Math.max(0, target.hp - totalDamage);
+                    target.hp = Math.max(0, target.hp - finalDamage);
                 }
 
                 return {
                     success: true,
-                    messageKey: 'auto_battle_card_game.ui.multi_hit_damage',
-                    damage: totalDamage,
-                    hitCount: hitCount,
-                    hits: hits,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
                     element: this.element,
                     effectiveness: effectiveness
                 };
