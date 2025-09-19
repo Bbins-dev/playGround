@@ -159,6 +159,13 @@ const GameConfig = {
         defaultDefenseElement: 'normal'
     },
 
+    // 플레이어 이름 설정
+    playerName: {
+        maxLength: 12,              // 최대 이름 길이
+        allowEmpty: true,           // 빈 이름 허용 (기본값 사용)
+        trimWhitespace: true        // 공백 제거
+    },
+
     // 적 설정
     enemy: {
         maxHandSize: 20,

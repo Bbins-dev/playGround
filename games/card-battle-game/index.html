@@ -119,6 +119,22 @@
             </div>
         </div>
 
+        <!-- 플레이어 이름 입력 모달 -->
+        <div id="player-name-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2 data-i18n="auto_battle_card_game.ui.enter_player_name">플레이어 이름 입력</h2>
+                <div class="name-input-container">
+                    <input type="text" id="player-name-input" class="name-input"
+                           data-i18n-placeholder="auto_battle_card_game.ui.name_placeholder"
+                           placeholder="이름을 입력하세요" maxlength="12">
+                </div>
+                <div class="modal-buttons">
+                    <button id="confirm-name" class="ui-button primary" data-i18n="auto_battle_card_game.ui.confirm">확인</button>
+                    <button id="skip-name" class="ui-button secondary" data-i18n="auto_battle_card_game.ui.skip">건너뛰기</button>
+                </div>
+            </div>
+        </div>
+
         <!-- 카드 선택 모달 -->
         <div id="card-selection-modal" class="modal hidden">
             <div class="modal-content">
@@ -154,6 +170,7 @@
     <script src="js/ui/DOMCardRenderer.js"></script>
     <script src="js/ui/Renderer.js"></script>
     <script src="js/ui/UIManager.js"></script>
+    <script src="js/ui/PlayerNameModal.js"></script>
     <script src="js/ui/AnimationManager.js"></script>
     <script src="js/screens/MainMenu.js"></script>
     <script src="js/screens/CardSelection.js"></script>

@@ -39,6 +39,9 @@ class GameManager {
         // 이벤트 리스너들
         this.boundEventListeners = new Map();
 
+        // 플레이어 이름 모달
+        this.playerNameModal = null;
+
         // 디버그 모드
         this.debug = false;
 
@@ -158,6 +161,9 @@ class GameManager {
         // 화면들 초기화
         this.mainMenu = new MainMenu(this);
         this.cardSelection = new CardSelection(this);
+
+        // 플레이어 이름 모달 초기화
+        this.playerNameModal = new PlayerNameModal();
 
         // 현재 화면 설정
         this.currentScreen = this.mainMenu;
@@ -295,9 +301,9 @@ class GameManager {
         // 게임 통계 초기화
         this.initializeGameStats();
 
-        // 플레이어 생성
-        const playerName = I18nHelper.getText('auto_battle_card_game.ui.player') || '플레이어';
-        this.player = new Player(playerName, true);
+        // 플레이어 생성 (기본 이름 사용)
+        const defaultName = I18nHelper.getText('auto_battle_card_game.ui.default_player_name') || '플레이어';
+        this.player = new Player(defaultName, true);
 
         // 기본 카드 추가 (카드 선택을 건너뛴 경우의 폴백)
         if (this.player.hand.length === 0) {
@@ -318,8 +324,24 @@ class GameManager {
         // 게임 통계 초기화
         this.initializeGameStats();
 
+        // 플레이어 이름 입력 모달 표시
+        if (this.playerNameModal) {
+            this.playerNameModal.show((playerName) => {
+                this.onPlayerNameConfirmed(playerName);
+            });
+        } else {
+            console.error('플레이어 이름 모달이 초기화되지 않았습니다');
+            // 기본 이름으로 계속 진행
+            const defaultName = I18nHelper.getText('auto_battle_card_game.ui.default_player_name') || '플레이어';
+            this.onPlayerNameConfirmed(defaultName);
+        }
+    }
+
+    // 플레이어 이름 확정 후 처리
+    onPlayerNameConfirmed(playerName) {
+        console.log('GameManager: 플레이어 이름 확정:', playerName);
+
         // 플레이어 생성
-        const playerName = I18nHelper.getText('auto_battle_card_game.ui.player') || '플레이어';
         this.player = new Player(playerName, true);
 
         // 카드 선택 화면으로 이동
@@ -341,11 +363,11 @@ class GameManager {
     setInitialCards(cardIds) {
         console.log('GameManager: 초기 카드 설정', cardIds);
 
-        // 플레이어가 없으면 생성
+        // 플레이어가 없으면 생성 (기본 이름 사용)
         if (!this.player) {
             console.log('플레이어가 없어서 생성합니다');
-            const playerName = I18nHelper.getText('auto_battle_card_game.ui.player') || '플레이어';
-            this.player = new Player(playerName, true);
+            const defaultName = I18nHelper.getText('auto_battle_card_game.ui.default_player_name') || '플레이어';
+            this.player = new Player(defaultName, true);
         }
 
         if (this.player) {
