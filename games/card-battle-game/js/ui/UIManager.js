@@ -495,19 +495,9 @@ class UIManager {
         this.switchScreen('battle');
     }
 
-    // i18n 텍스트 가져오기 헬퍼 메서드
+    // i18n 텍스트 가져오기 헬퍼 메서드 - I18nHelper 사용
     getI18nText(key) {
-        if (window.I18n && typeof window.I18n.getText === 'function') {
-            return window.I18n.getText(key);
-        } else if (typeof getI18nText === 'function') {
-            return getI18nText(key);
-        }
-        // 기본값 반환 (한국어)
-        const fallbacks = {
-            'auto_battle_card_game.ui.confirm_back_to_homepage': '진행중인 게임은 저장되지 않습니다. 그래도 홈페이지로 돌아가시겠습니까?',
-            'auto_battle_card_game.ui.confirm_back_to_menu': '진행중인 게임은 저장되지 않습니다. 그래도 메뉴화면으로 돌아가시겠습니까?'
-        };
-        return fallbacks[key] || key;
+        return I18nHelper.getText(key);
     }
 
     // 홈페이지로 돌아가기 (게임 허브로)

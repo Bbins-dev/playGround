@@ -39,9 +39,8 @@ class BattleSystem {
             cardsActivated: 0
         };
 
-        // 타이머 추적 시스템
-        this.activeTimers = [];
-        this.abortController = null;
+        // TimerManager 사용으로 교체
+        this.timerManager = TimerManager;
     }
 
     // 전투 시작
@@ -314,12 +313,11 @@ class BattleSystem {
 
         // 전투 종료 체크
         if (!this.checkBattleEnd()) {
-            // 다음 턴 시작 (타이머 추적)
+            // 다음 턴 시작 (TimerManager 사용)
             const checkAndStartTurn = () => {
                 // 일시정지 중이면 다시 체크
                 if (this.isPaused) {
-                    const timerId = setTimeout(checkAndStartTurn, 100);
-                    this.activeTimers.push(timerId);
+                    this.timerManager.setTimeout(checkAndStartTurn, 100, 'pause-check');
                     return;
                 }
 
@@ -329,14 +327,7 @@ class BattleSystem {
                 }
             };
 
-            const timerId = setTimeout(() => {
-                // 타이머 완료 후 배열에서 제거
-                this.activeTimers = this.activeTimers.filter(id => id !== timerId);
-                checkAndStartTurn();
-            }, 1000 / this.gameSpeed);
-
-            // 활성 타이머 목록에 추가
-            this.activeTimers.push(timerId);
+            this.timerManager.setTimeout(checkAndStartTurn, GameConfig.timing.battle.pauseDelay / this.gameSpeed, 'turn-transition');
         }
     }
 

@@ -49,9 +49,10 @@ class Enemy extends Player {
         // i18n 시스템을 통해 적 이름 가져오기
         const nameKey = `auto_battle_card_game.ui.enemy_names.${enemyStage}`;
 
-        // 전역 i18n 함수가 있는지 확인하고 사용
-        if (typeof window.i18n !== 'undefined' && window.i18n.t) {
-            return window.i18n.t(nameKey);
+        // I18nHelper 사용
+        const localizedName = I18nHelper.getText(nameKey);
+        if (localizedName !== nameKey) {
+            return localizedName;
         }
 
         // i18n이 로드되지 않은 경우 기본 이름 반환

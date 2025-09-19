@@ -368,7 +368,7 @@ class DOMCardRenderer {
         return costElement;
     }
 
-    // 텍스트 외곽선 스타일 (CardRenderer.drawTextWithOutline과 동일)
+    // 텍스트 외곽선 스타일 - TextRenderer 사용
     getTextOutlineStyle() {
         if (!this.style.textOutline.enabled) {
             return 'color: #fff;';
@@ -376,11 +376,7 @@ class DOMCardRenderer {
 
         return `
             color: #fff;
-            text-shadow:
-                -${this.style.textOutline.width}px -${this.style.textOutline.width}px 0 ${this.style.textOutline.color},
-                ${this.style.textOutline.width}px -${this.style.textOutline.width}px 0 ${this.style.textOutline.color},
-                -${this.style.textOutline.width}px ${this.style.textOutline.width}px 0 ${this.style.textOutline.color},
-                ${this.style.textOutline.width}px ${this.style.textOutline.width}px 0 ${this.style.textOutline.color};
+            ${TextRenderer.getTextOutlineStyle(this.style.textOutline.width, this.style.textOutline.color)}
         `;
     }
 

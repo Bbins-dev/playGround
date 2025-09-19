@@ -39,7 +39,7 @@ class CardRenderer {
 
         // 활성화 상태일 때 밝게
         if (isActive) {
-            bgColor = this.lightenColor(bgColor, 0.3);
+            bgColor = ColorUtils.lighten(bgColor, 0.3);
         }
 
         // 카드 배경
@@ -329,21 +329,13 @@ class CardRenderer {
         ctx.fillText(card.cost.toString(), x, y);
     }
 
-    // 외곽선이 있는 텍스트 그리기
+    // 외곽선이 있는 텍스트 그리기 - TextRenderer 사용
     drawTextWithOutline(ctx, text, x, y) {
-        // fillStyle 색상 백업
-        const originalFillStyle = ctx.fillStyle;
+        const fillColor = ctx.fillStyle;
+        const outlineColor = this.style.textOutline.color;
+        const outlineWidth = this.style.textOutline.width * 3; // Canvas에서만 3배 두껍게
 
-        if (this.style.textOutline.enabled) {
-            // 외곽선 (Canvas에서만 3배 두껍게)
-            ctx.strokeStyle = this.style.textOutline.color;
-            ctx.lineWidth = this.style.textOutline.width * 3;
-            ctx.strokeText(text, x, y);
-        }
-
-        // 메인 텍스트 (색상 복원)
-        ctx.fillStyle = originalFillStyle;
-        ctx.fillText(text, x, y);
+        TextRenderer.drawTextWithOutline(ctx, text, x, y, fillColor, outlineColor, outlineWidth);
     }
 
     // 텍스트 줄바꿈 처리 (다국어 지원)
@@ -506,7 +498,7 @@ class CardRenderer {
         const labelY = y + height * config.position.y;
 
         // 배경색 계산 (속성색을 어둡게)
-        const backgroundColor = this.darkenColor(elementConfig.color, config.darkenFactor);
+        const backgroundColor = ColorUtils.darken(elementConfig.color, config.darkenFactor);
 
         ctx.save();
 
@@ -538,39 +530,7 @@ class CardRenderer {
         ctx.restore();
     }
 
-    // 색상 어둡게 하기
-    darkenColor(color, factor) {
-        if (color.startsWith('#')) {
-            const hex = color.slice(1);
-            const r = parseInt(hex.slice(0, 2), 16);
-            const g = parseInt(hex.slice(2, 4), 16);
-            const b = parseInt(hex.slice(4, 6), 16);
-
-            const newR = Math.floor(r * (1 - factor));
-            const newG = Math.floor(g * (1 - factor));
-            const newB = Math.floor(b * (1 - factor));
-
-            return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
-        }
-        return color;
-    }
-
-    // 색상 밝게 하기
-    lightenColor(color, factor) {
-        if (color.startsWith('#')) {
-            const hex = color.slice(1);
-            const r = parseInt(hex.slice(0, 2), 16);
-            const g = parseInt(hex.slice(2, 4), 16);
-            const b = parseInt(hex.slice(4, 6), 16);
-
-            const newR = Math.min(255, Math.floor(r + (255 - r) * factor));
-            const newG = Math.min(255, Math.floor(g + (255 - g) * factor));
-            const newB = Math.min(255, Math.floor(b + (255 - b) * factor));
-
-            return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
-        }
-        return color;
-    }
+    // 색상 조작 메서드들은 ColorUtils로 대체됨
 }
 
 // 전역 객체로 등록

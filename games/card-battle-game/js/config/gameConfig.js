@@ -195,6 +195,42 @@ const GameConfig = {
         statusEffectDisplay: 1000  // 상태이상 표시 시간 (ms)
     },
 
+    // 타이밍 설정 - Magic Number 정리
+    timing: {
+        modal: {
+            fadeIn: 300,           // 모달 페이드인 시간
+            fadeOut: 300,          // 모달 페이드아웃 시간
+            display: 2000,         // 자동 전환 대기시간
+            transition: 200        // 일반 전환 시간
+        },
+        battle: {
+            pauseDelay: 1000,      // 전투 일시정지 딜레이
+            resumeDelay: 500,      // 전투 재개 딜레이
+            actionDelay: 300,      // 액션 간 딜레이
+            animationStep: 100     // 애니메이션 스텝 간격
+        },
+        ui: {
+            clickFeedback: 100,    // 클릭 피드백 시간
+            hoverDelay: 200,       // 호버 딜레이
+            tooltipDelay: 500      // 툴팁 표시 딜레이
+        },
+        effects: {
+            shortFlash: 200,       // 짧은 플래시
+            longFlash: 500,        // 긴 플래시
+            fadeOut: 1000,         // 페이드아웃
+            slideIn: 300           // 슬라이드인
+        }
+    },
+
+    // 렌더링 최적화 설정
+    rendering: {
+        dirtyCheck: true,          // Dirty checking 활성화
+        maxFPS: 60,                // 최대 FPS
+        cullDistance: 100,         // 화면 밖 컬링 거리
+        cacheTimeout: 5000,        // 캐시 타임아웃 (ms)
+        batchSize: 10              // 배치 렌더링 크기
+    },
+
     // 게임 속도 설정
     gameSpeed: {
         '1x': 1.0,
@@ -485,6 +521,36 @@ const GameConfig = {
         danger: '#E74C3C',
         success: '#2ECC71',
         warning: '#F39C12'
+    },
+
+    // 픽셀 값 설정 - Magic Number 정리
+    layout: {
+        padding: {
+            small: 4,
+            medium: 8,
+            large: 16,
+            xlarge: 32
+        },
+        spacing: {
+            tight: 5,
+            normal: 10,
+            loose: 20,
+            wide: 40
+        },
+        offsets: {
+            shadowSmall: 2,
+            shadowMedium: 4,
+            shadowLarge: 8,
+            borderThin: 1,
+            borderMedium: 2,
+            borderThick: 3
+        },
+        positions: {
+            tooltipOffset: 15,
+            iconOffset: 6,
+            textOffset: 3,
+            cardGap: 5
+        }
     },
 
     // 방어력 UI 설정
