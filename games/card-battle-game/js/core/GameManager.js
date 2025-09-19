@@ -74,6 +74,11 @@ class GameManager {
             this.startGameLoop();
 
         } catch (error) {
+            console.error('GameManager 초기화 중 오류:', error);
+            // 에러가 있어도 게임 루프는 시작
+            if (!this.gameLoop) {
+                this.startGameLoop();
+            }
         }
     }
 

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="auto-battle-card-game-title">자동전투 카드게임</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="css/components.css">
 </head>
 <body>
     <div class="game-container">
@@ -130,14 +130,17 @@
     </div>
 
     <!-- 스크립트 로드 -->
-    <!-- 유틸리티 클래스들 먼저 로드 -->
+    <!-- i18n 시스템 먼저 로드 -->
+    <script src="js/i18n.js"></script>
+    <!-- 설정 파일들 먼저 로드 -->
+    <script src="js/config/gameConfig.js"></script>
+    <!-- 유틸리티 클래스들 -->
     <script src="js/utils/I18nHelper.js"></script>
     <script src="js/utils/CanvasUtils.js"></script>
     <script src="js/utils/TextRenderer.js"></script>
     <script src="js/utils/ColorUtils.js"></script>
     <script src="js/utils/TimerManager.js"></script>
     <script src="js/utils/RenderOptimizer.js"></script>
-    <script src="js/config/gameConfig.js"></script>
     <script src="js/config/cardDatabase.js"></script>
     <script src="js/entities/Card.js"></script>
     <script src="js/entities/Player.js"></script>

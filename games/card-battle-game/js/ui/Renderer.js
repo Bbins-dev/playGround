@@ -811,7 +811,7 @@ class Renderer {
         this.ctx.fillStyle = config.colors.stats;
         this.ctx.textAlign = 'center';
         this.ctx.fillText(
-            I18n.t('auto_battle_card_game.ui.defeat_stats.final_hand'),
+            I18nHelper.getText('auto_battle_card_game.ui.defeat_stats.final_hand'),
             GameConfig.canvas.width / 2,
             y - 20
         );
@@ -838,22 +838,22 @@ class Renderer {
         // 기본 통계 (왼쪽 열)
         this.renderStatsColumn([
             {
-                label: I18n.t('auto_battle_card_game.ui.defeat_stats.stage_reached'),
+                label: I18nHelper.getText('auto_battle_card_game.ui.defeat_stats.stage_reached'),
                 value: `${gameStats.finalStage}`,
                 isValue: true
             },
             {
-                label: I18n.t('auto_battle_card_game.ui.defeat_stats.turns_survived'),
+                label: I18nHelper.getText('auto_battle_card_game.ui.defeat_stats.turns_survived'),
                 value: `${gameStats.totalTurns}`,
                 isValue: true
             },
             {
-                label: I18n.t('auto_battle_card_game.ui.defeat_stats.total_damage_dealt'),
+                label: I18nHelper.getText('auto_battle_card_game.ui.defeat_stats.total_damage_dealt'),
                 value: `${gameStats.totalDamageDealt}`,
                 isValue: true
             },
             {
-                label: I18n.t('auto_battle_card_game.ui.defeat_stats.total_defense_built'),
+                label: I18nHelper.getText('auto_battle_card_game.ui.defeat_stats.total_defense_built'),
                 value: `${gameStats.totalDefenseBuilt}`,
                 isValue: true
             }
@@ -895,14 +895,14 @@ class Renderer {
         // 플레이 스타일
         const playStyle = this.getPlayStyleText(gameStats);
         stats.push({
-            label: I18n.t('auto_battle_card_game.ui.defeat_stats.play_style'),
+            label: I18nHelper.getText('auto_battle_card_game.ui.defeat_stats.play_style'),
             value: playStyle
         });
 
         // 사망 원인
         const deathCause = this.getDeathCauseText(gameStats.deathCause);
         stats.push({
-            label: I18n.t('auto_battle_card_game.ui.defeat_stats.death_cause'),
+            label: I18nHelper.getText('auto_battle_card_game.ui.defeat_stats.death_cause'),
             value: deathCause
         });
 
@@ -910,7 +910,7 @@ class Renderer {
         const mvp = this.getMVPText(gameStats);
         if (mvp) {
             stats.push({
-                label: I18n.t('auto_battle_card_game.ui.defeat_stats.mvp_card'),
+                label: I18nHelper.getText('auto_battle_card_game.ui.defeat_stats.mvp_card'),
                 value: mvp
             });
         }
@@ -918,7 +918,7 @@ class Renderer {
         // 게으른 카드 (쉬기 카드 사용 횟수)
         if (gameStats.crouchCount > 0) {
             stats.push({
-                label: I18n.t('auto_battle_card_game.ui.defeat_stats.lazy_card'),
+                label: I18nHelper.getText('auto_battle_card_game.ui.defeat_stats.lazy_card'),
                 value: `${gameStats.crouchCount}번`
             });
         }
@@ -926,7 +926,7 @@ class Renderer {
         // 버린 방어력
         if (gameStats.wastedDefense > 0) {
             stats.push({
-                label: I18n.t('auto_battle_card_game.ui.defeat_stats.wasted_defense'),
+                label: I18nHelper.getText('auto_battle_card_game.ui.defeat_stats.wasted_defense'),
                 value: `${gameStats.wastedDefense}`
             });
         }
@@ -1003,7 +1003,7 @@ class Renderer {
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';
         this.ctx.fillText(
-            I18n.t('auto_battle_card_game.ui.defeat_stats.confirm_button'),
+            I18nHelper.getText('auto_battle_card_game.ui.defeat_stats.confirm_button'),
             x + button.width / 2,
             y + button.height / 2
         );

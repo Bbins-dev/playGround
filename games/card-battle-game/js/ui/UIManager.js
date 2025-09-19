@@ -274,7 +274,8 @@ class UIManager {
             cardGalleryBtn: document.getElementById('card-gallery-btn'),
             backToHomepageBtn: document.getElementById('back-to-homepage'),
             backToMenuBtn: document.getElementById('back-to-menu'),
-            mainMenuButtons: document.getElementById('main-menu-buttons')
+            mainMenuButtons: document.getElementById('main-menu-buttons'),
+            hpBars: document.querySelectorAll('.hp-bar-container')
         };
 
         switch (this.currentScreen) {
@@ -284,6 +285,8 @@ class UIManager {
                 this.hide(elements.backToHomepageBtn);
                 this.hide(elements.backToMenuBtn);
                 this.show(elements.mainMenuButtons);
+                // HP 바 숨기기
+                elements.hpBars.forEach(bar => this.hide(bar));
                 break;
 
             case 'battle':
@@ -292,6 +295,8 @@ class UIManager {
                 this.show(elements.backToHomepageBtn);
                 this.show(elements.backToMenuBtn);
                 this.hide(elements.mainMenuButtons);
+                // HP 바 표시
+                elements.hpBars.forEach(bar => this.show(bar));
                 break;
 
             case 'cardSelection':
@@ -300,6 +305,8 @@ class UIManager {
                 this.show(elements.backToHomepageBtn);
                 this.show(elements.backToMenuBtn);
                 this.hide(elements.mainMenuButtons);
+                // HP 바 숨기기
+                elements.hpBars.forEach(bar => this.hide(bar));
                 break;
 
             case 'gameOver':
@@ -308,6 +315,8 @@ class UIManager {
                 this.hide(elements.backToHomepageBtn);
                 this.hide(elements.backToMenuBtn);
                 this.hide(elements.mainMenuButtons);
+                // HP 바 표시 (게임 오버 화면에서도 표시)
+                elements.hpBars.forEach(bar => this.show(bar));
                 break;
         }
     }
@@ -508,7 +517,7 @@ class UIManager {
             this.cleanupGameState();
 
             // 홈페이지로 이동 (상위 디렉터리)
-            window.location.href = '../../';
+            window.location.href = '../../index.html';
         }
     }
 

@@ -316,7 +316,7 @@ window.cardBattleGame = cardBattleGame;
 function initializeI18n() {
     const savedLang = localStorage.getItem('selectedLanguage') || 'ko';
     const i18n = new I18n();
-    i18n.init(savedLang, '../../js/lang/');
+    i18n.init(savedLang, 'js/lang/');
     window.i18nSystem = i18n;
 
     // 언어 선택기 동기화
@@ -334,8 +334,14 @@ function changeLanguage(lang) {
 }
 
 function getI18nText(key) {
+    // I18nHelper를 우선 사용
+    if (window.I18nHelper) {
+        return window.I18nHelper.getText(key);
+    }
+
+    // 기존 시스템 백업
     if (window.i18nSystem) {
         return window.i18nSystem.getTranslation(key);
     }
-    return key;
+    return key; // fallback
 }

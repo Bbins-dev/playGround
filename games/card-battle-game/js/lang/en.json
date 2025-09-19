@@ -1,0 +1,252 @@
+{
+  "site": {
+    "title": "BinBox Games",
+    "tagline": "Welcome to the world of hypercasual mini games!",
+    "description": "Enjoy various hypercasual mini web games!"
+  },
+  "navigation": {
+    "home": "Home",
+    "games": "Games",
+    "search": "Search"
+  },
+  "hero": {
+    "title": "Choose and enjoy games!",
+    "subtitle": "Each game runs independently and you can switch to other games anytime."
+  },
+  "games": {
+    "title": "Game List",
+    "search_placeholder": "Search games...",
+    "no_results": "No search results found.",
+    "play_button": "Play Game",
+    "coming_soon": "Coming soon!"
+  },
+  "game_info": {
+    "genre": "Genre",
+    "play_time": "Play Time",
+    "difficulty": "Difficulty"
+  },
+  "footer": {
+    "copyright": "© 2025 BinBox Games. Creating the world of hypercasual mini games."
+  },
+  "ads": {
+    "advertisement": "Advertisement"
+  },
+  "barista_game": {
+    "title": "Barista Game",
+    "page_title": "Barista Game - BinBox Games",
+    "description": "Hold to pour coffee and release at perfect timing for high combos! Release at perfect timing to gain extra time!",
+    "genre": "Timing",
+    "ui": {
+      "combo": "COMBO",
+      "start_game": "Start Game",
+      "game_over": "Game Over",
+      "final_score": "Final Score",
+      "high_score": "High Score",
+      "best_combo": "Best Combo",
+      "perfect_rate": "Perfect Rate",
+      "restart": "Restart",
+      "back_to_main": "← Back to Main",
+      "feedback": {
+        "perfect": "Perfect!",
+        "good": "Good!",
+        "miss": "Miss!",
+        "excellent": "Excellent!"
+      }
+    }
+  },
+  "auto_battle_card_game": {
+    "title": "Auto Battle Card Game",
+    "subtitle": "Turn-based Auto Battle Card Game!",
+    "page_title": "Auto Battle Card Game - BinBox Games",
+    "description": "Turn-based auto battle card game! Strategically arrange your card order and use the synergy of 5 different elements to achieve victory!",
+    "genre": "Strategy",
+    "ui": {
+      "start_game": "Start Game",
+      "game_tutorial": "Game Guide",
+      "card_gallery": "Card Gallery",
+      "settings": "Settings",
+      "back_to_main": "← Back to Main",
+      "back_to_homepage": "← Back to Homepage",
+      "back_to_menu": "← Back to Menu",
+      "confirm_back_to_homepage": "The current game progress will not be saved. Do you still want to return to the homepage?",
+      "confirm_back_to_menu": "The current game progress will not be saved. Do you still want to return to the menu screen?",
+      "enemy": "Enemy",
+      "player": "Player",
+      "view_all_cards": "View All Cards",
+      "card_gallery_title": "Card Gallery",
+      "select_card": "Select Card",
+      "skip": "Skip",
+      "close": "Close",
+      "stage": "Stage",
+      "victory": "Victory!",
+      "defeat": "Defeat",
+      "damage": "Damage",
+      "multi_hit_damage": "Multi-Hit Damage",
+      "miss": "Miss!",
+      "combo": "Combo",
+      "turn": "Turn",
+      "defense": "Defense",
+      "thorns": "Thorns",
+      "combat_log": "Combat Log",
+      "enemy_names": {
+        "1": "Training Dummy",
+        "2": "Wooden Puppet",
+        "3": "Straw Monster",
+        "4": "Practice Golem",
+        "5": "Beginner's Nightmare",
+        "6": "Hungry Wolf",
+        "7": "Enraged Boar",
+        "8": "Poison Fang Snake",
+        "9": "Shadow Leopard",
+        "10": "Forest Predator",
+        "11": "Apprentice Mage",
+        "12": "Fire Caster",
+        "13": "Ice Witch",
+        "14": "Lightning Summoner",
+        "15": "Elemental Master",
+        "16": "Zombie Soldier",
+        "17": "Skeleton Archer",
+        "18": "Ghost Knight",
+        "19": "Lich Priest",
+        "20": "Death Lord",
+        "21": "Dragon Hatchling",
+        "22": "Fire Drake",
+        "23": "Frost Wyvern",
+        "24": "Storm Dragon",
+        "25": "Ancient Dragon King",
+        "26": "Fallen Hero",
+        "27": "Betrayer Knight Captain",
+        "28": "Demon Summoner",
+        "29": "Avatar of Chaos",
+        "30": "Final Examiner"
+      },
+      "battle_speed": "Battle Speed",
+      "cards": {
+        "random_bash": {
+          "name": "Random Bash",
+          "description": "Attack the opponent 3-5 times consecutively. Each hit deals 1 damage."
+        },
+        "heavy_strike": {
+          "name": "Heavy Strike",
+          "description": "Deliver a powerful strike to the opponent. 5 damage, 80% accuracy."
+        },
+        "shield_bash": {
+          "name": "Shield Bash",
+          "description": "Deal damage equal to your current defense to the opponent."
+        },
+        "concussion": {
+          "name": "Concussion",
+          "description": "Deal 2 damage to the opponent and have a chance to stun them."
+        },
+        "counter_attack": {
+          "name": "Counter Attack",
+          "description": "Deal damage equal to the last damage you took to the opponent."
+        },
+        "raise_shield": {
+          "name": "Raise Shield",
+          "description": "Add 3 defense to yourself."
+        },
+        "wear_armor": {
+          "name": "Wear Armor",
+          "description": "Add 5 defense to yourself."
+        },
+        "crouch": {
+          "name": "Crouch",
+          "description": "Add 10 defense to yourself and skip your turn."
+        },
+        "large_shield": {
+          "name": "Large Shield",
+          "description": "Add 8 defense to yourself. 80% success rate."
+        },
+        "thorn_armor": {
+          "name": "Thorn Armor",
+          "description": "Add 3 defense to yourself and add 1 thorn."
+        },
+        "taunt": {
+          "name": "Taunt",
+          "description": "Make the opponent taunted. When taunted, only attack cards will be activated on their next turn."
+        }
+      },
+      "elements": {
+        "fire": "Fire",
+        "water": "Water",
+        "electric": "Electric",
+        "poison": "Poison",
+        "normal": "Normal"
+      },
+      "card_types": {
+        "attack": "Attack",
+        "defense": "Defense",
+        "buff": "Buff",
+        "debuff": "Debuff",
+        "special": "Special",
+        "status": "Status"
+      },
+      "shield_bash_damage": "Shield bash damage",
+      "concussion_stun": "Stunned by concussion!",
+      "counter_damage": "Counter attack damage",
+      "defense_gained": "Defense increased",
+      "crouch_effect": "Crouched for defense and skipped turn",
+      "shield_failed": "Shield failed",
+      "thorn_armor_effect": "Thorn armor added defense and thorns",
+      "taunt_success": "Taunt successful",
+      "taunt_failed": "Taunt failed",
+      "card_selection": {
+        "initial_title": "Start Card Selection",
+        "reward_title": "Reward Card Selection",
+        "replacement_title": "Card Replacement",
+        "selected_count": "Selected",
+        "no_cards_available": "No cards available for selection"
+      },
+      "battle_result": {
+        "victory_title": "Victory!",
+        "victory_message": "Stage {stage} Clear!",
+        "victory_button": "Continue",
+        "defeat_title": "Defeat",
+        "defeat_message": "Unfortunately defeated",
+        "defeat_subtitle": "Try again!",
+        "defeat_button": "Restart"
+      },
+      "defeat_stats": {
+        "final_hand": "Final Hand (in order)",
+        "stage_reached": "Stage Reached",
+        "turns_survived": "Survived {turns} turns",
+        "total_damage_dealt": "Total Damage Dealt",
+        "total_damage_taken": "Total Damage Taken",
+        "total_defense_built": "Total Defense Built",
+        "wasted_defense": "Wasted Defense",
+        "death_cause": "Cause of Death",
+        "play_style": "Play Style",
+        "mvp_card": "MVP Card",
+        "lazy_card": "Laziest Card",
+        "confirm_button": "Try Again"
+      }
+    },
+    "tutorial": {
+      "line1": "Select one attack card to start the game!",
+      "line2": "Cards activate automatically from left to right in your hand!",
+      "line3": "After clearing each stage, choose one of three randomly appearing cards to add to the left of your hand!",
+      "line4": "Maximum hand size is 10 cards! When clearing stages, you can choose to add a card, replace cards in your hand, or skip to the next stage!",
+      "line5": "How many stages can you reach? Test your luck!"
+    }
+  },
+  "upcoming_games": {
+    "game2": {
+      "title": "Second Game",
+      "description": "Coming soon!",
+      "genre": "TBD"
+    },
+    "game3": {
+      "title": "Third Game",
+      "description": "Coming soon!",
+      "genre": "TBD"
+    }
+  },
+  "genre_names": {
+    "timing": "Timing",
+    "action": "Action",
+    "puzzle": "Puzzle",
+    "strategy": "Strategy",
+    "tbd": "TBD"
+  }
+}

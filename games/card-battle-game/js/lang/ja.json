@@ -1,0 +1,252 @@
+{
+  "site": {
+    "title": "BinBox Games",
+    "tagline": "ハイパーカジュアルミニゲームの世界へようこそ！",
+    "description": "様々なハイパーカジュアルミニウェブゲームをお楽しみください！"
+  },
+  "navigation": {
+    "home": "ホーム",
+    "games": "ゲーム",
+    "search": "検索"
+  },
+  "hero": {
+    "title": "ゲームを選んで楽しんでください！",
+    "subtitle": "各ゲームは独立して実行され、いつでも他のゲームに切り替えることができます。"
+  },
+  "games": {
+    "title": "ゲーム一覧",
+    "search_placeholder": "ゲームを検索...",
+    "no_results": "検索結果が見つかりません。",
+    "play_button": "ゲーム開始",
+    "coming_soon": "近日公開予定！"
+  },
+  "game_info": {
+    "genre": "ジャンル",
+    "play_time": "プレイ時間",
+    "difficulty": "難易度"
+  },
+  "footer": {
+    "copyright": "© 2025 BinBox Games. ハイパーカジュアルミニゲームの世界を作り上げています。"
+  },
+  "ads": {
+    "advertisement": "広告"
+  },
+  "barista_game": {
+    "title": "バリスタゲーム",
+    "page_title": "バリスタゲーム - BinBox Games",
+    "description": "ホールドでコーヒーを注ぎ、完璧なタイミングで離して高コンボを記録しよう！ パーフェクトタイミングで離すと時間が増えます！",
+    "genre": "タイミング",
+    "ui": {
+      "combo": "コンボ",
+      "start_game": "ゲーム開始",
+      "game_over": "ゲームオーバー",
+      "final_score": "最終スコア",
+      "high_score": "ハイスコア",
+      "best_combo": "ベストコンボ",
+      "perfect_rate": "パーフェクト率",
+      "restart": "再スタート",
+      "back_to_main": "← メインに戻る",
+      "feedback": {
+        "perfect": "パーフェクト！",
+        "good": "グッド！",
+        "miss": "ミス！",
+        "excellent": "エクセレント！"
+      }
+    }
+  },
+  "auto_battle_card_game": {
+    "title": "オートバトルカードゲーム",
+    "subtitle": "ターン制自動戦闘カードゲーム！",
+    "page_title": "オートバトルカードゲーム - BinBox Games",
+    "description": "ターン制自動戦闘カードゲーム！カードの順序を戦略的に配置し、5つの属性の相性を活用して勝利を目指そう！",
+    "genre": "戦略",
+    "ui": {
+      "start_game": "ゲーム開始",
+      "game_tutorial": "ゲーム説明",
+      "card_gallery": "カードギャラリー",
+      "settings": "設定",
+      "back_to_main": "← メインに戻る",
+      "back_to_homepage": "← ホームページに戻る",
+      "back_to_menu": "← メニュー画面に戻る",
+      "confirm_back_to_homepage": "進行中のゲームは保存されません。それでもホームページに戻りますか？",
+      "confirm_back_to_menu": "進行中のゲームは保存されません。それでもメニュー画面に戻りますか？",
+      "enemy": "敵",
+      "player": "プレイヤー",
+      "view_all_cards": "全カードを見る",
+      "card_gallery_title": "カードギャラリー",
+      "select_card": "カード選択",
+      "skip": "スキップ",
+      "close": "閉じる",
+      "stage": "ステージ",
+      "victory": "勝利！",
+      "defeat": "敗北",
+      "damage": "ダメージ",
+      "multi_hit_damage": "連続攻撃ダメージ",
+      "miss": "ミス！",
+      "combo": "コンボ",
+      "turn": "ターン",
+      "defense": "防御力",
+      "thorns": "トゲ",
+      "combat_log": "戦闘ログ",
+      "enemy_names": {
+        "1": "訓練用かかし",
+        "2": "木の人形",
+        "3": "わら束怪物",
+        "4": "練習用ゴーレム",
+        "5": "初心者の悪夢",
+        "6": "空腹のオオカミ",
+        "7": "怒ったイノシシ",
+        "8": "毒牙のヘビ",
+        "9": "影のヒョウ",
+        "10": "森の捕食者",
+        "11": "見習い魔法使い",
+        "12": "炎術師",
+        "13": "氷の魔女",
+        "14": "雷の召喚師",
+        "15": "元素の支配者",
+        "16": "ゾンビ兵士",
+        "17": "骸骨弓兵",
+        "18": "幽霊騎士",
+        "19": "リッチ僧侶",
+        "20": "死の王",
+        "21": "ドラゴンの雛",
+        "22": "炎のドレイク",
+        "23": "霜のワイバーン",
+        "24": "嵐のドラゴン",
+        "25": "古代竜王",
+        "26": "堕落した英雄",
+        "27": "裏切りの騎士団長",
+        "28": "悪魔召喚師",
+        "29": "混沌の化身",
+        "30": "最終試験官"
+      },
+      "battle_speed": "戦闘速度",
+      "cards": {
+        "random_bash": {
+          "name": "乱撃",
+          "description": "相手に3～5回連続攻撃を行います。各攻撃は1ダメージを与えます。"
+        },
+        "heavy_strike": {
+          "name": "重撃",
+          "description": "相手に強力な一撃を与えます。5ダメージ、命中率80%。"
+        },
+        "shield_bash": {
+          "name": "シールドバッシュ",
+          "description": "現在の防御力と同じダメージを相手に与えます。"
+        },
+        "concussion": {
+          "name": "脳震盪",
+          "description": "相手に2ダメージを与え、一定確率で気絶させます。"
+        },
+        "counter_attack": {
+          "name": "カウンターアタック",
+          "description": "最後に受けたダメージと同じダメージを相手に与えます。"
+        },
+        "raise_shield": {
+          "name": "シールド構え",
+          "description": "自分に防御力3を追加します。"
+        },
+        "wear_armor": {
+          "name": "鎧装着",
+          "description": "自分に防御力5を追加します。"
+        },
+        "crouch": {
+          "name": "しゃがみ",
+          "description": "自分に防御力10を追加し、ターンをスキップします。"
+        },
+        "large_shield": {
+          "name": "大盾",
+          "description": "自分に防御力8を追加します。成功率80%。"
+        },
+        "thorn_armor": {
+          "name": "棘の鎧",
+          "description": "自分に防御力3と棘1を追加します。"
+        },
+        "taunt": {
+          "name": "挑発",
+          "description": "相手を挑発状態にします。挑発状態では次のターンで攻撃カードのみが発動されます。"
+        }
+      },
+      "elements": {
+        "fire": "火",
+        "water": "水",
+        "electric": "電気",
+        "poison": "毒",
+        "normal": "ノーマル"
+      },
+      "card_types": {
+        "attack": "攻撃",
+        "defense": "防御",
+        "buff": "バフ",
+        "debuff": "デバフ",
+        "special": "特殊",
+        "status": "状態異常"
+      },
+      "shield_bash_damage": "シールドバッシュダメージ",
+      "concussion_stun": "脳震盪で気絶させました！",
+      "counter_damage": "カウンターアタックダメージ",
+      "defense_gained": "防御力増加",
+      "crouch_effect": "しゃがみで防御力増加とターンスキップ",
+      "shield_failed": "シールド使用失敗",
+      "thorn_armor_effect": "棘の鎧で防御力と棘を追加",
+      "taunt_success": "挑発成功",
+      "taunt_failed": "挑発失敗",
+      "card_selection": {
+        "initial_title": "スタートカード選択",
+        "reward_title": "報酬カード選択",
+        "replacement_title": "カード交換",
+        "selected_count": "選択済み",
+        "no_cards_available": "選択可能なカードがありません"
+      },
+      "battle_result": {
+        "victory_title": "勝利！",
+        "victory_message": "ステージ {stage} クリア！",
+        "victory_button": "続ける",
+        "defeat_title": "敗北",
+        "defeat_message": "残念ながら敗北しました",
+        "defeat_subtitle": "もう一度挑戦してください！",
+        "defeat_button": "再開"
+      },
+      "defeat_stats": {
+        "final_hand": "最終手札（順序通り）",
+        "stage_reached": "到達ステージ",
+        "turns_survived": "{turns}ターン生存",
+        "total_damage_dealt": "与えた総ダメージ",
+        "total_damage_taken": "受けた総ダメージ",
+        "total_defense_built": "構築した防御力",
+        "wasted_defense": "無駄にした防御力",
+        "death_cause": "死因",
+        "play_style": "プレイスタイル",
+        "mvp_card": "MVPカード",
+        "lazy_card": "最も怠惰なカード",
+        "confirm_button": "再挑戦"
+      }
+    },
+    "tutorial": {
+      "line1": "攻撃カードの中から一枚を選んでゲームを開始してください！",
+      "line2": "カードは手札の左から自動的に発動されます！",
+      "line3": "各ステージクリア時に、ランダムに出現する3枚のカードから1枚を選んで手札の左端に追加します！",
+      "line4": "最大手札は10枚です！ステージクリア時にカードを追加、手札のカードと交換、次のステージへスキップから選択できます！",
+      "line5": "何ステージまで行けるでしょうか！あなたの運を試してみてください！"
+    }
+  },
+  "upcoming_games": {
+    "game2": {
+      "title": "二番目のゲーム",
+      "description": "近日公開予定！",
+      "genre": "未定"
+    },
+    "game3": {
+      "title": "三番目のゲーム",
+      "description": "近日公開予定！",
+      "genre": "未定"
+    }
+  },
+  "genre_names": {
+    "timing": "タイミング",
+    "action": "アクション",
+    "puzzle": "パズル",
+    "strategy": "戦略",
+    "tbd": "未定"
+  }
+}

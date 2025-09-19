@@ -396,7 +396,7 @@ body {
     border: 2px solid #fff;
     border-radius: 15px;
     overflow: hidden;
-    display: flex;
+    display: none; /* 기본적으로 숨김 */
     align-items: center;
     justify-content: space-between;
     padding: 0 10px;

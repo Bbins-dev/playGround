@@ -6,7 +6,7 @@ class RenderOptimizer {
         this.lastRenderState = {};
         this.frameCount = 0;
         this.lastCacheCleanup = 0;
-        this.cacheTimeout = GameConfig.rendering?.cacheTimeout || 5000;
+        this.cacheTimeout = (typeof GameConfig !== 'undefined' && GameConfig.rendering?.cacheTimeout) || 5000;
     }
 
     // 더티 영역 마킹
@@ -151,7 +151,7 @@ class RenderOptimizer {
 
     // 렌더링 스킵 최적화 - FPS 기반
     shouldSkipRender(targetFPS = 60) {
-        const maxFPS = GameConfig.rendering?.maxFPS || 60;
+        const maxFPS = (typeof GameConfig !== 'undefined' && GameConfig.rendering?.maxFPS) || 60;
         const skipRate = Math.max(1, Math.floor(maxFPS / targetFPS));
         return this.frameCount % skipRate !== 0;
     }
@@ -168,7 +168,15 @@ class RenderOptimizer {
     }
 
     // 뷰포트 컬링 - 화면에 보이지 않는 요소 제외
-    isInViewport(x, y, width, height, viewportX = 0, viewportY = 0, viewportWidth = GameConfig.canvas.width, viewportHeight = GameConfig.canvas.height) {
+    isInViewport(x, y, width, height, viewportX = 0, viewportY = 0, viewportWidth, viewportHeight) {
+        // GameConfig 기본값 설정
+        if (typeof viewportWidth === 'undefined') {
+            viewportWidth = (typeof GameConfig !== 'undefined' && GameConfig.canvas?.width) || 1247;
+        }
+        if (typeof viewportHeight === 'undefined') {
+            viewportHeight = (typeof GameConfig !== 'undefined' && GameConfig.canvas?.height) || 832;
+        }
+
         return !(x + width < viewportX ||
                  x > viewportX + viewportWidth ||
                  y + height < viewportY ||
@@ -176,7 +184,10 @@ class RenderOptimizer {
     }
 
     // 거리 기반 컬링
-    isWithinCullDistance(x1, y1, x2, y2, maxDistance = GameConfig.rendering?.cullDistance || 100) {
+    isWithinCullDistance(x1, y1, x2, y2, maxDistance) {
+        if (typeof maxDistance === 'undefined') {
+            maxDistance = (typeof GameConfig !== 'undefined' && GameConfig.rendering?.cullDistance) || 100;
+        }
         const dx = x2 - x1;
         const dy = y2 - y1;
         return (dx * dx + dy * dy) <= (maxDistance * maxDistance);
