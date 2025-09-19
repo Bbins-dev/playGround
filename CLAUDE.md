@@ -2,13 +2,22 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 🔴 Critical Server Rules (MEMORIZE!)
+
+**ALWAYS serve games from their specific directory:**
+- ✅ **Card Battle Game**: `npx serve games/card-battle-game -p 3000`
+- ✅ **Barista Game**: `npx serve games/barista-game -p 3000`
+- ❌ **WRONG**: `npx serve` from project root (loads wrong page)
+
+**Server URL verification**:
+- Game must load at `localhost:3000` showing the actual game interface
+- If homepage loads instead, stop server and restart from correct directory
+
 ## Common Development Commands
 
-Since this is a pure client-side web project, development is straightforward:
-
-- **Run locally**: Open `index.html` in a web browser or use a local server like `python -m http.server` or `npx serve`
+- **Run games**: Always serve from specific game directory (see Critical Server Rules above)
 - **No build process**: Direct HTML/CSS/JS files - no compilation needed
-- **No testing framework**: Manual testing in different browsers/devices
+- **Testing**: Manual testing in browsers, verify defeat/victory modals work
 
 ## Project Architecture & Structure
 
@@ -50,23 +59,17 @@ This is a **Korean hyper-casual mini web games collection** - a single-page appl
 
 Without trailing slash, relative paths like `./style.css` resolve incorrectly.
 
-### 🔴 Configuration-Driven Architecture (NEVER HARDCODE!)
-**모든 개발에서 최우선 적용:**
+### 🔴 Configuration-Driven Development (NO HARDCODING!)
 
-1. **UI 위치값 하드코딩 금지**:
-   - ❌ `x = 640`, `y = 280` 같은 고정 픽셀값 사용 금지
-   - ✅ `GameConfig.canvas.width / 2`, `config.startY + index * config.itemHeight` 사용
-   - ✅ 텍스트 크기 측정 후 동적 중앙 정렬 계산
+**핵심 원칙: 모든 값은 config에서 관리**
+- ❌ 직접 숫자/색상/크기 작성 금지: `x = 640`, `fontSize = '24px'`
+- ✅ Config 기반: `GameConfig.canvas.width * 0.5`, `config.ui.fontSize`
+- ✅ 동적 계산: `measureText()` → 중앙 정렬
 
-2. **설정값 하드코딩 금지**:
-   - ❌ 코드 내부에 직접 숫자, 색상, 크기 작성 금지
-   - ✅ 모든 값은 `gameConfig.js` 또는 설정 파일에서 가져오기
-
-3. **Canvas 좌표계 일관성 (크로스 플랫폼 대응)**:
-   - ❌ `canvas.width`, `canvas.height` 직접 사용 금지 (브라우저별/디스플레이별 실제 픽셀 크기 상이)
-   - ✅ `GameConfig.canvas.width`, `GameConfig.canvas.height` 사용 필수 (논리적 좌표계)
-   - ✅ 모든 UI 위치를 논리적 좌표계 기준으로 계산 (비율 기반 배치)
-   - ✅ 예: `x = GameConfig.canvas.width * 0.5` (중앙), `y = GameConfig.canvas.height * 0.25` (상단 1/4)
+**Canvas 좌표계: GameConfig 필수 사용**
+- ❌ `canvas.width/height` 직접 사용 금지 (디스플레이별 차이)
+- ✅ `GameConfig.canvas.width/height` 논리적 좌표계 사용
+- ✅ 비율 기반 배치: `width * 0.5` (중앙), `height * 0.25` (상단 1/4)
 
 ## Key Configuration Files
 
@@ -75,82 +78,38 @@ Without trailing slash, relative paths like `./style.css` resolve incorrectly.
 - `js/lang/*.json`: Multi-language translations (ko, en, ja)
 - `games/{game-name}/js/config/gameConfig.js`: Game-specific settings
 
-## Development Guidelines
 
-### Adding New Games
-1. Create folder in `games/` with kebab-case naming
-2. **Must add game card to main `index.html`** - games are NOT auto-discovered
-3. **Modular structure**: Organize code into `js/core/`, `js/ui/`, `js/entities/`, `js/utils/`, `js/screens/`
-4. Include mobile touch support and "back to main" button
-5. Maintain independence - no cross-game dependencies
+## Development Standards
 
-### File Organization Rules
-- **Game folders only in `games/`** - never elsewhere
-- **Modular structure**: `js/core/` (logic), `js/ui/` (rendering), `js/entities/` (data), `js/utils/` (helpers), `js/screens/` (screens)
-- **Language files**: `js/lang/{lang}.json` for i18n translations
-- **Game-specific assets**: `games/{game-name}/assets/`
-- **CSS organization**: `css/components.css` for additional styling
+### Code Organization
+- **Game structure**: `games/{name}/` → modular JS folders (`core/`, `ui/`, `entities/`, `utils/`)
+- **Must add to main `index.html`**: Games NOT auto-discovered
+- **Manager pattern**: GameManager, UIManager 등 역할별 클래스 분리
 
-### Translation & Internationalization
-- Use `data-i18n` attributes for translatable text
-- Add new translations to all language files (`ko.json`, `en.json`, `ja.json`)
-- Language switching is handled by the i18n system automatically
+### UI Control Standards
+- **CSS .hidden class**: `display: none !important` 정의 필수
+- **JavaScript visibility**: `element.classList.add/remove('hidden')` 사용
+- ❌ `style.display` 직접 조작 금지
 
-### Code Style Patterns
-- **ES6+ Modules**: Import/export pattern으로 모듈화
-- **Configuration-driven development**: 모든 설정값은 config 파일에서 관리
-- **Dynamic positioning**: measureText(), getBoundingClientRect() 활용한 동적 배치
-- **Manager Pattern**: GameManager, CardManager, UIManager 등 역할별 관리자 클래스
-- **Separation of Concerns**: Core logic, UI rendering, entities, utilities 분리
-- Consistent event handling with `addEventListener`
+### I18n & Mobile
+- **data-i18n attributes**: 번역 가능한 텍스트에 적용
+- **Touch support**: 모든 게임에 터치 이벤트 구현 필수
 
-## Card Battle Game - Recent Updates (2025-09-19)
+## Card Battle Game Architecture
 
-### 대규모 리팩토링 완료 ✅
-- **모듈화 아키텍처**: 22개 파일을 기능별로 분리하여 유지보수성 향상
-- **Canvas + DOM 하이브리드**: Canvas 게임 로직 + DOM HP바/상태이상 UI
-- **논리적 좌표계**: GameConfig 기반 비율 계산으로 크로스 플랫폼 호환성 확보
-- **Manager Pattern**: Core 로직과 UI 렌더링 완전 분리
-- **Utils 시스템**: 재사용 가능한 TextRenderer, ColorUtils, TimerManager 등
+**모듈 구조**: 22개 파일을 기능별 분리 → 유지보수성 극대화
+- **Core**: GameManager, BattleSystem, CardManager (게임 로직)
+- **UI**: Renderer, UIManager, HPBarSystem (렌더링 + DOM)
+- **Config**: gameConfig.js, cardDatabase.js (설정 중앙화)
+- **Utils**: TextRenderer, ColorUtils, TimerManager (재사용)
 
-### 모듈 구조 예시
-```javascript
-// Core Systems
-js/core/GameManager.js     // 게임 상태 및 화면 전환 관리
-js/core/BattleSystem.js    // 전투 로직 및 규칙 처리
-js/core/CardManager.js     // 카드 데이터 및 선택 관리
+**핵심 원칙**: Canvas 게임 로직 + DOM UI 하이브리드, GameConfig 논리 좌표계
 
-// UI Systems
-js/ui/Renderer.js          // Canvas 렌더링 총괄
-js/ui/UIManager.js         // DOM UI 요소 관리
-js/ui/HPBarSystem.js       // HP바 및 방어력 표시
+## Project Workflow Essentials
 
-// Configuration
-js/config/gameConfig.js    // 게임 설정 (canvas 크기, 속성 시스템 등)
-js/config/cardDatabase.js  // 카드 데이터베이스
+1. **Configuration first**: Config 파일 수정 → 개별 파일 수정 금지
+2. **Test defeat/victory modals**: 패배/승리 화면 정상 작동 확인 필수
+3. **Mobile touch events**: 터치 지원 + 반응형 레이아웃 검증
+4. **Dynamic over static**: 생성된 컨텐츠 우선, 정적 HTML 지양
 
-// Utilities
-js/utils/TextRenderer.js   // 텍스트 렌더링 최적화
-js/utils/ColorUtils.js     // 색상 처리 유틸리티
-```
-
-### 핵심 개발 원칙
-- **논리적 좌표계**: GameConfig 기준 논리적 크기로 모든 디스플레이에서 일관성 확보
-- **비율 기반 배치**: 절대값 대신 `width * 0.5`, `height * 0.25` 등 비율로 UI 배치
-- **하이브리드 UI**: Canvas (게임 로직) + DOM (HP바, 상태이상) 조합
-- **모듈별 분리**: 각 기능별로 독립적 모듈화하여 유지보수성 극대화
-- **설정 기반 개발**: 모든 UI 위치값을 GameConfig에서 관리
-
-## Mobile & Performance Considerations
-- All games must support touch events
-- Canvas games should use `requestAnimationFrame`
-- Responsive design with mobile-first approach
-- Local storage for persistence and game data
-
-## Project Workflow
-1. **Always check configuration first** - modify config files, not individual files
-2. **Test language switching** - verify sync between homepage and games
-3. **Mobile testing** - ensure touch events and responsive layout work
-4. **Dynamic content** - prefer generated content over static HTML
-
-**REMEMBER: This project prioritizes maintainability through configuration-driven development!**
+**Remember: Configuration-driven development for maximum maintainability**
