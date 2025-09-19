@@ -88,6 +88,12 @@ class MainMenu {
 
     // 메뉴 표시
     show() {
+        // 모달이 활성화된 경우 버튼을 표시하지 않음
+        const gameManager = window.gameManager;
+        if (gameManager?.uiManager?.modalState) {
+            return; // 모달 중에는 메뉴 버튼 표시 방지
+        }
+
         if (this.menuContainer) {
             this.menuContainer.classList.remove('hidden');
             this.updateButtonSelection();

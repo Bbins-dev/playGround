@@ -193,22 +193,7 @@ class UIManager {
         this.renderCount++;
         const currentTime = performance.now();
 
-
-        // 화면별 렌더링
-        if (this.currentScreen === 'menu' && this.gameManager.mainMenu) {
-            this.gameManager.mainMenu.render(this.gameManager.ctx, this.gameManager.canvas);
-        } else if (this.currentScreen === 'cardSelection' && this.gameManager.cardSelection) {
-            // 카드 선택 화면은 CardSelection 클래스에서 직접 렌더링
-            this.gameManager.cardSelection.render(this.gameManager.ctx, this.gameManager.canvas);
-        } else if (this.currentScreen === 'gallery' && this.gameManager.cardGallery) {
-            // 카드 갤러리는 CardGallery 클래스에서 직접 렌더링
-            this.gameManager.cardGallery.render(this.gameManager.ctx, this.gameManager.canvas);
-        } else {
-            // 기타 화면은 Renderer를 통해 렌더링
-            this.renderer.render(gameState);
-        }
-
-        // 모달이 활성화된 경우 렌더링 (글래스모피즘 버전)
+        // 모달이 활성화된 경우 모달만 렌더링 (다른 화면 렌더링 방지)
         if (this.modalState && (this.modalState.isAnimating || this.modalState.waitingForConfirm)) {
             const renderOptions = {
                 type: this.modalState.type,
@@ -233,6 +218,21 @@ class UIManager {
                     this.modalState.buttonHovered
                 );
             }
+            return; // 모달 중에는 다른 화면 렌더링 방지
+        }
+
+        // 화면별 렌더링 (모달이 없을 때만)
+        if (this.currentScreen === 'menu' && this.gameManager.mainMenu) {
+            this.gameManager.mainMenu.render(this.gameManager.ctx, this.gameManager.canvas);
+        } else if (this.currentScreen === 'cardSelection' && this.gameManager.cardSelection) {
+            // 카드 선택 화면은 CardSelection 클래스에서 직접 렌더링
+            this.gameManager.cardSelection.render(this.gameManager.ctx, this.gameManager.canvas);
+        } else if (this.currentScreen === 'gallery' && this.gameManager.cardGallery) {
+            // 카드 갤러리는 CardGallery 클래스에서 직접 렌더링
+            this.gameManager.cardGallery.render(this.gameManager.ctx, this.gameManager.canvas);
+        } else {
+            // 기타 화면은 Renderer를 통해 렌더링
+            this.renderer.render(gameState);
         }
     }
 
@@ -284,7 +284,10 @@ class UIManager {
                 this.hide(elements.speedControls);
                 this.hide(elements.backToHomepageBtn);
                 this.hide(elements.backToMenuBtn);
-                this.show(elements.mainMenuButtons);
+                // 모달이 활성화되지 않은 경우에만 메인메뉴 버튼 표시
+                if (!this.modalState) {
+                    this.show(elements.mainMenuButtons);
+                }
                 // HP 바 숨기기
                 elements.hpBars.forEach(bar => this.hide(bar));
                 break;
@@ -336,6 +339,10 @@ class UIManager {
                 break;
             case 'cardSelection':
                 this.initializeCardSelection();
+                break;
+            case 'gameOver':
+                // 게임 오버 상태에서는 특별한 초기화 불필요
+                // 모달이 모든 UI 처리를 담당
                 break;
         }
     }
@@ -667,6 +674,12 @@ class UIManager {
 
     // 승리 모달 표시
     showVictoryModal(stage, callback) {
+        // 메인메뉴 버튼 즉시 숨기기 (DOM-Canvas 동기화)
+        const mainMenuButtons = document.getElementById('main-menu-buttons');
+        if (mainMenuButtons) {
+            mainMenuButtons.classList.add('hidden');
+        }
+
         // 모달 상태 설정
         this.modalState = {
             type: 'victory',
@@ -686,6 +699,12 @@ class UIManager {
 
     // 패배 모달 표시
     showDefeatModal(callback) {
+        // 메인메뉴 버튼 즉시 숨기기 (DOM-Canvas 동기화)
+        const mainMenuButtons = document.getElementById('main-menu-buttons');
+        if (mainMenuButtons) {
+            mainMenuButtons.classList.add('hidden');
+        }
+
         // 게임 통계와 최종 손패 가져오기
         const gameStats = this.gameManager.gameStats;
         const finalHand = gameStats ? gameStats.finalHand : [];

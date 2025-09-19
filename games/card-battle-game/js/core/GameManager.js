@@ -241,6 +241,9 @@ class GameManager {
             case 'cardSelection':
                 this.currentScreen = this.cardSelection;
                 break;
+            case 'gameOver':
+                this.currentScreen = null; // 이전 화면 정리
+                break;
         }
 
         // UI 매니저에 화면 전환 알림
