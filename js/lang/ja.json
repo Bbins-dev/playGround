@@ -88,6 +88,10 @@
       "defense": "防御力",
       "thorns": "トゲ",
       "combat_log": "戦闘ログ",
+      "player_turn": "あなたのターン",
+      "enemy_turn": "敵のターン",
+      "card_activation": "カード発動中...",
+      "heal": "回復",
       "enemy_names": {
         "1": "訓練用かかし",
         "2": "木の人形",

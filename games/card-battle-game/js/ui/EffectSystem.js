@@ -119,17 +119,17 @@ class EffectSystem {
         const configs = {
             buff: {
                 icon: '↑',
-                text: '버프',
+                text: I18nHelper.getText('auto_battle_card_game.card_types.buff') || '버프',
                 color: '#2ECC71'
             },
             debuff: {
                 icon: '↓',
-                text: '디버프',
+                text: I18nHelper.getText('auto_battle_card_game.card_types.debuff') || '디버프',
                 color: '#E74C3C'
             },
             heal: {
                 icon: '♥',
-                text: '회복',
+                text: I18nHelper.getText('auto_battle_card_game.ui.heal') || '회복',
                 color: '#2ECC71'
             }
         };

@@ -276,7 +276,8 @@ class GameManager {
         this.initializeGameStats();
 
         // 플레이어 생성
-        this.player = new Player('플레이어', true);
+        const playerName = I18nHelper.getText('auto_battle_card_game.ui.player') || '플레이어';
+        this.player = new Player(playerName, true);
 
         // 기본 카드 추가 (카드 선택을 건너뛴 경우의 폴백)
         if (this.player.hand.length === 0) {
@@ -298,7 +299,8 @@ class GameManager {
         this.initializeGameStats();
 
         // 플레이어 생성
-        this.player = new Player('플레이어', true);
+        const playerName = I18nHelper.getText('auto_battle_card_game.ui.player') || '플레이어';
+        this.player = new Player(playerName, true);
 
         // 카드 선택 화면으로 이동
         if (this.cardSelection) {
@@ -322,7 +324,8 @@ class GameManager {
         // 플레이어가 없으면 생성
         if (!this.player) {
             console.log('플레이어가 없어서 생성합니다');
-            this.player = new Player('플레이어', true);
+            const playerName = I18nHelper.getText('auto_battle_card_game.ui.player') || '플레이어';
+            this.player = new Player(playerName, true);
         }
 
         if (this.player) {

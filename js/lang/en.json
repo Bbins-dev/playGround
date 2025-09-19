@@ -88,6 +88,10 @@
       "defense": "Defense",
       "thorns": "Thorns",
       "combat_log": "Combat Log",
+      "player_turn": "Your Turn",
+      "enemy_turn": "Enemy Turn",
+      "card_activation": "Card Activating...",
+      "heal": "Heal",
       "enemy_names": {
         "1": "Training Dummy",
         "2": "Wooden Puppet",

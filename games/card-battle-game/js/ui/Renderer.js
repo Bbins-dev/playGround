@@ -207,9 +207,12 @@ class Renderer {
         const centerY = this.height / 2;
 
         if (info.phase === 'cardActivation') {
-            this.drawBattlePhase('카드 발동 중...', centerX, centerY);
+            const text = I18nHelper.getText('auto_battle_card_game.ui.card_activation') || '카드 발동 중...';
+            this.drawBattlePhase(text, centerX, centerY);
         } else if (info.phase === 'turnTransition') {
-            const playerName = info.currentTurn === 'player' ? '나의 턴' : '적의 턴';
+            const playerTurnText = I18nHelper.getText('auto_battle_card_game.ui.player_turn') || '나의 턴';
+            const enemyTurnText = I18nHelper.getText('auto_battle_card_game.ui.enemy_turn') || '적의 턴';
+            const playerName = info.currentTurn === 'player' ? playerTurnText : enemyTurnText;
             this.drawBattlePhase(playerName, centerX, centerY);
         }
     }

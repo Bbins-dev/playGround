@@ -88,6 +88,10 @@
       "defense": "방어력",
       "thorns": "가시",
       "combat_log": "전투 로그",
+      "player_turn": "나의 턴",
+      "enemy_turn": "적의 턴",
+      "card_activation": "카드 발동 중...",
+      "heal": "회복",
       "enemy_names": {
         "1": "훈련용 허수아비",
         "2": "나무 인형",

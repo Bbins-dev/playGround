@@ -19,6 +19,8 @@ async function initializeApp() {
         const defaultLang = window.PlayGroundConfig?.site.defaultLanguage || 'ko';
         const savedLang = localStorage.getItem(storageKey) || defaultLang;
         await window.i18n.init(savedLang, 'js/lang/');
+        // 언어 선택기 UI를 현재 언어로 업데이트
+        window.i18n.updateLanguageSelectors(savedLang);
     }
 
     // 게임 레지스트리 초기화
