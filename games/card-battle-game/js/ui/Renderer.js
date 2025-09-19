@@ -214,9 +214,17 @@ class Renderer {
             this.drawBattlePhase(text, centerX, centerY);
         } else if (info.phase === 'turnTransition') {
             const playerTurnText = I18nHelper.getText('auto_battle_card_game.ui.player_turn') || '나의 턴';
-            const enemyTurnText = I18nHelper.getText('auto_battle_card_game.ui.enemy_turn') || '적의 턴';
-            const playerName = info.currentTurn === 'player' ? playerTurnText : enemyTurnText;
-            this.drawBattlePhase(playerName, centerX, centerY);
+
+            let turnText;
+            if (info.currentTurn === 'player') {
+                turnText = playerTurnText;
+            } else {
+                // 적 턴의 경우 적 이름을 포함한 템플릿 사용
+                const enemyTurnTemplate = I18nHelper.getText('auto_battle_card_game.ui.enemy_turn_template') || '{name}의 턴';
+                const enemyName = info.enemy ? info.enemy.name : '적';
+                turnText = enemyTurnTemplate.replace('{name}', enemyName);
+            }
+            this.drawBattlePhase(turnText, centerX, centerY);
         }
     }
 
