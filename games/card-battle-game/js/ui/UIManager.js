@@ -34,7 +34,10 @@ class UIManager {
             cardSelection: document.getElementById('card-selection-modal')
         };
 
-        // 모달 상태
+        // 승리/패배 모달
+        this.victoryDefeatModal = new VictoryDefeatModal();
+
+        // 모달 상태 (Canvas 모달용 - 더 이상 사용하지 않음)
         this.modalState = null;
 
         // 초기화
@@ -212,33 +215,7 @@ class UIManager {
         this.renderCount++;
         const currentTime = performance.now();
 
-        // 모달이 활성화된 경우 모달만 렌더링 (다른 화면 렌더링 방지)
-        if (this.modalState && (this.modalState.isAnimating || this.modalState.waitingForConfirm)) {
-            // 모달 렌더링 전 Canvas 완전 클리어
-            this.ctx.clearRect(0, 0, GameConfig.canvas.width, GameConfig.canvas.height);
-
-            const renderOptions = {
-                type: this.modalState.type,
-                alpha: this.modalState.alpha,
-                stage: this.modalState.stage || 1,
-                animationTime: this.modalState.animationTime || 0
-            };
-
-            // 패배 모달의 경우 추가 정보 전달
-            if (this.modalState.type === 'defeat') {
-                renderOptions.gameStats = this.modalState.gameStats;
-                renderOptions.finalHand = this.modalState.finalHand;
-                renderOptions.buttonHoveredType = this.modalState.buttonHoveredType;
-
-                // 버튼 영역 정보를 받기 위한 콜백 설정
-                renderOptions.setButtonAreas = (buttonAreas) => {
-                    this.modalState.buttonAreas = buttonAreas;
-                };
-            }
-
-            this.renderer.renderModal(this.modalState.config, renderOptions);
-            return; // 모달 중에는 다른 화면 렌더링 방지
-        }
+        // Canvas 모달 렌더링 제거 - DOM 모달 사용
 
         // 화면별 렌더링 (모달이 없을 때만)
         if (this.currentScreen === 'menu' && this.gameManager.mainMenu) {
@@ -395,29 +372,6 @@ class UIManager {
 
     // 캔버스 클릭 처리
     handleCanvasClick(event) {
-        // 패배 모달에서 버튼 클릭 체크
-        if (this.modalState && this.modalState.type === 'defeat' && this.modalState.waitingForConfirm) {
-            const coords = this.gameManager.getCanvasCoordinates(event);
-            if (coords.inBounds && this.modalState.buttonAreas) {
-                const { x, y } = coords;
-                const { restart, mainMenu } = this.modalState.buttonAreas;
-
-                // 재시작 버튼 클릭
-                if (x >= restart.x && x <= restart.x + restart.width &&
-                    y >= restart.y && y <= restart.y + restart.height) {
-                    this.handleDefeatRestart();
-                    return;
-                }
-
-                // 메인메뉴 버튼 클릭
-                if (x >= mainMenu.x && x <= mainMenu.x + mainMenu.width &&
-                    y >= mainMenu.y && y <= mainMenu.y + mainMenu.height) {
-                    this.handleDefeatMainMenu();
-                    return;
-                }
-            }
-        }
-
         if (!this.isInteractive) return;
 
         // GameManager의 좌표 변환 메서드 사용
@@ -737,118 +691,54 @@ class UIManager {
 
     // 승리 모달 표시
     showVictoryModal(stage, callback) {
-        // 모든 UI 요소 즉시 숨기기 (DOM-Canvas 동기화)
+        // 모든 UI 요소 즉시 숨기기
         this.hideAllUIElements();
 
-        // 모달 상태 설정
-        this.modalState = {
-            type: 'victory',
-            stage: stage || 1,
-            alpha: 0,
-            isAnimating: true,
-            callback: callback,
-            animationStart: Date.now(),
-            config: GameConfig.battleResult
-        };
+        // DOM 기반 승리 모달 표시
+        this.victoryDefeatModal.showVictory(stage || 1, () => {
+            // 모든 UI 요소 다시 표시
+            this.updateUIVisibility();
+
+            if (callback && typeof callback === 'function') {
+                callback();
+            }
+        });
 
         this.isInteractive = false;
-
-        // 페이드인 애니메이션 시작
-        this.animateModal();
     }
 
     // 패배 모달 표시
     showDefeatModal(callback) {
-        // 모든 UI 요소 즉시 숨기기 (DOM-Canvas 동기화)
+        // 모든 UI 요소 즉시 숨기기
         this.hideAllUIElements();
 
         // 게임 상태를 gameOver로 명확히 설정
         this.gameManager.gameState = 'gameOver';
 
-        // 게임 통계와 최종 손패 가져오기
+        // 게임 통계 가져오기
         const gameStats = this.gameManager.gameStats;
-        const finalHand = gameStats ? gameStats.finalHand : [];
 
-        // 모달 상태 설정
-        this.modalState = {
-            type: 'defeat',
-            alpha: 0,
-            isAnimating: true,
-            callback: callback,
-            animationStart: Date.now(),
-            config: GameConfig.battleResult,
-            gameStats: gameStats,
-            finalHand: finalHand,
-            buttonHoveredType: null, // 'restart' 또는 'mainMenu'
-            waitingForConfirm: false, // 확인 대기 상태
-            buttonAreas: null // 버튼 클릭 영역들
-        };
+        // DOM 기반 패배 모달 표시
+        this.victoryDefeatModal.showDefeat(
+            gameStats,
+            // 다시 도전하기 콜백
+            () => {
+                this.handleDefeatRestart();
+            },
+            // 메인 메뉴로 콜백
+            () => {
+                this.handleDefeatMainMenu();
+                if (callback && typeof callback === 'function') {
+                    callback();
+                }
+            }
+        );
 
         this.isInteractive = false;
-
-        // 페이드인 애니메이션 시작
-        this.animateModal();
     }
 
-    // 모달 애니메이션 처리 (글래스모피즘 버전)
-    animateModal() {
-        if (!this.modalState || !this.modalState.isAnimating) {
-            return;
-        }
-
-        const elapsed = Date.now() - this.modalState.animationStart;
-        const config = this.modalState.config.modal.animation;
-
-        // 애니메이션 시간 업데이트 (파티클 효과용)
-        this.modalState.animationTime = elapsed;
-
-        if (this.modalState.phase === 'fadeOut') {
-            // 페이드아웃 단계
-            const fadeOutProgress = Math.min(elapsed / config.fadeOut, 1);
-            this.modalState.alpha = 1 - fadeOutProgress;
-
-            if (fadeOutProgress >= 1) {
-                // 페이드아웃 완료, 콜백 저장 후 모달 정리
-                const savedCallback = this.modalState.callback;
-                const modalType = this.modalState.type;
-
-                this.modalState.isAnimating = false;
-                this.modalState = null;
-                this.isInteractive = true;
-
-                // 전환 딜레이 후 콜백 실행 (메인 메뉴 표시)
-                setTimeout(() => {
-                    if (savedCallback && typeof savedCallback === 'function') {
-                        savedCallback();
-                    }
-                }, config.transitionDelay);
-                return;
-            }
-        } else {
-            // 페이드인 -> 표시 -> 페이드아웃 단계
-            if (elapsed < config.fadeIn) {
-                // 페이드인 단계
-                const fadeInProgress = elapsed / config.fadeIn;
-                this.modalState.alpha = fadeInProgress;
-            } else if (this.modalState.type === 'defeat') {
-                // 패배 모달: 표시 완료 후 확인 버튼 대기
-                this.modalState.alpha = 1;
-                this.modalState.waitingForConfirm = true;
-                // 더 이상 자동 진행하지 않음
-                return;
-            } else if (elapsed < config.fadeIn + config.display) {
-                // 승리 모달: 표시 단계
-                this.modalState.alpha = 1;
-            } else {
-                // 승리 모달: 페이드아웃 시작
-                this.modalState.phase = 'fadeOut';
-                this.modalState.animationStart = Date.now();
-            }
-        }
-
-        // 다음 프레임에서 계속
-        requestAnimationFrame(() => this.animateModal());
-    }
+    // Canvas 모달 애니메이션 처리 (더 이상 사용하지 않음 - DOM 모달 사용)
+    // animateModal() - 제거됨
 
     // 카드 툴팁 표시
     showCardTooltip(card) {
@@ -959,53 +849,15 @@ class UIManager {
 
     }
 
-    // 마우스 무브 처리 (패배 모달 버튼 호버)
+    // 마우스 무브 처리 (Canvas 모달 호버 제거 - DOM 모달 사용)
     handleCanvasMouseMove(event) {
-        if (this.modalState && this.modalState.type === 'defeat' && this.modalState.waitingForConfirm) {
-            const coords = this.gameManager.getCanvasCoordinates(event);
-            if (coords.inBounds && this.modalState.buttonAreas) {
-                const { x, y } = coords;
-                const { restart, mainMenu } = this.modalState.buttonAreas;
-
-                const restartHovered = x >= restart.x && x <= restart.x + restart.width &&
-                                     y >= restart.y && y <= restart.y + restart.height;
-                const mainMenuHovered = x >= mainMenu.x && x <= mainMenu.x + mainMenu.width &&
-                                      y >= mainMenu.y && y <= mainMenu.y + mainMenu.height;
-
-                let newHoveredType = null;
-                if (restartHovered) newHoveredType = 'restart';
-                else if (mainMenuHovered) newHoveredType = 'mainMenu';
-
-                if (this.modalState.buttonHoveredType !== newHoveredType) {
-                    this.modalState.buttonHoveredType = newHoveredType;
-                    // 호버 상태 변경 시 커서 스타일 변경
-                    this.canvas.style.cursor = newHoveredType ? 'pointer' : 'default';
-                }
-            }
-        }
-    }
-
-    // 패배 확인 버튼 클릭 처리
-    handleDefeatConfirm() {
-        if (!this.modalState || this.modalState.type !== 'defeat') return;
-
-        // 페이드아웃 시작
-        this.modalState.phase = 'fadeOut';
-        this.modalState.animationStart = Date.now();
-        this.modalState.waitingForConfirm = false;
-        this.modalState.isAnimating = true;
-
-        // 커서 스타일 리셋
-        this.canvas.style.cursor = 'default';
-
-        // 애니메이션 재시작
-        this.animateModal();
+        // Canvas 모달 호버 기능 제거됨
     }
 
     // 패배 모달 재시작 버튼 처리
     handleDefeatRestart() {
-        // 모달 닫기
-        this.modalState = null;
+        // UI 요소 다시 표시
+        this.updateUIVisibility();
         this.isInteractive = true;
 
         // 게임 재시작 (1스테이지부터)
@@ -1021,8 +873,8 @@ class UIManager {
 
     // 패배 모달 메인메뉴 버튼 처리
     handleDefeatMainMenu() {
-        // 모달 닫기
-        this.modalState = null;
+        // UI 요소 다시 표시
+        this.updateUIVisibility();
         this.isInteractive = true;
 
         // 메인메뉴로 이동
