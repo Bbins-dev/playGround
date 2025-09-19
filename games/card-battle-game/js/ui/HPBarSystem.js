@@ -223,8 +223,10 @@ class HPBarSystem {
         indicator.className = 'turn-indicator';
 
         if (isPlayerTurn) {
-            const playerTurnText = I18nHelper.getText('auto_battle_card_game.ui.player_turn') || '나의 턴';
-            indicator.textContent = playerTurnText;
+            // 플레이어 턴의 경우 플레이어 이름을 포함한 템플릿 사용
+            const playerTurnTemplate = I18nHelper.getText('auto_battle_card_game.ui.player_turn_template') || '{name}의 턴';
+            const turnText = playerTurnTemplate.replace('{name}', playerName);
+            indicator.textContent = turnText;
             indicator.style.color = '#2ECC71';
         } else {
             // 적 턴의 경우 적 이름을 포함한 템플릿 사용

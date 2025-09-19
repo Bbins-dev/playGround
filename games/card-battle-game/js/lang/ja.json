@@ -90,6 +90,7 @@
       "combo": "コンボ",
       "turn": "ターン",
       "player_turn": "自分のターン",
+      "player_turn_template": "{name}のターン",
       "enemy_turn_template": "{name}のターン",
       "card_activating": "カード発動中...",
       "defense": "防御力",

@@ -90,6 +90,7 @@
       "combo": "콤보",
       "turn": "턴",
       "player_turn": "나의 턴",
+      "player_turn_template": "{name}의 턴",
       "enemy_turn_template": "{name}의 턴",
       "card_activating": "카드 발동 중...",
       "defense": "방어력",

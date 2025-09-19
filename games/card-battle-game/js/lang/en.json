@@ -90,6 +90,7 @@
       "combo": "Combo",
       "turn": "Turn",
       "player_turn": "Your Turn",
+      "player_turn_template": "{name}'s Turn",
       "enemy_turn_template": "{name}'s Turn",
       "card_activating": "Card Activating...",
       "defense": "Defense",

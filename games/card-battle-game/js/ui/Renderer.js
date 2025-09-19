@@ -213,11 +213,12 @@ class Renderer {
             const text = I18nHelper.getText('auto_battle_card_game.ui.card_activating') || '카드 발동 중...';
             this.drawBattlePhase(text, centerX, centerY);
         } else if (info.phase === 'turnTransition') {
-            const playerTurnText = I18nHelper.getText('auto_battle_card_game.ui.player_turn') || '나의 턴';
-
             let turnText;
             if (info.currentTurn === 'player') {
-                turnText = playerTurnText;
+                // 플레이어 턴의 경우 플레이어 이름을 포함한 템플릿 사용
+                const playerTurnTemplate = I18nHelper.getText('auto_battle_card_game.ui.player_turn_template') || '{name}의 턴';
+                const playerName = info.player ? info.player.name : (I18nHelper.getText('auto_battle_card_game.ui.default_player_name') || '플레이어');
+                turnText = playerTurnTemplate.replace('{name}', playerName);
             } else {
                 // 적 턴의 경우 적 이름을 포함한 템플릿 사용
                 const enemyTurnTemplate = I18nHelper.getText('auto_battle_card_game.ui.enemy_turn_template') || '{name}의 턴';
