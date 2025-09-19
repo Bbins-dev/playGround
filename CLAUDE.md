@@ -24,7 +24,7 @@ This is a **Korean hyper-casual mini web games collection** - a single-page appl
 
 2. **Individual Games** (in `games/` folder):
    - Each game is completely independent
-   - Standard structure: `index.html`, `style.css`, `game.js`, `assets/`
+   - **Modular structure**: Organized into `js/core/`, `js/ui/`, `js/entities/`, `js/utils/`, `js/screens/`, `css/`
    - Canvas-based rendering with 60fps game loops
    - Mobile-responsive with touch event support
 
@@ -35,10 +35,11 @@ This is a **Korean hyper-casual mini web games collection** - a single-page appl
 ### Current Games
 - **Barista Game** (`games/barista-game/`): Timing-based coffee pouring game
 - **Card Battle Game** (`games/card-battle-game/`): 턴제 자동 카드 배틀 게임 [FULLY WORKING ✅]
-  - 5개 속성 시스템 (불🔥, 물💧, 전기⚡, 독☠️, 노멀⭐) + 상성 관계
+  - 5개 속성 시스템 (불🔥, 물💧, 전기⚡, 독☠️, 노멀👊) + 상성 관계
   - 완전한 다국어 지원 (한국어, 영어, 일본어)
-  - 반응형 Canvas 시스템 및 동적 UI 중앙 정렬
-  - 메인 메뉴, 카드 선택, 카드 갤러리, 전투 화면 완료
+  - 모듈화된 아키텍처: Core, UI, Entities, Utils, Screens 분리
+  - Canvas + DOM 하이브리드 UI (HP바, 상태이상 표시 등)
+  - 논리적 좌표계 기반 크로스 플랫폼 호환성
 
 ## Critical Development Rules
 
@@ -61,10 +62,11 @@ Without trailing slash, relative paths like `./style.css` resolve incorrectly.
    - ❌ 코드 내부에 직접 숫자, 색상, 크기 작성 금지
    - ✅ 모든 값은 `gameConfig.js` 또는 설정 파일에서 가져오기
 
-3. **Canvas 좌표계 일관성 (레티나 디스플레이 대응)**:
-   - ❌ `canvas.width`, `canvas.height` 직접 사용 금지 (실제 픽셀 크기)
-   - ✅ `GameConfig.canvas.width`, `GameConfig.canvas.height` 사용 필수 (논리적 크기)
-   - ✅ 모든 팝업, UI 위치 계산을 GameConfig 기준으로 통일
+3. **Canvas 좌표계 일관성 (크로스 플랫폼 대응)**:
+   - ❌ `canvas.width`, `canvas.height` 직접 사용 금지 (브라우저별/디스플레이별 실제 픽셀 크기 상이)
+   - ✅ `GameConfig.canvas.width`, `GameConfig.canvas.height` 사용 필수 (논리적 좌표계)
+   - ✅ 모든 UI 위치를 논리적 좌표계 기준으로 계산 (비율 기반 배치)
+   - ✅ 예: `x = GameConfig.canvas.width * 0.5` (중앙), `y = GameConfig.canvas.height * 0.25` (상단 1/4)
 
 ## Key Configuration Files
 
@@ -78,13 +80,16 @@ Without trailing slash, relative paths like `./style.css` resolve incorrectly.
 ### Adding New Games
 1. Create folder in `games/` with kebab-case naming
 2. **Must add game card to main `index.html`** - games are NOT auto-discovered
-3. Include mobile touch support and "back to main" button
-4. Maintain independence - no cross-game dependencies
+3. **Modular structure**: Organize code into `js/core/`, `js/ui/`, `js/entities/`, `js/utils/`, `js/screens/`
+4. Include mobile touch support and "back to main" button
+5. Maintain independence - no cross-game dependencies
 
 ### File Organization Rules
 - **Game folders only in `games/`** - never elsewhere
+- **Modular structure**: `js/core/` (logic), `js/ui/` (rendering), `js/entities/` (data), `js/utils/` (helpers), `js/screens/` (screens)
 - **Language files**: `js/lang/{lang}.json` for i18n translations
 - **Game-specific assets**: `games/{game-name}/assets/`
+- **CSS organization**: `css/components.css` for additional styling
 
 ### Translation & Internationalization
 - Use `data-i18n` attributes for translatable text
@@ -92,48 +97,49 @@ Without trailing slash, relative paths like `./style.css` resolve incorrectly.
 - Language switching is handled by the i18n system automatically
 
 ### Code Style Patterns
-- ES6+ classes for game logic
+- **ES6+ Modules**: Import/export pattern으로 모듈화
 - **Configuration-driven development**: 모든 설정값은 config 파일에서 관리
 - **Dynamic positioning**: measureText(), getBoundingClientRect() 활용한 동적 배치
-- **Responsive Canvas**: updateCanvasSize() 메서드로 반응형 처리
+- **Manager Pattern**: GameManager, CardManager, UIManager 등 역할별 관리자 클래스
+- **Separation of Concerns**: Core logic, UI rendering, entities, utilities 분리
 - Consistent event handling with `addEventListener`
 
-## Card Battle Game - Recent Updates (2025-09-18)
+## Card Battle Game - Recent Updates (2025-09-19)
 
-### 완성된 시스템들 ✅
-- **카드 선택 화면**: 동적 중앙 정렬 시스템 완료
-- **다국어 지원**: 11개 카드 모두 3개 언어 완전 번역
-- **반응형 Canvas**: 모든 해상도에서 UI 완벽 정렬
-- **설정 기반 UI**: gameConfig.cardSelection으로 모든 레이아웃 관리
+### 대규모 리팩토링 완료 ✅
+- **모듈화 아키텍처**: 22개 파일을 기능별로 분리하여 유지보수성 향상
+- **Canvas + DOM 하이브리드**: Canvas 게임 로직 + DOM HP바/상태이상 UI
+- **논리적 좌표계**: GameConfig 기반 비율 계산으로 크로스 플랫폼 호환성 확보
+- **Manager Pattern**: Core 로직과 UI 렌더링 완전 분리
+- **Utils 시스템**: 재사용 가능한 TextRenderer, ColorUtils, TimerManager 등
 
-### gameConfig 구조 예시
+### 모듈 구조 예시
 ```javascript
-// games/card-battle-game/js/config/gameConfig.js
-cardSelection: {
-    title: {
-        y: 50,              // 제목 Y 위치
-        fontSize: 28,       // 제목 폰트 크기
-        shadowOffset: 2     // 그림자 오프셋
-    },
-    instructions: {
-        startY: 100,        // 안내 메시지 시작 Y 위치
-        lineHeight: 18,     // 줄 간격
-        fontSize: 14        // 폰트 크기
-    },
-    cards: {
-        startY: 180,        // 카드 그리드 시작 Y 위치
-        width: 140,         // 카드 너비
-        height: 190,        // 카드 높이
-        spacing: 160,       // 카드 간격
-        maxCols: 5          // 최대 열 수
-    }
-}
+// Core Systems
+js/core/GameManager.js     // 게임 상태 및 화면 전환 관리
+js/core/BattleSystem.js    // 전투 로직 및 규칙 처리
+js/core/CardManager.js     // 카드 데이터 및 선택 관리
+
+// UI Systems
+js/ui/Renderer.js          // Canvas 렌더링 총괄
+js/ui/UIManager.js         // DOM UI 요소 관리
+js/ui/HPBarSystem.js       // HP바 및 방어력 표시
+
+// Configuration
+js/config/gameConfig.js    // 게임 설정 (canvas 크기, 속성 시스템 등)
+js/config/cardDatabase.js  // 카드 데이터베이스
+
+// Utilities
+js/utils/TextRenderer.js   // 텍스트 렌더링 최적화
+js/utils/ColorUtils.js     // 색상 처리 유틸리티
 ```
 
-### UI 일관성 원칙
-- 모든 화면에서 `GameConfig.canvas.width / 2` 사용하여 중앙 정렬 (레티나 디스플레이 대응)
-- measureText()로 텍스트 크기 측정 후 동적 배치
-- 설정값 변경만으로 전체 레이아웃 조정 가능
+### 핵심 개발 원칙
+- **논리적 좌표계**: GameConfig 기준 논리적 크기로 모든 디스플레이에서 일관성 확보
+- **비율 기반 배치**: 절대값 대신 `width * 0.5`, `height * 0.25` 등 비율로 UI 배치
+- **하이브리드 UI**: Canvas (게임 로직) + DOM (HP바, 상태이상) 조합
+- **모듈별 분리**: 각 기능별로 독립적 모듈화하여 유지보수성 극대화
+- **설정 기반 개발**: 모든 UI 위치값을 GameConfig에서 관리
 
 ## Mobile & Performance Considerations
 - All games must support touch events
