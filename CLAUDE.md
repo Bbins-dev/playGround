@@ -105,6 +105,46 @@ Without trailing slash, relative paths like `./style.css` resolve incorrectly.
 
 **핵심 원칙**: Canvas 게임 로직 + DOM UI 하이브리드, GameConfig 논리 좌표계
 
+### DOM 모달 패턴 (필수 준수)
+
+**UI 모달은 반드시 DOM 방식 사용 (Canvas 모달 금지)**
+- ✅ **올바른 패턴**: HTML + CSS + DOM JavaScript 클래스
+- ❌ **금지 패턴**: Canvas renderModal, 글래스모피즘 Canvas 렌더링
+
+**DOM 모달 구현 표준**:
+1. **HTML 구조**: `index.html`에 모달 HTML 정의
+   ```html
+   <div id="modal-name" class="modal hidden">
+       <div class="modal-content">
+           <h2 data-i18n="...">제목</h2>
+           <!-- 모달 내용 -->
+       </div>
+   </div>
+   ```
+
+2. **JavaScript 클래스**: 개별 모달 관리 클래스 생성
+   ```javascript
+   class ModalNameModal {
+       constructor(gameManager) {  // 의존성 주입 패턴
+           this.gameManager = gameManager;
+           this.modal = document.getElementById('modal-name');
+       }
+       show() { this.modal.classList.remove('hidden'); }
+       hide() { this.modal.classList.add('hidden'); }
+   }
+   ```
+
+3. **UIManager 통합**: UIManager에서 모달 인스턴스 생성 및 관리
+   ```javascript
+   this.modalNameModal = new ModalNameModal(this.gameManager);
+   ```
+
+4. **CSS 스타일**: `css/components.css`에 모달 스타일 정의
+   - CSS 변수 시스템 사용 (하드코딩된 색상 금지)
+   - `.hidden` 클래스로 visibility 제어
+
+**기존 DOM 모달 예시**: PlayerNameModal, CardGallery, CardSelection, VictoryDefeatModal
+
 ## Project Workflow Essentials
 
 1. **Configuration first**: Config 파일 수정 → 개별 파일 수정 금지

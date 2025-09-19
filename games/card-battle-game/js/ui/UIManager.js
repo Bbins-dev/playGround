@@ -35,10 +35,8 @@ class UIManager {
         };
 
         // 승리/패배 모달
-        this.victoryDefeatModal = new VictoryDefeatModal();
+        this.victoryDefeatModal = new VictoryDefeatModal(this.gameManager);
 
-        // 모달 상태 (Canvas 모달용 - 더 이상 사용하지 않음)
-        this.modalState = null;
 
         // 초기화
         this.initialize();
@@ -281,12 +279,7 @@ class UIManager {
                 this.hide(elements.cardGalleryBtn);
                 this.hide(elements.backToHomepageBtn);
                 this.hide(elements.backToMenuBtn);
-                // 모달이 활성화되지 않은 경우에만 메인메뉴 버튼 표시
-                if (!this.modalState) {
-                    this.show(elements.mainMenuButtons);
-                } else {
-                    this.hide(elements.mainMenuButtons);
-                }
+                this.show(elements.mainMenuButtons);
                 // HP 바 숨기기
                 elements.hpBars.forEach(bar => this.hide(bar));
                 break;

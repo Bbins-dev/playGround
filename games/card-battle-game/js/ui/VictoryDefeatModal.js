@@ -2,7 +2,8 @@
  * 승리/패배 모달 관리 클래스
  */
 class VictoryDefeatModal {
-    constructor() {
+    constructor(gameManager) {
+        this.gameManager = gameManager;
         // 승리 모달 요소들
         this.victoryModal = document.getElementById('victory-modal');
         this.victoryStageSpan = document.getElementById('victory-stage');
@@ -118,8 +119,8 @@ class VictoryDefeatModal {
         if (!gameStats) return;
 
         // 플레이어 이름 (GameManager에서 player 객체 참조)
-        if (this.defeatPlayerName && window.gameManager && window.gameManager.player) {
-            this.defeatPlayerName.textContent = window.gameManager.player.name ||
+        if (this.defeatPlayerName && this.gameManager && this.gameManager.player) {
+            this.defeatPlayerName.textContent = this.gameManager.player.name ||
                 I18nHelper.getText('auto_battle_card_game.ui.default_player_name') || '플레이어';
         }
 
