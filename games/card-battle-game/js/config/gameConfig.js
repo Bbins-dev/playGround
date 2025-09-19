@@ -530,6 +530,15 @@ const GameConfig = {
         warning: '#F39C12'
     },
 
+    // UI 레이어 z-index 설정 (하드코딩 방지)
+    zIndexLayers: {
+        canvas: 1,               // 게임 캔버스
+        uiElements: 10,          // 일반 UI 요소들 (HP바, 버튼)
+        mainMenuButtons: 100,    // 메인메뉴 버튼
+        modals: 1000,           // 모달들
+        overlays: 2000          // 최상위 오버레이
+    },
+
     // 픽셀 값 설정 - Magic Number 정리
     layout: {
         padding: {

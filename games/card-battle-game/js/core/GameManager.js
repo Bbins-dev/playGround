@@ -277,16 +277,19 @@ class GameManager {
 
     // 메인 메뉴 표시
     showMainMenu() {
-
-        // 게임 상태를 메뉴로 강제 설정
+        // 게임 상태를 메뉴로 설정
         this.gameState = 'menu';
-        this.currentScreen = this.mainMenu; // 객체로 설정
+        this.currentScreen = this.mainMenu;
 
-        this.switchScreen('menu');
+        // UI Manager를 통해 화면 전환
+        if (this.uiManager) {
+            this.uiManager.switchScreen('menu');
+        }
+
+        // Canvas 기반 메인 메뉴 표시 (필요시)
         if (this.mainMenu) {
             this.mainMenu.show();
         }
-
     }
 
     // 게임 상태 변경

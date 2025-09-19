@@ -15,6 +15,9 @@ class UIManager {
         this.currentScreen = 'menu'; // 'menu' | 'battle' | 'cardSelection' | 'gallery'
         this.isInteractive = true;
 
+        // UI 화면 상태 초기화
+        this.currentScreen = 'menu';
+
         // 갤러리에서 전투 일시정지 상태 추적
         this.battleWasPaused = false;
 
@@ -46,11 +49,26 @@ class UIManager {
             console.warn('Renderer initialization failed:', error);
             // Continue initialization even if renderer fails
         }
+
+        // CSS 커스텀 속성 설정 (GameConfig 기반 z-index)
+        this.applyCSSVariables();
+
         this.setupEventListeners();
         this.setupSpeedControls();
         this.setupModals();
         this.updateLanguage();
+    }
 
+    // GameConfig 기반 CSS 변수 적용
+    applyCSSVariables() {
+        const root = document.documentElement;
+        const zLayers = GameConfig.zIndexLayers;
+
+        root.style.setProperty('--z-canvas', zLayers.canvas);
+        root.style.setProperty('--z-ui-elements', zLayers.uiElements);
+        root.style.setProperty('--z-main-menu-buttons', zLayers.mainMenuButtons);
+        root.style.setProperty('--z-modals', zLayers.modals);
+        root.style.setProperty('--z-overlays', zLayers.overlays);
     }
 
     // 이벤트 리스너 설정
@@ -185,6 +203,7 @@ class UIManager {
         });
     }
 
+
     // 메인 렌더링 루프 (최적화)
     render() {
         const gameState = this.getGameState();
@@ -195,6 +214,9 @@ class UIManager {
 
         // 모달이 활성화된 경우 모달만 렌더링 (다른 화면 렌더링 방지)
         if (this.modalState && (this.modalState.isAnimating || this.modalState.waitingForConfirm)) {
+            // 모달 렌더링 전 Canvas 완전 클리어
+            this.ctx.clearRect(0, 0, GameConfig.canvas.width, GameConfig.canvas.height);
+
             const renderOptions = {
                 type: this.modalState.type,
                 alpha: this.modalState.alpha,
@@ -207,17 +229,14 @@ class UIManager {
                 renderOptions.gameStats = this.modalState.gameStats;
                 renderOptions.finalHand = this.modalState.finalHand;
                 renderOptions.buttonHoveredType = this.modalState.buttonHoveredType;
+
+                // 버튼 영역 정보를 받기 위한 콜백 설정
+                renderOptions.setButtonAreas = (buttonAreas) => {
+                    this.modalState.buttonAreas = buttonAreas;
+                };
             }
 
             this.renderer.renderModal(this.modalState.config, renderOptions);
-
-            // 패배 모달에서 버튼 영역 업데이트
-            if (this.modalState.type === 'defeat' && this.modalState.alpha >= 0.8) {
-                this.modalState.buttonAreas = this.renderer.renderDefeatButtons(
-                    this.modalState.config.defeat,
-                    this.modalState.buttonHoveredType
-                );
-            }
             return; // 모달 중에는 다른 화면 렌더링 방지
         }
 
@@ -280,13 +299,16 @@ class UIManager {
 
         switch (this.currentScreen) {
             case 'menu':
-                this.show(elements.cardGalleryBtn);
+                // 메인 메뉴에서는 메뉴 관련 UI만 표시
                 this.hide(elements.speedControls);
+                this.hide(elements.cardGalleryBtn);
                 this.hide(elements.backToHomepageBtn);
                 this.hide(elements.backToMenuBtn);
                 // 모달이 활성화되지 않은 경우에만 메인메뉴 버튼 표시
                 if (!this.modalState) {
                     this.show(elements.mainMenuButtons);
+                } else {
+                    this.hide(elements.mainMenuButtons);
                 }
                 // HP 바 숨기기
                 elements.hpBars.forEach(bar => this.hide(bar));
@@ -554,6 +576,9 @@ class UIManager {
             this.gameManager.gameState = 'menu';
             this.gameManager.currentScreen = this.gameManager.mainMenu;
 
+            // 적절한 UI 요소들 다시 표시
+            this.showAllUIElements();
+
             // 게임 내 메인 메뉴로 이동
             this.gameManager.showMainMenu();
         }
@@ -680,13 +705,40 @@ class UIManager {
         }
     }
 
-    // 승리 모달 표시
-    showVictoryModal(stage, callback) {
-        // 메인메뉴 버튼 즉시 숨기기 (DOM-Canvas 동기화)
+    // 모든 UI 요소 숨기기 (패배/승리 모달 표시 시 사용)
+    hideAllUIElements() {
+        // 메인메뉴 버튼 숨기기
         const mainMenuButtons = document.getElementById('main-menu-buttons');
         if (mainMenuButtons) {
             mainMenuButtons.classList.add('hidden');
         }
+
+        // 게임 속도 컨트롤 숨기기
+        const speedControls = document.getElementById('speed-controls');
+        if (speedControls) {
+            speedControls.classList.add('hidden');
+        }
+
+        // 다른 UI 요소들도 필요시 숨기기
+        const uiElementIds = ['card-gallery-btn', 'battle-ui-elements'];
+        uiElementIds.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.classList.add('hidden');
+            }
+        });
+    }
+
+    // 모든 UI 요소 보이기 (메인 메뉴 복귀 시 사용)
+    showAllUIElements() {
+        // updateUIVisibility 메서드 호출로 대체
+        this.updateUIVisibility();
+    }
+
+    // 승리 모달 표시
+    showVictoryModal(stage, callback) {
+        // 모든 UI 요소 즉시 숨기기 (DOM-Canvas 동기화)
+        this.hideAllUIElements();
 
         // 모달 상태 설정
         this.modalState = {
@@ -707,11 +759,11 @@ class UIManager {
 
     // 패배 모달 표시
     showDefeatModal(callback) {
-        // 메인메뉴 버튼 즉시 숨기기 (DOM-Canvas 동기화)
-        const mainMenuButtons = document.getElementById('main-menu-buttons');
-        if (mainMenuButtons) {
-            mainMenuButtons.classList.add('hidden');
-        }
+        // 모든 UI 요소 즉시 숨기기 (DOM-Canvas 동기화)
+        this.hideAllUIElements();
+
+        // 게임 상태를 gameOver로 명확히 설정
+        this.gameManager.gameState = 'gameOver';
 
         // 게임 통계와 최종 손패 가져오기
         const gameStats = this.gameManager.gameStats;
@@ -841,27 +893,21 @@ class UIManager {
 
     // 유틸리티 함수들
 
-    // 요소 표시
+    // 요소 표시 - hidden 클래스 기반 통일
     show(element) {
         if (element) {
-            // hidden 클래스가 있다면 제거, 없다면 display 스타일 사용
-            if (element.classList.contains('hidden')) {
-                element.classList.remove('hidden');
-            } else {
+            element.classList.remove('hidden');
+            // display 스타일이 none으로 설정되어 있을 수 있으므로 초기화
+            if (element.style.display === 'none') {
                 element.style.display = '';
             }
         }
     }
 
-    // 요소 숨김
+    // 요소 숨김 - hidden 클래스 기반 통일
     hide(element) {
         if (element) {
-            // hidden 클래스 시스템이 있다면 클래스 사용, 없다면 display 스타일 사용
-            if (element.id === 'main-menu-buttons' || element.classList.contains('modal')) {
-                element.classList.add('hidden');
-            } else {
-                element.style.display = 'none';
-            }
+            element.classList.add('hidden');
         }
     }
 

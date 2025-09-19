@@ -568,8 +568,13 @@ class Renderer {
                     this.renderGameStats(gameStats, typeConfig);
                 }
 
-                // 두 개의 버튼 렌더링 (재시작, 메인메뉴)
-                this.renderDefeatButtons(typeConfig, options.buttonHoveredType);
+                // 두 개의 버튼 렌더링 (재시작, 메인메뉴) - 버튼 영역 반환
+                const buttonAreas = this.renderDefeatButtons(typeConfig, options.buttonHoveredType);
+
+                // 버튼 영역 정보를 options에 저장하여 UIManager에서 접근 가능하도록 함
+                if (options.setButtonAreas) {
+                    options.setButtonAreas(buttonAreas);
+                }
             }
         }
     }
@@ -577,8 +582,13 @@ class Renderer {
     // 글래스모피즘 오버레이 배경
     drawGlassmorphismOverlay(alpha, overlayColor) {
         this.ctx.save();
-        this.ctx.globalAlpha = alpha * 0.8;
-        this.ctx.fillStyle = overlayColor;
+
+        // 패배 화면에서는 배경을 충분히 어둡게 하기 위해 최소 불투명도 보장
+        const minOverlayAlpha = 0.6; // 최소 배경 어둠 정도
+        const overlayAlpha = Math.max(alpha * 0.8, minOverlayAlpha);
+
+        this.ctx.globalAlpha = overlayAlpha;
+        this.ctx.fillStyle = overlayColor || 'rgba(0, 0, 0, 0.7)'; // 기본값으로 더 어두운 배경
         this.ctx.fillRect(0, 0, GameConfig.canvas.width, GameConfig.canvas.height);
         this.ctx.restore();
     }

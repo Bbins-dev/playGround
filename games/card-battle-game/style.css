@@ -437,7 +437,7 @@ body {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
-/* 메인 메뉴 DOM 버튼들 (Canvas 메뉴 대체) */
+/* 메인 메뉴 DOM 버튼들 (Canvas 메뉴 대체) - 설정 기반 z-index */
 .main-menu-container {
     position: absolute;
     left: 50%;
@@ -446,7 +446,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 15px; /* GameConfig.mainMenu.menuItems.itemHeight - height */
-    z-index: 1000;
+    z-index: var(--z-main-menu-buttons, 100); /* GameConfig 기반 z-index */
     pointer-events: auto;
 }
 
