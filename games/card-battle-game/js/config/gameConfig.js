@@ -708,10 +708,10 @@ const GameConfig = {
                 borderWidth: 1                     // 얇은 테두리
             },
             animation: {
-                fadeIn: 400,             // 더 부드러운 페이드인
-                display: 2000,           // 버튼 없이 자동 전환
-                fadeOut: 600,            // 부드러운 페이드아웃
-                transitionDelay: 300     // 짧은 딜레이
+                fadeIn: 600,             // 더 부드러운 페이드인
+                display: 2500,           // 2.5초 동안 표시
+                fadeOut: 800,            // 부드러운 페이드아웃
+                transitionDelay: 200     // 짧은 딜레이
             }
         },
         // 승리 팝업 설정 - 글래스모피즘
@@ -773,31 +773,52 @@ const GameConfig = {
         defeat: {
             layout: {
                 modal: {
-                    width: 800,
-                    height: 650, // 더 큰 모달
+                    widthRatio: 0.625,    // 화면 너비의 62.5% (800/1280)
+                    heightRatio: 0.81,    // 화면 높이의 81% (650/800)
                     borderRadius: 30
                 },
                 stats: {
-                    startY: 280, // 통계 시작 위치
-                    spacing: 32, // 통계 항목 간격
-                    fontSize: 18,
-                    humorFontSize: 16, // 유머 통계는 약간 작게
-                    leftColumn: 80,
-                    rightColumn: 420,
-                    columnWidth: 300
+                    startYRatio: 0.49,    // 모달 내부의 49% 위치 (320/650)
+                    spacingRatio: 0.043,  // 모달 높이의 4.3% 간격
+                    fontSizeRatio: 0.025, // 모달 높이의 2.5%
+                    humorFontSizeRatio: 0.022, // 모달 높이의 2.2%
+                    leftColumnRatio: 0.075,    // 모달 너비의 7.5%
+                    rightColumnRatio: 0.55,     // 모달 너비의 55%
+                    columnWidthRatio: 0.375     // 모달 너비의 37.5%
                 },
                 handDisplay: {
-                    startY: 180,
-                    cardScale: 0.35, // 미니 카드 크기
-                    spacing: 55,
+                    startYRatio: 0.34,    // 모달 내부의 34% 위치 (220/650)
+                    cardScale: 0.35,      // 미니 카드 크기
+                    spacingRatio: 0.069,  // 모달 너비의 6.9% (55/800)
                     maxCards: 10
                 },
                 confirmButton: {
-                    y: 570,
-                    width: 180,
-                    height: 50,
-                    fontSize: 20,
-                    borderRadius: 25
+                    yRatio: 0.88,         // 모달 내부의 88% 위치
+                    widthRatio: 0.2,      // 모달 너비의 20%
+                    heightRatio: 0.07,    // 모달 높이의 7%
+                    fontSizeRatio: 0.028, // 모달 높이의 2.8%
+                    borderRadius: 25,
+                    spacing: 40
+                },
+                buttons: {
+                    yRatio: 0.88,         // 모달 내부의 88% 위치
+                    widthRatio: 0.2,      // 모달 너비의 20%
+                    heightRatio: 0.07,    // 모달 높이의 7%
+                    fontSizeRatio: 0.025, // 모달 높이의 2.5%
+                    borderRadius: 25,
+                    spacingRatio: 0.075,  // 모달 너비의 7.5% 간격
+                    restart: {
+                        xRatio: 0.225,    // 모달 너비의 22.5% (왼쪽 버튼 중앙)
+                        background: 'rgba(46, 204, 113, 0.2)',
+                        border: 'rgba(46, 204, 113, 0.4)',
+                        hover: 'rgba(46, 204, 113, 0.3)'
+                    },
+                    mainMenu: {
+                        xRatio: 0.575,    // 모달 너비의 57.5% (오른쪽 버튼 중앙)
+                        background: 'rgba(231, 76, 60, 0.2)',
+                        border: 'rgba(231, 76, 60, 0.4)',
+                        hover: 'rgba(231, 76, 60, 0.3)'
+                    }
                 }
             },
             colors: {
@@ -835,12 +856,21 @@ const GameConfig = {
                 }
             },
             message: {
-                fontSize: 24, // 조금 작게
-                y: 130, // 위로 올림
-                lineHeight: 30,
+                fontSize: 20, // 더 작게 조정
+                y: 150, // 아래로 더 내림 (겹침 방지)
+                lineHeight: 25,
                 textShadow: {
                     blur: 5,
                     color: 'rgba(255, 255, 255, 0.3)'
+                }
+            },
+            subtitle: {
+                fontSize: 18,
+                y: 175, // 부제목 위치 추가
+                lineHeight: 22,
+                textShadow: {
+                    blur: 3,
+                    color: 'rgba(255, 255, 255, 0.2)'
                 }
             },
             icon: {

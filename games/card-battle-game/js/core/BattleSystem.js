@@ -184,6 +184,11 @@ class BattleSystem {
         // 카드 효과 실행
         const result = card.activate(user, target, this);
 
+        // 플레이어 카드 사용 시 통계 수집
+        if (isPlayerCard) {
+            this.gameManager.updateStatsOnCardUse(card);
+        }
+
         if (result.success) {
             // 성공 로그
 
@@ -191,6 +196,9 @@ class BattleSystem {
             await this.processCardResult(result, card, user, target);
         } else {
             // 실패 (빗나감)
+            if (isPlayerCard) {
+                this.gameManager.updateStatsOnMiss();
+            }
 
             const targetPosition = isPlayerCard ?
                 this.effectSystem.getEnemyPosition() :
@@ -293,6 +301,16 @@ class BattleSystem {
     // 대미지 계산 및 적용
     dealDamage(target, damage) {
         const actualDamage = target.takeDamage(damage);
+
+        // 플레이어가 데미지를 가했는지 받았는지 확인
+        if (target === this.enemy) {
+            // 플레이어가 적에게 데미지
+            this.gameManager.updateStatsOnDamage(actualDamage);
+        } else if (target === this.player) {
+            // 플레이어가 데미지를 받음
+            this.gameManager.updateStatsOnPlayerDamage(actualDamage);
+        }
+
         return actualDamage;
     }
 
@@ -313,6 +331,11 @@ class BattleSystem {
         // 턴 전환
         this.currentTurn = this.currentTurn === 'player' ? 'enemy' : 'player';
         this.battleStats.totalTurns++;
+
+        // 플레이어 턴이 끝났을 때 통계 업데이트
+        if (currentPlayer === this.player) {
+            this.gameManager.updateStatsOnTurn();
+        }
 
         // 전투 종료 체크
         if (!this.checkBattleEnd()) {

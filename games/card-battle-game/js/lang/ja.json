@@ -85,6 +85,9 @@
       "miss": "ミス！",
       "combo": "コンボ",
       "turn": "ターン",
+      "player_turn": "自分のターン",
+      "enemy_turn": "敵のターン",
+      "card_activating": "カード発動中...",
       "defense": "防御力",
       "thorns": "トゲ",
       "combat_log": "戦闘ログ",
@@ -205,7 +208,9 @@
         "defeat_title": "敗北",
         "defeat_message": "残念ながら敗北しました",
         "defeat_subtitle": "もう一度挑戦してください！",
-        "defeat_button": "再開"
+        "defeat_button": "再開",
+        "restart_button": "リスタート",
+        "main_menu_button": "メインメニュー"
       },
       "defeat_stats": {
         "final_hand": "最終手札（順序通り）",

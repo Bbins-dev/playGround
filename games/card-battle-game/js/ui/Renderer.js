@@ -87,6 +87,9 @@ class Renderer {
             this.renderMenuMode(gameState);
         } else if (gameState.phase === 'cardSelection') {
             this.renderCardSelection(gameState);
+        } else if (gameState.phase === 'gameOver') {
+            // gameOver일 때는 배경만 그리고 모달 렌더링은 UIManager에서 처리
+            return;
         }
 
         this.processAnimations();
@@ -207,7 +210,7 @@ class Renderer {
         const centerY = this.height / 2;
 
         if (info.phase === 'cardActivation') {
-            const text = I18nHelper.getText('auto_battle_card_game.ui.card_activation') || '카드 발동 중...';
+            const text = I18nHelper.getText('auto_battle_card_game.ui.card_activating') || '카드 발동 중...';
             this.drawBattlePhase(text, centerX, centerY);
         } else if (info.phase === 'turnTransition') {
             const playerTurnText = I18nHelper.getText('auto_battle_card_game.ui.player_turn') || '나의 턴';
@@ -435,19 +438,29 @@ class Renderer {
             buttonHovered = false  // 버튼 호버 상태
         } = options;
 
-        if (!modalConfig || !type) return;
+        if (!modalConfig || !type) {
+            return;
+        }
 
         const config = modalConfig.modal;
         const typeConfig = modalConfig[type];
 
-        // 모달 크기 (패배 시 더 큰 모달 사용)
-        const modalWidth = type === 'defeat' && typeConfig.layout ? typeConfig.layout.modal.width : config.size.width;
-        const modalHeight = type === 'defeat' && typeConfig.layout ? typeConfig.layout.modal.height : config.size.height;
-        const borderRadius = type === 'defeat' && typeConfig.layout ? typeConfig.layout.modal.borderRadius : config.size.borderRadius;
+        // 비율 기반 모달 크기 계산
+        let modalWidth, modalHeight, borderRadius;
+
+        if (type === 'defeat' && typeConfig.layout) {
+            modalWidth = GameConfig.canvas.width * typeConfig.layout.modal.widthRatio;
+            modalHeight = GameConfig.canvas.height * typeConfig.layout.modal.heightRatio;
+            borderRadius = typeConfig.layout.modal.borderRadius;
+        } else {
+            modalWidth = config.size.width;
+            modalHeight = config.size.height;
+            borderRadius = config.size.borderRadius;
+        }
 
         // 모달 중앙 위치 계산
-        const modalX = GameConfig.canvas.width / 2 - modalWidth / 2;
-        const modalY = GameConfig.canvas.height / 2 - modalHeight / 2;
+        const modalX = (GameConfig.canvas.width - modalWidth) / 2;
+        const modalY = (GameConfig.canvas.height - modalHeight) / 2;
 
         // 배경 오버레이 (글래스모피즘 블러 효과)
         this.drawGlassmorphismOverlay(alpha, config.background.overlay);
@@ -515,19 +528,20 @@ class Renderer {
 
             this.drawTextWithGlow(
                 messageText,
-                modalX + config.size.width / 2,
-                modalY + typeConfig.message.y - 15,
+                modalX + modalWidth / 2,
+                modalY + typeConfig.message.y,
                 typeConfig.message,
                 typeConfig.colors.message,
                 null,
                 alpha
             );
 
+            // 부제목은 별도 설정으로 렌더링
             this.drawTextWithGlow(
                 subtitleText,
                 modalX + modalWidth / 2,
-                modalY + typeConfig.message.y + 15,
-                typeConfig.message,
+                modalY + typeConfig.subtitle.y,
+                typeConfig.subtitle,
                 typeConfig.colors.message,
                 null,
                 alpha
@@ -545,8 +559,8 @@ class Renderer {
                     this.renderGameStats(gameStats, typeConfig);
                 }
 
-                // 확인 버튼 렌더링
-                this.renderConfirmButton(typeConfig, buttonHovered);
+                // 두 개의 버튼 렌더링 (재시작, 메인메뉴)
+                this.renderDefeatButtons(typeConfig, options.buttonHoveredType);
             }
         }
     }
@@ -750,7 +764,7 @@ class Renderer {
 
         // 카드 테두리와 배경
         this.ctx.fillStyle = '#2a2a2a';
-        this.ctx.strokeStyle = this.getElementColor(card.element);
+        this.ctx.strokeStyle = ColorUtils.getElementColor(card.element);
         this.ctx.lineWidth = 1;
         this.roundRect(x, y, width, height, 4);
         this.ctx.fill();
@@ -758,7 +772,7 @@ class Renderer {
 
         // 속성 아이콘 (작은 크기)
         this.ctx.font = `${fontSize * 1.2}px Arial`;
-        this.ctx.fillStyle = this.getElementColor(card.element);
+        this.ctx.fillStyle = ColorUtils.getElementColor(card.element);
         this.ctx.textAlign = 'center';
         this.ctx.fillText(
             this.getElementIcon(card.element),
@@ -805,25 +819,82 @@ class Renderer {
         if (!cards || cards.length === 0) return;
 
         const layout = config.layout.handDisplay;
-        const startX = (GameConfig.canvas.width - (cards.length * layout.spacing)) / 2;
-        const y = layout.startY;
+        const modal = config.layout.modal;
+
+        // 비율 기반 계산
+        const modalWidth = GameConfig.canvas.width * modal.widthRatio;
+        const modalHeight = GameConfig.canvas.height * modal.heightRatio;
+        const modalX = (GameConfig.canvas.width - modalWidth) / 2;
+        const modalY = (GameConfig.canvas.height - modalHeight) / 2;
+
+        const spacing = modalWidth * layout.spacingRatio;
+        const y = modalY + (modalHeight * layout.startYRatio);
+        const startX = modalX + (modalWidth / 2) - ((cards.length * spacing) / 2);
 
         // 제목
         this.ctx.save();
-        this.ctx.font = `16px Arial`;
+        this.ctx.font = `${modalHeight * 0.025}px Arial`;
         this.ctx.fillStyle = config.colors.stats;
         this.ctx.textAlign = 'center';
         this.ctx.fillText(
             I18nHelper.getText('auto_battle_card_game.ui.defeat_stats.final_hand'),
             GameConfig.canvas.width / 2,
-            y - 20
+            y - modalHeight * 0.03
         );
 
         // 카드들 렌더링
         cards.forEach((card, index) => {
-            const x = startX + (index * layout.spacing);
+            const x = startX + (index * spacing);
             this.renderMiniCard(card, x, y, layout.cardScale);
         });
+
+        this.ctx.restore();
+    }
+
+    // 미니 카드 렌더링 (패배 화면 최종 손패용)
+    renderMiniCard(card, x, y, scale = 0.35) {
+        if (!card) return;
+
+        this.ctx.save();
+
+        // 카드 크기 계산
+        const cardWidth = GameConfig.cardSizes.battle.width * scale;
+        const cardHeight = GameConfig.cardSizes.battle.height * scale;
+
+        // 카드 배경
+        const element = GameConfig.elements[card.element];
+        const gradient = this.ctx.createLinearGradient(x, y, x, y + cardHeight);
+        gradient.addColorStop(0, element.color);
+        gradient.addColorStop(1, ColorUtils.darkenColor(element.color, 0.3));
+
+        this.ctx.fillStyle = gradient;
+        this.ctx.strokeStyle = element.color;
+        this.ctx.lineWidth = 1;
+        this.roundRect(x, y, cardWidth, cardHeight, 6);
+        this.ctx.fill();
+        this.ctx.stroke();
+
+        // 카드 이름 (축약)
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.font = `${Math.round(12 * scale)}px Arial`;
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'top';
+
+        const shortName = card.name.length > 6 ? card.name.substring(0, 5) + '...' : card.name;
+        this.ctx.fillText(shortName, x + cardWidth/2, y + 3);
+
+        // 속성 아이콘
+        this.ctx.font = `${Math.round(16 * scale)}px Arial`;
+        this.ctx.fillText(element.icon, x + cardWidth/2, y + cardHeight/2 - 8);
+
+        // 공격력 표시 (오른쪽 하단)
+        if (card.attack !== undefined) {
+            this.ctx.font = `bold ${Math.round(10 * scale)}px Arial`;
+            this.ctx.fillStyle = '#ffff00';
+            this.ctx.textAlign = 'right';
+            this.ctx.textBaseline = 'bottom';
+            this.ctx.fillText(card.attack, x + cardWidth - 3, y + cardHeight - 2);
+        }
 
         this.ctx.restore();
     }
@@ -833,10 +904,22 @@ class Renderer {
         if (!gameStats) return;
 
         const layout = config.layout.stats;
-        let currentY = layout.startY;
+        const modal = config.layout.modal;
+
+        // 비율 기반 계산
+        const modalWidth = GameConfig.canvas.width * modal.widthRatio;
+        const modalHeight = GameConfig.canvas.height * modal.heightRatio;
+        const modalX = (GameConfig.canvas.width - modalWidth) / 2;
+        const modalY = (GameConfig.canvas.height - modalHeight) / 2;
+
+        let currentY = modalY + (modalHeight * layout.startYRatio);
 
         this.ctx.save();
         this.ctx.textAlign = 'left';
+
+        // 비율 기반 좌표 계산
+        const leftColumnX = modalX + (modalWidth * layout.leftColumnRatio);
+        const rightColumnX = modalX + (modalWidth * layout.rightColumnRatio);
 
         // 기본 통계 (왼쪽 열)
         this.renderStatsColumn([
@@ -860,11 +943,11 @@ class Renderer {
                 value: `${gameStats.totalDefenseBuilt}`,
                 isValue: true
             }
-        ], layout.leftColumn, currentY, config);
+        ], leftColumnX, currentY, config);
 
         // 유머 통계 (오른쪽 열)
         const humorStats = this.generateHumorStats(gameStats);
-        this.renderStatsColumn(humorStats, layout.rightColumn, currentY, config, true);
+        this.renderStatsColumn(humorStats, rightColumnX, currentY, config, true);
 
         this.ctx.restore();
     }
@@ -872,12 +955,16 @@ class Renderer {
     // 통계 열 렌더링
     renderStatsColumn(stats, x, startY, config, isHumor = false) {
         const layout = config.layout.stats;
-        const fontSize = isHumor ? layout.humorFontSize : layout.fontSize;
+        const modal = config.layout.modal;
+        const modalHeight = GameConfig.canvas.height * modal.heightRatio;
+
+        const fontSize = modalHeight * (isHumor ? layout.humorFontSizeRatio : layout.fontSizeRatio);
+        const spacing = modalHeight * layout.spacingRatio;
 
         stats.forEach((stat, index) => {
-            const y = startY + (index * layout.spacing);
+            const y = startY + (index * spacing);
 
-            this.ctx.font = `${fontSize}px Arial`;
+            this.ctx.font = `${Math.round(fontSize)}px Arial`;
 
             // 라벨
             this.ctx.fillStyle = isHumor ? config.colors.humor : config.colors.stats;
@@ -885,8 +972,10 @@ class Renderer {
 
             // 값 (있는 경우)
             if (stat.value !== undefined) {
+                const modal = config.layout.modal;
+                const modalWidth = GameConfig.canvas.width * modal.widthRatio;
                 this.ctx.fillStyle = stat.isValue ? config.colors.statValue : config.colors.stats;
-                this.ctx.fillText(stat.value, x + 200, y);
+                this.ctx.fillText(stat.value, x + modalWidth * 0.25, y);
             }
         });
     }
@@ -918,27 +1007,33 @@ class Renderer {
             });
         }
 
-        // 게으른 카드 (쉬기 카드 사용 횟수)
-        if (gameStats.crouchCount > 0) {
+        // 가장 게으른 카드
+        if (gameStats.laziestCard) {
+            const usage = gameStats.cardUsageStats.get(gameStats.laziestCard) || 0;
             stats.push({
                 label: I18nHelper.getText('auto_battle_card_game.ui.defeat_stats.lazy_card'),
-                value: `${gameStats.crouchCount}번`
+                value: `${gameStats.laziestCard} (${usage}번)`
             });
         }
 
-        // 버린 방어력
-        if (gameStats.wastedDefense > 0) {
+        // 가장 많이 사용한 속성
+        if (gameStats.mostUsedElement) {
+            const elementNames = {
+                fire: '불', water: '물', electric: '전기',
+                poison: '독', normal: '노멀'
+            };
+            const elementName = elementNames[gameStats.mostUsedElement] || gameStats.mostUsedElement;
             stats.push({
-                label: I18nHelper.getText('auto_battle_card_game.ui.defeat_stats.wasted_defense'),
-                value: `${gameStats.wastedDefense}`
+                label: '선호 속성',
+                value: `${elementName} 속성`
             });
         }
 
-        // 적이 미스한 횟수
-        if (gameStats.enemyMissCount > 0) {
+        // 미스 횟수가 많을 때
+        if (gameStats.missCount > 3) {
             stats.push({
-                label: '운은 좋았는데...',
-                value: `적 미스 ${gameStats.enemyMissCount}번`
+                label: '운이 없었다면...',
+                value: `${gameStats.missCount}번 빗나감`
             });
         }
 
@@ -947,14 +1042,16 @@ class Renderer {
 
     // 플레이 스타일 텍스트
     getPlayStyleText(gameStats) {
-        const totalCards = gameStats.attackCardUsage + gameStats.defenseCardUsage;
-        if (totalCards === 0) return '😴 평화주의자';
+        // 플레이 스타일은 이미 GameManager에서 계산됨
+        const playStyle = gameStats.playStyle;
 
-        const defenseRatio = gameStats.defenseCardUsage / totalCards;
-
-        if (defenseRatio >= 0.6) return '🐢 거북이 전사';
-        if (defenseRatio <= 0.3) return '🗡️ 무모한 돌격대장';
-        return '⚖️ 우유부단한 전략가';
+        switch (playStyle) {
+            case 'defensive': return '🛡️ 신중한 수비수';
+            case 'aggressive': return '⚔️ 무모한 돌격대장';
+            case 'unlucky': return '😅 운이 없는 전사';
+            case 'balanced':
+            default: return '⚖️ 균형잡힌 전략가';
+        }
     }
 
     // 사망 원인 텍스트
@@ -969,17 +1066,15 @@ class Renderer {
 
     // MVP 카드 텍스트
     getMVPText(gameStats) {
-        let maxUsage = 0;
-        let mvpCard = null;
+        // MVP 카드는 이미 GameManager에서 계산됨
+        const mvpCard = gameStats.mvpCard;
 
-        for (const [cardId, count] of Object.entries(gameStats.cardUsageCount)) {
-            if (count > maxUsage) {
-                maxUsage = count;
-                mvpCard = cardId;
-            }
+        if (mvpCard && gameStats.cardUsageStats) {
+            const usage = gameStats.cardUsageStats.get(mvpCard) || 0;
+            return `${mvpCard} (${usage}번)`;
         }
 
-        return mvpCard ? `${mvpCard} (${maxUsage}번)` : null;
+        return null;
     }
 
     // 확인 버튼 렌더링
@@ -1019,6 +1114,86 @@ class Renderer {
             y: y,
             width: button.width,
             height: button.height
+        };
+    }
+
+    // 패배 화면 두 개 버튼 렌더링 (재시작, 메인메뉴)
+    renderDefeatButtons(config, hoveredType = null) {
+        const buttons = config.layout.buttons;
+        const modal = config.layout.modal;
+
+        // 비율 기반 계산
+        const modalWidth = GameConfig.canvas.width * modal.widthRatio;
+        const modalHeight = GameConfig.canvas.height * modal.heightRatio;
+        const modalX = (GameConfig.canvas.width - modalWidth) / 2;
+        const modalY = (GameConfig.canvas.height - modalHeight) / 2;
+
+        const buttonWidth = modalWidth * buttons.widthRatio;
+        const buttonHeight = modalHeight * buttons.heightRatio;
+        const buttonY = modalY + (modalHeight * buttons.yRatio);
+        const fontSize = Math.round(modalHeight * buttons.fontSizeRatio);
+
+        this.ctx.save();
+
+        // 재시작 버튼
+        const restartX = modalX + (modalWidth * buttons.restart.xRatio) - (buttonWidth / 2);
+        const restartY = buttonY;
+        const restartHovered = hoveredType === 'restart';
+
+        this.ctx.fillStyle = restartHovered ? buttons.restart.hover : buttons.restart.background;
+        this.ctx.strokeStyle = buttons.restart.border;
+        this.ctx.lineWidth = 2;
+
+        this.roundRect(restartX, restartY, buttonWidth, buttonHeight, buttons.borderRadius);
+        this.ctx.fill();
+        this.ctx.stroke();
+
+        // 재시작 버튼 텍스트
+        this.ctx.font = `${fontSize}px Arial`;
+        this.ctx.fillStyle = config.colors.button.text;
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        this.ctx.fillText(
+            window.getI18nText ? window.getI18nText('auto_battle_card_game.ui.battle_result.restart_button') : '재시작',
+            restartX + buttonWidth / 2,
+            restartY + buttonHeight / 2
+        );
+
+        // 메인메뉴 버튼
+        const mainMenuX = modalX + (modalWidth * buttons.mainMenu.xRatio) - (buttonWidth / 2);
+        const mainMenuY = buttonY;
+        const mainMenuHovered = hoveredType === 'mainMenu';
+
+        this.ctx.fillStyle = mainMenuHovered ? buttons.mainMenu.hover : buttons.mainMenu.background;
+        this.ctx.strokeStyle = buttons.mainMenu.border;
+
+        this.roundRect(mainMenuX, mainMenuY, buttonWidth, buttonHeight, buttons.borderRadius);
+        this.ctx.fill();
+        this.ctx.stroke();
+
+        // 메인메뉴 버튼 텍스트
+        this.ctx.fillText(
+            window.getI18nText ? window.getI18nText('auto_battle_card_game.ui.battle_result.main_menu_button') : '메인메뉴',
+            mainMenuX + buttonWidth / 2,
+            mainMenuY + buttonHeight / 2
+        );
+
+        this.ctx.restore();
+
+        // 버튼 영역들 반환 (클릭 감지용)
+        return {
+            restart: {
+                x: restartX,
+                y: restartY,
+                width: buttonWidth,
+                height: buttonHeight
+            },
+            mainMenu: {
+                x: mainMenuX,
+                y: mainMenuY,
+                width: buttonWidth,
+                height: buttonHeight
+            }
         };
     }
 }

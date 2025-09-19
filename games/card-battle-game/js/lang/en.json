@@ -85,6 +85,9 @@
       "miss": "Miss!",
       "combo": "Combo",
       "turn": "Turn",
+      "player_turn": "Your Turn",
+      "enemy_turn": "Enemy Turn",
+      "card_activating": "Card Activating...",
       "defense": "Defense",
       "thorns": "Thorns",
       "combat_log": "Combat Log",
@@ -205,7 +208,9 @@
         "defeat_title": "Defeat",
         "defeat_message": "Unfortunately defeated",
         "defeat_subtitle": "Try again!",
-        "defeat_button": "Restart"
+        "defeat_button": "Restart",
+        "restart_button": "Restart",
+        "main_menu_button": "Main Menu"
       },
       "defeat_stats": {
         "final_hand": "Final Hand (in order)",

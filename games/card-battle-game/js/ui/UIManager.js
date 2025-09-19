@@ -206,16 +206,16 @@ class UIManager {
             if (this.modalState.type === 'defeat') {
                 renderOptions.gameStats = this.modalState.gameStats;
                 renderOptions.finalHand = this.modalState.finalHand;
-                renderOptions.buttonHovered = this.modalState.buttonHovered;
+                renderOptions.buttonHoveredType = this.modalState.buttonHoveredType;
             }
 
             this.renderer.renderModal(this.modalState.config, renderOptions);
 
             // 패배 모달에서 버튼 영역 업데이트
             if (this.modalState.type === 'defeat' && this.modalState.alpha >= 0.8) {
-                this.modalState.buttonArea = this.renderer.renderConfirmButton(
+                this.modalState.buttonAreas = this.renderer.renderDefeatButtons(
                     this.modalState.config.defeat,
-                    this.modalState.buttonHovered
+                    this.modalState.buttonHoveredType
                 );
             }
             return; // 모달 중에는 다른 화면 렌더링 방지
@@ -373,16 +373,24 @@ class UIManager {
 
     // 캔버스 클릭 처리
     handleCanvasClick(event) {
-        // 패배 모달에서 확인 버튼 클릭 체크
+        // 패배 모달에서 버튼 클릭 체크
         if (this.modalState && this.modalState.type === 'defeat' && this.modalState.waitingForConfirm) {
             const coords = this.gameManager.getCanvasCoordinates(event);
-            if (coords.inBounds && this.modalState.buttonArea) {
+            if (coords.inBounds && this.modalState.buttonAreas) {
                 const { x, y } = coords;
-                const button = this.modalState.buttonArea;
+                const { restart, mainMenu } = this.modalState.buttonAreas;
 
-                if (x >= button.x && x <= button.x + button.width &&
-                    y >= button.y && y <= button.y + button.height) {
-                    this.handleDefeatConfirm();
+                // 재시작 버튼 클릭
+                if (x >= restart.x && x <= restart.x + restart.width &&
+                    y >= restart.y && y <= restart.y + restart.height) {
+                    this.handleDefeatRestart();
+                    return;
+                }
+
+                // 메인메뉴 버튼 클릭
+                if (x >= mainMenu.x && x <= mainMenu.x + mainMenu.width &&
+                    y >= mainMenu.y && y <= mainMenu.y + mainMenu.height) {
+                    this.handleDefeatMainMenu();
                     return;
                 }
             }
@@ -719,9 +727,9 @@ class UIManager {
             config: GameConfig.battleResult,
             gameStats: gameStats,
             finalHand: finalHand,
-            buttonHovered: false,
+            buttonHoveredType: null, // 'restart' 또는 'mainMenu'
             waitingForConfirm: false, // 확인 대기 상태
-            buttonArea: null // 버튼 클릭 영역
+            buttonAreas: null // 버튼 클릭 영역들
         };
 
         this.isInteractive = false;
@@ -732,7 +740,9 @@ class UIManager {
 
     // 모달 애니메이션 처리 (글래스모피즘 버전)
     animateModal() {
-        if (!this.modalState || !this.modalState.isAnimating) return;
+        if (!this.modalState || !this.modalState.isAnimating) {
+            return;
+        }
 
         const elapsed = Date.now() - this.modalState.animationStart;
         const config = this.modalState.config.modal.animation;
@@ -907,17 +917,23 @@ class UIManager {
     handleCanvasMouseMove(event) {
         if (this.modalState && this.modalState.type === 'defeat' && this.modalState.waitingForConfirm) {
             const coords = this.gameManager.getCanvasCoordinates(event);
-            if (coords.inBounds && this.modalState.buttonArea) {
+            if (coords.inBounds && this.modalState.buttonAreas) {
                 const { x, y } = coords;
-                const button = this.modalState.buttonArea;
+                const { restart, mainMenu } = this.modalState.buttonAreas;
 
-                const isHovered = x >= button.x && x <= button.x + button.width &&
-                                y >= button.y && y <= button.y + button.height;
+                const restartHovered = x >= restart.x && x <= restart.x + restart.width &&
+                                     y >= restart.y && y <= restart.y + restart.height;
+                const mainMenuHovered = x >= mainMenu.x && x <= mainMenu.x + mainMenu.width &&
+                                      y >= mainMenu.y && y <= mainMenu.y + mainMenu.height;
 
-                if (this.modalState.buttonHovered !== isHovered) {
-                    this.modalState.buttonHovered = isHovered;
+                let newHoveredType = null;
+                if (restartHovered) newHoveredType = 'restart';
+                else if (mainMenuHovered) newHoveredType = 'mainMenu';
+
+                if (this.modalState.buttonHoveredType !== newHoveredType) {
+                    this.modalState.buttonHoveredType = newHoveredType;
                     // 호버 상태 변경 시 커서 스타일 변경
-                    this.canvas.style.cursor = isHovered ? 'pointer' : 'default';
+                    this.canvas.style.cursor = newHoveredType ? 'pointer' : 'default';
                 }
             }
         }
@@ -938,6 +954,33 @@ class UIManager {
 
         // 애니메이션 재시작
         this.animateModal();
+    }
+
+    // 패배 모달 재시작 버튼 처리
+    handleDefeatRestart() {
+        // 모달 닫기
+        this.modalState = null;
+        this.isInteractive = true;
+
+        // 게임 재시작 (1스테이지부터)
+        this.gameManager.currentStage = 1;
+        this.gameManager.player = null;
+        this.gameManager.enemy = null;
+        this.gameManager.resetGameStats();
+
+        // 카드 선택 화면으로 이동
+        this.gameManager.switchScreen('cardSelection');
+        this.gameManager.showPostBattleCardSelection();
+    }
+
+    // 패배 모달 메인메뉴 버튼 처리
+    handleDefeatMainMenu() {
+        // 모달 닫기
+        this.modalState = null;
+        this.isInteractive = true;
+
+        // 메인메뉴로 이동
+        this.gameManager.showMainMenu();
     }
 }
 

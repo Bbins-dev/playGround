@@ -85,6 +85,9 @@
       "miss": "빗나감!",
       "combo": "콤보",
       "turn": "턴",
+      "player_turn": "나의 턴",
+      "enemy_turn": "적의 턴",
+      "card_activating": "카드 발동 중...",
       "defense": "방어력",
       "thorns": "가시",
       "combat_log": "전투 로그",
@@ -205,7 +208,9 @@
         "defeat_title": "패배",
         "defeat_message": "아쉽게 패배했습니다",
         "defeat_subtitle": "다시 도전해보세요!",
-        "defeat_button": "다시 시작"
+        "defeat_button": "다시 시작",
+        "restart_button": "재시작",
+        "main_menu_button": "메인메뉴"
       },
       "defeat_stats": {
         "final_hand": "최종 손패 (순서대로)",
