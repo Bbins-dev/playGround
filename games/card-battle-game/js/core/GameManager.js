@@ -114,6 +114,10 @@ class GameManager {
 
     // 시스템들 초기화
     initSystems() {
+        // 저장된 게임 속도 설정 불러오기
+        const savedSpeed = parseInt(localStorage.getItem('cardBattle_gameSpeed') || '1');
+        this.gameSpeed = savedSpeed;
+
         // 카드 관리자 초기화
         this.cardManager = new CardManager(this);
 
@@ -127,8 +131,9 @@ class GameManager {
         this.animationManager = new AnimationManager();
         this.animationManager.start();
 
-        // 전투 시스템 초기화
+        // 전투 시스템 초기화 (저장된 속도 전달)
         this.battleSystem = new BattleSystem(this);
+        this.battleSystem.setGameSpeed(this.gameSpeed);
 
         // UI 관리자 초기화 (다른 시스템들 이후에)
         this.uiManager = new UIManager(this);
@@ -667,6 +672,11 @@ class GameManager {
         // 애니메이션 매니저에 속도 적용
         if (this.animationManager) {
             this.animationManager.setGlobalSpeed(speed);
+        }
+
+        // UI 매니저의 속도 버튼 업데이트
+        if (this.uiManager) {
+            this.uiManager.updateSpeedButton(speed);
         }
 
         // 게임 속도 설정 완료

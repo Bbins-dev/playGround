@@ -322,6 +322,26 @@
     }
 }
 
+/* DOM 카드 스타일 (전투 중 확대 표시용) */
+.dom-card {
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    font-family: Arial, sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dom-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* 카드 활성화 오버레이 */
+.card-activation-overlay {
+    pointer-events: none;
+    user-select: none;
+}
+
 /* 접근성 개선 */
 @media (prefers-reduced-motion: reduce) {
     *,

@@ -40,7 +40,10 @@ class BattleSystem {
         };
 
         // TimerManager 사용으로 교체
-        this.timerManager = TimerManager;
+        this.timerManager = window.TimerManager;
+
+        // 활성 타이머 배열 초기화
+        this.activeTimers = [];
     }
 
     // 전투 시작
@@ -395,9 +398,11 @@ class BattleSystem {
         this.battlePhase = 'ended';
 
         // 모든 활성 타이머 정리
-        this.activeTimers.forEach(timerId => {
-            clearTimeout(timerId);
-        });
+        if (this.activeTimers && Array.isArray(this.activeTimers)) {
+            this.activeTimers.forEach(timerId => {
+                clearTimeout(timerId);
+            });
+        }
         this.activeTimers = [];
 
         // AbortController가 있다면 신호 전송

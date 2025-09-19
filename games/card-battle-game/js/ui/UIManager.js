@@ -297,13 +297,17 @@ class UIManager {
                 this.hide(elements.mainMenuButtons);
                 // HP 바 표시
                 elements.hpBars.forEach(bar => this.show(bar));
+
+                // 현재 게임 속도에 맞게 버튼 상태 업데이트
+                const currentSpeed = this.gameManager.gameSpeed || 1;
+                this.updateSpeedButton(currentSpeed);
                 break;
 
             case 'cardSelection':
                 this.hide(elements.speedControls);
                 this.hide(elements.cardGalleryBtn);
-                this.show(elements.backToHomepageBtn);
-                this.show(elements.backToMenuBtn);
+                this.show(elements.backToHomepageBtn);  // 홈페이지로 버튼 표시
+                this.show(elements.backToMenuBtn);      // 메인메뉴로 버튼 표시
                 this.hide(elements.mainMenuButtons);
                 // HP 바 숨기기
                 elements.hpBars.forEach(bar => this.hide(bar));
@@ -516,8 +520,8 @@ class UIManager {
             // 게임 상태 정리
             this.cleanupGameState();
 
-            // 홈페이지로 이동 (상위 디렉터리)
-            window.location.href = '../../index.html';
+            // 홈페이지로 이동 (로컬 홈페이지)
+            window.location.href = '../../';
         }
     }
 
@@ -527,6 +531,13 @@ class UIManager {
         if (confirm(confirmMessage)) {
             // 게임 상태 정리
             this.cleanupGameState();
+
+            // 모든 모달 닫기
+            this.hideAllModals();
+
+            // 게임 매니저 상태 초기화
+            this.gameManager.gameState = 'menu';
+            this.gameManager.currentScreen = this.gameManager.mainMenu;
 
             // 게임 내 메인 메뉴로 이동
             this.gameManager.showMainMenu();

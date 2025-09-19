@@ -36,8 +36,8 @@ class MainMenu {
                 id: 'settings-btn'
             },
             {
-                text: 'back-to-main',
-                action: () => { window.location.href = '../../index.html'; },
+                text: 'back-to-homepage',
+                action: () => { window.location.href = '../../'; },
                 icon: '🏠',
                 id: 'back-to-main-menu-btn'
             }
