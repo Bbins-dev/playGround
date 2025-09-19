@@ -12,6 +12,11 @@ body {
     overflow: hidden;
 }
 
+/* 일반 숨김 클래스 - UI 요소 가시성 제어 */
+.hidden {
+    display: none !important;
+}
+
 /* 고정 크기 게임 컨테이너 - 더 이상 반응형 없음 */
 .game-container {
     position: fixed;
