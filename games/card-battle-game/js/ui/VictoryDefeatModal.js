@@ -213,9 +213,10 @@ class VictoryDefeatModal {
      * 패배 다시 도전하기 버튼 처리
      */
     handleDefeatRestart() {
+        const callback = this.onDefeatRestart;
         this.hideDefeat();
-        if (this.onDefeatRestart && typeof this.onDefeatRestart === 'function') {
-            this.onDefeatRestart();
+        if (callback && typeof callback === 'function') {
+            callback();
         }
     }
 
@@ -223,9 +224,10 @@ class VictoryDefeatModal {
      * 패배 메인 메뉴로 버튼 처리
      */
     handleDefeatMainMenu() {
+        const callback = this.onDefeatMainMenu;
         this.hideDefeat();
-        if (this.onDefeatMainMenu && typeof this.onDefeatMainMenu === 'function') {
-            this.onDefeatMainMenu();
+        if (callback && typeof callback === 'function') {
+            callback();
         }
     }
 
