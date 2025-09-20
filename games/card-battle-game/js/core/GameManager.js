@@ -471,16 +471,20 @@ class GameManager {
             // 보상 계산
             const rewards = this.enemy.calculateRewards();
 
-            // 승리 모달 표시 후 카드 선택으로 이동
+            // 보상 카드 생성
+            const rewardCards = this.generateRewardCards();
+
+            // 승리 모달 표시 (카드 보상 포함)
             this.uiManager.showVictoryModal(this.currentStage, () => {
-                this.showPostBattleCardSelection();
-            });
+                this.proceedToNextStage();
+            }, rewardCards);
         } catch (error) {
             console.error('handlePlayerVictory 에러:', error);
             // 에러가 있어도 모달은 표시
+            const rewardCards = this.generateRewardCards();
             this.uiManager.showVictoryModal(this.currentStage, () => {
-                this.showPostBattleCardSelection();
-            });
+                this.proceedToNextStage();
+            }, rewardCards);
         }
     }
 
@@ -518,13 +522,73 @@ class GameManager {
         return 'normal_attack';
     }
 
-    // 전투 후 카드 선택
+    // 전투 후 카드 선택 (기존 Canvas 방식 - 현재 미사용)
     showPostBattleCardSelection() {
         this.changeGameState('cardSelection');
 
         // 모든 카드에서 랜덤 3장 제시
         const availableCards = this.cardManager.getRandomCards(3);
         this.cardSelection.setupRewardSelection(availableCards.map(cardId => CardDatabase.getCard(cardId)));
+    }
+
+    /**
+     * 보상 카드 생성 (승리 모달용)
+     * @returns {Array} 보상 카드 배열
+     */
+    generateRewardCards() {
+        if (!this.cardManager) return [];
+
+        try {
+            // CardManager를 통해 랜덤 카드 3장 생성
+            const cardIds = this.cardManager.getRandomCards(3);
+            const rewardCards = cardIds.map(cardId => CardDatabase.getCard(cardId)).filter(Boolean);
+
+            return rewardCards;
+        } catch (error) {
+            console.error('보상 카드 생성 에러:', error);
+            return [];
+        }
+    }
+
+    /**
+     * 다음 스테이지로 진행
+     */
+    proceedToNextStage() {
+        try {
+            // 스테이지 증가
+            this.currentStage++;
+
+            // 다음 적 생성
+            this.setupNextBattle();
+
+            // 전투 화면으로 전환
+            this.changeGameState('battle');
+
+        } catch (error) {
+            console.error('다음 스테이지 진행 에러:', error);
+            // 에러 발생 시 메인 메뉴로 이동
+            this.showMainMenu();
+        }
+    }
+
+    /**
+     * 다음 전투 설정
+     */
+    setupNextBattle() {
+        if (!this.enemyManager) return;
+
+        // 적 생성
+        this.enemy = this.enemyManager.createEnemyForStage(this.currentStage);
+
+        // 플레이어 상태 회복 (일부)
+        if (this.player) {
+            this.player.partialRestore();
+        }
+
+        // UI 업데이트
+        if (this.uiManager) {
+            this.uiManager.updateUIVisibility();
+        }
     }
 
     // 카드 갤러리 표시 (DOM 모달 사용)

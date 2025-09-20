@@ -683,11 +683,11 @@ class UIManager {
     }
 
     // 승리 모달 표시
-    showVictoryModal(stage, callback) {
+    showVictoryModal(stage, callback, rewardCards = null) {
         // 모든 UI 요소 즉시 숨기기
         this.hideAllUIElements();
 
-        // DOM 기반 승리 모달 표시
+        // DOM 기반 승리 모달 표시 (카드 보상 포함)
         this.victoryDefeatModal.showVictory(stage || 1, () => {
             // 모든 UI 요소 다시 표시
             this.updateUIVisibility();
@@ -695,7 +695,7 @@ class UIManager {
             if (callback && typeof callback === 'function') {
                 callback();
             }
-        });
+        }, rewardCards);
 
         this.isInteractive = false;
     }

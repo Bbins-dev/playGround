@@ -652,3 +652,242 @@
         transition-duration: 0.01ms !important;
     }
 }
+
+/* 카드 보상 선택 영역 */
+.card-rewards-container {
+    margin: 20px 0;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.reward-cards-grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.reward-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-width: 120px;
+}
+
+.reward-card:hover {
+    border-color: var(--color-primary);
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+}
+
+.reward-card.selected {
+    border-color: var(--color-success);
+    background: rgba(39, 174, 96, 0.1);
+    box-shadow: 0 0 15px rgba(39, 174, 96, 0.4);
+}
+
+.card-visual {
+    width: 80px;
+    height: 110px;
+    background: linear-gradient(145deg, #34495e, #2c3e50);
+    border-radius: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-white);
+    font-size: 12px;
+    text-align: center;
+    padding: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-visual::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: rotate(45deg);
+    transition: transform 0.6s ease;
+}
+
+.reward-card:hover .card-visual::before {
+    transform: rotate(45deg) translateX(100%);
+}
+
+.card-select-btn {
+    background: linear-gradient(145deg, var(--color-primary), var(--color-primary-dark));
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 60px;
+}
+
+.card-select-btn:hover {
+    background: linear-gradient(145deg, var(--color-primary-dark), var(--color-primary-darker));
+    transform: translateY(-1px);
+}
+
+.card-select-btn:active {
+    transform: translateY(0);
+}
+
+/* 손패 교체 선택 영역 */
+.hand-replace-container {
+    margin: 20px 0;
+    padding: 20px;
+    background: rgba(231, 76, 60, 0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    text-align: center;
+}
+
+.hand-replace-container p {
+    color: var(--color-text-white);
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.hand-cards-grid {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.hand-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-width: 100px;
+}
+
+.hand-card:hover {
+    border-color: var(--color-warning);
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-2px);
+}
+
+.hand-card.selected {
+    border-color: var(--color-danger);
+    background: rgba(231, 76, 60, 0.1);
+}
+
+.hand-card .card-visual {
+    width: 60px;
+    height: 80px;
+    margin-bottom: 8px;
+}
+
+/* 버튼 그룹 */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.ui-button.secondary {
+    background: linear-gradient(145deg, var(--color-secondary), var(--color-secondary-dark));
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 80px;
+}
+
+.ui-button.secondary:hover {
+    background: linear-gradient(145deg, var(--color-secondary-dark), var(--color-secondary-darker));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(149, 165, 166, 0.4);
+}
+
+.ui-button.secondary:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(149, 165, 166, 0.3);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .reward-cards-grid {
+        gap: 15px;
+    }
+
+    .reward-card {
+        min-width: 100px;
+        padding: 12px;
+    }
+
+    .card-visual {
+        width: 70px;
+        height: 95px;
+    }
+
+    .hand-cards-grid {
+        gap: 10px;
+    }
+
+    .hand-card .card-visual {
+        width: 50px;
+        height: 70px;
+    }
+
+    .button-group {
+        gap: 10px;
+    }
+
+    .ui-button {
+        padding: 10px 16px;
+        font-size: 13px;
+        min-width: 70px;
+    }
+}
+
+@media (max-width: 480px) {
+    .reward-cards-grid {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .hand-cards-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .button-group {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+}
