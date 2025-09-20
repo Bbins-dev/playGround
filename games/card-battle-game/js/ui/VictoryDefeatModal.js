@@ -132,7 +132,7 @@ class VictoryDefeatModal {
 
         // 스테이지 번호 표시
         if (this.victoryStageSpan) {
-            this.victoryStageSpan.textContent = stage;
+            this.victoryStageSpan.textContent = stage || 1;
         }
 
         // 카드 보상이 있는 경우
@@ -377,11 +377,9 @@ class VictoryDefeatModal {
                     const card = this.rewardCards[i];
                     this.renderCardVisual(cardElement, card);
 
-                    // 카드 선택 버튼 이벤트 추가
-                    const selectBtn = rewardCardContainer.querySelector('.card-select-btn');
-                    if (selectBtn) {
-                        selectBtn.onclick = () => this.selectRewardCard(i);
-                    }
+                    // 카드 자체에 클릭 이벤트 추가
+                    rewardCardContainer.onclick = () => this.selectRewardCard(i);
+                    rewardCardContainer.style.cursor = 'pointer';
 
                     rewardCardContainer.style.display = 'flex';
                 } else {
@@ -516,8 +514,8 @@ class VictoryDefeatModal {
      * 보상 건너뛰기 처리
      */
     handleSkipReward() {
-        this.showContinueButton();
         this.resetCardRewards();
+        this.handleVictoryContinue();
     }
 
     /**
@@ -525,13 +523,13 @@ class VictoryDefeatModal {
      */
     handleAddToDeck() {
         if (this.selectedRewardCard && this.gameManager) {
-            // GameManager를 통해 카드를 덱에 추가
-            if (this.gameManager.cardManager) {
-                this.gameManager.cardManager.addCardToDeck(this.selectedRewardCard.id);
+            // GameManager를 통해 카드를 플레이어 손패에 추가
+            if (this.gameManager.cardManager && this.gameManager.player) {
+                this.gameManager.cardManager.addCardToPlayer(this.gameManager.player, this.selectedRewardCard.id);
             }
 
-            this.showContinueButton();
             this.resetCardRewards();
+            this.handleVictoryContinue();
         }
     }
 
@@ -573,8 +571,8 @@ class VictoryDefeatModal {
         this.handCardsForReplace.innerHTML = '';
         const handCards = this.gameManager.player.hand || [];
 
-        handCards.forEach((cardId, index) => {
-            const card = CardDatabase.getCard(cardId);
+        handCards.forEach((card, index) => {
+            // Player.hand는 Card 인스턴스를 직접 포함
             if (card) {
                 const handCardElement = this.createHandCardElement(card, index);
                 this.handCardsForReplace.appendChild(handCardElement);
@@ -643,13 +641,14 @@ class VictoryDefeatModal {
             this.gameManager.cardManager) {
 
             // GameManager를 통해 카드 교체
-            this.gameManager.cardManager.replaceHandCard(
+            this.gameManager.cardManager.replacePlayerCard(
+                this.gameManager.player,
                 this.selectedHandCardIndex,
                 this.selectedRewardCard.id
             );
 
-            this.showContinueButton();
             this.resetCardRewards();
+            this.handleVictoryContinue();
         }
     }
 
