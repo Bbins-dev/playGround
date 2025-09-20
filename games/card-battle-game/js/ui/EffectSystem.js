@@ -244,7 +244,7 @@ class EffectSystem {
                 transform: translate(-50%, -50%);
                 z-index: 999;
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-                animation: cardZoomIn 0.3s ease-out;
+                animation: cardZoomIn 0.05s ease-out;
             `;
 
             // 통일된 카드를 오버레이에 추가
@@ -253,13 +253,13 @@ class EffectSystem {
 
             // 지속 시간 후 제거
             setTimeout(() => {
-                cardOverlay.style.animation = 'cardZoomOut 0.3s ease-in forwards';
+                cardOverlay.style.animation = 'cardZoomOut 0.05s ease-in forwards';
                 setTimeout(() => {
                     if (cardOverlay.parentNode) {
                         cardOverlay.remove();
                     }
                     resolve();
-                }, 300);
+                }, 50);
             }, duration);
         });
     }
@@ -314,13 +314,13 @@ class EffectSystem {
 const style = document.createElement('style');
 style.textContent = `
     @keyframes cardZoomIn {
-        0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+        0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
         100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
     }
 
     @keyframes cardZoomOut {
         0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+        100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
     }
 `;
 document.head.appendChild(style);
