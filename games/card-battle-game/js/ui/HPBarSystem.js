@@ -182,6 +182,58 @@ class HPBarSystem {
         }
     }
 
+    // 방어력 감소 애니메이션 (턴 시작 시 0으로 초기화)
+    animateDefenseDecrease(player, isPlayer = true) {
+        const targetElements = isPlayer ? {
+            overlay: this.playerDefenseOverlay,
+            number: this.playerDefenseNumber,
+            defenseInfo: this.playerDefenseInfo
+        } : {
+            overlay: this.enemyDefenseOverlay,
+            number: this.enemyDefenseNumber,
+            defenseInfo: this.enemyDefenseInfo
+        };
+
+        const initialDefense = player.defense;
+
+        // 방어력이 없으면 애니메이션하지 않음
+        if (initialDefense <= 0) {
+            return Promise.resolve();
+        }
+
+        return new Promise((resolve) => {
+            const duration = 500; // 0.5초
+            const steps = 20;
+            const stepDuration = duration / steps;
+            const defenseStep = initialDefense / steps;
+
+            let step = 0;
+            const timer = setInterval(() => {
+                step++;
+                const currentDefense = Math.max(0, Math.round(initialDefense - (defenseStep * step)));
+
+                // 방어력 오버레이 크기 조정
+                const maxHP = player.maxHP;
+                const percentage = Math.min((currentDefense / maxHP) * 100, 100);
+                targetElements.overlay.style.width = percentage + '%';
+
+                // 방어력 숫자 업데이트
+                if (currentDefense > 0) {
+                    targetElements.number.textContent = `🛡️${currentDefense}`;
+                } else {
+                    targetElements.defenseInfo.classList.add('hidden');
+                    targetElements.overlay.style.width = '0%';
+                    targetElements.overlay.classList.remove('max-defense');
+                }
+
+                if (step >= steps) {
+                    clearInterval(timer);
+                    resolve();
+                }
+            }, stepDuration);
+        });
+    }
+
     // 방어력 깨지는 애니메이션
     showDefenseBreakEffect(isPlayer = true) {
         const defenseOverlay = isPlayer ? this.playerDefenseOverlay : this.enemyDefenseOverlay;

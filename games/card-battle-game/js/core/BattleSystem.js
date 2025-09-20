@@ -92,6 +92,15 @@ class BattleSystem {
         // 턴 시작 처리
         currentPlayer.startTurn();
 
+        // 방어력 초기화 처리 (플레이어와 적 모두)
+        if (currentPlayer.defense > 0) {
+            // 방어력 감소 애니메이션 실행
+            await this.hpBarSystem.animateDefenseDecrease(currentPlayer, isPlayerTurn);
+
+            // 실제 방어력 초기화
+            currentPlayer.resetDefense();
+        }
+
         // 마비 상태 체크
         if (currentPlayer.hasStatusEffect('paralysis')) {
             const paralysisChance = currentPlayer.statusEffects.find(e => e.type === 'paralysis').power;

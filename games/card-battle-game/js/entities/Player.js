@@ -103,6 +103,13 @@ class Player {
         return actualReduction;
     }
 
+    // 방어력 초기화 (턴 시작 시 사용)
+    resetDefense() {
+        const previousDefense = this.defense;
+        this.defense = 0;
+        return previousDefense;
+    }
+
     // 카드 관련 메서드
     addCard(card) {
         if (this.hand.length >= this.maxHandSize) {

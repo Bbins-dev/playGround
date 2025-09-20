@@ -166,9 +166,9 @@ const GameConfig = {
         trimWhitespace: true        // 공백 제거
     },
 
-    // 적 설정
+    // 적 설정 (플레이어와 동일한 룰 적용)
     enemy: {
-        maxHandSize: 20,
+        maxHandSize: 10,
         startingHP: 10,
         defaultDefenseElement: 'normal'
     },
