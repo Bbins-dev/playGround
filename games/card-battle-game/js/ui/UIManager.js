@@ -849,26 +849,44 @@ class UIManager {
 
     // 패배 모달 재시작 버튼 처리
     handleDefeatRestart() {
+        // 게임 상태 완전 정리
+        this.cleanupGameState();
+
+        // 모든 모달 닫기
+        this.hideAllModals();
+
         // UI 요소 다시 표시
         this.updateUIVisibility();
+        this.showAllUIElements();
         this.isInteractive = true;
 
-        // 게임 재시작 (1스테이지부터)
+        // 게임 상태 완전 초기화
         this.gameManager.currentStage = 1;
-        this.gameManager.player = null;
-        this.gameManager.enemy = null;
+        this.gameManager.gameState = 'menu';
         this.gameManager.resetGameStats();
 
-        // 카드 선택 화면으로 이동
-        this.gameManager.switchScreen('cardSelection');
-        this.gameManager.showPostBattleCardSelection();
+        // 새 게임 시작 (플레이어 이름 입력부터)
+        this.gameManager.startNewGame();
     }
 
     // 패배 모달 메인메뉴 버튼 처리
     handleDefeatMainMenu() {
+        // 게임 상태 완전 정리
+        this.cleanupGameState();
+
+        // 모든 모달 닫기
+        this.hideAllModals();
+
         // UI 요소 다시 표시
         this.updateUIVisibility();
+        this.showAllUIElements();
         this.isInteractive = true;
+
+        // 게임 상태 초기화 및 메인메뉴로 이동
+        this.gameManager.currentStage = 1;
+        this.gameManager.gameState = 'menu';
+        this.gameManager.resetGameStats();
+        this.gameManager.currentScreen = this.gameManager.mainMenu;
 
         // 메인메뉴로 이동
         this.gameManager.showMainMenu();
