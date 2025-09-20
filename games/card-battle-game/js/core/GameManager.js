@@ -158,6 +158,9 @@ class GameManager {
         // UI 관리자 초기화 (다른 시스템들 이후에)
         this.uiManager = new UIManager(this);
 
+        // 기존 메서드 활용하여 속도 UI 동기화
+        this.uiManager.updateSpeedButton(savedSpeed);
+
         // 화면들 초기화
         this.mainMenu = new MainMenu(this);
         this.cardSelection = new CardSelection(this);
@@ -555,17 +558,22 @@ class GameManager {
      */
     proceedToNextStage() {
         try {
+            console.log('🚀 GameManager: proceedToNextStage 호출됨 - 현재 스테이지:', this.currentStage);
+
             // 스테이지 증가
             this.currentStage++;
+            console.log('🚀 GameManager: 다음 스테이지로 증가 ->', this.currentStage);
 
             // 다음 적 생성
             this.setupNextBattle();
+            console.log('🚀 GameManager: setupNextBattle 완료');
 
-            // 전투 화면으로 전환
-            this.changeGameState('battle');
+            // startBattle이 모든 초기화를 처리 (DRY)
+            this.startBattle();
+            console.log('🚀 GameManager: startBattle 호출 완료');
 
         } catch (error) {
-            console.error('다음 스테이지 진행 에러:', error);
+            console.error('❌ 다음 스테이지 진행 에러:', error);
             // 에러 발생 시 메인 메뉴로 이동
             this.showMainMenu();
         }
@@ -575,19 +583,30 @@ class GameManager {
      * 다음 전투 설정
      */
     setupNextBattle() {
-        if (!this.enemyManager) return;
+        // 새로운 적 생성
+        this.enemy = new Enemy(`스테이지 ${this.currentStage} 적`, this.currentStage);
 
-        // 적 생성
-        this.enemy = this.enemyManager.createEnemyForStage(this.currentStage);
+        // 적 덱 구성
+        this.enemy.buildDeck();
 
-        // 플레이어 상태 회복 (일부)
+        // 플레이어 HP 완전 회복 (추후 변경 가능)
         if (this.player) {
-            this.player.partialRestore();
+            this.player.hp = this.player.maxHP;
+            this.player.defense = 0;  // 방어력 초기화
+            this.player.thorns = 0;   // 가시 초기화
         }
 
         // UI 업데이트
         if (this.uiManager) {
             this.uiManager.updateUIVisibility();
+        }
+
+        // HP 바 시스템 업데이트
+        if (this.hpBarSystem) {
+            this.hpBarSystem.updateHP('player', this.player.hp, this.player.maxHP);
+            this.hpBarSystem.updateHP('enemy', this.enemy.hp, this.enemy.maxHP);
+            this.hpBarSystem.updateDefense('player', 0);
+            this.hpBarSystem.updateDefense('enemy', 0);
         }
     }
 
