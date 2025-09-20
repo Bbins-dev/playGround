@@ -65,13 +65,6 @@ const CardDatabase = {
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(singleDamage * effectiveness);
 
-                // 전투 시스템을 통해 대미지 적용
-                if (battleSystem && battleSystem.dealDamage) {
-                    battleSystem.dealDamage(target, finalDamage);
-                } else {
-                    target.hp = Math.max(0, target.hp - finalDamage);
-                }
-
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.damage',
@@ -108,13 +101,6 @@ const CardDatabase = {
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(damage * effectiveness);
 
-                // 전투 시스템을 통해 대미지 적용
-                if (battleSystem && battleSystem.dealDamage) {
-                    battleSystem.dealDamage(target, finalDamage);
-                } else {
-                    target.hp = Math.max(0, target.hp - finalDamage);
-                }
-
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.damage',
@@ -150,13 +136,6 @@ const CardDatabase = {
                 const damage = user.defense; // 현재 방어력만큼 대미지
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(damage * effectiveness);
-
-                // 전투 시스템을 통해 대미지 적용
-                if (battleSystem && battleSystem.dealDamage) {
-                    battleSystem.dealDamage(target, finalDamage, user);
-                } else {
-                    target.takeDamage(finalDamage, user);
-                }
 
                 return {
                     success: true,
@@ -195,13 +174,6 @@ const CardDatabase = {
                 const damage = this.power;
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(damage * effectiveness);
-
-                // 대미지 적용
-                if (battleSystem && battleSystem.dealDamage) {
-                    battleSystem.dealDamage(target, finalDamage, user);
-                } else {
-                    target.takeDamage(finalDamage, user);
-                }
 
                 // 기절 확률 체크
                 let stunned = false;
@@ -247,13 +219,6 @@ const CardDatabase = {
                 const damage = user.lastDamageTaken; // 마지막 받은 대미지
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(damage * effectiveness);
-
-                // 대미지 적용
-                if (battleSystem && battleSystem.dealDamage) {
-                    battleSystem.dealDamage(target, finalDamage, user);
-                } else {
-                    target.takeDamage(finalDamage, user);
-                }
 
                 return {
                     success: true,

@@ -870,6 +870,16 @@ body {
         0 0 10px rgba(231, 76, 60, 0.5); /* 빨간 글로우 */
 }
 
+.defense-number {
+    color: #C0C0C0;
+    text-shadow:
+        3px 3px 0 #000,
+        -3px 3px 0 #000,
+        3px -3px 0 #000,
+        -3px -3px 0 #000,
+        0 0 10px rgba(192, 192, 192, 0.5); /* 은색 글로우 */
+}
+
 .miss-number {
     color: #95a5a6 !important;
     font-size: 48px !important;

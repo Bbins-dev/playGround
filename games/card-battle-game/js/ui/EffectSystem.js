@@ -155,6 +155,14 @@ class EffectSystem {
                 className += ' debuff-number';
                 numberElement.textContent = `-${amount}`;
                 break;
+            case 'defense-gain':
+                className += ' defense-number';
+                numberElement.textContent = `${amount}`;
+                break;
+            case 'defense-loss':
+                className += ' defense-number';
+                numberElement.textContent = `-${amount}`;
+                break;
             case 'miss':
                 className += ' miss-number';
                 // I18nHelper 사용하여 빗나감 텍스트 설정
