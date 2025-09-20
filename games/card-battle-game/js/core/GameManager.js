@@ -601,12 +601,19 @@ class GameManager {
             this.uiManager.updateUIVisibility();
         }
 
-        // HP 바 시스템 업데이트
-        if (this.hpBarSystem) {
-            this.hpBarSystem.updateHP('player', this.player.hp, this.player.maxHP);
-            this.hpBarSystem.updateHP('enemy', this.enemy.hp, this.enemy.maxHP);
-            this.hpBarSystem.updateDefense('player', 0);
-            this.hpBarSystem.updateDefense('enemy', 0);
+        // HP 바 시스템 업데이트 (올바른 방법으로 수정)
+        if (this.hpBarSystem && this.player && this.enemy) {
+            this.hpBarSystem.updateHP(this.player, true);
+            this.hpBarSystem.updateHP(this.enemy, false);
+            this.hpBarSystem.updateDefense(this.player, true);
+            this.hpBarSystem.updateDefense(this.enemy, false);
+
+            // 이름도 업데이트
+            this.hpBarSystem.updateNames(this.player, this.enemy);
+
+            // 상태 이상도 업데이트
+            this.hpBarSystem.updateStatusEffects(this.player, true);
+            this.hpBarSystem.updateStatusEffects(this.enemy, false);
         }
     }
 

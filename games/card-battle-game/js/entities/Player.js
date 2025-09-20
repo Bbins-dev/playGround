@@ -34,17 +34,24 @@ class Player {
     // HP 관련 메서드
     takeDamage(amount, attacker = null) {
         const previousHP = this.hp;
+        let remainingDamage = amount;
 
-        // 방어력 적용 (방어력이 대미지를 줄임)
-        let finalDamage = Math.max(0, amount - this.defense);
+        // 방어력 먼저 소모 (보호막 방식)
+        if (this.defense > 0 && remainingDamage > 0) {
+            const defenseAbsorbed = Math.min(this.defense, remainingDamage);
+            this.defense -= defenseAbsorbed;
+            remainingDamage -= defenseAbsorbed;
+        }
 
-        // 실제 대미지 적용
-        this.hp = Math.max(0, this.hp - finalDamage);
+        // 남은 대미지를 HP에 적용
+        if (remainingDamage > 0) {
+            this.hp = Math.max(0, this.hp - remainingDamage);
+        }
+
         const actualDamage = previousHP - this.hp;
 
         // 마지막 받은 대미지 기록
         this.lastDamageTaken = actualDamage;
-
 
         // 가시 대미지 반사 (공격자가 있을 경우)
         if (this.thorns > 0 && attacker && actualDamage > 0) {

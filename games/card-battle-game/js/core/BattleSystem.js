@@ -10,8 +10,8 @@ class BattleSystem {
         this.currentTurn = 'player'; // 'player' | 'enemy'
         this.battlePhase = 'waiting'; // 'waiting' | 'cardActivation' | 'turnTransition' | 'ended'
 
-        // 시스템들
-        this.hpBarSystem = null;
+        // 시스템들 (GameManager의 인스턴스 참조)
+        this.hpBarSystem = gameManager.hpBarSystem;
         this.effectSystem = null;
 
         // 턴 진행 상태
@@ -63,8 +63,10 @@ class BattleSystem {
 
     // 시스템들 초기화
     initializeSystems() {
+        // HPBarSystem은 GameManager에서 이미 생성된 인스턴스 사용
         if (!this.hpBarSystem) {
-            this.hpBarSystem = new HPBarSystem();
+            console.error('BattleSystem: HPBarSystem이 GameManager에서 초기화되지 않았습니다');
+            return;
         }
 
         if (!this.effectSystem) {

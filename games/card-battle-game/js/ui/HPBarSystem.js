@@ -165,7 +165,7 @@ class HPBarSystem {
 
             // 방어력 정보 표시
             targetElements.defenseInfo.classList.remove('hidden');
-            targetElements.number.textContent = player.defense;
+            targetElements.number.textContent = `🛡️${player.defense}`;
         } else {
             // 방어력이 0일 때 숨김
             targetElements.overlay.style.width = '0%';
