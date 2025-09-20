@@ -146,16 +146,8 @@ class UIManager {
                 const speedText = e.target.textContent;
                 const speed = parseInt(speedText.replace('x', ''));
 
-                // localStorage에 속도 설정 저장
-                localStorage.setItem('cardBattle_gameSpeed', speed.toString());
-
-                // 게임 속도 설정
-                if (this.gameManager.battleSystem) {
-                    this.gameManager.battleSystem.setGameSpeed(speed);
-                }
-                if (this.gameManager) {
-                    this.gameManager.setGameSpeed(speed);
-                }
+                // GameManager를 통해 통일된 속도 설정
+                this.gameManager.setGameSpeed(speed);
 
             });
         });
@@ -166,21 +158,8 @@ class UIManager {
 
     // 초기 속도 설정 적용
     applyInitialSpeedSetting(speed) {
-        const speedButtons = document.querySelectorAll('.speed-btn');
-
-        // 저장된 속도에 해당하는 버튼 활성화
-        speedButtons.forEach(btn => {
-            btn.classList.remove('active');
-            const btnSpeed = parseInt(btn.textContent.replace('x', ''));
-            if (btnSpeed === speed) {
-                btn.classList.add('active');
-            }
-        });
-
-        // 전투 시스템이 있으면 속도 설정
-        if (this.gameManager.battleSystem) {
-            this.gameManager.battleSystem.setGameSpeed(speed);
-        }
+        // GameManager를 통해 통일된 속도 설정
+        this.gameManager.setGameSpeed(speed);
     }
 
     // 모달 설정
@@ -469,10 +448,7 @@ class UIManager {
             case '2':
             case '3':
                 const speed = parseInt(event.key);
-                if (this.gameManager.battleSystem) {
-                    this.gameManager.battleSystem.setGameSpeed(speed);
-                    this.updateSpeedButton(speed);
-                }
+                this.gameManager.setGameSpeed(speed);
                 break;
         }
     }

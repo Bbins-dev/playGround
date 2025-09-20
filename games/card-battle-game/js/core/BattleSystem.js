@@ -266,29 +266,11 @@ class BattleSystem {
         const damage = result.damage || 0;
 
         if (damage > 0) {
-            // 방어력/HP 분리 대미지 계산
-            const previousDefense = target.defense;
-            const previousHP = target.hp;
-
-            // 실제 대미지 적용 (takeDamage가 방어력과 HP를 분리 처리)
+            // 실제 대미지 적용
             const actualDamage = target.takeDamage(damage);
 
-            // 방어력과 HP 소모량 계산
-            const defenseUsed = previousDefense - target.defense;
-            const hpDamage = previousHP - target.hp;
-
-            // 피격 효과 (원래 전체 대미지로 플래시/깜빡임)
-            await this.effectSystem.showHitEffect(targetPosition, card.element, 0);
-
-            // 방어력 소모 연출
-            if (defenseUsed > 0) {
-                this.effectSystem.showDamageNumber(defenseUsed, targetPosition, 'defense-loss');
-            }
-
-            // HP 소모 연출
-            if (hpDamage > 0) {
-                this.effectSystem.showDamageNumber(hpDamage, targetPosition, 'damage');
-            }
+            // 피격 효과
+            await this.effectSystem.showHitEffect(targetPosition, card.element, damage);
 
             // 통계 업데이트
             if (target === this.enemy) {

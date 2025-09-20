@@ -822,6 +822,9 @@ class GameManager {
     setGameSpeed(speed) {
         this.gameSpeed = speed;
 
+        // localStorage에 저장
+        localStorage.setItem('cardBattle_gameSpeed', speed.toString());
+
         // 전투 시스템에 속도 적용
         if (this.battleSystem) {
             this.battleSystem.setGameSpeed(speed);

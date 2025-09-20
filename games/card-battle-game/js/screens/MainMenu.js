@@ -30,12 +30,6 @@ class MainMenu {
                 id: 'card-gallery-menu-btn'
             },
             {
-                text: 'settings',
-                action: () => this.openSettings(),
-                icon: '⚙️',
-                id: 'settings-btn'
-            },
-            {
                 text: 'back-to-homepage',
                 action: () => { window.location.href = '../../'; },
                 icon: '🏠',
@@ -506,32 +500,6 @@ class MainMenu {
         }
     }
 
-    // 설정 열기
-    openSettings() {
-
-        // 간단한 설정 메뉴 구현
-        this.showSettingsDialog();
-    }
-
-    // 설정 대화상자 표시
-    showSettingsDialog() {
-        const settings = {
-            gameSpeed: parseInt(localStorage.getItem('cardBattle_gameSpeed') || '1'),
-            soundEnabled: localStorage.getItem('cardBattle_soundEnabled') !== 'false',
-            language: localStorage.getItem('cardBattle_language') || 'ko'
-        };
-
-        // 간단한 프롬프트로 설정 변경
-        const newSpeed = prompt(`게임 속도 (1-3): 현재 ${settings.gameSpeed}`, settings.gameSpeed);
-        if (newSpeed && !isNaN(newSpeed)) {
-            const speed = Math.max(1, Math.min(3, parseInt(newSpeed)));
-            localStorage.setItem('cardBattle_gameSpeed', speed.toString());
-
-            if (this.gameManager.battleSystem) {
-                this.gameManager.battleSystem.setGameSpeed(speed);
-            }
-        }
-    }
 
 
     // 현지화 텍스트 가져오기
@@ -541,7 +509,6 @@ class MainMenu {
             'start-game': 'auto_battle_card_game.ui.start_game',
             'game-tutorial': 'auto_battle_card_game.ui.game_tutorial',
             'card-gallery': 'auto_battle_card_game.ui.card_gallery',
-            'settings': 'auto_battle_card_game.ui.settings',
             'back-to-main': 'auto_battle_card_game.ui.back_to_main',
             'tutorial-line1': 'auto_battle_card_game.tutorial.line1',
             'tutorial-line2': 'auto_battle_card_game.tutorial.line2',
@@ -555,7 +522,6 @@ class MainMenu {
             'start-game': '게임 시작',
             'game-tutorial': '게임 설명',
             'card-gallery': '카드 갤러리',
-            'settings': '설정',
             'back-to-main': '메인으로',
             'tutorial-line1': '공격카드 중 하나를 선택하여 게임을 시작하세요!',
             'tutorial-line2': '카드는 손패 왼쪽부터 자동으로 발동됩니다!',
