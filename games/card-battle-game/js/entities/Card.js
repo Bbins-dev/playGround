@@ -2,27 +2,21 @@
 
 class Card {
     constructor(cardData) {
-        // 기본 카드 정보
-        this.id = cardData.id;
-        this.nameKey = cardData.nameKey; // i18n 키
+        // 먼저 모든 속성 복사 (특수 속성 포함)
+        Object.assign(this, cardData);
+
+        // 기본값 처리 및 특별 관리가 필요한 속성들 재설정
         this.name = cardData.name || this.id; // 백업용
-        this.type = cardData.type;
-        this.element = cardData.element;
-        this.power = cardData.power;
         this.accuracy = cardData.accuracy || 100;
         this.cost = cardData.cost || 1;
         this.activationCount = cardData.activationCount || 1;
-        this.descriptionKey = cardData.descriptionKey; // i18n 키
         this.description = cardData.description || ''; // 백업용
-
-        // 마구때리기 카드 특수 속성
         this.isRandomBash = cardData.isRandomBash || false;
-        this.getRandomActivationCount = cardData.getRandomActivationCount;
 
         // 카드 효과 (함수)
         this.effect = cardData.effect || this.defaultEffect;
 
-        // 현재 상태
+        // 현재 상태 (항상 초기화 필요)
         this.currentActivations = 0;
         this.isActive = true;
     }

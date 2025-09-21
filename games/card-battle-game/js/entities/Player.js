@@ -147,7 +147,7 @@ class Player {
     addStatusEffect(statusType, power = null, duration = null) {
         // 면역 체크
         if (GameConfig.utils.isImmuneToStatus(this.defenseElement, statusType)) {
-            return false;
+            return { success: false, reason: 'immune' };
         }
 
         // 중복 상태이상 체크
@@ -157,7 +157,7 @@ class Player {
 
         const statusConfig = GameConfig.statusEffects[statusType];
         if (!statusConfig) {
-            return false;
+            return { success: false, reason: 'invalid_status' };
         }
 
         const statusEffect = {
