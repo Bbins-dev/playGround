@@ -251,6 +251,14 @@ class BattleSystem {
                 await this.processStatusResult(result, target, targetPosition);
                 break;
 
+            case 'defense':
+                // 방어력은 자신에게 적용되므로 user 위치 사용
+                const userPosition = isPlayerCard ?
+                    this.effectSystem.getPlayerPosition() :
+                    this.effectSystem.getEnemyPosition();
+                await this.processDefenseResult(result, user, userPosition);
+                break;
+
             default:
         }
 
@@ -317,6 +325,19 @@ class BattleSystem {
         const statusType = result.statusType;
         if (statusType) {
             this.effectSystem.showStatusEffect('debuff', targetPosition, 0);
+        }
+    }
+
+    // 방어 결과 처리
+    async processDefenseResult(result, user, userPosition) {
+        const defenseGain = result.defenseGain || 0;
+
+        if (defenseGain > 0) {
+            // 방어력 숫자 연출 표시 (방어력 획득한 주체 위치에)
+            this.effectSystem.showDamageNumber(defenseGain, userPosition, 'defense-gain');
+
+            // 방어력 관련 통계 업데이트
+            this.battleStats.defenseBuilt += defenseGain;
         }
     }
 
@@ -543,9 +564,13 @@ class BattleSystem {
             this.hpBarSystem.updateHP(this.enemy, false)
         ]);
 
-        // 방어력과 상태이상은 즉시 업데이트 (애니메이션 없음)
-        this.hpBarSystem.updateDefense(this.player, true);
-        this.hpBarSystem.updateDefense(this.enemy, false);
+        // 방어력 업데이트도 애니메이션 완료까지 대기
+        await Promise.all([
+            this.hpBarSystem.updateDefense(this.player, true),
+            this.hpBarSystem.updateDefense(this.enemy, false)
+        ]);
+
+        // 상태이상과 이름은 즉시 업데이트
         this.hpBarSystem.updateStatusEffects(this.player, true);
         this.hpBarSystem.updateStatusEffects(this.enemy, false);
         this.hpBarSystem.updateNames(this.player, this.enemy);

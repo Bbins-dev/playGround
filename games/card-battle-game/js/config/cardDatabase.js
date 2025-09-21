@@ -249,7 +249,7 @@ const CardDatabase = {
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.defense_gained',
-                    defenseValue: defenseValue,
+                    defenseGain: defenseValue,
                     element: this.element
                 };
             }
@@ -273,7 +273,7 @@ const CardDatabase = {
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.defense_gained',
-                    defenseValue: defenseValue,
+                    defenseGain: defenseValue,
                     element: this.element
                 };
             }
@@ -303,7 +303,7 @@ const CardDatabase = {
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.crouch_effect',
-                    defenseValue: defenseValue,
+                    defenseGain: defenseValue,
                     skipTurn: true,
                     element: this.element
                 };
@@ -338,7 +338,7 @@ const CardDatabase = {
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.defense_gained',
-                    defenseValue: defenseValue,
+                    defenseGain: defenseValue,
                     element: this.element
                 };
             }
@@ -366,7 +366,7 @@ const CardDatabase = {
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.thorn_armor_effect',
-                    defenseValue: defenseValue,
+                    defenseGain: defenseValue,
                     thornValue: thornValue,
                     element: this.element
                 };

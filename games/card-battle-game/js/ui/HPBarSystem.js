@@ -104,6 +104,38 @@ class HPBarSystem {
         });
     }
 
+    // 방어력 숫자 카운트 애니메이션 (Promise 반환)
+    animateDefenseNumber(element, targetDefense) {
+        const currentText = element.textContent;
+        const currentDefense = parseInt(currentText.replace('🛡️', '')) || 0;
+
+        if (currentDefense === targetDefense) {
+            element.textContent = `🛡️${targetDefense}`;
+            return Promise.resolve();
+        }
+
+        return new Promise((resolve) => {
+            const duration = 500; // 0.5초
+            const steps = 20;
+            const stepDuration = duration / steps;
+            const defenseDiff = targetDefense - currentDefense;
+            const stepValue = defenseDiff / steps;
+
+            let step = 0;
+            const timer = setInterval(() => {
+                step++;
+                const newDefense = Math.round(currentDefense + (stepValue * step));
+                element.textContent = `🛡️${newDefense}`;
+
+                if (step >= steps) {
+                    clearInterval(timer);
+                    element.textContent = `🛡️${targetDefense}`;
+                    resolve();
+                }
+            }, stepDuration);
+        });
+    }
+
     // 상태이상 표시 업데이트 (강화 버전)
     updateStatusEffects(player, isPlayer = true) {
         const statusContainer = isPlayer ? this.playerStatus : this.enemyStatus;
@@ -144,20 +176,22 @@ class HPBarSystem {
         });
     }
 
-    // 방어력 오버레이 업데이트
-    updateDefense(player, isPlayer = true) {
+    // 방어력 오버레이 업데이트 (Promise 반환으로 수정)
+    async updateDefense(player, isPlayer = true) {
         const targetElements = isPlayer ? {
             overlay: this.playerDefenseOverlay,
             number: this.playerDefenseNumber,
             defenseInfo: this.playerDefenseInfo,
             thornsInfo: this.playerThornsInfo,
-            thornsNumber: this.playerThornsNumber
+            thornsNumber: this.playerThornsNumber,
+            key: isPlayer ? 'player' : 'enemy'
         } : {
             overlay: this.enemyDefenseOverlay,
             number: this.enemyDefenseNumber,
             defenseInfo: this.enemyDefenseInfo,
             thornsInfo: this.enemyThornsInfo,
-            thornsNumber: this.enemyThornsNumber
+            thornsNumber: this.enemyThornsNumber,
+            key: isPlayer ? 'player' : 'enemy'
         };
 
         if (player.defense > 0) {
@@ -165,6 +199,8 @@ class HPBarSystem {
             // 최대 HP까지는 100% 비율로 표시, 그 이상은 100%로 고정
             const maxHP = player.maxHP;
             const percentage = Math.min((player.defense / maxHP) * 100, 100);
+
+            // 방어력 게이지 애니메이션 (부드럽게 증가)
             targetElements.overlay.style.width = percentage + '%';
 
             // 방어력이 maxHP와 같거나 클 때 최대 효과 적용
@@ -176,7 +212,9 @@ class HPBarSystem {
 
             // 방어력 정보 표시
             targetElements.defenseInfo.classList.remove('hidden');
-            targetElements.number.textContent = `🛡️${player.defense}`;
+
+            // 방어력 숫자 카운트 애니메이션 완료까지 대기
+            await this.animateDefenseNumber(targetElements.number, player.defense);
         } else {
             // 방어력이 0일 때 숨김
             targetElements.overlay.style.width = '0%';
