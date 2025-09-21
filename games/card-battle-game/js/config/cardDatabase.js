@@ -89,7 +89,7 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 // 명중률 체크
                 const hitRoll = Math.random() * 100;
-                if (hitRoll > this.accuracy) {
+                if (hitRoll >= this.accuracy) {
                     return {
                         success: false,
                         messageKey: 'auto_battle_card_game.ui.miss',
@@ -125,7 +125,7 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 // 명중률 체크
                 const hitRoll = Math.random() * 100;
-                if (hitRoll > this.accuracy) {
+                if (hitRoll >= this.accuracy) {
                     return {
                         success: false,
                         messageKey: 'auto_battle_card_game.ui.miss',
@@ -163,7 +163,7 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 // 명중률 체크
                 const hitRoll = Math.random() * 100;
-                if (hitRoll > this.accuracy) {
+                if (hitRoll >= this.accuracy) {
                     return {
                         success: false,
                         messageKey: 'auto_battle_card_game.ui.miss',
@@ -208,7 +208,7 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 // 명중률 체크
                 const hitRoll = Math.random() * 100;
-                if (hitRoll > this.accuracy) {
+                if (hitRoll >= this.accuracy) {
                     return {
                         success: false,
                         messageKey: 'auto_battle_card_game.ui.miss',
@@ -324,7 +324,7 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 // 성공률 체크
                 const successRoll = Math.random() * 100;
-                if (successRoll > this.accuracy) {
+                if (successRoll >= this.accuracy) {
                     return {
                         success: false,
                         messageKey: 'auto_battle_card_game.ui.shield_failed',
@@ -387,7 +387,7 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 // 성공률 체크
                 const successRoll = Math.random() * 100;
-                if (successRoll > this.accuracy) {
+                if (successRoll >= this.accuracy) {
                     return {
                         success: false,
                         messageKey: 'auto_battle_card_game.ui.taunt_failed',

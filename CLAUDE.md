@@ -152,4 +152,12 @@ Without trailing slash, relative paths like `./style.css` resolve incorrectly.
 3. **Mobile touch events**: 터치 지원 + 반응형 레이아웃 검증
 4. **Dynamic over static**: 생성된 컨텐츠 우선, 정적 HTML 지양
 
+## Card Battle Game 명중률 체크 규칙 ⚠️
+
+**필수**: 명중률 체크는 반드시 `>=` 사용 (절대 `>` 사용 금지)
+- ✅ 올바른: `if (roll >= accuracy) { return fail; }`
+- ❌ 잘못된: `if (roll > accuracy)` → 확률 오차 발생
+
+80% 명중률 = 0~79.99는 성공, 80~100은 실패
+
 **Remember: Configuration-driven development for maximum maintainability**
