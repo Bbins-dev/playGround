@@ -510,6 +510,30 @@ class VictoryDefeatModal {
         if (this.victorySelectionButtons) {
             this.victorySelectionButtons.classList.remove('hidden');
         }
+
+        // 손패 개수 체크하여 '덱에 추가' 버튼 활성화/비활성화
+        this.updateAddToDeckButton();
+    }
+
+    /**
+     * '덱에 추가' 버튼 활성화/비활성화 업데이트
+     */
+    updateAddToDeckButton() {
+        if (!this.victoryAddToDeckBtn || !this.gameManager || !this.gameManager.player) {
+            return;
+        }
+
+        const currentHandSize = this.gameManager.player.hand.length;
+        const maxHandSize = GameConfig.player.maxHandSize;
+        const isHandFull = currentHandSize >= maxHandSize;
+
+        if (isHandFull) {
+            this.victoryAddToDeckBtn.disabled = true;
+            this.victoryAddToDeckBtn.classList.add('disabled');
+        } else {
+            this.victoryAddToDeckBtn.disabled = false;
+            this.victoryAddToDeckBtn.classList.remove('disabled');
+        }
     }
 
     /**
@@ -540,6 +564,15 @@ class VictoryDefeatModal {
      */
     handleAddToDeck() {
         if (this.selectedRewardCard && this.gameManager) {
+            // 손패가 가득 찬 경우 처리하지 않음
+            const currentHandSize = this.gameManager.player.hand.length;
+            const maxHandSize = GameConfig.player.maxHandSize;
+
+            if (currentHandSize >= maxHandSize) {
+                console.warn('손패가 가득참 - 카드 추가 불가');
+                return;
+            }
+
             // GameManager를 통해 카드를 플레이어 손패에 추가
             if (this.gameManager.cardManager && this.gameManager.player) {
                 this.gameManager.cardManager.addCardToPlayer(this.gameManager.player, this.selectedRewardCard.id);
