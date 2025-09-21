@@ -11,13 +11,13 @@ class HPBarSystem {
         this.playerNumber = this.playerHPBar.querySelector('.hp-number');
         this.playerName = this.playerHPBar.querySelector('.entity-name');
         this.playerDefenseInfo = this.playerHPBar.querySelector('.defense-info');
-        this.playerStatus = document.getElementById('player-status-effects');
+        this.playerStatus = this.playerHPBar.querySelector('.hp-info .status-effects');
 
         this.enemyFill = this.enemyHPBar.querySelector('.hp-bar-fill');
         this.enemyNumber = this.enemyHPBar.querySelector('.hp-number');
         this.enemyName = this.enemyHPBar.querySelector('.entity-name');
         this.enemyDefenseInfo = this.enemyHPBar.querySelector('.defense-info');
-        this.enemyStatus = document.getElementById('enemy-status-effects');
+        this.enemyStatus = this.enemyHPBar.querySelector('.hp-info .status-effects');
 
         // 방어력 오버레이 요소들
         this.playerDefenseOverlay = this.playerHPBar.querySelector('.defense-overlay');
