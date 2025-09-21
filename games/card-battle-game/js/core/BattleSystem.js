@@ -254,8 +254,8 @@ class BattleSystem {
             default:
         }
 
-        // HP 바 업데이트
-        this.hpBarSystem.updatePlayerInfo(this.player, this.enemy);
+        // HP 바 업데이트 (애니메이션 완료 대기)
+        await this.updateHPWithAnimation();
 
         // 전투 종료 체크
         this.checkBattleEnd();
@@ -533,6 +533,22 @@ class BattleSystem {
             // 활성 타이머 목록에 추가
             this.activeTimers.push(timerId);
         });
+    }
+
+    // HP 업데이트 애니메이션 처리 (새 메서드 추가)
+    async updateHPWithAnimation() {
+        // 플레이어와 적의 HP 업데이트를 병렬로 실행
+        await Promise.all([
+            this.hpBarSystem.updateHP(this.player, true),
+            this.hpBarSystem.updateHP(this.enemy, false)
+        ]);
+
+        // 방어력과 상태이상은 즉시 업데이트 (애니메이션 없음)
+        this.hpBarSystem.updateDefense(this.player, true);
+        this.hpBarSystem.updateDefense(this.enemy, false);
+        this.hpBarSystem.updateStatusEffects(this.player, true);
+        this.hpBarSystem.updateStatusEffects(this.enemy, false);
+        this.hpBarSystem.updateNames(this.player, this.enemy);
     }
 
     // 전투 통계 가져오기

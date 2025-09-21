@@ -37,8 +37,8 @@ class HPBarSystem {
         };
     }
 
-    // HP 바 업데이트
-    updateHP(player, isPlayer = true) {
+    // HP 바 업데이트 (Promise 반환으로 수정)
+    async updateHP(player, isPlayer = true) {
         const targetElements = isPlayer ? {
             fill: this.playerFill,
             number: this.playerNumber,
@@ -50,6 +50,9 @@ class HPBarSystem {
         };
 
         const percentage = (player.hp / player.maxHP) * 100;
+
+        // 애니메이션 상태 설정
+        this.animating[targetElements.key] = true;
 
         // HP 바 애니메이션
         targetElements.fill.style.width = percentage + '%';
@@ -63,34 +66,42 @@ class HPBarSystem {
             targetElements.fill.style.background = 'linear-gradient(90deg, #E74C3C, #C0392B)';
         }
 
-        // HP 숫자 카운트 애니메이션
-        this.animateHPNumber(targetElements.number, player.hp, player.maxHP);
+        // HP 숫자 카운트 애니메이션 완료까지 대기
+        await this.animateHPNumber(targetElements.number, player.hp, player.maxHP);
+
+        // 애니메이션 상태 해제
+        this.animating[targetElements.key] = false;
     }
 
-    // HP 숫자 카운트 애니메이션
+    // HP 숫자 카운트 애니메이션 (Promise 반환으로 수정)
     animateHPNumber(element, targetHP, maxHP) {
         const currentText = element.textContent;
         const currentHP = parseInt(currentText.split('/')[0]);
 
-        if (currentHP === targetHP) return;
+        if (currentHP === targetHP) {
+            return Promise.resolve();
+        }
 
-        const duration = 500; // 0.5초
-        const steps = 20;
-        const stepDuration = duration / steps;
-        const hpDiff = targetHP - currentHP;
-        const stepValue = hpDiff / steps;
+        return new Promise((resolve) => {
+            const duration = 500; // 0.5초
+            const steps = 20;
+            const stepDuration = duration / steps;
+            const hpDiff = targetHP - currentHP;
+            const stepValue = hpDiff / steps;
 
-        let step = 0;
-        const timer = setInterval(() => {
-            step++;
-            const newHP = Math.round(currentHP + (stepValue * step));
-            element.textContent = `${newHP}/${maxHP}`;
+            let step = 0;
+            const timer = setInterval(() => {
+                step++;
+                const newHP = Math.round(currentHP + (stepValue * step));
+                element.textContent = `${newHP}/${maxHP}`;
 
-            if (step >= steps) {
-                clearInterval(timer);
-                element.textContent = `${targetHP}/${maxHP}`;
-            }
-        }, stepDuration);
+                if (step >= steps) {
+                    clearInterval(timer);
+                    element.textContent = `${targetHP}/${maxHP}`;
+                    resolve();
+                }
+            }, stepDuration);
+        });
     }
 
     // 상태이상 표시 업데이트 (강화 버전)
