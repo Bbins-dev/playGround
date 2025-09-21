@@ -204,6 +204,10 @@
       "thorn_armor_effect": "Thorn armor added defense and thorns",
       "taunt_success": "Taunt successful",
       "taunt_failed": "Taunt failed",
+      "stunned": "Stunned!",
+      "taunted": "Taunted!",
+      "already_stunned": "Already stunned!",
+      "already_taunted": "Already taunted!",
       "card_selection": {
         "initial_title": "Start Card Selection",
         "reward_title": "Reward Card Selection",

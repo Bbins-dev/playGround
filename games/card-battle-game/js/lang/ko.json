@@ -204,6 +204,10 @@
       "thorn_armor_effect": "가시갑옷으로 방어력과 가시 추가",
       "taunt_success": "도발 성공",
       "taunt_failed": "도발 실패",
+      "stunned": "기절함!",
+      "taunted": "도발됨!",
+      "already_stunned": "이미 기절에 걸려있습니다!",
+      "already_taunted": "이미 도발에 걸려있습니다!",
       "card_selection": {
         "initial_title": "시작 카드 선택",
         "reward_title": "보상 카드 선택",

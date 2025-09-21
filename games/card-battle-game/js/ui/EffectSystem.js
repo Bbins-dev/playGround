@@ -168,6 +168,14 @@ class EffectSystem {
                 className += ' zero-number';
                 numberElement.textContent = '0';
                 break;
+            case 'stun':
+                className += ' stun-number';
+                numberElement.textContent = I18nHelper.getText('auto_battle_card_game.ui.stunned') || '기절함!';
+                break;
+            case 'taunt':
+                className += ' taunt-number';
+                numberElement.textContent = I18nHelper.getText('auto_battle_card_game.ui.taunted') || '도발됨!';
+                break;
             default:
                 numberElement.textContent = `-${amount}`;
         }

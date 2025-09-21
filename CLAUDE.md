@@ -160,4 +160,9 @@ Without trailing slash, relative paths like `./style.css` resolve incorrectly.
 
 80% 명중률 = 0~79.99는 성공, 80~100은 실패
 
+### 🔴 이중 명중률 체크 금지
+**카드 effect 내부에서 명중률 재체크 절대 금지** - Card.js에서만 처리
+- ❌ `if (hitRoll >= this.accuracy)` 카드 effect 내부 금지
+- 결과: 80% 카드가 64% 명중률로 변경됨
+
 **Remember: Configuration-driven development for maximum maintainability**

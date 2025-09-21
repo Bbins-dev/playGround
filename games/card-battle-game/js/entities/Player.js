@@ -55,10 +55,8 @@ class Player {
 
         // 가시 대미지 반사 (공격자가 있을 경우)
         if (this.thorns > 0 && attacker && actualDamage > 0) {
-            // 가시 대미지는 방어력 무시하고 직접 적용
-            const attackerPreviousHP = attacker.hp;
-            attacker.hp = Math.max(0, attacker.hp - this.thorns);
-            const thornDamage = attackerPreviousHP - attacker.hp;
+            // 가시 대미지도 방어력부터 소모
+            const thornDamage = attacker.takeDamage(this.thorns);
         }
 
         return actualDamage;
@@ -152,8 +150,10 @@ class Player {
             return false;
         }
 
-        // 기존 동일한 상태이상 제거
-        this.removeStatusEffect(statusType);
+        // 중복 상태이상 체크
+        if (this.hasStatusEffect(statusType)) {
+            return { success: false, duplicate: true, statusType: statusType };
+        }
 
         const statusConfig = GameConfig.statusEffects[statusType];
         if (!statusConfig) {
@@ -168,7 +168,7 @@ class Player {
         };
 
         this.statusEffects.push(statusEffect);
-        return true;
+        return { success: true };
     }
 
     removeStatusEffect(statusType) {
@@ -204,6 +204,9 @@ class Player {
                 card.currentActivations = 0;
             }
         });
+
+        // 가시 초기화 (다음 턴 시작 시)
+        this.thorns = 0;
 
         // 턴 시작 시 상태이상 처리 (화상)
         this.processStatusEffect('burn', 'start');

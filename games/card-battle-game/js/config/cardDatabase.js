@@ -87,16 +87,6 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.heavy_strike.description',
             effect: function(user, target, battleSystem) {
-                // 명중률 체크
-                const hitRoll = Math.random() * 100;
-                if (hitRoll >= this.accuracy) {
-                    return {
-                        success: false,
-                        messageKey: 'auto_battle_card_game.ui.miss',
-                        element: this.element
-                    };
-                }
-
                 const damage = this.power;
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(damage * effectiveness);
@@ -123,16 +113,6 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.shield_bash.description',
             effect: function(user, target, battleSystem) {
-                // 명중률 체크
-                const hitRoll = Math.random() * 100;
-                if (hitRoll >= this.accuracy) {
-                    return {
-                        success: false,
-                        messageKey: 'auto_battle_card_game.ui.miss',
-                        element: this.element
-                    };
-                }
-
                 const damage = user.defense; // 현재 방어력만큼 대미지
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(damage * effectiveness);
@@ -159,18 +139,8 @@ const CardDatabase = {
             cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.concussion.description',
-            stunChance: 40,
+            stunChance: 100,
             effect: function(user, target, battleSystem) {
-                // 명중률 체크
-                const hitRoll = Math.random() * 100;
-                if (hitRoll >= this.accuracy) {
-                    return {
-                        success: false,
-                        messageKey: 'auto_battle_card_game.ui.miss',
-                        element: this.element
-                    };
-                }
-
                 const damage = this.power;
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(damage * effectiveness);
@@ -179,8 +149,8 @@ const CardDatabase = {
                 let stunned = false;
                 const stunRoll = Math.random() * 100;
                 if (stunRoll < this.stunChance) {
-                    target.addStatusEffect('stun', null, 1);
-                    stunned = true;
+                    const result = target.addStatusEffect('stun', null, 1);
+                    stunned = result.success;
                 }
 
                 return {
@@ -206,16 +176,6 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.counter_attack.description',
             effect: function(user, target, battleSystem) {
-                // 명중률 체크
-                const hitRoll = Math.random() * 100;
-                if (hitRoll >= this.accuracy) {
-                    return {
-                        success: false,
-                        messageKey: 'auto_battle_card_game.ui.miss',
-                        element: this.element
-                    };
-                }
-
                 const damage = user.lastDamageTaken; // 마지막 받은 대미지
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(damage * effectiveness);
@@ -396,12 +356,22 @@ const CardDatabase = {
                 }
 
                 // 도발 상태 적용 (1턴)
-                target.addStatusEffect('taunt', null, 1);
+                const result = target.addStatusEffect('taunt', null, 1);
+
+                let messageKey;
+                if (result.success) {
+                    messageKey = 'auto_battle_card_game.ui.taunt_success';
+                } else if (result.duplicate) {
+                    messageKey = 'auto_battle_card_game.ui.already_taunted';
+                } else {
+                    messageKey = 'auto_battle_card_game.ui.taunt_failed';
+                }
 
                 return {
-                    success: true,
-                    messageKey: 'auto_battle_card_game.ui.taunt_success',
-                    element: this.element
+                    success: result.success,
+                    messageKey: messageKey,
+                    element: this.element,
+                    duplicate: result.duplicate
                 };
             }
         });

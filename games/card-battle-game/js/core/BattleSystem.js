@@ -101,6 +101,24 @@ class BattleSystem {
             currentPlayer.resetDefense();
         }
 
+        // 기절 상태 체크
+        if (currentPlayer.hasStatusEffect('stun')) {
+            const position = isPlayerTurn ?
+                this.effectSystem.getPlayerPosition() :
+                this.effectSystem.getEnemyPosition();
+
+            // 기절 효과 표시
+            this.effectSystem.showDamageNumber(0, position, 'stun');
+
+            // 기절 해제
+            currentPlayer.removeStatusEffect('stun');
+            this.hpBarSystem.updateStatusEffects(currentPlayer, isPlayerTurn);
+
+            // 턴 종료
+            this.endTurn();
+            return;
+        }
+
         // 마비 상태 체크
         if (currentPlayer.hasStatusEffect('paralysis')) {
             const paralysisChance = currentPlayer.statusEffects.find(e => e.type === 'paralysis').power;
@@ -290,6 +308,11 @@ class BattleSystem {
             // 0 데미지 표시 (방어력으로 무효화된 경우 등)
             this.effectSystem.showDamageNumber(0, targetPosition, 'zero');
         }
+
+        // 기절 처리
+        if (result.stunned) {
+            this.effectSystem.showDamageNumber(0, targetPosition, 'stun');
+        }
     }
 
     // 회복 결과 처리
@@ -367,6 +390,14 @@ class BattleSystem {
     endTurn() {
         const currentPlayer = this.turnProgress.currentPlayer;
 
+
+        // 상태이상 해제 (턴 종료 시)
+        currentPlayer.removeStatusEffect('taunt');
+        currentPlayer.removeStatusEffect('stun'); // 안전장치
+
+        // 상태이상 UI 업데이트
+        const isPlayerTurn = currentPlayer === this.player;
+        this.hpBarSystem.updateStatusEffects(currentPlayer, isPlayerTurn);
 
         // 턴 종료 처리
         currentPlayer.endTurn();
