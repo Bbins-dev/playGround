@@ -131,6 +131,9 @@
         "30": "최종 시험관"
       },
       "battle_speed": "전투 속도",
+      "speed_slow": "느림",
+      "speed_normal": "보통",
+      "speed_fast": "빠름",
       "cards": {
         "random_bash": {
           "name": "마구때리기",

@@ -131,6 +131,9 @@
         "30": "最終試験官"
       },
       "battle_speed": "戦闘速度",
+      "speed_slow": "遅い",
+      "speed_normal": "普通",
+      "speed_fast": "早い",
       "cards": {
         "random_bash": {
           "name": "乱撃",
