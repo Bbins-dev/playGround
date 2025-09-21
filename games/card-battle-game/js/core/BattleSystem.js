@@ -312,6 +312,10 @@ class BattleSystem {
         // 기절 처리
         if (result.stunned) {
             this.effectSystem.showDamageNumber(0, targetPosition, 'stun');
+
+            // 상태이상 UI 즉시 업데이트
+            const isTargetPlayer = target === this.player;
+            this.hpBarSystem.updateStatusEffects(target, isTargetPlayer);
         }
     }
 

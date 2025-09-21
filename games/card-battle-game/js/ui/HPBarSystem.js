@@ -149,23 +149,19 @@ class HPBarSystem {
             if (!statusConfig) return;
 
             const statusElement = document.createElement('div');
-            statusElement.className = 'status-icon pulse'; // 펄스 애니메이션 추가
+            statusElement.className = 'status-label';
 
             // 지속 턴수가 있는 경우 카운트다운 표시
             let countdownHtml = '';
-            if (effect.duration && effect.duration > 0) {
-                countdownHtml = `<span class="countdown">${effect.duration}</span>`;
+            if (effect.turnsLeft && effect.turnsLeft > 0) {
+                countdownHtml = `(${effect.turnsLeft})`;
             }
 
-            statusElement.innerHTML = `
-                <span class="icon">${statusConfig.emoji}</span>
-                <span class="name">${statusConfig.name}</span>
-                ${countdownHtml}
-            `;
+            statusElement.innerHTML = `${statusConfig.emoji} ${statusConfig.name}${countdownHtml}`;
 
-            // 상태이상별 색상 적용
+            // 상태이상별 색상 적용 (GameConfig 데이터 활용)
             statusElement.style.borderColor = statusConfig.color;
-            statusElement.style.background = statusConfig.color + '33'; // 투명도 추가
+            statusElement.style.background = `linear-gradient(135deg, ${statusConfig.color}, ${statusConfig.color}CC)`;
 
             // 화면 테두리 효과 (첫 번째 상태이상만)
             if (index === 0 && GameConfig.statusEffectsUI.screenEffects.enabled) {
