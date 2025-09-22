@@ -139,9 +139,9 @@ class HPBarSystem {
         // 기존 상태이상 클리어
         statusContainer.innerHTML = '';
 
-        // 플레이어 상태이상에 대한 화면 테두리 효과 (통합 보라색)
+        // 플레이어 상태이상에 대한 화면 테두리 효과 (통합 노랑색 - 경고)
         if (isPlayer && player.statusEffects.length > 0) {
-            this.showScreenBorderEffect('#9B59B6');
+            this.showScreenBorderEffect('#F39C12');
         } else if (isPlayer) {
             this.clearScreenBorderEffect();
         }
