@@ -102,11 +102,6 @@ class UIManager {
             galleryBtn.addEventListener('click', () => this.showCardGallery());
         }
 
-        // 홈페이지로 돌아가기 버튼
-        const backToHomepageBtn = document.getElementById('back-to-homepage');
-        if (backToHomepageBtn) {
-            backToHomepageBtn.addEventListener('click', () => this.backToHomepage());
-        }
 
         // 메뉴화면으로 돌아가기 버튼
         const backToMenuBtn = document.getElementById('back-to-menu');
@@ -245,7 +240,6 @@ class UIManager {
         const elements = {
             speedControls: document.querySelector('.speed-controls'),
             cardGalleryBtn: document.getElementById('card-gallery-btn'),
-            backToHomepageBtn: document.getElementById('back-to-homepage'),
             backToMenuBtn: document.getElementById('back-to-menu'),
             mainMenuButtons: document.getElementById('main-menu-buttons'),
             hpBars: document.querySelectorAll('.hp-bar-container')
@@ -256,7 +250,6 @@ class UIManager {
                 // 메인 메뉴에서는 메뉴 관련 UI만 표시
                 this.hide(elements.speedControls);
                 this.hide(elements.cardGalleryBtn);
-                this.hide(elements.backToHomepageBtn);
                 this.hide(elements.backToMenuBtn);
                 this.show(elements.mainMenuButtons);
                 // HP 바 숨기기
@@ -266,7 +259,6 @@ class UIManager {
             case 'battle':
                 this.show(elements.speedControls);
                 this.show(elements.cardGalleryBtn);
-                this.show(elements.backToHomepageBtn);
                 this.show(elements.backToMenuBtn);
                 this.hide(elements.mainMenuButtons);
                 // HP 바 표시
@@ -280,7 +272,6 @@ class UIManager {
             case 'cardSelection':
                 this.hide(elements.speedControls);
                 this.hide(elements.cardGalleryBtn);
-                this.show(elements.backToHomepageBtn);  // 홈페이지로 버튼 표시
                 this.show(elements.backToMenuBtn);      // 메인메뉴로 버튼 표시
                 this.hide(elements.mainMenuButtons);
                 // HP 바 숨기기
@@ -290,7 +281,6 @@ class UIManager {
             case 'gameOver':
                 this.hide(elements.speedControls);
                 this.hide(elements.cardGalleryBtn);
-                this.hide(elements.backToHomepageBtn);
                 this.hide(elements.backToMenuBtn);
                 this.hide(elements.mainMenuButtons);
                 // HP 바 표시 (게임 오버 화면에서도 표시)

@@ -67,7 +67,7 @@
       "settings": "設定",
       "back_to_main": "← メインに戻る",
       "back_to_homepage": "← ホームページに戻る",
-      "back_to_menu": "← メニュー画面に戻る",
+      "back_to_menu": "←",
       "confirm_back_to_homepage": "進行中のゲームは保存されません。それでもホームページに戻りますか？",
       "confirm_back_to_menu": "進行中のゲームは保存されません。それでもメニュー画面に戻りますか？",
       "enemy": "敵",

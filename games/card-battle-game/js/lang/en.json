@@ -67,7 +67,7 @@
       "settings": "Settings",
       "back_to_main": "← Back to Main",
       "back_to_homepage": "← Back to Homepage",
-      "back_to_menu": "← Back to Menu",
+      "back_to_menu": "←",
       "confirm_back_to_homepage": "The current game progress will not be saved. Do you still want to return to the homepage?",
       "confirm_back_to_menu": "The current game progress will not be saved. Do you still want to return to the menu screen?",
       "enemy": "Enemy",
