@@ -97,6 +97,16 @@
       "card_activating": "카드 발동 중...",
       "defense": "방어력",
       "thorns": "가시",
+      "status_effects": {
+        "taunt": "도발",
+        "stun": "기절",
+        "paralysis": "마비",
+        "burn": "화상",
+        "poisoned": "중독"
+      },
+      "buffs": {
+        "thorns": "가시"
+      },
       "combat_log": "전투 로그",
       "enemy_names": {
         "1": "훈련용 허수아비",

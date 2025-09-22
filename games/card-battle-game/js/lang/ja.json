@@ -97,6 +97,16 @@
       "card_activating": "カード発動中...",
       "defense": "防御力",
       "thorns": "トゲ",
+      "status_effects": {
+        "taunt": "挑発",
+        "stun": "気絶",
+        "paralysis": "麻痺",
+        "burn": "火傷",
+        "poisoned": "毒"
+      },
+      "buffs": {
+        "thorns": "トゲ"
+      },
       "combat_log": "戦闘ログ",
       "enemy_names": {
         "1": "訓練用かかし",

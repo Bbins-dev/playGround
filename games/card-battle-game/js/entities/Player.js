@@ -105,6 +105,7 @@ class Player {
     resetDefense() {
         const previousDefense = this.defense;
         this.defense = 0;
+        this.thorns = 0;
         return previousDefense;
     }
 
@@ -205,8 +206,6 @@ class Player {
             }
         });
 
-        // 가시 초기화 (다음 턴 시작 시)
-        this.thorns = 0;
 
         // 턴 시작 시 상태이상 처리 (화상)
         this.processStatusEffect('burn', 'start');

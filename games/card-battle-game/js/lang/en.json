@@ -97,6 +97,16 @@
       "card_activating": "Card Activating...",
       "defense": "Defense",
       "thorns": "Thorns",
+      "status_effects": {
+        "taunt": "Taunt",
+        "stun": "Stun",
+        "paralysis": "Paralysis",
+        "burn": "Burn",
+        "poisoned": "Poison"
+      },
+      "buffs": {
+        "thorns": "Thorns"
+      },
       "combat_log": "Combat Log",
       "enemy_names": {
         "1": "Training Dummy",

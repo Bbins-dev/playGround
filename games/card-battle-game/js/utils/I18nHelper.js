@@ -18,18 +18,18 @@ class I18nHelper {
 
     // 통합 텍스트 가져오기 - 모든 i18n 접근 패턴 통합
     getText(key) {
-        // 1. window.I18n.getText 체크 (UIManager 패턴)
-        if (window.I18n && typeof window.I18n.getText === 'function') {
+        // 1. window.i18nSystem 체크 (game.js 패턴) - 우선순위
+        if (window.i18nSystem && typeof window.i18nSystem.getTranslation === 'function') {
             try {
-                const text = window.I18n.getText(key);
+                const text = window.i18nSystem.getTranslation(key);
                 if (text && text !== key) return text;
             } catch (e) {}
         }
 
-        // 2. window.i18nSystem 체크 (game.js 패턴)
-        if (window.i18nSystem && typeof window.i18nSystem.getTranslation === 'function') {
+        // 2. window.I18n.getText 체크 (UIManager 패턴)
+        if (window.I18n && typeof window.I18n.getTranslation === 'function') {
             try {
-                const text = window.i18nSystem.getTranslation(key);
+                const text = window.I18n.getTranslation(key);
                 if (text && text !== key) return text;
             } catch (e) {}
         }

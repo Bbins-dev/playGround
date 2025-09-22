@@ -70,6 +70,7 @@ const GameConfig = {
     // 상태이상 정의
     statusEffects: {
         taunt: {
+            nameKey: 'auto_battle_card_game.ui.status_effects.taunt',
             name: '도발',
             emoji: '😡',
             description: '다음 턴에 공격 카드만 발동',
@@ -77,6 +78,7 @@ const GameConfig = {
             color: '#E74C3C'
         },
         stun: {
+            nameKey: 'auto_battle_card_game.ui.status_effects.stun',
             name: '기절',
             emoji: '😵',
             description: '다음 턴에 아무 카드도 발동되지 않음',
@@ -84,6 +86,7 @@ const GameConfig = {
             color: '#8E44AD'
         },
         paralysis: {
+            nameKey: 'auto_battle_card_game.ui.status_effects.paralysis',
             name: '마비',
             emoji: '⚡',
             description: '확률적으로 턴을 넘김',
@@ -91,6 +94,7 @@ const GameConfig = {
             color: '#F39C12'
         },
         burn: {
+            nameKey: 'auto_battle_card_game.ui.status_effects.burn',
             name: '화상',
             emoji: '🔥',
             description: '턴 시작 시 최대 HP의 일정 비율 대미지',
@@ -98,11 +102,22 @@ const GameConfig = {
             color: '#E67E22'
         },
         poisoned: {
+            nameKey: 'auto_battle_card_game.ui.status_effects.poisoned',
             name: '중독',
             emoji: '☠️',
             description: '턴 종료 시 최대 HP의 일정 비율 대미지',
             defaultPercent: 7,
             color: '#9B59B6'
+        }
+    },
+
+    // 버프 정의
+    buffs: {
+        thorns: {
+            nameKey: 'auto_battle_card_game.ui.buffs.thorns',
+            name: '가시',
+            emoji: '🌹',
+            color: '#E91E63'
         }
     },
 

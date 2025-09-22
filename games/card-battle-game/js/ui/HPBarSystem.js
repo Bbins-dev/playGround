@@ -143,6 +143,13 @@ class HPBarSystem {
         // 기존 상태이상 클리어
         statusContainer.innerHTML = '';
 
+        // 플레이어 상태이상에 대한 화면 테두리 효과 (통합 보라색)
+        if (isPlayer && player.statusEffects.length > 0) {
+            this.showScreenBorderEffect('#9B59B6');
+        } else if (isPlayer) {
+            this.clearScreenBorderEffect();
+        }
+
         // 새 상태이상들 추가
         player.statusEffects.forEach((effect, index) => {
             const statusConfig = GameConfig.statusEffects[effect.type];
@@ -157,19 +164,37 @@ class HPBarSystem {
                 countdownHtml = `(${effect.turnsLeft})`;
             }
 
-            statusElement.innerHTML = `${statusConfig.emoji} ${statusConfig.name}${countdownHtml}`;
+            const statusName = statusConfig.nameKey && typeof I18nHelper !== 'undefined' ?
+                I18nHelper.getText(statusConfig.nameKey) || statusConfig.name :
+                statusConfig.name;
+
+            statusElement.innerHTML = `${statusConfig.emoji} ${statusName}${countdownHtml}`;
 
             // 상태이상별 색상 적용 (GameConfig 데이터 활용)
             statusElement.style.borderColor = statusConfig.color;
             statusElement.style.background = `linear-gradient(135deg, ${statusConfig.color}, ${statusConfig.color}CC)`;
 
-            // 화면 테두리 효과 (첫 번째 상태이상만)
-            if (index === 0 && GameConfig.statusEffectsUI.screenEffects.enabled) {
-                this.showScreenBorderEffect(statusConfig.color);
-            }
-
             statusContainer.appendChild(statusElement);
         });
+    }
+
+    // 버프 표시 업데이트
+    updateBuffs(player, isPlayer = true) {
+        // 기존 가시 정보 요소 활용
+        const thornsInfo = isPlayer ? this.playerThornsInfo : this.enemyThornsInfo;
+        const thornsNumber = isPlayer ? this.playerThornsNumber : this.enemyThornsNumber;
+
+        if (player.thorns > 0) {
+            const buffConfig = GameConfig.buffs.thorns;
+            const buffName = buffConfig.nameKey && typeof I18nHelper !== 'undefined' ?
+                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
+                buffConfig.name;
+
+            thornsInfo.classList.remove('hidden');
+            thornsInfo.innerHTML = `<span class="buff-label">${buffConfig.emoji} ${buffName} ${player.thorns}</span>`;
+        } else {
+            thornsInfo.classList.add('hidden');
+        }
     }
 
     // 방어력 오버레이 업데이트 (Promise 반환으로 수정)
@@ -218,13 +243,8 @@ class HPBarSystem {
             targetElements.defenseInfo.classList.add('hidden');
         }
 
-        // 가시 정보 업데이트
-        if (player.thorns > 0) {
-            targetElements.thornsInfo.classList.remove('hidden');
-            targetElements.thornsNumber.textContent = player.thorns;
-        } else {
-            targetElements.thornsInfo.classList.add('hidden');
-        }
+        // 가시 정보 업데이트 (버프 라벨로 표시)
+        this.updateBuffs(player, isPlayer);
     }
 
     // 방어력 감소 애니메이션 (턴 시작 시 0으로 초기화)
@@ -291,18 +311,20 @@ class HPBarSystem {
 
     // 화면 테두리 효과
     showScreenBorderEffect(color) {
-        if (!GameConfig.statusEffectsUI.screenEffects.enabled) return;
-
         const gameContainer = document.querySelector('.game-container');
-        const originalBorder = gameContainer.style.borderColor;
 
         gameContainer.style.borderColor = color;
         gameContainer.style.borderWidth = '4px';
+        gameContainer.style.borderStyle = 'solid';
+    }
 
-        setTimeout(() => {
-            gameContainer.style.borderColor = originalBorder;
-            gameContainer.style.borderWidth = '2px';
-        }, GameConfig.statusEffectsUI.screenEffects.borderFlash.duration);
+    // 화면 테두리 효과 제거
+    clearScreenBorderEffect() {
+        const gameContainer = document.querySelector('.game-container');
+
+        gameContainer.style.borderColor = '';
+        gameContainer.style.borderWidth = '';
+        gameContainer.style.borderStyle = '';
     }
 
     // 턴 인디케이터 표시
@@ -359,6 +381,10 @@ class HPBarSystem {
         // 상태이상 업데이트
         this.updateStatusEffects(player, true);
         this.updateStatusEffects(enemy, false);
+
+        // 버프 업데이트
+        this.updateBuffs(player, true);
+        this.updateBuffs(enemy, false);
     }
 
     // 이름 업데이트
@@ -497,6 +523,9 @@ class HPBarSystem {
         // 상태이상 클리어
         this.playerStatus.innerHTML = '';
         this.enemyStatus.innerHTML = '';
+
+        // 화면 테두리 효과 제거
+        this.clearScreenBorderEffect();
 
         // 색상 리셋
         this.playerFill.style.background = 'linear-gradient(90deg, #2ECC71, #27AE60)';

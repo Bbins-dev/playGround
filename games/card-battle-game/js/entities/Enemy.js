@@ -72,8 +72,20 @@ class Enemy extends Player {
     buildDeck() {
         this.hand = [];
 
+        // 스테이지 3: 도발 + 마구때리기
+        if (this.stage === 3) {
+            const tauntCard = CardDatabase.createCardInstance('taunt');
+            const bashCard = CardDatabase.createCardInstance('random_bash');
+
+            if (tauntCard) {
+                this.addCard(tauntCard);
+            }
+            if (bashCard) {
+                this.addCard(bashCard);
+            }
+        }
         // 1~30스테이지는 마구때리기 카드로 시작 (테스트용)
-        if (this.stage <= 30) {
+        else if (this.stage <= 30) {
             const basicCard = CardDatabase.createCardInstance('random_bash');
             if (basicCard) {
                 this.addCard(basicCard);

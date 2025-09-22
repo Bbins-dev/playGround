@@ -524,6 +524,21 @@ body {
     transition: all 0.3s ease;
 }
 
+.buff-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    color: white;
+    border: 1px solid #E91E63;
+    background: linear-gradient(135deg, #E91E63, #E91E63CC);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
 /* 상태이상 강화 애니메이션 */
 .status-icon.pulse {
     animation: statusPulse 2s infinite;
