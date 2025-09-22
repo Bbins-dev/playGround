@@ -220,6 +220,11 @@ body {
     flex-direction: column;
 }
 
+/* 글래스모피즘이 적용된 모달 컨텐츠는 배경 제거 */
+.modal-content.glass-morphism {
+    background: transparent;
+}
+
 /* 카드 갤러리 모달 전용 스타일 */
 #card-gallery-modal .modal-content {
     width: 95vw;
@@ -232,6 +237,13 @@ body {
     margin-bottom: 20px;
     color: #2c3e50;
     font-size: 24px;
+}
+
+/* 글래스모피즘 모달의 텍스트 가독성 개선 */
+.modal-content.glass-morphism h2 {
+    color: var(--glass-text-primary) !important;
+    text-shadow: var(--glass-text-shadow), var(--glass-text-glow);
+    font-weight: 700;
 }
 
 /* 카드 갤러리 그리드 */
