@@ -136,6 +136,9 @@ class VictoryDefeatModal {
     showVictory(stage, callback, rewardCards = null) {
         console.log('🎬 VictoryDefeatModal: showVictory 호출됨, callback:', callback);
 
+        // 상태이상 효과 제거
+        this.clearStatusEffects();
+
         // 상태 초기화 먼저
         this.resetVictoryState();
 
@@ -169,6 +172,9 @@ class VictoryDefeatModal {
      * @param {Function} mainMenuCallback - 메인 메뉴로 버튼 클릭 시 호출할 콜백
      */
     showDefeat(gameStats, restartCallback, mainMenuCallback) {
+        // 상태이상 효과 제거
+        this.clearStatusEffects();
+
         this.onDefeatRestart = restartCallback;
         this.onDefeatMainMenu = mainMenuCallback;
 
@@ -809,6 +815,22 @@ class VictoryDefeatModal {
             normal: '⭐'  // 👊 대신 ⭐ 사용
         };
         return symbols[element] || '❓';
+    }
+
+    /**
+     * 상태이상 효과 제거 (승리/패배 시)
+     */
+    clearStatusEffects() {
+        // HPBarSystem을 통해 상태이상 제거
+        if (this.gameManager && this.gameManager.hpBarSystem) {
+            // 플레이어 상태이상 표시 제거
+            if (this.gameManager.hpBarSystem.playerStatus) {
+                this.gameManager.hpBarSystem.playerStatus.innerHTML = '';
+            }
+
+            // 화면 테두리 효과 제거
+            this.gameManager.hpBarSystem.clearScreenBorderEffect();
+        }
     }
 }
 
