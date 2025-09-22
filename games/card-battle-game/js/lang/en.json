@@ -73,6 +73,7 @@
       "enemy": "Enemy",
       "player": "Player",
       "default_player_name": "Player",
+      "default_enemy_name": "Enemy",
       "view_all_cards": "View All Cards",
       "card_gallery_title": "Card Gallery",
       "select_card": "Select Card",

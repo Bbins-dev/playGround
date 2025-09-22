@@ -73,6 +73,7 @@
       "enemy": "敵",
       "player": "プレイヤー",
       "default_player_name": "プレイヤー",
+      "default_enemy_name": "敵",
       "view_all_cards": "全カードを見る",
       "card_gallery_title": "カードギャラリー",
       "select_card": "カード選択",

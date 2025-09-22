@@ -294,7 +294,7 @@ class Renderer {
             } else {
                 // 적 턴의 경우 적 이름을 포함한 템플릿 사용
                 const enemyTurnTemplate = I18nHelper.getText('auto_battle_card_game.ui.enemy_turn_template') || '{name}의 턴';
-                const enemyName = info.enemy ? info.enemy.name : '적';
+                const enemyName = info.enemy ? info.enemy.name : (I18nHelper.getText('auto_battle_card_game.ui.default_enemy_name') || '적');
                 turnText = enemyTurnTemplate.replace('{name}', enemyName);
             }
             this.drawBattlePhase(turnText, centerX, centerY);
