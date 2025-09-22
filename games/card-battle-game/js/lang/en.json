@@ -245,7 +245,7 @@
       "stage_text": "Stage",
       "clear_text": "Clear!",
       "choose_reward_card_exclaim": "Choose a reward card!",
-      "reward_options": "Add to deck, replace hand card, or skip",
+      "reward_options": "Add to the left of your hand, replace one of your hand cards, or skip the reward",
       "card_selection_hint": "Click a card to enlarge",
       "choose_card_to_replace": "Choose a hand card to replace",
       "skip_reward": "Skip Reward",

@@ -245,7 +245,7 @@
       "stage_text": "ステージ",
       "clear_text": "クリア！",
       "choose_reward_card_exclaim": "報酬カードを選んでください！",
-      "reward_options": "手札に追加、手札と交換、またはスキップできます",
+      "reward_options": "手札の左に追加、手札のカード1枚と交換、または報酬をスキップ",
       "card_selection_hint": "カードをクリックすると拡大されます",
       "choose_card_to_replace": "交換する手札カードを選んでください",
       "skip_reward": "報酬をスキップ",

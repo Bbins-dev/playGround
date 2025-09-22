@@ -370,6 +370,9 @@ class VictoryDefeatModal {
             this.victoryContinueBtn.classList.add('hidden');
         }
 
+        // 모든 카드 선택 상태 초기화
+        this.updateCardSelection(-1);
+
         // 선택된 카드 상세 정보 숨김
         this.hideSelectedCardDetail();
     }
