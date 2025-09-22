@@ -79,7 +79,7 @@ class Renderer {
     // 메인 렌더링
     render(gameState) {
         this.clearCanvas();
-        this.drawBackground();
+        this.drawBackground(gameState);
 
         if (gameState.phase === 'battle') {
             this.renderBattleMode(gameState);
@@ -96,12 +96,20 @@ class Renderer {
     }
 
     // 배경 그리기
-    drawBackground() {
+    drawBackground(gameState) {
+        // 턴에 따른 배경색 결정
+        let backgroundConfig = GameConfig.turnBackgrounds.player; // 기본값: 플레이어 턴
+
+        // 전투 중일 때만 턴별 배경색 적용
+        if (gameState && gameState.phase === 'battle' && gameState.battleSystem && gameState.battleSystem.currentTurn) {
+            backgroundConfig = GameConfig.turnBackgrounds[gameState.battleSystem.currentTurn];
+        }
+
         // 그라데이션 배경
         const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
-        gradient.addColorStop(0, '#1a1a2e');
-        gradient.addColorStop(0.5, '#16213e');
-        gradient.addColorStop(1, '#0f0f23');
+        backgroundConfig.gradientStops.forEach(stop => {
+            gradient.addColorStop(stop.position, stop.color);
+        });
 
         this.ctx.fillStyle = gradient;
         this.ctx.fillRect(0, 0, this.width, this.height);

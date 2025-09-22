@@ -547,6 +547,24 @@ const GameConfig = {
         warning: '#F39C12'
     },
 
+    // 턴별 배경색 설정
+    turnBackgrounds: {
+        player: {
+            gradientStops: [
+                { position: 0, color: '#1a1a2e' },
+                { position: 0.5, color: '#16213e' },
+                { position: 1, color: '#0f0f23' }
+            ]
+        },
+        enemy: {
+            gradientStops: [
+                { position: 0, color: '#2e1a1a' },
+                { position: 0.5, color: '#3e1621' },
+                { position: 1, color: '#230f0f' }
+            ]
+        }
+    },
+
     // UI 레이어 z-index 설정 (하드코딩 방지)
     zIndexLayers: {
         canvas: 1,               // 게임 캔버스

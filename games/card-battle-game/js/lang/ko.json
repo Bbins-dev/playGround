@@ -268,7 +268,7 @@
       "defense": "방어",
       "accuracy": "명중률",
       "no_description": "설명이 없습니다.",
-      "play_style_defensive": "수비적"
+      "play_style_defensive": "수비적",
       "play_style_aggressive": "공격적",
       "play_style_balanced": "균형잡힌",
       "play_style_unlucky": "불운한",
