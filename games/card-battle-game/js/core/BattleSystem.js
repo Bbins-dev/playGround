@@ -8,6 +8,7 @@ class BattleSystem {
         this.player = null;
         this.enemy = null;
         this.currentTurn = 'player'; // 'player' | 'enemy'
+        this.displayTurn = 'player'; // 화면에 표시되는 턴 (배경색 등 UI용)
         this.battlePhase = 'waiting'; // 'waiting' | 'cardActivation' | 'turnTransition' | 'ended'
 
         // 시스템들 (GameManager의 인스턴스 참조)
@@ -52,6 +53,7 @@ class BattleSystem {
         this.player = player;
         this.enemy = enemy;
         this.currentTurn = 'player';
+        this.displayTurn = 'player';
         this.battlePhase = 'waiting';
 
         // 시스템 초기화
@@ -80,6 +82,9 @@ class BattleSystem {
 
     // 턴 시작
     async startTurn() {
+        // 화면 표시용 턴을 실제 턴과 동기화 (배경색 변경 시점)
+        this.displayTurn = this.currentTurn;
+
         const currentPlayer = this.currentTurn === 'player' ? this.player : this.enemy;
         const isPlayerTurn = this.currentTurn === 'player';
 

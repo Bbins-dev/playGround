@@ -101,8 +101,12 @@ class Renderer {
         let backgroundConfig = GameConfig.turnBackgrounds.player; // 기본값: 플레이어 턴
 
         // 전투 중일 때만 턴별 배경색 적용
-        if (gameState && gameState.phase === 'battle' && gameState.battleSystem && gameState.battleSystem.currentTurn) {
-            backgroundConfig = GameConfig.turnBackgrounds[gameState.battleSystem.currentTurn];
+        if (gameState && gameState.phase === 'battle' && gameState.battleSystem) {
+            // displayTurn이 있으면 우선 사용, 없으면 currentTurn 사용 (하위호환성)
+            const turnForDisplay = gameState.battleSystem.displayTurn || gameState.battleSystem.currentTurn;
+            if (turnForDisplay) {
+                backgroundConfig = GameConfig.turnBackgrounds[turnForDisplay];
+            }
         }
 
         // 그라데이션 배경
