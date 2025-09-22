@@ -166,7 +166,7 @@ class BattleSystem {
         }
 
         // 카드 발동 순서 정렬 (GameConfig 기반)
-        const sortedCards = this.sortCardsByActivationOrder(activatableCards);
+        const sortedCards = this.sortCardsByActivationOrder(activatableCards, currentPlayer === this.enemy);
 
         // 카드를 순차적으로 발동
         for (let i = 0; i < sortedCards.length; i++) {
@@ -517,8 +517,8 @@ class BattleSystem {
         this.isPaused = false;
     }
 
-    // 카드 발동 순서 정렬 (왼쪽 위 → 오른쪽 → 아래줄 순서)
-    sortCardsByActivationOrder(cards) {
+    // 카드 발동 순서 정렬 (플레이어: 윗줄→아랫줄, 적: 아랫줄→윗줄)
+    sortCardsByActivationOrder(cards, isEnemy = false) {
         if (!cards || cards.length === 0) return [];
 
         const layout = GameConfig.handLayout;
@@ -539,7 +539,7 @@ class BattleSystem {
 
             // 행 우선, 그 다음 열 순서
             if (aRow !== bRow) {
-                return aRow - bRow; // 위쪽 줄 먼저
+                return isEnemy ? (bRow - aRow) : (aRow - bRow); // 적: 아랫줄 먼저, 플레이어: 윗줄 먼저
             }
             return aCol - bCol; // 같은 줄에서는 왼쪽부터
         });
