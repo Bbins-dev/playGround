@@ -96,7 +96,6 @@
       "enemy_turn_template": "{name}のターン",
       "card_activating": "カード発動中...",
       "defense": "防御力",
-      "thorns": "トゲ",
       "status_effects": {
         "taunt": "挑発",
         "stun": "気絶",
@@ -105,7 +104,6 @@
         "poisoned": "毒"
       },
       "buffs": {
-        "thorns": "トゲ"
       },
       "combat_log": "戦闘ログ",
       "enemy_names": {
@@ -183,7 +181,7 @@
         },
         "thorn_armor": {
           "name": "棘の鎧",
-          "description": "自分に防御力3と棘1を追加します。"
+          "description": "自分にダメージ１を与えて力１を得ます。"
         },
         "taunt": {
           "name": "挑発",
@@ -211,7 +209,8 @@
       "defense_gained": "防御力増加",
       "crouch_effect": "しゃがみで防御力増加とターンスキップ",
       "shield_failed": "シールド使用失敗",
-      "thorn_armor_effect": "棘の鎧で防御力と棘を追加",
+      "thorn_armor_effect": "棘の鎧で自分にダメージを与えました",
+      "thorn_armor_failed": "棘の鎧使用失敗",
       "taunt_success": "挑発成功",
       "taunt_failed": "挑発失敗",
       "stunned": "気絶した！",

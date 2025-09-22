@@ -18,7 +18,6 @@ class Player {
 
         // 방어 시스템
         this.defense = 0; // 현재 방어력
-        this.thorns = 0; // 가시 (상대 공격 시 반사 대미지)
 
         // 대미지 추적
         this.lastDamageTaken = 0; // 마지막에 받은 대미지 (카운터어택용)
@@ -53,11 +52,6 @@ class Player {
         // 마지막 받은 대미지 기록
         this.lastDamageTaken = actualDamage;
 
-        // 가시 대미지 반사 (공격자가 있을 경우)
-        if (this.thorns > 0 && attacker && actualDamage > 0) {
-            // 가시 대미지도 방어력부터 소모
-            const thornDamage = attacker.takeDamage(this.thorns);
-        }
 
         return actualDamage;
     }
@@ -88,24 +82,11 @@ class Player {
         return actualReduction;
     }
 
-    // 가시 관련 메서드
-    addThorns(amount) {
-        this.thorns += amount;
-        return amount;
-    }
-
-    removeThorns(amount) {
-        const previousThorns = this.thorns;
-        this.thorns = Math.max(0, this.thorns - amount);
-        const actualReduction = previousThorns - this.thorns;
-        return actualReduction;
-    }
 
     // 방어력 초기화 (턴 시작 시 사용)
     resetDefense() {
         const previousDefense = this.defense;
         this.defense = 0;
-        this.thorns = 0;
         return previousDefense;
     }
 

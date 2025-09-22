@@ -96,7 +96,6 @@
       "enemy_turn_template": "{name}의 턴",
       "card_activating": "카드 발동 중...",
       "defense": "방어력",
-      "thorns": "가시",
       "status_effects": {
         "taunt": "도발",
         "stun": "기절",
@@ -105,7 +104,6 @@
         "poisoned": "중독"
       },
       "buffs": {
-        "thorns": "가시"
       },
       "combat_log": "전투 로그",
       "enemy_names": {
@@ -183,7 +181,7 @@
         },
         "thorn_armor": {
           "name": "가시갑옷",
-          "description": "자신에게 방어력 3을 추가하고 가시 1을 추가합니다."
+          "description": "자신에게 대미지 1을 가하고 힘 1을 얻습니다."
         },
         "taunt": {
           "name": "도발",
@@ -211,7 +209,8 @@
       "defense_gained": "방어력 증가",
       "crouch_effect": "웅크리기로 방어력 증가 및 턴 스킵",
       "shield_failed": "방패 사용 실패",
-      "thorn_armor_effect": "가시갑옷으로 방어력과 가시 추가",
+      "thorn_armor_effect": "가시갑옷으로 자신에게 대미지를 가했습니다",
+      "thorn_armor_failed": "가시갑옷 사용 실패",
       "taunt_success": "도발 성공",
       "taunt_failed": "도발 실패",
       "stunned": "기절함!",

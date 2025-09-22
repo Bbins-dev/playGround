@@ -589,18 +589,20 @@ class GameManager {
         // 적 덱 구성
         this.enemy.buildDeck();
 
-        // 플레이어 HP 완전 회복 (추후 변경 가능)
+        // 플레이어 상태 초기화
         if (this.player) {
             this.player.hp = this.player.maxHP;
-            // 마지막 받은 데미지 값 초기화 (다음 스테이지에서 이어지지 않도록)
             this.player.lastDamageTaken = 0;
+            this.player.defense = 0;
+            // 모든 상태이상 초기화 (도발, 기절 등)
+            this.player.clearAllStatusEffects();
         }
 
-        // 적 lastDamageTaken도 초기화
+        // 적 상태 초기화
         if (this.enemy) {
             this.enemy.lastDamageTaken = 0;
-            this.player.defense = 0;  // 방어력 초기화
-            this.player.thorns = 0;   // 가시 초기화
+            // 적도 상태이상 초기화 (안전장치)
+            this.enemy.clearAllStatusEffects();
         }
 
         // UI 업데이트

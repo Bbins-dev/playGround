@@ -304,30 +304,39 @@ const CardDatabase = {
             }
         });
 
-        // 가시갑옷 카드 (방어력 3 + 가시 1)
+        // 가시갑옷 카드 (자신에게 대미지 1을 가하고 힘 1을 얻습니다)
         this.addCard({
             id: 'thorn_armor',
             nameKey: 'auto_battle_card_game.ui.cards.thorn_armor.name',
             type: 'defense',
             element: 'normal',
-            power: 3,
-            accuracy: 100,
+            power: 1,
+            accuracy: 80,
             cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.thorn_armor.description',
-            thornValue: 1,
             effect: function(user, target, battleSystem) {
-                const defenseValue = this.power;
-                const thornValue = this.thornValue;
+                // 명중률 체크
+                const hitRoll = Math.random() * 100;
+                if (hitRoll >= this.accuracy) {
+                    return {
+                        success: false,
+                        messageKey: 'auto_battle_card_game.ui.thorn_armor_failed',
+                        element: this.element
+                    };
+                }
 
-                user.addDefense(defenseValue);
-                user.addThorns(thornValue);
+                // 자신에게 대미지 1
+                const selfDamage = this.power;
+                user.takeDamage(selfDamage);
+
+                // TODO: 힘 버프 시스템 구현 후 추가
+                // user.addStrength(1);
 
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.thorn_armor_effect',
-                    defenseGain: defenseValue,
-                    thornValue: thornValue,
+                    selfDamage: selfDamage,
                     element: this.element
                 };
             }
@@ -371,7 +380,8 @@ const CardDatabase = {
                     success: result.success,
                     messageKey: messageKey,
                     element: this.element,
-                    duplicate: result.duplicate
+                    duplicate: result.duplicate,
+                    statusType: result.success ? 'taunt' : null
                 };
             }
         });

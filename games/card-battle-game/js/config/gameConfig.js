@@ -113,12 +113,7 @@ const GameConfig = {
 
     // 버프 정의
     buffs: {
-        thorns: {
-            nameKey: 'auto_battle_card_game.ui.buffs.thorns',
-            name: '가시',
-            emoji: '🌹',
-            color: '#E91E63'
-        }
+        // TODO: 힘 버프 등 다른 버프 시스템 구현 예정
     },
 
     // 카드 타입
@@ -636,15 +631,6 @@ const GameConfig = {
                 timing: 'ease-out'
             }
         },
-        thorns: {
-            position: { top: -25, right: 0 }, // HP 바 위쪽에 표시
-            background: 'rgba(0, 0, 0, 0.8)',
-            padding: '2px 6px',
-            borderRadius: 8,
-            fontSize: 12,
-            iconSize: 12,
-            numberSize: 11
-        },
         // 레거시 설정 (제거 예정)
         bar: {
             height: 8,
@@ -655,7 +641,6 @@ const GameConfig = {
         },
         icons: {
             shield: '🛡️',
-            thorns: '⚔️',
             fontSize: 16,
             spacing: 4
         },

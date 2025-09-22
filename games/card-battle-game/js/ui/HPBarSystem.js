@@ -22,13 +22,9 @@ class HPBarSystem {
         // 방어력 오버레이 요소들
         this.playerDefenseOverlay = this.playerHPBar.querySelector('.defense-overlay');
         this.playerDefenseNumber = this.playerHPBar.querySelector('.defense-number-overlay');
-        this.playerThornsInfo = this.playerHPBar.querySelector('.thorns-info');
-        this.playerThornsNumber = this.playerHPBar.querySelector('.thorns-number');
 
         this.enemyDefenseOverlay = this.enemyHPBar.querySelector('.defense-overlay');
         this.enemyDefenseNumber = this.enemyHPBar.querySelector('.defense-number-overlay');
-        this.enemyThornsInfo = this.enemyHPBar.querySelector('.thorns-info');
-        this.enemyThornsNumber = this.enemyHPBar.querySelector('.thorns-number');
 
         // 애니메이션 상태 추적
         this.animating = {
@@ -180,21 +176,8 @@ class HPBarSystem {
 
     // 버프 표시 업데이트
     updateBuffs(player, isPlayer = true) {
-        // 기존 가시 정보 요소 활용
-        const thornsInfo = isPlayer ? this.playerThornsInfo : this.enemyThornsInfo;
-        const thornsNumber = isPlayer ? this.playerThornsNumber : this.enemyThornsNumber;
-
-        if (player.thorns > 0) {
-            const buffConfig = GameConfig.buffs.thorns;
-            const buffName = buffConfig.nameKey && typeof I18nHelper !== 'undefined' ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-
-            thornsInfo.classList.remove('hidden');
-            thornsInfo.innerHTML = `<span class="buff-label">${buffConfig.emoji} ${buffName} ${player.thorns}</span>`;
-        } else {
-            thornsInfo.classList.add('hidden');
-        }
+        // 버프 시스템은 나중에 구현 예정
+        // TODO: 힘 버프 등 다른 버프 시스템 구현
     }
 
     // 방어력 오버레이 업데이트 (Promise 반환으로 수정)
@@ -203,15 +186,11 @@ class HPBarSystem {
             overlay: this.playerDefenseOverlay,
             number: this.playerDefenseNumber,
             defenseInfo: this.playerDefenseInfo,
-            thornsInfo: this.playerThornsInfo,
-            thornsNumber: this.playerThornsNumber,
             key: isPlayer ? 'player' : 'enemy'
         } : {
             overlay: this.enemyDefenseOverlay,
             number: this.enemyDefenseNumber,
             defenseInfo: this.enemyDefenseInfo,
-            thornsInfo: this.enemyThornsInfo,
-            thornsNumber: this.enemyThornsNumber,
             key: isPlayer ? 'player' : 'enemy'
         };
 

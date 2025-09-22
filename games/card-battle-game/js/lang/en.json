@@ -96,7 +96,6 @@
       "enemy_turn_template": "{name}'s Turn",
       "card_activating": "Card Activating...",
       "defense": "Defense",
-      "thorns": "Thorns",
       "status_effects": {
         "taunt": "Taunt",
         "stun": "Stun",
@@ -105,7 +104,6 @@
         "poisoned": "Poison"
       },
       "buffs": {
-        "thorns": "Thorns"
       },
       "combat_log": "Combat Log",
       "enemy_names": {
@@ -183,7 +181,7 @@
         },
         "thorn_armor": {
           "name": "Thorn Armor",
-          "description": "Add 3 defense to yourself and add 1 thorn."
+          "description": "Deal 1 damage to yourself and gain 1 strength."
         },
         "taunt": {
           "name": "Taunt",
@@ -211,7 +209,8 @@
       "defense_gained": "Defense increased",
       "crouch_effect": "Crouched for defense and skipped turn",
       "shield_failed": "Shield failed",
-      "thorn_armor_effect": "Thorn armor added defense and thorns",
+      "thorn_armor_effect": "Thorn armor dealt damage to self",
+      "thorn_armor_failed": "Thorn armor failed",
       "taunt_success": "Taunt successful",
       "taunt_failed": "Taunt failed",
       "stunned": "Stunned!",

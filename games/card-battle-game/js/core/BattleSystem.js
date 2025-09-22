@@ -356,13 +356,22 @@ class BattleSystem {
         // 상태이상별 효과 표시
         const statusType = result.statusType;
         if (statusType) {
-            this.effectSystem.showStatusEffect('debuff', targetPosition, 0);
+            if (statusType === 'taunt') {
+                this.effectSystem.showDamageNumber(0, targetPosition, 'taunt');
+
+                // 상태이상 UI 즉시 업데이트
+                const isTargetPlayer = target === this.player;
+                this.hpBarSystem.updateStatusEffects(target, isTargetPlayer);
+            } else {
+                this.effectSystem.showStatusEffect('debuff', targetPosition, 0);
+            }
         }
     }
 
     // 방어 결과 처리
     async processDefenseResult(result, user, userPosition) {
         const defenseGain = result.defenseGain || 0;
+        const selfDamage = result.selfDamage || 0;
 
         if (defenseGain > 0) {
             // 방어력 숫자 연출 표시 (방어력 획득한 주체 위치에)
@@ -370,6 +379,11 @@ class BattleSystem {
 
             // 방어력 관련 통계 업데이트
             this.battleStats.defenseBuilt += defenseGain;
+        }
+
+        // 자가 대미지가 있는 경우 대미지 이펙트 표시
+        if (selfDamage > 0) {
+            await this.effectSystem.showHitEffect(userPosition, result.element, selfDamage);
         }
     }
 

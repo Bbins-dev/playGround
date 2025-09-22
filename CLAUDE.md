@@ -165,4 +165,11 @@ Without trailing slash, relative paths like `./style.css` resolve incorrectly.
 - ❌ `if (hitRoll >= this.accuracy)` 카드 effect 내부 금지
 - 결과: 80% 카드가 64% 명중률로 변경됨
 
+## 🔄 스테이지 전환 규칙
+
+**스테이지 전환 시 상태 초기화**: `GameManager.setupNextBattle()`에서 처리
+- ✅ **초기화되는 것**: HP, 방어력, 상태이상 (도발/기절 등), lastDamageTaken
+- ✅ **보존되는 것**: gameStats (총 데미지, 카드 사용통계, 플레이스타일 등)
+- ✅ **DRY 준수**: 기존 `clearAllStatusEffects()` 메서드 활용
+
 **Remember: Configuration-driven development for maximum maintainability**
