@@ -7,38 +7,39 @@ class Renderer {
         this.width = canvas.width;
         this.height = canvas.height;
 
-        // 렌더링 영역 정의
+        // 렌더링 영역 정의 (HP바 사이 중앙 배치)
+        const hpBarHeight = 60; // HP바 영역 높이
+        const handAreaHeight = GameConfig.cardSizes.hand.height * GameConfig.handLayout.rows +
+                              GameConfig.cardSizes.hand.height * GameConfig.handLayout.rowSpacing;
+
         this.areas = {
-            // 적 손패 영역 (상단)
+            // 적 손패 영역 (상단 HP바 직후)
             enemyHand: {
                 x: 50,
-                y: 50,
+                y: hpBarHeight,  // HP바 직후 시작
                 width: this.width - 100,
-                height: 120,
-                maxCards: 20
+                height: handAreaHeight,
+                maxCards: GameConfig.handLayout.cardsPerRow * GameConfig.handLayout.rows
             },
-            // 플레이어 손패 영역 (하단)
+            // 플레이어 손패 영역 (하단 HP바 직전)
             playerHand: {
                 x: 50,
-                y: this.height - 170,
+                y: this.height - hpBarHeight - handAreaHeight,  // HP바 직전 배치
                 width: this.width - 100,
-                height: 120,
-                maxCards: 10
+                height: handAreaHeight,
+                maxCards: GameConfig.handLayout.cardsPerRow * GameConfig.handLayout.rows
             },
             // 중앙 전투 영역
             battlefield: {
                 x: 50,
-                y: 200,
+                y: hpBarHeight + handAreaHeight + 20,
                 width: this.width - 100,
-                height: this.height - 400
+                height: this.height - (hpBarHeight * 2) - (handAreaHeight * 2) - 40
             }
         };
 
-        // 카드 크기 설정
-        this.cardSizes = {
-            hand: { width: 80, height: 110 },
-            active: { width: 120, height: 165 }
-        };
+        // 카드 크기 설정 (GameConfig 사용)
+        this.cardSizes = GameConfig.cardSizes;
 
         // 애니메이션 상태
         this.animations = new Map();
@@ -163,39 +164,60 @@ class Renderer {
         }
     }
 
-    // 손패 렌더링
+    // 손패 렌더링 - 두 줄 레이아웃
     renderHand(player, area, isPlayer = true) {
         if (!player.hand || player.hand.length === 0) return;
 
         const cardCount = player.hand.length;
-        const maxCards = area.maxCards;
         const cardSize = this.cardSizes.hand;
+        const layout = GameConfig.handLayout;
 
-        // 카드 간격 계산
-        const totalCardWidth = cardCount * cardSize.width;
-        const totalSpacing = (cardCount - 1) * this.options.cardSpacing;
-        const totalWidth = totalCardWidth + totalSpacing;
+        // 두 줄 레이아웃 계산
+        const cardsPerRow = layout.cardsPerRow;
+        const rowCount = Math.min(layout.rows, Math.ceil(cardCount / cardsPerRow));
+        const rowSpacing = cardSize.height * layout.rowSpacing;
 
-        // 시작 위치 계산 (중앙 정렬)
-        const startX = area.x + (area.width - totalWidth) / 2;
-        const startY = area.y + (area.height - cardSize.height) / 2;
+        // 전체 영역 크기
+        const totalHeight = (cardSize.height * rowCount) + (rowSpacing * (rowCount - 1));
+        const startY = area.y + (area.height - totalHeight) / 2;
 
-        // 각 카드 렌더링
-        player.hand.forEach((card, index) => {
-            const cardX = startX + index * (cardSize.width + this.options.cardSpacing);
-            const cardY = startY;
+        // 각 줄별로 카드 렌더링
+        for (let row = 0; row < rowCount; row++) {
+            const rowStartIndex = row * cardsPerRow;
+            const rowEndIndex = Math.min(rowStartIndex + cardsPerRow, cardCount);
+            const rowCardCount = rowEndIndex - rowStartIndex;
 
-            // 다음 발동 카드 하이라이트
-            const isNextActive = this.options.highlightNextCard &&
-                                index === 0 &&
-                                this.isCardActivatable(card, player);
+            if (rowCardCount === 0) continue;
 
-            this.renderCard(card, cardX, cardY, cardSize, {
-                isPlayer,
-                isNextActive,
-                index
+            // 현재 줄의 카드들
+            const rowCards = player.hand.slice(rowStartIndex, rowEndIndex);
+
+            // 줄 내 카드 간격 계산
+            const totalCardWidth = rowCardCount * cardSize.width;
+            const totalSpacing = (rowCardCount - 1) * layout.cardSpacing;
+            const totalWidth = totalCardWidth + totalSpacing;
+            const startX = area.x + (area.width - totalWidth) / 2;
+
+            // 현재 줄 Y 위치
+            const currentY = startY + row * (cardSize.height + rowSpacing);
+
+            // 줄 내 각 카드 렌더링
+            rowCards.forEach((card, cardIndex) => {
+                const globalIndex = rowStartIndex + cardIndex;
+                const cardX = startX + cardIndex * (cardSize.width + layout.cardSpacing);
+
+                // 다음 발동 카드 하이라이트 (첫 번째 카드만)
+                const isNextActive = this.options.highlightNextCard &&
+                                    globalIndex === 0 &&
+                                    this.isCardActivatable(card, player);
+
+                this.renderCard(card, cardX, currentY, cardSize, {
+                    isPlayer,
+                    isNextActive,
+                    index: globalIndex
+                });
             });
-        });
+        }
     }
 
     // 개별 카드 렌더링

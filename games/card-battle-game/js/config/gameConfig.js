@@ -185,14 +185,23 @@ const GameConfig = {
 
     // 카드 크기 설정
     cardSizes: {
-        hand: { width: 100, height: 140 },       // 손패 카드 크기 (설명 표시를 위해 증가)
+        hand: { width: 120, height: 168 },       // 손패 카드 크기 (20% 확대)
         enlarged: { width: 400, height: 560 },   // 발동 시 확대 크기 (33% 증가)
         preview: { width: 240, height: 336 },    // 갤러리 미리보기 크기 (33% 추가 증가)
         victory: { width: 120, height: 168 },    // 승리 모달 보상 카드 크기 (20% 확대)
         victoryDetail: { width: 360, height: 504 } // 승리 모달 확대 카드 크기 (260% 확대)
     },
 
-    // 손패 겹침 설정
+    // 손패 레이아웃 설정
+    handLayout: {
+        rows: 2,                        // 두 줄 배치
+        cardsPerRow: 5,                 // 줄당 최대 5장
+        rowSpacing: 0.1,                // 줄 간격 (카드 높이의 10%)
+        activationOrder: 'leftToRightTopToBottom', // 발동 순서: 왼쪽 위 → 오른쪽 → 아래줄
+        cardSpacing: 5                  // 카드 간 간격
+    },
+
+    // 손패 겹침 설정 (레거시 - handLayout 우선 사용)
     handOverlap: {
         1: 0,      // 1-3장: 겹침 없음
         2: 0,
@@ -261,8 +270,8 @@ const GameConfig = {
     ui: {
         playerInfo: { x: 50, y: 650 },           // 플레이어 정보 위치
         enemyInfo: { x: 50, y: 50 },             // 적 정보 위치
-        playerHand: { x: 640, y: 600 },          // 플레이어 손패 중앙 위치
-        enemyHand: { x: 640, y: 120 },           // 적 손패 중앙 위치
+        playerHand: { x: 640, y: 540 },          // 플레이어 손패 중앙 위치 (HP바에서 더 위로)
+        enemyHand: { x: 640, y: 180 },           // 적 손패 중앙 위치 (HP바에서 더 아래로)
         cardActivation: { x: 640, y: 360 },      // 카드 발동 표시 위치 (화면 중앙)
         stageInfo: { x: 1200, y: 650 },          // 스테이지 정보 위치
         enemyName: { x: 1200, y: 50 }            // 적 이름 위치

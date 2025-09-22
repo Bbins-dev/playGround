@@ -162,12 +162,14 @@ class BattleSystem {
             return;
         }
 
+        // 카드 발동 순서 정렬 (GameConfig 기반)
+        const sortedCards = this.sortCardsByActivationOrder(activatableCards);
 
         // 카드를 순차적으로 발동
-        for (let i = 0; i < activatableCards.length; i++) {
+        for (let i = 0; i < sortedCards.length; i++) {
             if (this.battlePhase !== 'cardActivation') break;
 
-            const card = activatableCards[i];
+            const card = sortedCards[i];
 
             // 카드의 activationCount만큼 반복 발동
             while (card.canActivate() && this.battlePhase === 'cardActivation') {
@@ -505,6 +507,37 @@ class BattleSystem {
     // 전투 재개
     resume() {
         this.isPaused = false;
+    }
+
+    // 카드 발동 순서 정렬 (왼쪽 위 → 오른쪽 → 아래줄 순서)
+    sortCardsByActivationOrder(cards) {
+        if (!cards || cards.length === 0) return [];
+
+        const layout = GameConfig.handLayout;
+        const cardsPerRow = layout.cardsPerRow;
+
+        // 카드에 원래 인덱스 정보 추가
+        const cardsWithIndex = cards.map((card, index) => ({
+            card,
+            originalIndex: index
+        }));
+
+        // 두 줄 레이아웃에 따른 발동 순서로 정렬
+        cardsWithIndex.sort((a, b) => {
+            const aRow = Math.floor(a.originalIndex / cardsPerRow);
+            const aCol = a.originalIndex % cardsPerRow;
+            const bRow = Math.floor(b.originalIndex / cardsPerRow);
+            const bCol = b.originalIndex % cardsPerRow;
+
+            // 행 우선, 그 다음 열 순서
+            if (aRow !== bRow) {
+                return aRow - bRow; // 위쪽 줄 먼저
+            }
+            return aCol - bCol; // 같은 줄에서는 왼쪽부터
+        });
+
+        // 정렬된 카드만 반환
+        return cardsWithIndex.map(item => item.card);
     }
 
     // 일시정지 상태 체크
