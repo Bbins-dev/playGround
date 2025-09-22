@@ -55,10 +55,10 @@
     }
   },
   "auto_battle_card_game": {
-    "title": "자동전투 카드게임",
+    "title": "자동전투 카드대결",
     "subtitle": "턴 기반 자동 전투 카드 게임!",
-    "page_title": "자동전투 카드게임 - BinBox Games",
-    "description": "턴 기반 자동 전투 카드 게임! 카드 순서를 전략적으로 배치하고 5가지 속성의 상성을 활용하여 승리하세요!",
+    "page_title": "자동전투 카드대결 - BinBox Games",
+    "description": "자동전투 카드대결 (ABCD) - 턴 기반 자동 전투 카드 게임! 카드 순서를 전략적으로 배치하고 5가지 속성의 상성을 활용하여 승리하세요!",
     "genre": "전략",
     "ui": {
       "start_game": "게임 시작",
@@ -252,5 +252,6 @@
     "puzzle": "퍼즐",
     "strategy": "전략",
     "tbd": "미정"
-  }
+  },
+  "auto-battle-card-game-title": "자동전투 카드대결"
 }

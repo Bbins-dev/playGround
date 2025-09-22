@@ -55,10 +55,10 @@
     }
   },
   "auto_battle_card_game": {
-    "title": "オートバトルカードゲーム",
+    "title": "オートバトルカードデュアル",
     "subtitle": "ターン制自動戦闘カードゲーム！",
-    "page_title": "オートバトルカードゲーム - BinBox Games",
-    "description": "ターン制自動戦闘カードゲーム！カードの順序を戦略的に配置し、5つの属性の相性を活用して勝利を目指そう！",
+    "page_title": "オートバトルカードデュアル - BinBox Games",
+    "description": "オートバトルカードデュアル (ABCD) - ターン制自動戦闘カードゲーム！カードの順序を戦略的に配置し、5つの属性の相性を活用して勝利を目指そう！",
     "genre": "戦略",
     "ui": {
       "start_game": "ゲーム開始",
@@ -252,5 +252,6 @@
     "puzzle": "パズル",
     "strategy": "戦略",
     "tbd": "未定"
-  }
+  },
+  "auto-battle-card-game-title": "オートバトルカードデュアル"
 }

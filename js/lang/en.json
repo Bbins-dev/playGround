@@ -55,10 +55,10 @@
     }
   },
   "auto_battle_card_game": {
-    "title": "Auto Battle Card Game",
+    "title": "Auto Battle Card Dual",
     "subtitle": "Turn-based Auto Battle Card Game!",
-    "page_title": "Auto Battle Card Game - BinBox Games",
-    "description": "Turn-based auto battle card game! Strategically arrange your card order and use the synergy of 5 different elements to achieve victory!",
+    "page_title": "Auto Battle Card Dual - BinBox Games",
+    "description": "Auto Battle Card Dual (ABCD) - Turn-based auto battle card game! Strategically arrange your card order and use the synergy of 5 different elements to achieve victory!",
     "genre": "Strategy",
     "ui": {
       "start_game": "Start Game",
@@ -252,5 +252,6 @@
     "puzzle": "Puzzle",
     "strategy": "Strategy",
     "tbd": "TBD"
-  }
+  },
+  "auto-battle-card-game-title": "Auto Battle Card Dual"
 }
