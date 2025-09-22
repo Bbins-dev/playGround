@@ -6,7 +6,7 @@ class VictoryDefeatModal {
         this.gameManager = gameManager;
         // 승리 모달 요소들
         this.victoryModal = document.getElementById('victory-modal');
-        this.victoryStageSpan = document.getElementById('victory-stage');
+        this.victoryStageSpan = document.getElementById('victory-stage-number');
         this.victoryContinueBtn = document.getElementById('victory-continue');
 
         // 카드 보상 관련 요소들

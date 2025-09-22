@@ -33,6 +33,23 @@
     --color-border-light: #bdc3c7;
     --color-border-primary: var(--color-primary);
     --color-border-secondary: var(--color-secondary-dark);
+
+    /* 글래스모피즘 변수 */
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-blur: 12px;
+    --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    --glass-victory: rgba(39, 174, 96, 0.1);
+    --glass-defeat: rgba(231, 76, 60, 0.1);
+
+    /* 글래스모피즘 텍스트 색상 */
+    --glass-text-primary: #ffffff;
+    --glass-text-secondary: rgba(255, 255, 255, 0.9);
+    --glass-text-muted: rgba(255, 255, 255, 0.7);
+    --glass-text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    --glass-text-glow: 0 0 10px rgba(255, 255, 255, 0.3);
+    --glass-victory-glow: 0 0 15px rgba(39, 174, 96, 0.5);
+    --glass-defeat-glow: 0 0 15px rgba(231, 76, 60, 0.5);
 }
 
 /* 플레이어 이름 입력 모달 스타일 */
@@ -563,6 +580,22 @@
     overflow-y: auto;
 }
 
+.victory-content.glass-morphism {
+    background: var(--glass-victory);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+}
+
+.defeat-content.glass-morphism {
+    background: var(--glass-defeat);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+}
+
 .victory-content h2 {
     color: var(--color-success);
     text-align: center;
@@ -988,4 +1021,148 @@
         align-items: center;
         gap: 8px;
     }
+}
+
+/* 글래스모피즘 스타일 */
+.glass-morphism {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+}
+
+.glass-morphism.victory-theme {
+    background: var(--glass-victory);
+}
+
+.glass-morphism.defeat-theme {
+    background: var(--glass-defeat);
+}
+
+/* 글래스모피즘 내부 텍스트 스타일 */
+.glass-morphism h2,
+.glass-morphism h3 {
+    color: var(--glass-text-primary) !important;
+    text-shadow: var(--glass-text-shadow), var(--glass-text-glow);
+    font-weight: 700;
+}
+
+.glass-morphism p,
+.glass-morphism .stat-label,
+.glass-morphism .victory-stage-text,
+.glass-morphism .victory-instruction,
+.glass-morphism .card-selection-hint {
+    color: var(--glass-text-secondary) !important;
+    text-shadow: var(--glass-text-shadow);
+}
+
+.glass-morphism .stat-value,
+.glass-morphism .entity-name,
+.glass-morphism .hp-number {
+    color: var(--glass-text-primary) !important;
+    font-weight: 700;
+    text-shadow: var(--glass-text-shadow);
+}
+
+/* 글래스모피즘 통계 항목 배경 조정 */
+.glass-morphism .stat-item {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+.glass-morphism .stat-item .stat-label {
+    color: var(--glass-text-secondary) !important;
+    text-shadow: var(--glass-text-shadow);
+}
+
+.glass-morphism .stat-item .stat-value {
+    color: var(--glass-text-primary) !important;
+    text-shadow: var(--glass-text-shadow);
+    font-weight: 700;
+}
+
+.glass-morphism .mvp-card {
+    color: var(--glass-text-primary) !important;
+    text-shadow: var(--glass-text-shadow);
+}
+
+/* 승리 모달 특별 글로우 */
+.glass-morphism.victory-content h2 {
+    background: linear-gradient(135deg, #56ab2f, #a8e063);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(39, 174, 96, 0.8);
+}
+
+/* 패배 모달 특별 글로우 */
+.glass-morphism.defeat-content h2 {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(231, 76, 60, 0.8);
+}
+
+/* 통계 섹션 제목 글로우 - 가시성 개선 */
+.glass-morphism .game-stats h3 {
+    color: var(--glass-text-primary) !important;
+    text-shadow: 0 0 20px rgba(102, 126, 234, 0.8),
+                 0 0 40px rgba(102, 126, 234, 0.5),
+                 var(--glass-text-shadow);
+    font-weight: 700;
+}
+
+/* 글래스모피즘 플레이어 정보 박스 개선 */
+.glass-morphism .player-info {
+    background: rgba(52, 152, 219, 0.15) !important;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(52, 152, 219, 0.4) !important;
+}
+
+.glass-morphism .game-stats {
+    background: rgba(149, 165, 166, 0.1) !important;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 승리 모달 스테이지 텍스트 색감 추가 - 가시성 개선 */
+.glass-morphism.victory-content .victory-stage-text {
+    color: #f39c12 !important;
+    text-shadow: 0 0 20px rgba(243, 156, 18, 0.8),
+                 0 0 40px rgba(243, 156, 18, 0.4),
+                 var(--glass-text-shadow);
+    font-size: 20px !important;
+    font-weight: 700 !important;
+}
+
+.glass-morphism.victory-content .victory-instruction {
+    color: var(--glass-text-secondary) !important;
+    text-shadow: 0 0 15px rgba(52, 152, 219, 0.6),
+                 var(--glass-text-shadow);
+    font-weight: 600 !important;
+}
+
+/* 승리 모달 황금색 보상 텍스트 */
+.glass-morphism.victory-content .victory-reward-text {
+    color: #f39c12 !important;
+    text-shadow: 0 0 20px rgba(243, 156, 18, 0.8),
+                 0 0 40px rgba(243, 156, 18, 0.4),
+                 var(--glass-text-shadow);
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    margin: 15px 0 !important;
+}
+
+/* 승리 모달 옵션 설명 텍스트 */
+.glass-morphism.victory-content .victory-option-text {
+    color: var(--glass-text-secondary) !important;
+    text-shadow: var(--glass-text-shadow);
+    font-size: 14px !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    margin: 10px 0 !important;
+    text-align: center;
 }

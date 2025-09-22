@@ -202,7 +202,7 @@ class CardSelection {
 
         const titleKey = titleKeys[this.selectionType];
         const title = (typeof getI18nText === 'function' && titleKey) ?
-            getI18nText(titleKey) || '카드 선택' : '카드 선택';
+            getI18nText(titleKey) || 'Select Card' : 'Select Card';
 
         // 제목 그림자 효과
         ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
@@ -246,7 +246,7 @@ class CardSelection {
             ctx.fillStyle = '#fff';
             ctx.font = '24px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('카드를 로드 중...', GameConfig.canvas.width / 2, GameConfig.canvas.height / 2);
+            ctx.fillText('Loading cards...', GameConfig.canvas.width / 2, GameConfig.canvas.height / 2);
             ctx.restore();
             return;
         }
@@ -360,7 +360,7 @@ class CardSelection {
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 14px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('선택된 카드', GameConfig.canvas.width / 2, startY - 5);
+        ctx.fillText('Selected Cards', GameConfig.canvas.width / 2, startY - 5);
 
         // 선택된 카드들
         this.selectedCards.forEach((cardId, index) => {
@@ -400,7 +400,7 @@ class CardSelection {
         const max = this.maxSelections;
         const min = this.minSelections;
 
-        let statusText = `선택: ${current}/${max}`;
+        let statusText = `Selected: ${current}/${max}`;
         if (min > 0 && current < min) {
             statusText += ` (최소 ${min}장 필요)`;
             ctx.fillStyle = '#ff6b6b';
@@ -455,7 +455,7 @@ class CardSelection {
         ctx.fillStyle = config.title.color;
         ctx.font = `bold ${config.title.fontSize}px Arial`;
         ctx.textAlign = 'center';
-        ctx.fillText('선택을 완료하시겠습니까?', x + modalWidth/2, y + config.title.y);
+        ctx.fillText('Complete selection?', x + modalWidth/2, y + config.title.y);
 
         // 선택된 카드 수
         ctx.font = `${config.description.fontSize}px Arial`;
@@ -674,7 +674,7 @@ class CardSelection {
         if (this.constraints.mustHaveAttack) {
             const attackCards = selectedCardData.filter(card => card.type === 'attack');
             if (attackCards.length === 0) {
-                violations.push('공격 카드가 최소 1장 필요합니다');
+                violations.push('At least 1 attack card required');
             }
         }
 
@@ -686,7 +686,7 @@ class CardSelection {
 
         Object.entries(typeCount).forEach(([type, count]) => {
             if (count > this.constraints.maxSameType) {
-                violations.push(`같은 타입 카드는 최대 ${this.constraints.maxSameType}장까지 가능`);
+                violations.push(`Maximum ${this.constraints.maxSameType} cards of same type allowed`);
             }
         });
 
@@ -733,11 +733,11 @@ class CardSelection {
         const instructions = [];
 
         if (this.selectionType === 'initial') {
-            instructions.push('게임 시작 시 들고 갈 공격 카드를 선택하세요!');
+            instructions.push('Select attack cards to start the game!');
         } else if (this.selectionType === 'reward') {
-            instructions.push('승리 보상으로 받을 카드를 선택하세요.');
+            instructions.push('Select a reward card for your victory.');
         } else if (this.selectionType === 'replacement') {
-            instructions.push('교체할 카드를 선택하세요. 건너뛸 수도 있습니다.');
+            instructions.push('Select a card to replace. You can also skip.');
         }
 
         return instructions;
