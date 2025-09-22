@@ -314,7 +314,7 @@ class HPBarSystem {
         const gameContainer = document.querySelector('.game-container');
 
         gameContainer.style.borderColor = color;
-        gameContainer.style.borderWidth = '4px';
+        gameContainer.style.borderWidth = '12px';  // 8픽셀 더 추가하여 총 12픽셀
         gameContainer.style.borderStyle = 'solid';
     }
 

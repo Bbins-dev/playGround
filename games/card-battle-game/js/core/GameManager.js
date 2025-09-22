@@ -592,6 +592,13 @@ class GameManager {
         // 플레이어 HP 완전 회복 (추후 변경 가능)
         if (this.player) {
             this.player.hp = this.player.maxHP;
+            // 마지막 받은 데미지 값 초기화 (다음 스테이지에서 이어지지 않도록)
+            this.player.lastDamageTaken = 0;
+        }
+
+        // 적 lastDamageTaken도 초기화
+        if (this.enemy) {
+            this.enemy.lastDamageTaken = 0;
             this.player.defense = 0;  // 방어력 초기화
             this.player.thorns = 0;   // 가시 초기화
         }

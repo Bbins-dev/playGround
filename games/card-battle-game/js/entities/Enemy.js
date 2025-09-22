@@ -72,8 +72,8 @@ class Enemy extends Player {
     buildDeck() {
         this.hand = [];
 
-        // 스테이지 3: 도발 + 마구때리기
-        if (this.stage === 3) {
+        // 스테이지 3 이상: 도발 + 마구때리기 콤보 사용
+        if (this.stage >= 3 && this.stage <= 30) {
             const tauntCard = CardDatabase.createCardInstance('taunt');
             const bashCard = CardDatabase.createCardInstance('random_bash');
 
@@ -84,8 +84,8 @@ class Enemy extends Player {
                 this.addCard(bashCard);
             }
         }
-        // 1~30스테이지는 마구때리기 카드로 시작 (테스트용)
-        else if (this.stage <= 30) {
+        // 1~2스테이지는 마구때리기 카드로만 시작
+        else if (this.stage <= 2) {
             const basicCard = CardDatabase.createCardInstance('random_bash');
             if (basicCard) {
                 this.addCard(basicCard);
