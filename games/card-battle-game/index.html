@@ -141,34 +141,36 @@
         <!-- 승리 모달 -->
         <div id="victory-modal" class="modal hidden">
             <div class="modal-content victory-content">
-                <h2 data-i18n="auto_battle_card_game.ui.victory_title">스테이지 클리어!</h2>
-                <div class="victory-info">
-                    <p><span data-i18n="auto_battle_card_game.ui.stage_cleared_prefix">스테이지</span> <span id="victory-stage">1</span> <span data-i18n="auto_battle_card_game.ui.stage_cleared_suffix">클리어!</span></p>
-                    <p data-i18n="auto_battle_card_game.ui.choose_reward_card">보상으로 받을 카드를 선택하세요</p>
+                <div class="victory-header">
+                    <h2 data-i18n="auto_battle_card_game.ui.victory_title">스테이지 클리어!</h2>
+                    <p class="victory-stage-text"><span data-i18n="auto_battle_card_game.ui.stage_cleared_prefix">스테이지</span> <span id="victory-stage">1</span> <span data-i18n="auto_battle_card_game.ui.stage_cleared_suffix">클리어!</span></p>
+                    <p class="victory-instruction" data-i18n="auto_battle_card_game.ui.choose_reward_card">보상으로 받을 카드를 선택하세요</p>
                 </div>
 
-                <!-- 카드 보상 선택 영역 -->
-                <div id="victory-card-rewards" class="card-rewards-container hidden">
-                    <div class="reward-cards-grid">
-                        <div class="reward-card" data-card-index="0">
-                            <div class="card-visual" id="reward-card-0"></div>
-                        </div>
-                        <div class="reward-card" data-card-index="1">
-                            <div class="card-visual" id="reward-card-1"></div>
-                        </div>
-                        <div class="reward-card" data-card-index="2">
-                            <div class="card-visual" id="reward-card-2"></div>
-                        </div>
-                    </div>
-                </div>
+                <div class="victory-content-area">
 
-                <!-- 손패 교체 선택 영역 -->
-                <div id="victory-hand-replace" class="hand-replace-container hidden">
-                    <p data-i18n="auto_battle_card_game.ui.choose_card_to_replace">교체할 손패 카드를 선택하세요</p>
-                    <div class="hand-cards-grid" id="hand-cards-for-replace">
-                        <!-- 손패 카드들이 동적으로 표시됨 -->
+                    <!-- 카드 보상 선택 영역 -->
+                    <div id="victory-card-rewards" class="card-rewards-container hidden">
+                        <div class="reward-cards-grid">
+                            <div class="reward-card" data-card-index="0"></div>
+                            <div class="reward-card" data-card-index="1"></div>
+                            <div class="reward-card" data-card-index="2"></div>
+                        </div>
                     </div>
-                    <button id="cancel-replace-btn" class="ui-button secondary" data-i18n="auto_battle_card_game.ui.cancel">취소</button>
+
+                    <!-- 선택된 카드 확대 표시 영역 -->
+                    <div id="selected-card-detail" class="selected-card-detail hidden">
+                        <!-- 선택된 카드의 확대 이미지가 여기에 표시됨 -->
+                    </div>
+
+                    <!-- 손패 교체 선택 영역 -->
+                    <div id="victory-hand-replace" class="hand-replace-container hidden">
+                        <p data-i18n="auto_battle_card_game.ui.choose_card_to_replace">교체할 손패 카드를 선택하세요</p>
+                        <div class="hand-cards-grid" id="hand-cards-for-replace">
+                            <!-- 손패 카드들이 동적으로 표시됨 -->
+                        </div>
+                        <button id="cancel-replace-btn" class="ui-button secondary" data-i18n="auto_battle_card_game.ui.cancel">취소</button>
+                    </div>
                 </div>
 
                 <div class="modal-buttons">
@@ -236,6 +238,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 
     <!-- 스크립트 로드 -->

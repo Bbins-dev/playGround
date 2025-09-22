@@ -46,13 +46,6 @@ class VictoryDefeatModal {
         this.selectedHandCardIndex = null;
         this.isShowingCardRewards = false;
 
-        // Canvas 요소들
-        this.rewardCanvases = [];
-        this.selectedCardCanvas = null;
-
-        // CardRenderer 인스턴스
-        this.cardRenderer = new CardRenderer();
-
         this.initializeEventListeners();
     }
 
@@ -369,9 +362,6 @@ class VictoryDefeatModal {
         if (this.victoryContinueBtn) {
             this.victoryContinueBtn.classList.add('hidden');
         }
-
-        // 선택된 카드 상세 정보 숨김
-        this.hideSelectedCardDetail();
     }
 
     /**
@@ -396,38 +386,28 @@ class VictoryDefeatModal {
      */
     renderRewardCards() {
         for (let i = 0; i < 3; i++) {
+            const cardElement = document.getElementById(`reward-card-${i}`);
             const rewardCardContainer = document.querySelector(`[data-card-index="${i}"]`);
 
-            if (rewardCardContainer) {
+            if (cardElement && rewardCardContainer) {
                 if (i < this.rewardCards.length) {
                     const card = this.rewardCards[i];
+                    this.renderCardVisual(cardElement, card);
 
-                    // 기존 컨텐츠 제거
-                    rewardCardContainer.innerHTML = '';
-
-                    // Canvas 생성
-                    const canvas = document.createElement('canvas');
-                    const cardSize = GameConfig.cardSizes.hand; // 손패 크기 사용
-                    canvas.width = cardSize.width;
-                    canvas.height = cardSize.height;
-                    canvas.style.cursor = 'pointer';
-                    canvas.style.borderRadius = '8px';
-
-                    const ctx = canvas.getContext('2d');
-
-                    // CardRenderer로 카드 렌더링
-                    this.cardRenderer.renderCard(ctx, card, 0, 0, cardSize.width, cardSize.height, {
-                        isSelected: false,
-                        isHighlighted: false,
-                        opacity: 1
-                    });
-
-                    rewardCardContainer.appendChild(canvas);
-                    this.rewardCanvases[i] = canvas;
-
-                    // 카드 클릭 이벤트
-                    rewardCardContainer.onclick = () => this.selectRewardCard(i);
+                    // 카드 자체에 클릭 이벤트 추가 (상세보기 + 선택)
+                    rewardCardContainer.onclick = (e) => {
+                        // 더블클릭인지 확인
+                        if (e.detail === 2) {
+                            // 더블클릭 시 상세 정보 표시
+                            this.showCardDetail(card);
+                        } else {
+                            // 단일클릭 시 선택
+                            this.selectRewardCard(i);
+                        }
+                    };
                     rewardCardContainer.style.cursor = 'pointer';
+                    rewardCardContainer.title = I18nHelper.getText('auto_battle_card_game.ui.click_to_select_doubleclick_for_detail') || '클릭하여 선택, 더블클릭하여 상세정보';
+
                     rewardCardContainer.style.display = 'flex';
                 } else {
                     rewardCardContainer.style.display = 'none';
@@ -437,38 +417,97 @@ class VictoryDefeatModal {
     }
 
     /**
-     * 선택된 카드 확대 표시
-     * @param {Object} card - 표시할 카드 데이터
+     * 카드 시각적 렌더링
+     * @param {HTMLElement} element - 렌더링할 DOM 요소
+     * @param {Object} card - 카드 데이터
      */
-    showSelectedCardDetail(card) {
-        const detailContainer = document.getElementById('selected-card-detail');
-        if (!detailContainer || !card) return;
+    renderCardVisual(element, card) {
+        if (!element || !card) return;
 
-        // 기존 컨텐츠 제거
-        detailContainer.innerHTML = '';
+        // 기본 카드 정보 표시
+        const cardName = this.getCardDisplayName(card);
+        const cardType = this.getCardTypeDisplayName(card);
+        const cardElement = card.element || 'normal';
 
-        // Canvas 생성
-        const canvas = document.createElement('canvas');
-        const cardSize = { width: 240, height: 320 }; // 확대 크기
-        canvas.width = cardSize.width;
-        canvas.height = cardSize.height;
-        canvas.style.borderRadius = '12px';
-        canvas.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+        // 카드 타입별 이모지 가져오기 (GameConfig 활용)
+        const typeConfig = GameConfig.cardTypes[card.type];
+        const typeEmoji = typeConfig ? typeConfig.emoji : '❓';
 
-        const ctx = canvas.getContext('2d');
+        element.innerHTML = `
+            <div style="font-size: 10px; font-weight: bold; color: white; text-align: center;">
+                <div>${cardName}</div>
+                <div style="margin-top: 3px; font-size: 12px;">${typeEmoji}</div>
+                <div style="margin-top: 2px; font-size: 8px;">${cardType}</div>
+                <div style="margin-top: 3px; font-size: 8px;">${this.getElementSymbol(cardElement)}</div>
+            </div>
+        `;
 
-        // CardRenderer로 카드 렌더링
-        this.cardRenderer.renderCard(ctx, card, 0, 0, cardSize.width, cardSize.height, {
-            isSelected: true,
-            isHighlighted: true,
-            opacity: 1
-        });
+        // 속성별 배경색 설정 (GameConfig 활용)
+        const elementConfig = GameConfig.elements[cardElement];
+        const baseColor = elementConfig ? elementConfig.color : GameConfig.elements.normal.color;
 
-        detailContainer.appendChild(canvas);
-        this.selectedCardCanvas = canvas;
+        // 그라데이션 생성 (CardRenderer와 일관성 유지)
+        element.style.background = `linear-gradient(145deg, ${baseColor}, ${this.darkenColor(baseColor, 0.2)})`;
+        element.style.border = '2px solid rgba(255, 255, 255, 0.3)';
+        element.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.3)';
+    }
 
-        // 컨테이너 표시
-        detailContainer.classList.remove('hidden');
+    /**
+     * 카드 표시 이름 가져오기
+     * @param {Object} card - 카드 객체
+     * @returns {string} 표시할 카드 이름
+     */
+    getCardDisplayName(card) {
+        if (card.nameKey && typeof I18nHelper !== 'undefined') {
+            return I18nHelper.getText(card.nameKey) || card.name || card.id;
+        }
+        return card.name || card.id;
+    }
+
+    /**
+     * 속성 심볼 가져오기
+     * @param {string} element - 속성 이름
+     * @returns {string} 속성 심볼
+     */
+    getElementSymbol(element) {
+        const symbols = {
+            fire: '🔥',
+            water: '💧',
+            electric: '⚡',
+            poison: '☠️',
+            normal: '⭐'  // 👊 대신 ⭐ 사용
+        };
+        return symbols[element] || '❓';
+    }
+
+    /**
+     * 카드 타입 표시 이름 가져오기
+     * @param {Object} card - 카드 객체
+     * @returns {string} 표시할 카드 타입
+     */
+    getCardTypeDisplayName(card) {
+        const typeKey = `auto_battle_card_game.card_types.${card.type}`;
+        if (typeof I18nHelper !== 'undefined') {
+            return I18nHelper.getText(typeKey) || card.type || 'Unknown';
+        }
+        return card.type || 'Unknown';
+    }
+
+    /**
+     * 색상 어둡게 하기
+     * @param {string} color - 헥스 색상 코드
+     * @param {number} factor - 어둡게 할 비율 (0-1)
+     * @returns {string} 어두워진 색상
+     */
+    darkenColor(color, factor) {
+        if (!color.startsWith('#')) return color;
+
+        const num = parseInt(color.replace('#', ''), 16);
+        const r = Math.floor((num >> 16) * (1 - factor));
+        const g = Math.floor(((num >> 8) & 0x00FF) * (1 - factor));
+        const b = Math.floor((num & 0x0000FF) * (1 - factor));
+
+        return `#${(r << 16 | g << 8 | b).toString(16).padStart(6, '0')}`;
     }
 
     /**
@@ -481,9 +520,6 @@ class VictoryDefeatModal {
 
             // UI 업데이트: 선택된 카드 강조
             this.updateCardSelection(cardIndex);
-
-            // 선택된 카드 확대 표시
-            this.showSelectedCardDetail(this.selectedRewardCard);
 
             // 선택 버튼들 표시
             this.showSelectionButtons();
@@ -505,18 +541,6 @@ class VictoryDefeatModal {
                 }
             }
         }
-    }
-
-    /**
-     * 선택된 카드 상세 정보 숨김
-     */
-    hideSelectedCardDetail() {
-        const detailContainer = document.getElementById('selected-card-detail');
-        if (detailContainer) {
-            detailContainer.classList.add('hidden');
-            detailContainer.innerHTML = '';
-        }
-        this.selectedCardCanvas = null;
     }
 
     /**
@@ -588,7 +612,7 @@ class VictoryDefeatModal {
             const maxHandSize = GameConfig.player.maxHandSize;
 
             if (currentHandSize >= maxHandSize) {
-                console.warn('손패가 가득함 - 카드 추가 불가');
+                console.warn('손패가 가득참 - 카드 추가 불가');
                 return;
             }
 
@@ -660,25 +684,31 @@ class VictoryDefeatModal {
         handCardDiv.className = 'hand-card';
         handCardDiv.dataset.handIndex = index;
 
-        // Canvas 로 카드 렌더링
-        const canvas = document.createElement('canvas');
-        const cardSize = GameConfig.cardSizes.hand;
-        canvas.width = cardSize.width;
-        canvas.height = cardSize.height;
-        canvas.style.borderRadius = '6px';
+        const cardVisual = document.createElement('div');
+        cardVisual.className = 'card-visual';
+        this.renderCardVisual(cardVisual, card);
 
-        const ctx = canvas.getContext('2d');
-        this.cardRenderer.renderCard(ctx, card, 0, 0, cardSize.width, cardSize.height, {
-            isSelected: false,
-            isHighlighted: false,
-            opacity: 1
-        });
+        const cardName = document.createElement('div');
+        cardName.textContent = this.getCardDisplayName(card);
+        cardName.style.color = 'white';
+        cardName.style.fontSize = '12px';
+        cardName.style.textAlign = 'center';
 
-        handCardDiv.appendChild(canvas);
+        handCardDiv.appendChild(cardVisual);
+        handCardDiv.appendChild(cardName);
 
-        // 클릭 이벤트 추가
-        handCardDiv.onclick = () => this.selectHandCard(index);
-        handCardDiv.style.cursor = 'pointer';
+        // 클릭 이벤트 추가 (상세보기 + 선택)
+        handCardDiv.onclick = (e) => {
+            // 더블클릭인지 확인
+            if (e.detail === 2) {
+                // 더블클릭 시 상세 정보 표시
+                this.showCardDetail(card);
+            } else {
+                // 단일클릭 시 선택
+                this.selectHandCard(index);
+            }
+        };
+        handCardDiv.title = I18nHelper.getText('auto_battle_card_game.ui.click_to_select_doubleclick_for_detail') || '클릭하여 선택, 더블클릭하여 상세정보';
 
         return handCardDiv;
     }
@@ -731,7 +761,6 @@ class VictoryDefeatModal {
     handleCancelSelection() {
         this.selectedRewardCard = null;
         this.updateCardSelection(-1); // 모든 선택 해제
-        this.hideSelectedCardDetail(); // 선택된 카드 상세 정보 숨김
 
         // 기본 버튼들 다시 표시
         if (this.victorySelectionButtons) {
@@ -771,41 +800,19 @@ class VictoryDefeatModal {
             this.victorySelectionButtons.classList.add('hidden');
         }
 
-        // 선택된 카드 상세 정보 숨김
-        this.hideSelectedCardDetail();
-
         this.selectedRewardCard = null;
         this.selectedHandCardIndex = null;
         this.isShowingCardRewards = false;
-        this.rewardCanvases = [];
     }
 
     /**
-     * 카드 표시 이름 가져오기
-     * @param {Object} card - 카드 객체
-     * @returns {string} 표시할 카드 이름
+     * 카드 상세 정보 표시
+     * @param {Object} card - 표시할 카드 데이터
      */
-    getCardDisplayName(card) {
-        if (card.nameKey && typeof I18nHelper !== 'undefined') {
-            return I18nHelper.getText(card.nameKey) || card.name || card.id;
+    showCardDetail(card) {
+        if (this.gameManager && this.gameManager.uiManager && this.gameManager.uiManager.cardDetailModal) {
+            this.gameManager.uiManager.cardDetailModal.show(card);
         }
-        return card.name || card.id;
-    }
-
-    /**
-     * 속성 심볼 가져오기
-     * @param {string} element - 속성 이름
-     * @returns {string} 속성 심볼
-     */
-    getElementSymbol(element) {
-        const symbols = {
-            fire: '🔥',
-            water: '💧',
-            electric: '⚡',
-            poison: '☠️',
-            normal: '⭐'  // 👊 대신 ⭐ 사용
-        };
-        return symbols[element] || '❓';
     }
 }
 
