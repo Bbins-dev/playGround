@@ -242,6 +242,7 @@
       "stage_cleared_suffix": "クリア！",
       "choose_next_card": "次のステージ用のカードを選択してください",
       "choose_reward_card": "報酬カードを選んでください",
+      "card_selection_hint": "カードをクリックすると拡大されます",
       "choose_card_to_replace": "交換する手札カードを選んでください",
       "skip_reward": "報酬をスキップ",
       "add_to_deck": "デッキに追加",

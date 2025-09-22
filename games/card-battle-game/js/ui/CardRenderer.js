@@ -280,7 +280,17 @@ class CardRenderer {
 
         const maxWidth = width * 0.85;
         const lineHeight = fontSize * 1.2;
-        const maxLines = 3;
+
+        // 카드 크기에 따른 maxLines 동적 조정
+        let maxLines = 3;
+        if (width >= 360) { // victoryDetail 크기
+            maxLines = 8;
+        } else if (width >= 240) { // preview/victory 크기
+            maxLines = 5;
+        } else if (width >= 150) { // victory 크기
+            maxLines = 4;
+        }
+
         const startY = y + height * this.style.layout.description.y;
 
         const lines = this.wrapText(ctx, description, maxWidth);

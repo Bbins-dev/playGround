@@ -242,6 +242,7 @@
       "stage_cleared_suffix": "Clear!",
       "choose_next_card": "Choose a card for the next stage",
       "choose_reward_card": "Choose a reward card",
+      "card_selection_hint": "Click a card to enlarge",
       "choose_card_to_replace": "Choose a hand card to replace",
       "skip_reward": "Skip Reward",
       "add_to_deck": "Add to Deck",

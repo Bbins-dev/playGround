@@ -192,7 +192,9 @@ const GameConfig = {
     cardSizes: {
         hand: { width: 100, height: 140 },       // 손패 카드 크기 (설명 표시를 위해 증가)
         enlarged: { width: 400, height: 560 },   // 발동 시 확대 크기 (33% 증가)
-        preview: { width: 240, height: 336 }     // 갤러리 미리보기 크기 (33% 추가 증가)
+        preview: { width: 240, height: 336 },    // 갤러리 미리보기 크기 (33% 추가 증가)
+        victory: { width: 120, height: 168 },    // 승리 모달 보상 카드 크기 (20% 확대)
+        victoryDetail: { width: 360, height: 504 } // 승리 모달 확대 카드 크기 (260% 확대)
     },
 
     // 손패 겹침 설정

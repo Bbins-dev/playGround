@@ -407,7 +407,7 @@ class VictoryDefeatModal {
 
                     // Canvas 생성
                     const canvas = document.createElement('canvas');
-                    const cardSize = GameConfig.cardSizes.hand; // 손패 크기 사용
+                    const cardSize = GameConfig.cardSizes.victory; // 승리 모달 보상 카드 크기 사용
                     canvas.width = cardSize.width;
                     canvas.height = cardSize.height;
                     canvas.style.cursor = 'pointer';
@@ -449,7 +449,7 @@ class VictoryDefeatModal {
 
         // Canvas 생성
         const canvas = document.createElement('canvas');
-        const cardSize = { width: 240, height: 320 }; // 확대 크기
+        const cardSize = GameConfig.cardSizes.victoryDetail; // 승리 모달 확대 카드 크기 사용
         canvas.width = cardSize.width;
         canvas.height = cardSize.height;
         canvas.style.borderRadius = '12px';
