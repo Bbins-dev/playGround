@@ -270,11 +270,19 @@ class Player {
             return []; // 기절 시 카드 발동 불가
         }
 
+        let cards = this.hand;
         if (this.hasStatusEffect('taunt')) {
-            return this.hand.filter(card => card.type === 'attack'); // 도발 시 공격 카드만
+            cards = cards.filter(card => card.type === 'attack'); // 도발 시 공격 카드만
         }
 
-        return this.hand; // 정상 상태
+        // 6장 이상일 때 발동 순서 조정 (플레이어와 적 모두 동일)
+        if (cards.length >= 6) {
+            const newCards = cards.slice(0, cards.length - 5);  // 새 카드들
+            const oldCards = cards.slice(cards.length - 5);     // 기존 5장
+            return [...newCards, ...oldCards];
+        }
+
+        return cards; // 정상 상태
     }
 
     // 플레이어 정보 반환

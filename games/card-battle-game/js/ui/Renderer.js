@@ -153,10 +153,10 @@ class Renderer {
         const { player, enemy, battleSystem } = gameState;
 
         // 적 손패 렌더링
-        this.renderHand(enemy, this.areas.enemyHand, false);
+        this.renderHand(enemy, this.areas.enemyHand, false, battleSystem);
 
         // 플레이어 손패 렌더링
-        this.renderHand(player, this.areas.playerHand, true);
+        this.renderHand(player, this.areas.playerHand, true, battleSystem);
 
         // 전투 상태 표시
         if (battleSystem) {
@@ -165,7 +165,7 @@ class Renderer {
     }
 
     // 손패 렌더링 - 두 줄 레이아웃
-    renderHand(player, area, isPlayer = true) {
+    renderHand(player, area, isPlayer = true, battleSystem = null) {
         if (!player.hand || player.hand.length === 0) return;
 
         const cardCount = player.hand.length;
@@ -174,50 +174,88 @@ class Renderer {
 
         // 두 줄 레이아웃 계산
         const cardsPerRow = layout.cardsPerRow;
-        const rowCount = Math.min(layout.rows, Math.ceil(cardCount / cardsPerRow));
+        let rowCount;
+        if (isPlayer) {
+            // 플레이어: 5장 이하는 1줄, 6장 이상은 2줄
+            rowCount = cardCount <= 5 ? 1 : 2;
+        } else {
+            // 적: 기존 로직 유지
+            rowCount = Math.min(layout.rows, Math.ceil(cardCount / cardsPerRow));
+        }
         const rowSpacing = cardSize.height * layout.rowSpacing;
 
         // 전체 영역 크기
         const totalHeight = (cardSize.height * rowCount) + (rowSpacing * (rowCount - 1));
         const startY = area.y + (area.height - totalHeight) / 2;
 
-        // 각 줄별로 카드 렌더링
-        for (let row = 0; row < rowCount; row++) {
-            const rowStartIndex = row * cardsPerRow;
-            const rowEndIndex = Math.min(rowStartIndex + cardsPerRow, cardCount);
-            const rowCardCount = rowEndIndex - rowStartIndex;
+        // 각 카드별 줄 배치 결정 및 렌더링
+        player.hand.forEach((card, globalIndex) => {
+            let targetRow, cardIndexInRow;
 
-            if (rowCardCount === 0) continue;
+            if (isPlayer) {
+                // 플레이어: 5장 이하는 row 0만 사용, 6장 이상은 새 카드가 윗줄로
+                if (cardCount <= 5) {
+                    targetRow = 0;
+                    cardIndexInRow = globalIndex;
+                } else {
+                    const newCardsCount = cardCount - 5;
+                    if (globalIndex < newCardsCount) {
+                        targetRow = 0;
+                        cardIndexInRow = globalIndex;
+                    } else {
+                        targetRow = 1;
+                        cardIndexInRow = globalIndex - newCardsCount;
+                    }
+                }
+            } else {
+                // 적: 0-4는 윗줄(row 0), 5-9는 아랫줄(row 1)
+                if (globalIndex < cardsPerRow) {
+                    targetRow = 0;
+                    cardIndexInRow = globalIndex;
+                } else {
+                    targetRow = 1;
+                    cardIndexInRow = globalIndex - cardsPerRow;
+                }
+            }
 
-            // 현재 줄의 카드들
-            const rowCards = player.hand.slice(rowStartIndex, rowEndIndex);
+            // 현재 줄에 있는 총 카드 수 계산
+            let cardsInTargetRow;
+            if (isPlayer) {
+                if (cardCount <= 5) {
+                    cardsInTargetRow = cardCount; // 모든 카드가 row 0에
+                } else {
+                    const newCardsCount = cardCount - 5;
+                    cardsInTargetRow = targetRow === 0 ? newCardsCount : 5;
+                }
+            } else {
+                cardsInTargetRow = targetRow === 0 ?
+                    Math.min(cardCount, cardsPerRow) :
+                    Math.max(0, cardCount - cardsPerRow);
+            }
+
+            if (cardsInTargetRow === 0) return;
 
             // 줄 내 카드 간격 계산
-            const totalCardWidth = rowCardCount * cardSize.width;
-            const totalSpacing = (rowCardCount - 1) * layout.cardSpacing;
+            const totalCardWidth = cardsInTargetRow * cardSize.width;
+            const totalSpacing = (cardsInTargetRow - 1) * layout.cardSpacing;
             const totalWidth = totalCardWidth + totalSpacing;
             const startX = area.x + (area.width - totalWidth) / 2;
 
-            // 현재 줄 Y 위치
-            const currentY = startY + row * (cardSize.height + rowSpacing);
+            // 카드 위치 계산
+            const cardX = startX + cardIndexInRow * (cardSize.width + layout.cardSpacing);
+            const currentY = startY + targetRow * (cardSize.height + rowSpacing);
 
-            // 줄 내 각 카드 렌더링
-            rowCards.forEach((card, cardIndex) => {
-                const globalIndex = rowStartIndex + cardIndex;
-                const cardX = startX + cardIndex * (cardSize.width + layout.cardSpacing);
+            // 현재 발동 중인 카드 하이라이트
+            const isNextActive = this.options.highlightNextCard &&
+                                battleSystem &&
+                                battleSystem.activatingCard === card;
 
-                // 다음 발동 카드 하이라이트 (첫 번째 카드만)
-                const isNextActive = this.options.highlightNextCard &&
-                                    globalIndex === 0 &&
-                                    this.isCardActivatable(card, player);
-
-                this.renderCard(card, cardX, currentY, cardSize, {
-                    isPlayer,
-                    isNextActive,
-                    index: globalIndex
-                });
+            this.renderCard(card, cardX, currentY, cardSize, {
+                isPlayer,
+                isNextActive,
+                index: globalIndex
             });
-        }
+        });
     }
 
     // 개별 카드 렌더링

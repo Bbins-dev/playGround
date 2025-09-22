@@ -72,8 +72,17 @@ class Enemy extends Player {
     buildDeck() {
         this.hand = [];
 
+        // 스테이지 4 테스트용: 방패 카드 7장만
+        if (this.stage === 4) {
+            for (let i = 0; i < 7; i++) {
+                const shieldCard = CardDatabase.createCardInstance('raise_shield');
+                if (shieldCard) {
+                    this.addCard(shieldCard);
+                }
+            }
+        }
         // 스테이지 3 이상: 도발 + 마구때리기 콤보 사용
-        if (this.stage >= 3 && this.stage <= 30) {
+        else if (this.stage >= 3 && this.stage <= 30) {
             const tauntCard = CardDatabase.createCardInstance('taunt');
             const bashCard = CardDatabase.createCardInstance('random_bash');
 

@@ -23,6 +23,9 @@ class BattleSystem {
             turnNumber: 0
         };
 
+        // 현재 발동 중인 카드 추적
+        this.activatingCard = null;
+
         // 게임 속도
         this.gameSpeed = 1;
 
@@ -208,6 +211,8 @@ class BattleSystem {
         const target = user === this.player ? this.enemy : this.player;
         const isPlayerCard = user === this.player;
 
+        // 현재 발동 중인 카드 설정
+        this.activatingCard = card;
 
         // 카드 발동 애니메이션
         const cardDuration = GameConfig.utils.applyGameSpeed(
@@ -245,6 +250,9 @@ class BattleSystem {
         }
 
         this.battleStats.cardsActivated++;
+
+        // 카드 발동 완료 - 현재 발동 중인 카드 초기화
+        this.activatingCard = null;
     }
 
     // 카드 결과 처리
