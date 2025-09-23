@@ -358,6 +358,7 @@ class VictoryDefeatModal {
         this.selectedRewardCard = null;
         this.selectedHandCardIndex = null;
         this.isShowingCardRewards = false;
+        this.tempSelectedCard = null; // 임시 저장 변수 초기화
 
         // UI 요소 숨기기
         if (this.victoryCardRewards) {
@@ -626,9 +627,23 @@ class VictoryDefeatModal {
     showHandReplaceSelection() {
         if (!this.gameManager || !this.gameManager.player) return;
 
+        // 선택된 카드 정보 임시 저장 (취소 시 복구용)
+        this.tempSelectedCard = this.selectedRewardCard;
+
+        // 확대창 숨기기
+        this.hideSelectedCardDetail();
+
         // 카드 보상 영역 숨기기
         if (this.victoryCardRewards) {
             this.victoryCardRewards.classList.add('hidden');
+        }
+
+        // 모든 버튼 그룹 숨기기 (손패 교체 시에는 취소 버튼만 보이도록)
+        if (this.victorySelectionButtons) {
+            this.victorySelectionButtons.classList.add('hidden');
+        }
+        if (this.victoryDefaultButtons) {
+            this.victoryDefaultButtons.classList.add('hidden');
         }
 
         // 손패 교체 영역 표시
@@ -763,6 +778,19 @@ class VictoryDefeatModal {
         }
         if (this.victoryCardRewards) {
             this.victoryCardRewards.classList.remove('hidden');
+        }
+
+        // 이전 선택 상태 복구
+        if (this.tempSelectedCard) {
+            // 카드 선택 상태 복구
+            const cardIndex = this.rewardCards.indexOf(this.tempSelectedCard);
+            this.updateCardSelection(cardIndex);
+
+            // 확대창 다시 표시
+            this.showSelectedCardDetail(this.tempSelectedCard);
+
+            // 선택 버튼들도 복구
+            this.showSelectionButtons();
         }
     }
 
