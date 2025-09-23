@@ -208,21 +208,34 @@ class MainMenu {
         const centerX = GameConfig.canvas.width / 2; // 버튼과 동일한 고정 중앙점 사용
         const titleY = config.y;
 
-        // 제목 그림자 (더 진하게)
+        // 제목 문자열 가져오기
+        const gameTitle = (typeof getI18nText === 'function') ?
+            getI18nText('auto_battle_card_game.title') || '자동전투 카드대전' : '자동전투 카드대전';
+
+        // 두 줄로 나누기
+        const titleLines = gameTitle.split('\n');
+        const lineHeight = config.size + 10; // 줄 간격
+
         ctx.save();
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
         ctx.font = `bold ${config.size}px Arial`;
         ctx.textAlign = 'center';
-        const gameTitle = (typeof getI18nText === 'function') ?
-            getI18nText('auto_battle_card_game.title') || '자동전투 카드게임' : '자동전투 카드게임';
-        ctx.fillText(gameTitle, centerX + config.shadowOffset, titleY + config.shadowOffset);
+
+        // 제목 그림자 (더 진하게)
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+        titleLines.forEach((line, index) => {
+            const lineY = titleY + (index - (titleLines.length - 1) / 2) * lineHeight;
+            ctx.fillText(line, centerX + config.shadowOffset, lineY + config.shadowOffset);
+        });
 
         // 메인 제목 (더 밝고 크게)
         ctx.fillStyle = '#FFFFFF';
         ctx.strokeStyle = '#000000';
         ctx.lineWidth = 2;
-        ctx.strokeText(gameTitle, centerX, titleY);
-        ctx.fillText(gameTitle, centerX, titleY);
+        titleLines.forEach((line, index) => {
+            const lineY = titleY + (index - (titleLines.length - 1) / 2) * lineHeight;
+            ctx.strokeText(line, centerX, lineY);
+            ctx.fillText(line, centerX, lineY);
+        });
 
 
         // 부제목 (더 밝게)
