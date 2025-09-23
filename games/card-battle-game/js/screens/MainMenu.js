@@ -384,23 +384,11 @@ class MainMenu {
         }
     }
 
-    // 입력 처리
+    // 입력 처리 - 키보드 내비게이션 비활성화
     handleInput(key) {
-        switch (key) {
-            case 'ArrowUp':
-                this.selectPrevious();
-                break;
-            case 'ArrowDown':
-                this.selectNext();
-                break;
-            case 'Enter':
-            case ' ':
-                this.selectCurrent();
-                break;
-            case 'Escape':
-                window.location.href = '../../index.html';
-                break;
-        }
+        // 키보드 내비게이션 기능 비활성화
+        // 마우스나 터치만 사용하도록 제한
+        return;
     }
 
     // 이전 메뉴 선택

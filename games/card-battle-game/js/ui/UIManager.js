@@ -372,12 +372,11 @@ class UIManager {
         }
     }
 
-    // 메뉴 클릭 처리
+    // 메뉴 클릭 처리 - 캔버스 클릭 비활성화
     handleMenuClick(x, y) {
-        // MainMenu 클래스에서 클릭 처리
-        if (this.gameManager.mainMenu && this.gameManager.mainMenu.handlePointerInput) {
-            this.gameManager.mainMenu.handlePointerInput(x, y, this.gameManager.canvas);
-        }
+        // 메인메뉴에서는 캔버스 클릭을 차단하고 DOM 버튼만 사용하도록 제한
+        // MainMenu 클래스의 handlePointerInput 호출을 비활성화
+        return;
     }
 
     // 전투 클릭 처리
@@ -410,23 +409,16 @@ class UIManager {
 
     // 키보드 입력 처리
     handleKeydown(event) {
-        // 각 화면의 특수 키 처리
-        if (this.currentScreen === 'menu' && this.gameManager.mainMenu && this.gameManager.mainMenu.handleInput) {
-            this.gameManager.mainMenu.handleInput(event.key);
-        }
-        // cardSelection은 DOM 모달로 처리하므로 제거
+        // 메인메뉴에서는 키보드 내비게이션 비활성화
+        // DOM 버튼과 언어선택만 키보드로 조작 가능
 
-        // 전역 키보드 단축키
+        // 전역 키보드 단축키 (일부만 유지)
         switch (event.key) {
             case 'Escape':
                 this.hideAllModals();
                 break;
-            case ' ':
-                event.preventDefault();
-                if (this.currentScreen === 'menu') {
-                    this.startGame();
-                }
-                break;
+            // 스페이스바 게임 시작 기능 제거
+            // case ' ': 제거
             case '1':
             case '2':
             case '3':
