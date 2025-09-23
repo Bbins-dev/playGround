@@ -1326,12 +1326,34 @@
 /* ============= 카드 선택 모달 스타일 ============= */
 .card-selection-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 40px;
-    padding: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 180px));
+    gap: 30px 120px; /* 상하 30px, 좌우 120px */
+    padding: 40px;
     max-height: 70vh;
     overflow-y: auto;
+    overflow-x: hidden;
+    justify-content: center;
     justify-items: center;
+}
+
+/* 카드 선택 그리드 커스텀 스크롤바 */
+.card-selection-grid::-webkit-scrollbar {
+    width: 8px;
+}
+
+.card-selection-grid::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+    border-radius: 4px;
+}
+
+.card-selection-grid::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-selection-grid::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
 }
 
 .card-selection-item {
@@ -1355,7 +1377,7 @@
 
 /* 카드 상세 모달 스타일 */
 .card-detail-content {
-    max-width: 400px;
+    max-width: 500px;
     width: 90%;
     text-align: center;
 }
@@ -1365,37 +1387,35 @@
     justify-content: center;
     align-items: center;
     margin: 20px 0;
-    min-height: 300px;
+    min-height: 480px;
 }
 
 .card-detail-display .dom-card {
     margin: 0 auto;
 }
 
+/* 카드 디테일 모달 버튼 간격 최적화 */
+.card-detail-content .modal-buttons {
+    margin-top: 15px;
+    gap: 15px;
+}
+
 /* 모바일 반응형 */
-@media (max-width: 768px) {
+
+@media (max-width: 480px) {
     .card-selection-grid {
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-        gap: 15px;
-        padding: 15px;
-        max-height: 60vh;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px 40px; /* 상하 20px, 좌우 40px */
+        padding: 25px;
     }
 
     .card-detail-content {
         width: 95%;
-        max-width: 350px;
+        max-width: 450px;
     }
 
     .card-detail-display {
-        min-height: 250px;
-    }
-}
-
-@media (max-width: 480px) {
-    .card-selection-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-        padding: 10px;
+        min-height: 380px;
     }
 
     .selection-instruction {
