@@ -194,7 +194,7 @@
         }
       },
       "buffs": {
-        "strength": "Strength"
+        "strength": "STR"
       },
       "elements": {
         "fire": "Fire",
@@ -223,9 +223,13 @@
       "taunt_failed": "Taunt failed",
       "stunned": "Stunned!",
       "taunted": "Taunted!",
-      "strength_gain": "Strength gained!",
-      "already_stunned": "Already stunned!",
-      "already_taunted": "Already taunted!",
+      "templates": {
+        "status_applied": "{name} applied!",
+        "already_status": "Already {name}!",
+        "buff_gained": "{name} +{value}",
+        "buff_reduced": "{name} {value}",
+        "defense_gained": "🛡️ Defense +{value}"
+      },
       "card_selection": {
         "initial_title": "Start Card Selection",
         "instruction": "Choose an attack card to start the game!",

@@ -223,9 +223,13 @@
       "taunt_failed": "挑発失敗",
       "stunned": "気絶した！",
       "taunted": "挑発された！",
-      "strength_gain": "力を得ました！",
-      "already_stunned": "すでに気絶状態です！",
-      "already_taunted": "すでに挑発状態です！",
+      "templates": {
+        "status_applied": "{name}になりました！",
+        "already_status": "すでに{name}です！",
+        "buff_gained": "{name} +{value}",
+        "buff_reduced": "{name} {value}",
+        "defense_gained": "🛡️ 防御力 +{value}"
+      },
       "card_selection": {
         "initial_title": "スタートカード選択",
         "reward_title": "報酬カード選択",

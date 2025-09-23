@@ -223,9 +223,13 @@
       "taunt_failed": "도발 실패",
       "stunned": "기절함!",
       "taunted": "도발됨!",
-      "strength_gain": "힘을 얻었습니다!",
-      "already_stunned": "이미 기절에 걸려있습니다!",
-      "already_taunted": "이미 도발에 걸려있습니다!",
+      "templates": {
+        "status_applied": "{name}에 걸렸습니다!",
+        "already_status": "이미 {name}에 걸려있습니다!",
+        "buff_gained": "{name} +{value}",
+        "buff_reduced": "{name} {value}",
+        "defense_gained": "🛡️ 방어력 +{value}"
+      },
       "card_selection": {
         "initial_title": "시작 카드 선택",
         "instruction": "공격 카드를 선택하여 게임을 시작하세요!",

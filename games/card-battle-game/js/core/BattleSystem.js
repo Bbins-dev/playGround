@@ -135,7 +135,7 @@ class BattleSystem {
                 this.effectSystem.getEnemyPosition();
 
             // 기절 효과 표시
-            this.effectSystem.showDamageNumber(0, position, 'stun');
+            this.effectSystem.showEffectMessage('stun', position, 'status_applied');
 
             // 기절 해제
             currentPlayer.removeStatusEffect('stun');
@@ -345,7 +345,7 @@ class BattleSystem {
 
         // 기절 처리
         if (result.stunned) {
-            this.effectSystem.showDamageNumber(0, targetPosition, 'stun');
+            this.effectSystem.showEffectMessage('stun', targetPosition, 'status_applied');
 
             // 상태이상 UI 즉시 업데이트
             const isTargetPlayer = target === this.player;
@@ -366,13 +366,10 @@ class BattleSystem {
     async processBuffResult(result, user, targetPosition) {
         // 방어력 획득인지 확인
         if (result.defenseGain) {
-            this.effectSystem.showDamageNumber(result.defenseGain, targetPosition, 'defense-gain');
+            this.effectSystem.showDefenseGainMessage(targetPosition, result.defenseGain);
         }
 
-        // 기타 버프 효과
-        if (result.power && result.power > 0) {
-            this.effectSystem.showStatusEffect('buff', targetPosition, result.power);
-        }
+        // 기타 버프 효과 - 현재 사용되지 않음 (모든 버프는 개별 처리됨)
     }
 
     // 디버프 결과 처리
@@ -384,13 +381,10 @@ class BattleSystem {
     async processStatusResult(result, target, targetPosition) {
         // 중복 상태이상 체크 (이미 걸린 상태)
         if (result.duplicate) {
-            // 도발 카드에서 이미 도발된 상태일 때
-            if (result.statusType === 'taunt' || (result.messageKey && result.messageKey.includes('already_taunted'))) {
-                this.effectSystem.showDamageNumber(0, targetPosition, 'already_taunted');
-            }
-            // 기절 카드에서 이미 기절된 상태일 때 (향후 추가될 수 있음)
-            else if (result.statusType === 'stun' || (result.messageKey && result.messageKey.includes('already_stunned'))) {
-                this.effectSystem.showDamageNumber(0, targetPosition, 'already_stunned');
+            // 어떤 상태이상 타입이든 템플릿 기반으로 처리
+            const statusType = result.statusType || this.extractStatusTypeFromMessage(result.messageKey);
+            if (statusType) {
+                this.effectSystem.showEffectMessage(statusType, targetPosition, 'already_status');
             }
             return; // 중복 상태면 추가 처리 중단
         }
@@ -398,16 +392,24 @@ class BattleSystem {
         // 상태이상별 효과 표시
         const statusType = result.statusType;
         if (statusType) {
-            if (statusType === 'taunt') {
-                this.effectSystem.showDamageNumber(0, targetPosition, 'taunt');
+            // 템플릿 기반으로 상태이상 적용 메시지 표시
+            this.effectSystem.showEffectMessage(statusType, targetPosition, 'status_applied');
 
-                // 상태이상 UI 즉시 업데이트
-                const isTargetPlayer = target === this.player;
-                this.hpBarSystem.updateStatusEffects(target, isTargetPlayer);
-            } else {
-                this.effectSystem.showStatusEffect('debuff', targetPosition, 0);
-            }
+            // 상태이상 UI 즉시 업데이트
+            const isTargetPlayer = target === this.player;
+            this.hpBarSystem.updateStatusEffects(target, isTargetPlayer);
         }
+    }
+
+    // messageKey에서 상태이상 타입 추출 (helper 메서드)
+    extractStatusTypeFromMessage(messageKey) {
+        if (!messageKey) return null;
+
+        if (messageKey.includes('taunt')) return 'taunt';
+        if (messageKey.includes('stun')) return 'stun';
+        // 필요 시 다른 상태이상 타입들 추가
+
+        return null;
     }
 
     // 방어 결과 처리
@@ -416,8 +418,8 @@ class BattleSystem {
         const selfDamage = result.selfDamage || 0;
 
         if (defenseGain > 0) {
-            // 방어력 숫자 연출 표시 (방어력 획득한 주체 위치에)
-            this.effectSystem.showDamageNumber(defenseGain, userPosition, 'defense-gain');
+            // 방어력 숫자 연출 표시 (템플릿 기반)
+            this.effectSystem.showDefenseGainMessage(userPosition, defenseGain);
 
             // 방어력 관련 통계 업데이트
             this.battleStats.defenseBuilt += defenseGain;
@@ -425,7 +427,7 @@ class BattleSystem {
 
         // 힘 버프 획득 처리 (가시갑옷 카드 등)
         if (result.strengthGain && result.strengthGain > 0) {
-            this.effectSystem.showDamageNumber(result.strengthGain, userPosition, 'strength');
+            this.effectSystem.showEffectMessage('strength', userPosition, 'buff_gained', result.strengthGain);
         }
 
         // 자가 대미지가 있는 경우 대미지 이펙트 표시

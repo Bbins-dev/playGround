@@ -696,7 +696,6 @@ const GameConfig = {
     buffs: {
         strength: {
             nameKey: 'auto_battle_card_game.ui.buffs.strength',
-            name: '힘',
             emoji: '💪',
             description: '공격력 +{value}',
             color: '#FF8C00' // 주황색 계열

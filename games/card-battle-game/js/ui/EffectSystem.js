@@ -103,6 +103,7 @@ class EffectSystem {
 
         // 숫자 표시 (파워가 있는 경우)
         if (power > 0) {
+            // 일반적인 buff/debuff는 기본 표시 유지 (템플릿 시스템은 특정 버프/상태이상용)
             this.showDamageNumber(power, targetPosition, type);
         }
 
@@ -137,59 +138,88 @@ class EffectSystem {
         return configs[type];
     }
 
+    // 템플릿 기반 효과 메시지 표시
+    showEffectMessage(effectType, position, templateType, value = 0) {
+        // GameConfig에서 효과 설정 가져오기
+        const config = GameConfig.statusEffects[effectType] || GameConfig.buffs[effectType];
+        if (!config) {
+            console.warn(`Effect config not found for type: ${effectType}`);
+            return;
+        }
+
+        // 이름 생성 (이모티콘 + 다국어 이름)
+        const localizedName = config.nameKey ? I18nHelper.getText(config.nameKey) : config.name;
+        const fullName = `${config.emoji} ${localizedName}`;
+
+        // 템플릿 가져오기 및 변수 치환
+        let template = I18nHelper.getText(`auto_battle_card_game.ui.templates.${templateType}`);
+        if (!template) {
+            console.warn(`Template not found: ${templateType}`);
+            template = fullName; // fallback
+        }
+
+        let message = template
+            .replace('{name}', fullName)
+            .replace('{value}', value);
+
+        // 숫자 표시 (기존 showDamageNumber 활용)
+        this.showDamageNumber(0, position, 'effect', message);
+    }
+
+    // 방어력 획득 메시지 표시 (템플릿 기반)
+    showDefenseGainMessage(position, value) {
+        let template = I18nHelper.getText('auto_battle_card_game.ui.templates.defense_gained');
+        if (!template) {
+            console.warn('Defense gained template not found');
+            template = '🛡️ Defense +{value}'; // fallback
+        }
+
+        let message = template.replace('{value}', value);
+        this.showDamageNumber(0, position, 'shield', message);
+    }
+
     // 대미지/회복/효과 숫자 표시
-    showDamageNumber(amount, position, type = 'damage') {
+    showDamageNumber(amount, position, type = 'damage', customText = null) {
         const numberElement = document.createElement('div');
         let className = 'damage-number';
 
-        switch (type) {
-            case 'heal':
-                className += ' heal-number';
-                numberElement.textContent = `+${amount}`;
-                break;
-            case 'buff':
-                className += ' buff-number';
-                numberElement.textContent = `+${amount}`;
-                break;
-            case 'debuff':
-                className += ' debuff-number';
-                numberElement.textContent = `-${amount}`;
-                break;
-            case 'defense-gain':
-                className += ' defense-number';
-                numberElement.textContent = `${amount}`;
-                break;
-            case 'miss':
-                className += ' miss-number';
-                // I18nHelper 사용하여 빗나감 텍스트 설정
-                numberElement.textContent = I18nHelper.getText('auto_battle_card_game.ui.miss');
-                break;
-            case 'zero':
-                className += ' zero-number';
-                numberElement.textContent = '0';
-                break;
-            case 'stun':
-                className += ' stun-number';
-                numberElement.textContent = I18nHelper.getText('auto_battle_card_game.ui.stunned') || '기절함!';
-                break;
-            case 'taunt':
-                className += ' taunt-number';
-                numberElement.textContent = I18nHelper.getText('auto_battle_card_game.ui.taunted') || '도발됨!';
-                break;
-            case 'strength':
-                className += ' strength-number';
-                numberElement.textContent = I18nHelper.getText('auto_battle_card_game.ui.strength_gain') + ` +${amount}`;
-                break;
-            case 'already_stunned':
-                className += ' already-stunned-number';
-                numberElement.textContent = I18nHelper.getText('auto_battle_card_game.ui.already_stunned') || '이미 기절에 걸려있습니다!';
-                break;
-            case 'already_taunted':
-                className += ' already-taunted-number';
-                numberElement.textContent = I18nHelper.getText('auto_battle_card_game.ui.already_taunted') || '이미 도발에 걸려있습니다!';
-                break;
-            default:
-                numberElement.textContent = `-${amount}`;
+        // 커스텀 텍스트가 있으면 우선 사용
+        if (customText) {
+            // 메시지 내용에 따라 적절한 색상 클래스 결정
+            if (customText.includes('🛡️') || customText.includes('Defense') || customText.includes('방어력') || customText.includes('防御力')) {
+                className = 'damage-number shield-number';
+            } else if (customText.includes('♥') || customText.includes('Heal') || customText.includes('회복') || customText.includes('回復')) {
+                className = 'damage-number heal-number';
+            } else if (customText.includes('+')) {
+                // 버프나 증가 효과는 초록색으로
+                className = 'damage-number heal-number';
+            } else {
+                className = 'damage-number effect-number';
+            }
+            numberElement.textContent = customText;
+        } else {
+            switch (type) {
+                case 'miss':
+                    className += ' miss-number';
+                    // I18nHelper 사용하여 빗나감 텍스트 설정
+                    numberElement.textContent = I18nHelper.getText('auto_battle_card_game.ui.miss');
+                    break;
+                case 'zero':
+                    className += ' zero-number';
+                    numberElement.textContent = '0';
+                    break;
+                case 'heal':
+                    className = 'damage-number heal-number';
+                    numberElement.textContent = `+${amount}`;
+                    break;
+                case 'shield':
+                case 'defense':
+                    className = 'damage-number shield-number';
+                    numberElement.textContent = `+${amount}`;
+                    break;
+                default:
+                    numberElement.textContent = `-${amount}`;
+            }
         }
 
         numberElement.className = className;

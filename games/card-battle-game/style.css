@@ -866,6 +866,10 @@ body {
     margin-left: auto;
 }
 
+.hp-bar-text .defense-info {
+    margin-right: 13px;
+}
+
 .defense-info.hidden {
     display: none;
 }
@@ -923,12 +927,16 @@ body {
     animation: floatUp 1.5s ease-out forwards;
 }
 
-.heal-number {
+.damage-number.heal-number {
     color: #2ecc71;
 }
 
-.shield-number {
-    color: #3498db;
+.damage-number.shield-number {
+    color: #c0c0c0;
+}
+
+.damage-number.effect-number {
+    color: #ffffff;
 }
 
 .critical-number {

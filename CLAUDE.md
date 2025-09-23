@@ -91,8 +91,12 @@ Without trailing slash, relative paths like `./style.css` resolve incorrectly.
 - **JavaScript visibility**: `element.classList.add/remove('hidden')` 사용
 - ❌ `style.display` 직접 조작 금지
 
-### I18n & Mobile
+### I18n & Template System
 - **data-i18n attributes**: 번역 가능한 텍스트에 적용
+- **Template-based messages**: 상태이상/버프 메시지는 템플릿 기반 처리
+  - 언어팩 `templates` 섹션: `{name}에 걸렸습니다!`, `{name} +{value}` 등
+  - `EffectSystem.showEffectMessage()`: 동적 메시지 생성
+  - 새 효과 추가 시 GameConfig만 수정 (코드 변경 불필요)
 - **Touch support**: 모든 게임에 터치 이벤트 구현 필수
 
 ## Card Battle Game Architecture
