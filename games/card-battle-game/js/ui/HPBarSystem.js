@@ -345,17 +345,17 @@ class HPBarSystem {
     }
 
     // 전체 플레이어 정보 업데이트 (통합 메서드)
-    updatePlayerInfo(player, enemy) {
+    async updatePlayerInfo(player, enemy) {
         // HP 업데이트
-        this.updateHP(player, true);
-        this.updateHP(enemy, false);
+        await this.updateHP(player, true);
+        await this.updateHP(enemy, false);
 
         // 이름 업데이트
         this.updateNames(player, enemy);
 
         // 방어력 업데이트
-        this.updateDefense(player, true);
-        this.updateDefense(enemy, false);
+        await this.updateDefense(player, true);
+        await this.updateDefense(enemy, false);
 
         // 상태이상 업데이트
         this.updateStatusEffects(player, true);

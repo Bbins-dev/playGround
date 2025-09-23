@@ -193,13 +193,20 @@ class CardSelectionModal {
      * 카드 선택 처리
      */
     handleCardSelect() {
-        if (!this.selectedCard) return;
+        if (!this.selectedCard) {
+            console.error('[CardSelectionModal] selectedCard가 없습니다!');
+            return;
+        }
 
-        this.hide();
-
+        // 콜백을 먼저 호출하고 나서 hide() 호출 (selectedCard가 null이 되기 전에)
         if (this.onCardSelected) {
             this.onCardSelected(this.selectedCard);
+        } else {
+            console.error('[CardSelectionModal] 콜백이 설정되지 않음!');
+            return;
         }
+
+        this.hide();
     }
 
     /**

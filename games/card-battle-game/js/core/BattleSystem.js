@@ -51,7 +51,7 @@ class BattleSystem {
     }
 
     // 전투 시작
-    startBattle(player, enemy) {
+    async startBattle(player, enemy) {
 
         this.player = player;
         this.enemy = enemy;
@@ -60,14 +60,14 @@ class BattleSystem {
         this.battlePhase = 'waiting';
 
         // 시스템 초기화
-        this.initializeSystems();
+        await this.initializeSystems();
 
         // 첫 턴 시작
         this.startTurn();
     }
 
     // 시스템들 초기화
-    initializeSystems() {
+    async initializeSystems() {
         // HPBarSystem은 GameManager에서 이미 생성된 인스턴스 사용
         if (!this.hpBarSystem) {
             console.error('BattleSystem: HPBarSystem이 GameManager에서 초기화되지 않았습니다');
@@ -80,7 +80,7 @@ class BattleSystem {
 
         // HP 바 표시
         this.hpBarSystem.show();
-        this.hpBarSystem.updatePlayerInfo(this.player, this.enemy);
+        await this.hpBarSystem.updatePlayerInfo(this.player, this.enemy);
     }
 
     // 턴 시작

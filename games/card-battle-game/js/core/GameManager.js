@@ -357,9 +357,15 @@ class GameManager {
 
         // 새로운 CardSelectionModal 사용
         if (this.cardSelectionModal) {
-            this.cardSelectionModal.show((selectedCard) => {
-                console.log('선택된 카드:', selectedCard);
-                this.completeInitialCardSelection(selectedCard);
+            this.cardSelectionModal.show(async (selectedCard) => {
+                try {
+                    await this.completeInitialCardSelection(selectedCard);
+                } catch (error) {
+                    console.error('[GameManager] 카드 선택 완료 중 오류:', error);
+                    console.error(error.stack);
+                    // 오류 발생시 메인 메뉴로 복귀
+                    this.switchScreen('main');
+                }
             });
         } else {
             console.error('카드 선택 모달이 초기화되지 않았습니다');
@@ -373,7 +379,7 @@ class GameManager {
     }
 
     // 초기 카드 설정
-    setInitialCards(cardIds) {
+    async setInitialCards(cardIds) {
         console.log('GameManager: 초기 카드 설정', cardIds);
 
         // 플레이어가 없으면 생성 (기본 이름 사용)
@@ -391,59 +397,61 @@ class GameManager {
             console.log('카드 추가 완료. 현재 손패:', this.player.hand);
         }
 
-        this.startStage(1);
+        await this.startStage(1);
     }
 
     // 보상 카드 추가 (손패 왼쪽에 추가)
-    addRewardCard(cardId) {
+    async addRewardCard(cardId) {
 
         if (this.player && this.cardManager) {
             // 'left' 옵션으로 손패 왼쪽에 추가
             this.cardManager.addCardToPlayer(this.player, cardId, 'left');
         }
 
-        this.continueToNextStage();
+        await this.continueToNextStage();
     }
 
     // 카드 교체
-    replaceCard(newCardId) {
+    async replaceCard(newCardId) {
         if (this.player && this.cardManager) {
             // 첫 번째 카드를 새 카드로 교체
             this.cardManager.replacePlayerCard(this.player, 0, newCardId);
         }
-        this.continueToNextStage();
+        await this.continueToNextStage();
     }
 
     // 카드 선택 건너뛰기
-    skipCardSelection() {
-        this.continueToNextStage();
+    async skipCardSelection() {
+        await this.continueToNextStage();
     }
 
     // 다음 스테이지 진행
-    continueToNextStage() {
+    async continueToNextStage() {
         this.currentStage++;
-        this.startStage(this.currentStage);
+        await this.startStage(this.currentStage);
     }
 
     // 초기 카드 선택 완료
-    completeInitialCardSelection(selectedCard) {
+    async completeInitialCardSelection(selectedCard) {
         // selectedCard는 이미 Card 인스턴스임
         if (selectedCard) {
             this.player.addCard(selectedCard);
-
             // 첫 번째 스테이지 시작
-            this.startStage(1);
+            await this.startStage(1);
+        } else {
+            console.error('[GameManager] selectedCard가 null 또는 undefined!');
         }
     }
 
     // 스테이지 시작
-    startStage(stageNumber) {
-
+    async startStage(stageNumber) {
         this.currentStage = stageNumber;
 
         // 메인 메뉴 숨김 (null 체크)
         if (this.mainMenu) {
             this.mainMenu.hide();
+        } else {
+            console.warn('[GameManager] mainMenu가 null!');
         }
 
         // 전투 화면으로 전환
@@ -459,11 +467,11 @@ class GameManager {
         }
 
         // 전투 시작
-        this.startBattle();
+        await this.startBattle();
     }
 
     // 전투 시작
-    startBattle() {
+    async startBattle() {
         // 첫 번째 스테이지인 경우 통계 초기화
         if (this.currentStage === 1) {
             this.resetGameStats();
@@ -472,7 +480,9 @@ class GameManager {
         this.changeGameState('battle');
 
         if (this.battleSystem) {
-            this.battleSystem.startBattle(this.player, this.enemy);
+            await this.battleSystem.startBattle(this.player, this.enemy);
+        } else {
+            console.error('[GameManager] battleSystem이 null!');
         }
     }
 
@@ -503,15 +513,15 @@ class GameManager {
             const rewardCards = this.generateRewardCards();
 
             // 승리 모달 표시 (카드 보상 포함)
-            this.uiManager.showVictoryModal(this.currentStage, () => {
-                this.proceedToNextStage();
+            this.uiManager.showVictoryModal(this.currentStage, async () => {
+                await this.proceedToNextStage();
             }, rewardCards);
         } catch (error) {
             console.error('handlePlayerVictory 에러:', error);
             // 에러가 있어도 모달은 표시
             const rewardCards = this.generateRewardCards();
-            this.uiManager.showVictoryModal(this.currentStage, () => {
-                this.proceedToNextStage();
+            this.uiManager.showVictoryModal(this.currentStage, async () => {
+                await this.proceedToNextStage();
             }, rewardCards);
         }
     }
@@ -581,7 +591,7 @@ class GameManager {
     /**
      * 다음 스테이지로 진행
      */
-    proceedToNextStage() {
+    async proceedToNextStage() {
         try {
             console.log('🚀 GameManager: proceedToNextStage 호출됨 - 현재 스테이지:', this.currentStage);
 
@@ -597,7 +607,7 @@ class GameManager {
             console.log('🚀 GameManager: setupNextBattle 완료');
 
             // startBattle이 모든 초기화를 처리 (DRY)
-            this.startBattle();
+            await this.startBattle();
             console.log('🚀 GameManager: startBattle 호출 완료');
 
         } catch (error) {

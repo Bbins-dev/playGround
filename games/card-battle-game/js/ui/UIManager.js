@@ -474,8 +474,8 @@ class UIManager {
     backToMenu() {
         const confirmMessage = this.getI18nText('auto_battle_card_game.ui.confirm_back_to_menu');
         console.log('🔙 메뉴로 돌아가기 요청:', confirmMessage);
-        // 임시로 confirm 비활성화 - 다이얼로그 폭탄 방지
-        // if (confirm(confirmMessage)) {
+
+        if (confirm(confirmMessage)) {
             // 게임 상태 정리
             this.cleanupGameState();
 
@@ -491,7 +491,7 @@ class UIManager {
 
             // 게임 내 메인 메뉴로 이동
             this.gameManager.showMainMenu();
-        // }
+        }
     }
 
     // 게임 상태 정리 (공통 로직 - 개선된 타이머 정리 포함)

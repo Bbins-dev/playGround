@@ -134,7 +134,6 @@ class MainMenu {
 
     // 메뉴 렌더링 (최적화)
     render(ctx, canvas) {
-        console.log('🎨 MainMenu render 호출됨'); // 디버깅용
         const currentTime = performance.now();
 
         // 애니메이션 업데이트 (항상 실행)
@@ -142,11 +141,8 @@ class MainMenu {
 
         // 렌더링이 필요하거나 16ms 이상 지났을 때만 렌더링 (60fps 제한)
         if (!this.needsRedraw && (currentTime - this.lastRenderTime < 16)) {
-            console.log('🎨 MainMenu render 스킵됨 - needsRedraw:', this.needsRedraw); // 디버깅용
             return;
         }
-
-        console.log('🎨 MainMenu 실제 렌더링 시작'); // 디버깅용
         this.renderBackground(ctx, canvas);
         this.renderTitle(ctx, canvas);
         // Canvas 메뉴 렌더링 비활성화 - DOM 버튼 사용
@@ -211,7 +207,6 @@ class MainMenu {
 
     // 제목 렌더링
     renderTitle(ctx, canvas) {
-        console.log('🎨 MainMenu renderTitle 호출됨'); // 디버깅용
         const config = GameConfig.mainMenu.title;
         const subtitleConfig = GameConfig.mainMenu.subtitle;
         const centerX = GameConfig.canvas.width / 2; // 버튼과 동일한 고정 중앙점 사용
