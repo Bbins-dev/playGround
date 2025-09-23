@@ -193,6 +193,9 @@
           "description": "상대방을 도발한다. 도발에 걸리면 공격 카드만 사용할 수 있다."
         }
       },
+      "buffs": {
+        "strength": "힘"
+      },
       "elements": {
         "fire": "불",
         "water": "물",

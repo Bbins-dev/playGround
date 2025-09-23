@@ -176,8 +176,37 @@ class HPBarSystem {
 
     // 버프 표시 업데이트
     updateBuffs(player, isPlayer = true) {
-        // 버프 시스템은 나중에 구현 예정
-        // TODO: 힘 버프 등 다른 버프 시스템 구현
+        const hpBarText = isPlayer ?
+            this.playerHPBar.querySelector('.hp-bar-text') :
+            this.enemyHPBar.querySelector('.hp-bar-text');
+
+        // 기존 버프 라벨 제거
+        const existingBuffs = hpBarText.querySelectorAll('.buff-label');
+        existingBuffs.forEach(buff => buff.remove());
+
+        // 힘 버프 표시
+        if (player.getStrength && player.getStrength() > 0) {
+            const strengthValue = player.getStrength();
+            const buffConfig = GameConfig.buffs.strength;
+
+            const buffElement = document.createElement('span');
+            buffElement.className = 'buff-label';
+
+            // 버프 텍스트 생성
+            const buffName = buffConfig.nameKey && typeof I18nHelper !== 'undefined' ?
+                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
+                buffConfig.name;
+
+            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} ${strengthValue}`;
+
+            // 버프별 색상 적용
+            buffElement.style.borderColor = buffConfig.color;
+            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
+
+            // 방어력 정보 바로 앞에 버프 삽입 (HP바 오른쪽)
+            const defenseInfo = hpBarText.querySelector('.defense-info');
+            hpBarText.insertBefore(buffElement, defenseInfo);
+        }
     }
 
     // 방어력 오버레이 업데이트 (Promise 반환으로 수정)

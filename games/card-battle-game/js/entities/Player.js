@@ -25,6 +25,9 @@ class Player {
         // 상태이상
         this.statusEffects = [];
 
+        // 버프 시스템
+        this.strength = 0; // 힘 버프
+
         // 턴 관련
         this.currentCardIndex = 0;
         this.cardsActivatedThisTurn = 0;
@@ -185,6 +188,26 @@ class Player {
 
     clearAllStatusEffects() {
         this.statusEffects = [];
+    }
+
+    // 버프 관련 메서드
+    addStrength(amount) {
+        // 입력값 유효성 검사
+        if (typeof amount !== 'number' || amount < 0) {
+            console.warn('Player.addStrength: 유효하지 않은 힘 버프 값:', amount);
+            return 0;
+        }
+
+        this.strength += amount;
+        return amount;
+    }
+
+    getStrength() {
+        return this.strength;
+    }
+
+    clearBuffs() {
+        this.strength = 0;
     }
 
     // 턴 관련 메서드

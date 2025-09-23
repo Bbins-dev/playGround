@@ -731,10 +731,10 @@ body {
     font-size: 11px;
     font-weight: bold;
     color: white;
-    border: 1px solid #E91E63;
-    background: linear-gradient(135deg, #E91E63, #E91E63CC);
+    border: 1px solid;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
+    margin-right: 6px;
 }
 
 /* 상태이상 강화 애니메이션 */
@@ -809,16 +809,7 @@ body {
     pointer-events: none;
 }
 
-/* HP 바 텍스트 위치 조정 */
-.hp-bar-text {
-    position: relative;
-    z-index: 3; /* 방어력 오버레이 위에 표시 */
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    align-items: center;
-    padding: 0 8px;
-}
+/* HP 바 텍스트 위치 조정 - 새로운 레이아웃으로 교체됨 */
 
 .hp-info {
     display: flex;
@@ -848,6 +839,31 @@ body {
     font-size: 16px;
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* 오른쪽 요소들을 그룹화 */
+.hp-bar-text {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0 8px;
+}
+
+.hp-bar-text .hp-info {
+    flex: 1;
+}
+
+.hp-bar-text .entity-name {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.hp-bar-text .buff-label,
+.hp-bar-text .defense-info {
+    margin-left: auto;
 }
 
 .defense-info.hidden {

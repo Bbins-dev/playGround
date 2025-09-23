@@ -691,6 +691,17 @@ const GameConfig = {
         }
     },
 
+    // 버프 시스템 정의
+    buffs: {
+        strength: {
+            nameKey: 'auto_battle_card_game.ui.buffs.strength',
+            name: '힘',
+            emoji: '💪',
+            description: '공격력 +{value}',
+            color: '#FF8C00' // 주황색 계열
+        }
+    },
+
     // 상태이상 UI 강화 설정
     statusEffectsUI: {
         icons: {

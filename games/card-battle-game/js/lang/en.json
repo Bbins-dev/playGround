@@ -193,6 +193,9 @@
           "description": "Taunt the opponent. When taunted, only attack cards can be used."
         }
       },
+      "buffs": {
+        "strength": "Strength"
+      },
       "elements": {
         "fire": "Fire",
         "water": "Water",

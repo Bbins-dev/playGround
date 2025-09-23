@@ -61,9 +61,9 @@ const CardDatabase = {
                 return Math.floor(Math.random() * 3) + 3; // 3-5 랜덤
             },
             effect: function(user, target, battleSystem) {
-                const singleDamage = this.power;
+                const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
-                const finalDamage = Math.floor(singleDamage * effectiveness);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
 
                 return {
                     success: true,
@@ -87,9 +87,9 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.heavy_strike.description',
             effect: function(user, target, battleSystem) {
-                const damage = this.power;
+                const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
-                const finalDamage = Math.floor(damage * effectiveness);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
 
                 return {
                     success: true,
@@ -113,9 +113,9 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.shield_bash.description',
             effect: function(user, target, battleSystem) {
-                const damage = user.defense; // 현재 방어력만큼 대미지
+                const baseDamage = user.defense + (user.getStrength ? user.getStrength() : 0); // 방어력 + 힘 버프
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
-                const finalDamage = Math.floor(damage * effectiveness);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
 
                 return {
                     success: true,
@@ -141,9 +141,9 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.concussion.description',
             stunChance: 100,
             effect: function(user, target, battleSystem) {
-                const damage = this.power;
+                const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
-                const finalDamage = Math.floor(damage * effectiveness);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
 
                 // 기절 확률 체크
                 let stunned = false;
@@ -176,9 +176,9 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.counter_attack.description',
             effect: function(user, target, battleSystem) {
-                const damage = user.lastDamageTaken; // 마지막 받은 대미지
+                const baseDamage = user.lastDamageTaken + (user.getStrength ? user.getStrength() : 0); // 받은 대미지 + 힘 버프
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
-                const finalDamage = Math.floor(damage * effectiveness);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
 
                 return {
                     success: true,
@@ -310,13 +310,15 @@ const CardDatabase = {
                 const selfDamage = this.power;
                 user.takeDamage(selfDamage);
 
-                // TODO: 힘 버프 시스템 구현 후 추가
-                // user.addStrength(1);
+                // 힘 버프 1 추가
+                const strengthGain = 1;
+                user.addStrength(strengthGain);
 
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.thorn_armor_effect',
                     selfDamage: selfDamage,
+                    strengthGain: strengthGain,
                     element: this.element
                 };
             }

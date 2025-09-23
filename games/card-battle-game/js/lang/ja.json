@@ -193,6 +193,9 @@
           "description": "相手を挑発する。挑発状態では攻撃カードのみ使用できる。"
         }
       },
+      "buffs": {
+        "strength": "力"
+      },
       "elements": {
         "fire": "火",
         "water": "水",

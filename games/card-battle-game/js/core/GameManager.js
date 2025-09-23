@@ -661,6 +661,8 @@ class GameManager {
             this.player.defense = 0;
             // 모든 상태이상 초기화 (도발, 기절 등)
             this.player.clearAllStatusEffects();
+            // 모든 버프 초기화 (힘 버프 등)
+            this.player.clearBuffs();
         }
 
         // 새 Enemy 인스턴스는 이미 lastDamageTaken = 0으로 초기화됨
