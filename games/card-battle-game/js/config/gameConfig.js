@@ -6,8 +6,8 @@ const GameConfig = {
 
     // 화면 설정 - 고정 크기 (반응형 제거)
     canvas: {
-        width: 1247,
-        height: 832,
+        width: 750,
+        height: 960,
         targetFPS: 60
     },
 
@@ -193,7 +193,7 @@ const GameConfig = {
     cardSizes: {
         hand: { width: 120, height: 168 },       // 손패 카드 크기 (20% 확대)
         enlarged: { width: 400, height: 560 },   // 발동 시 확대 크기 (33% 증가)
-        preview: { width: 240, height: 336 },    // 갤러리 미리보기 크기 (33% 추가 증가)
+        preview: { width: 260, height: 364 },    // 갤러리 미리보기 크기 (확대됨)
         victory: { width: 120, height: 168 },    // 승리 모달 보상 카드 크기 (20% 확대)
         victoryDetail: { width: 360, height: 504 } // 승리 모달 확대 카드 크기 (260% 확대)
     },
@@ -274,13 +274,13 @@ const GameConfig = {
 
     // UI 위치 설정
     ui: {
-        playerInfo: { x: 50, y: 650 },           // 플레이어 정보 위치
+        playerInfo: { x: 50, y: 750 },           // 플레이어 정보 위치
         enemyInfo: { x: 50, y: 50 },             // 적 정보 위치
-        playerHand: { x: 640, y: 540 },          // 플레이어 손패 중앙 위치 (HP바에서 더 위로)
-        enemyHand: { x: 640, y: 180 },           // 적 손패 중앙 위치 (HP바에서 더 아래로)
-        cardActivation: { x: 640, y: 360 },      // 카드 발동 표시 위치 (화면 중앙)
-        stageInfo: { x: 1200, y: 650 },          // 스테이지 정보 위치
-        enemyName: { x: 1200, y: 50 }            // 적 이름 위치
+        playerHand: { x: 375, y: 650 },          // 플레이어 손패 중앙 위치 (HP바에서 더 위로)
+        enemyHand: { x: 375, y: 230 },           // 적 손패 중앙 위치 (HP바에서 더 아래로)
+        cardActivation: { x: 375, y: 480 },      // 카드 발동 표시 위치 (화면 중앙)
+        stageInfo: { x: 700, y: 750 },           // 스테이지 정보 위치
+        enemyName: { x: 700, y: 50 }             // 적 이름 위치
     },
 
     // 카드 스타일 통일 설정
@@ -412,10 +412,10 @@ const GameConfig = {
         },
         cards: {
             startY: 180,        // 카드 그리드 시작 Y 위치
-            width: 240,         // 카드 너비 (갤러리와 동일)
-            height: 336,        // 카드 높이 (갤러리와 동일)
-            spacing: 260,       // 카드 간격
-            maxCols: 4,         // 최대 열 수 (큰 카드에 맞게 조정)
+            width: 260,         // 카드 너비 (갤러리와 동일)
+            height: 364,        // 카드 높이 (갤러리와 동일)
+            spacing: 280,       // 카드 간격 (확대됨)
+            maxCols: 2,         // 최대 열 수 (2열로 조정)
             rowSpacing: 40      // 카드 행 간격
         },
         scroll: {
