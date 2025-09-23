@@ -315,6 +315,16 @@ const GameConfig = {
             stats: { y: 0.84 },      // 하단에서 16%
             description: { y: 0.46 } // 상단에서 46% (카드 중앙에 더 가깝게 위치)
         },
+        // 활성 카드 글로우 설정
+        activeCardGlow: {
+            color: '#ff4444',                 // 붉은색 글로우
+            secondaryColor: '#ff6666',        // 보조 글로우 색상
+            borderWidth: 4,                   // 더 두꺼운 테두리
+            glowRadius: 12,                   // 글로우 반경
+            glowIntensity: 0.8,               // 글로우 강도
+            pulseSpeed: 2000,                 // 펄스 애니메이션 속도 (ms)
+            fadeoutDuration: 800              // 잔상 페이드아웃 시간 (ms)
+        },
         // 속성 라벨 설정
         elementLabel: {
             position: { x: 0.04, y: 0.08 },  // 카드 크기 대비 비율 (좌상단)

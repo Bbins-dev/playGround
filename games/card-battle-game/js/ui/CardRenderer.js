@@ -11,17 +11,17 @@ class CardRenderer {
             isSelected = false,
             isHighlighted = false,
             isNextActive = false,
-            opacity = 1
+            isFadingOut = false,
+            fadeStartTime = null
         } = options;
 
         ctx.save();
-        ctx.globalAlpha = opacity;
 
         // 카드 배경 그리기
         this.drawCardBackground(ctx, card, x, y, width, height, isHighlighted || isNextActive);
 
         // 카드 테두리 그리기
-        this.drawCardBorder(ctx, card, x, y, width, height, isSelected, isNextActive);
+        this.drawCardBorder(ctx, card, x, y, width, height, isSelected, isNextActive, isFadingOut, fadeStartTime);
 
         // 카드 내용 그리기
         this.drawCardContent(ctx, card, x, y, width, height);
@@ -58,11 +58,66 @@ class CardRenderer {
     }
 
     // 카드 테두리 그리기
-    drawCardBorder(ctx, card, x, y, width, height, isSelected = false, isActive = false) {
-        ctx.strokeStyle = isActive ? '#ffd700' : (isSelected ? '#f39c12' : this.style.borderColor);
-        ctx.lineWidth = isActive ? 3 : this.style.borderWidth;
+    drawCardBorder(ctx, card, x, y, width, height, isSelected = false, isActive = false, isFadingOut = false, fadeStartTime = null) {
+        if (isActive) {
+            // 활성 카드 글로우 효과 (현재 발동중 또는 잔상)
+            this.drawActiveCardGlow(ctx, x, y, width, height, isFadingOut, fadeStartTime);
+        } else {
+            // 일반 테두리
+            ctx.strokeStyle = isSelected ? '#f39c12' : this.style.borderColor;
+            ctx.lineWidth = this.style.borderWidth;
+            this.roundRect(ctx, x, y, width, height, this.style.borderRadius);
+            ctx.stroke();
+        }
+    }
+
+    // 활성 카드 글로우 효과 그리기
+    drawActiveCardGlow(ctx, x, y, width, height, isFadingOut = false, fadeStartTime = null) {
+        const glowConfig = this.style.activeCardGlow;
+
+        ctx.save();
+
+        // 페이드아웃 강도 계산
+        let fadeIntensity = 1;
+        if (isFadingOut && fadeStartTime) {
+            // 잔상 시작 시간으로부터 경과 시간 계산
+            const elapsed = Date.now() - fadeStartTime;
+            const progress = Math.min(elapsed / glowConfig.fadeoutDuration, 1);
+            fadeIntensity = 1 - progress;
+        }
+
+        // 펄스 효과 계산 (잔상일 때는 펄스 없음)
+        let pulseIntensity = 1;
+        if (!isFadingOut) {
+            const time = Date.now();
+            const pulseTime = (time % glowConfig.pulseSpeed) / glowConfig.pulseSpeed;
+            pulseIntensity = 0.6 + 0.4 * (Math.sin(pulseTime * Math.PI * 2) * 0.5 + 0.5);
+        }
+
+        const finalIntensity = pulseIntensity * fadeIntensity;
+
+        // 외부 글로우 (가장 넓고 약함)
+        for (let i = glowConfig.glowRadius; i > 0; i -= 2) {
+            const opacity = (glowConfig.glowIntensity * finalIntensity * (glowConfig.glowRadius - i)) / glowConfig.glowRadius * 0.15;
+            ctx.strokeStyle = `rgba(255, 68, 68, ${opacity})`;
+            ctx.lineWidth = 2;
+            this.roundRect(ctx, x - i, y - i, width + i * 2, height + i * 2, this.style.borderRadius + i);
+            ctx.stroke();
+        }
+
+        // 중간 글로우 (보조 색상)
+        ctx.strokeStyle = `rgba(255, 102, 102, ${0.6 * finalIntensity})`;
+        ctx.lineWidth = 3;
+        this.roundRect(ctx, x - 2, y - 2, width + 4, height + 4, this.style.borderRadius + 2);
+        ctx.stroke();
+
+        // 내부 테두리 (메인 색상, 가장 강함)
+        ctx.strokeStyle = `rgba(255, 68, 68, ${0.9 * finalIntensity})`;
+        ctx.lineWidth = glowConfig.borderWidth;
         this.roundRect(ctx, x, y, width, height, this.style.borderRadius);
         ctx.stroke();
+
+        ctx.restore();
     }
 
     // 카드 내용 그리기

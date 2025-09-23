@@ -53,6 +53,11 @@ class Renderer {
 
         // 통일된 카드 렌더러
         this.cardRenderer = new CardRenderer();
+
+        // 잔상 효과를 위한 추적 변수 (인덱스 기반)
+        this.lastActivatedCardIndex = -1;
+        this.lastActivatedPlayer = null; // 'player' 또는 'enemy'
+        this.lastActivatedTime = null;
     }
 
     // 초기화
@@ -175,6 +180,9 @@ class Renderer {
         const cardSize = this.cardSizes.hand;
         const layout = GameConfig.handLayout;
 
+        // 현재 활성 카드 추적 및 잔상 효과 (클래스 레벨에서 관리)
+        this.updateCardActivationState(player, isPlayer, battleSystem);
+
         // 두 줄 레이아웃 계산
         const cardsPerRow = layout.cardsPerRow;
         let rowCount;
@@ -253,24 +261,90 @@ class Renderer {
                                 battleSystem &&
                                 battleSystem.activatingCard === card;
 
+            // 잔상 효과 확인
+            const { isFadingOut, fadeStartTime } = this.getCardFadeState(globalIndex, isPlayer);
+
             this.renderCard(card, cardX, currentY, cardSize, {
                 isPlayer,
-                isNextActive,
+                isNextActive: isNextActive || isFadingOut,
+                isFadingOut,
+                fadeStartTime,
                 index: globalIndex
             });
         });
     }
 
+    // 카드 활성화 상태 업데이트
+    updateCardActivationState(player, isPlayer, battleSystem) {
+        const currentActivatingCard = battleSystem ? battleSystem.activatingCard : null;
+        const playerType = isPlayer ? 'player' : 'enemy';
+
+        if (currentActivatingCard) {
+            // 현재 활성화 중인 카드의 인덱스 찾기
+            const cardIndex = player.hand.findIndex(card => card === currentActivatingCard);
+
+            if (cardIndex !== -1 &&
+                (this.lastActivatedCardIndex !== cardIndex || this.lastActivatedPlayer !== playerType)) {
+                // 새로운 카드가 활성화됨
+                this.lastActivatedCardIndex = cardIndex;
+                this.lastActivatedPlayer = playerType;
+                this.lastActivatedTime = null; // 새 카드 활성화 시 타이머 리셋
+            }
+        } else if (this.lastActivatedCardIndex !== -1 &&
+                   this.lastActivatedPlayer === playerType &&
+                   this.lastActivatedTime === null) {
+            // 카드 활성화가 끝남 - 잔상 타이머 시작 (한 번만)
+            this.lastActivatedTime = Date.now();
+        }
+    }
+
+    // 카드 페이드 상태 가져오기
+    getCardFadeState(cardIndex, isPlayer) {
+        const playerType = isPlayer ? 'player' : 'enemy';
+
+        if (this.lastActivatedCardIndex === cardIndex &&
+            this.lastActivatedPlayer === playerType &&
+            this.lastActivatedTime) {
+
+            const elapsed = Date.now() - this.lastActivatedTime;
+            const fadeoutDuration = GameConfig.cardStyle.activeCardGlow.fadeoutDuration;
+
+            if (elapsed < fadeoutDuration) {
+                return {
+                    isFadingOut: true,
+                    fadeStartTime: this.lastActivatedTime
+                };
+            } else {
+                // 잔상 효과 종료
+                this.lastActivatedCardIndex = -1;
+                this.lastActivatedPlayer = null;
+                this.lastActivatedTime = null;
+            }
+        }
+
+        return {
+            isFadingOut: false,
+            fadeStartTime: null
+        };
+    }
+
     // 개별 카드 렌더링
     renderCard(card, x, y, size, options = {}) {
-        const { isPlayer = true, isNextActive = false, index = 0 } = options;
+        const {
+            isPlayer = true,
+            isNextActive = false,
+            isFadingOut = false,
+            fadeStartTime = null,
+            index = 0
+        } = options;
 
         // 통일된 카드 렌더러 사용
         this.cardRenderer.renderCard(this.ctx, card, x, y, size.width, size.height, {
             isSelected: false,
             isHighlighted: false,
             isNextActive,
-            opacity: 1
+            isFadingOut,
+            fadeStartTime
         });
     }
 
