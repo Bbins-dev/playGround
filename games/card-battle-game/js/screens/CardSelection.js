@@ -46,6 +46,9 @@ class CardSelection {
 
         // 통일된 카드 렌더러
         this.cardRenderer = new CardRenderer();
+
+        // DOM 카드 렌더러 (갤러리와 동일한 스타일)
+        this.domCardRenderer = new DOMCardRenderer();
     }
 
     // 초기 카드 선택 설정
@@ -82,6 +85,9 @@ class CardSelection {
         this.selectedCardForPopup = null;
         this.clickAnimations.clear();
         this.startRevealAnimation();
+
+        // DOM 기반 카드 갤러리 생성 (갤러리와 동일한 스타일)
+        this.populateCardSelectionDOM();
     }
 
     // 보상 카드 선택 설정
@@ -97,6 +103,9 @@ class CardSelection {
         this.selectedCardForPopup = null;
         this.clickAnimations.clear();
         this.startRevealAnimation();
+
+        // DOM 기반 카드 갤러리 생성 (갤러리와 동일한 스타일)
+        this.populateCardSelectionDOM();
     }
 
     // 카드 교체 선택 설정
@@ -113,6 +122,9 @@ class CardSelection {
         this.selectedCardForPopup = null;
         this.clickAnimations.clear();
         this.startRevealAnimation();
+
+        // DOM 기반 카드 갤러리 생성 (갤러리와 동일한 스타일)
+        this.populateCardSelectionDOM();
     }
 
     // 공개 애니메이션 시작 (비활성화)
@@ -120,6 +132,88 @@ class CardSelection {
         this.revealAnimation.started = false;
         this.revealAnimation.progress = 1;
         this.revealAnimation.startTime = Date.now();
+    }
+
+    // DOM 기반 카드 선택 그리드 생성 (UIManager의 방식과 동일)
+    populateCardSelectionDOM() {
+        const container = document.getElementById('card-selection-grid');
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        this.availableCards.forEach((card, index) => {
+            const cardElement = this.createCardSelectionElement(card, index);
+            container.appendChild(cardElement);
+        });
+    }
+
+    // 선택 카드 요소 생성 (UIManager.createCardGalleryElement와 동일 방식)
+    createCardSelectionElement(card, index) {
+        // 갤러리 카드 크기 (gameConfig에서 가져오기)
+        const cardSize = GameConfig.cardSizes.preview;
+
+        // 통일된 카드 렌더러로 카드 생성
+        const cardElement = this.domCardRenderer.createCard(card, cardSize.width, cardSize.height, {
+            isSelected: this.selectedCards.includes(card),
+            isHighlighted: false,
+            isNextActive: false,
+            opacity: 1
+        });
+
+        // 갤러리 카드 스타일 적용 (CSS 클래스는 동일하게 유지)
+        cardElement.className = 'card-selection-item';
+
+        // 선택 상태 표시
+        if (this.selectedCards.includes(card)) {
+            cardElement.classList.add('selected');
+        }
+
+        // 클릭 이벤트 핸들러
+        cardElement.addEventListener('click', () => {
+            this.handleCardClick(index);
+        });
+
+        return cardElement;
+    }
+
+    // 카드 클릭 처리
+    handleCardClick(index) {
+        if (index < 0 || index >= this.availableCards.length) return;
+
+        const card = this.availableCards[index];
+
+        if (this.selectedCards.includes(card)) {
+            // 선택 해제
+            this.selectedCards = this.selectedCards.filter(c => c !== card);
+        } else {
+            // 새로 선택
+            if (this.selectedCards.length < this.maxSelections) {
+                this.selectedCards.push(card);
+            } else if (this.maxSelections === 1) {
+                // 단일 선택 모드: 기존 선택 교체
+                this.selectedCards = [card];
+            }
+        }
+
+        // DOM 업데이트
+        this.updateSelectionDOM();
+    }
+
+    // 선택 상태 DOM 업데이트
+    updateSelectionDOM() {
+        const container = document.getElementById('card-selection-grid');
+        if (!container) return;
+
+        const cardElements = container.querySelectorAll('.card-selection-item');
+
+        cardElements.forEach((element, index) => {
+            const card = this.availableCards[index];
+            if (this.selectedCards.includes(card)) {
+                element.classList.add('selected');
+            } else {
+                element.classList.remove('selected');
+            }
+        });
     }
 
     // 카드 선택 화면 렌더링
