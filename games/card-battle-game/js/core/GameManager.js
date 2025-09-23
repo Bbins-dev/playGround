@@ -641,12 +641,7 @@ class GameManager {
             this.player.clearAllStatusEffects();
         }
 
-        // 적 상태 초기화
-        if (this.enemy) {
-            this.enemy.lastDamageTaken = 0;
-            // 적도 상태이상 초기화 (안전장치)
-            this.enemy.clearAllStatusEffects();
-        }
+        // 새 Enemy 인스턴스는 이미 lastDamageTaken = 0으로 초기화됨
 
         // UI 업데이트
         if (this.uiManager) {
