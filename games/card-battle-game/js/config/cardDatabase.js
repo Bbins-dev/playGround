@@ -282,16 +282,6 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.large_shield.description',
             effect: function(user, target, battleSystem) {
-                // 성공률 체크
-                const successRoll = Math.random() * 100;
-                if (successRoll >= this.accuracy) {
-                    return {
-                        success: false,
-                        messageKey: 'auto_battle_card_game.ui.shield_failed',
-                        element: this.element
-                    };
-                }
-
                 const defenseValue = this.power;
                 user.addDefense(defenseValue);
 
@@ -316,16 +306,6 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.thorn_armor.description',
             effect: function(user, target, battleSystem) {
-                // 명중률 체크
-                const hitRoll = Math.random() * 100;
-                if (hitRoll >= this.accuracy) {
-                    return {
-                        success: false,
-                        messageKey: 'auto_battle_card_game.ui.thorn_armor_failed',
-                        element: this.element
-                    };
-                }
-
                 // 자신에게 대미지 1
                 const selfDamage = this.power;
                 user.takeDamage(selfDamage);
@@ -354,16 +334,6 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.taunt.description',
             effect: function(user, target, battleSystem) {
-                // 성공률 체크
-                const successRoll = Math.random() * 100;
-                if (successRoll >= this.accuracy) {
-                    return {
-                        success: false,
-                        messageKey: 'auto_battle_card_game.ui.taunt_failed',
-                        element: this.element
-                    };
-                }
-
                 // 도발 상태 적용 (1턴)
                 const result = target.addStatusEffect('taunt', null, 1);
 
