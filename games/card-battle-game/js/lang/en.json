@@ -228,7 +228,7 @@
         "already_status": "Already {name}!",
         "buff_gained": "{name} +{value}",
         "buff_reduced": "{name} {value}",
-        "defense_gained": "🛡️ Defense +{value}"
+        "defense_gained": "🛡️ DEF +{value}"
       },
       "card_selection": {
         "initial_title": "Start Card Selection",

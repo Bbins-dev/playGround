@@ -80,6 +80,11 @@ class BattleSystem {
 
         // HP 바 표시
         this.hpBarSystem.show();
+
+        // 적 이름 즉시 표시
+        this.hpBarSystem.updateNames(this.player, this.enemy);
+
+        // 기존 방식으로 플레이어 정보 업데이트
         await this.hpBarSystem.updatePlayerInfo(this.player, this.enemy);
     }
 
