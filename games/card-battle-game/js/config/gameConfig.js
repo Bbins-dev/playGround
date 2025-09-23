@@ -423,6 +423,17 @@ const GameConfig = {
             maxVisibleRows: 2,  // 한 번에 표시할 최대 행 수
             viewportHeight: 550 // 가시 영역 높이 (카드 영역에 맞게 조정)
         },
+        // 카드 선택 그리드 레이아웃 설정
+        grid: {
+            paddingTop: 20,         // 위쪽 여백 적정화
+            paddingBottom: 20,      // 아래쪽 여백 축소 (40px → 20px)
+            paddingHorizontal: 15   // 좌우 여백 유지
+        },
+        // 카드 선택 모달 크기 설정
+        modal: {
+            heightRatio: 0.98,      // 뷰포트 높이의 98% 사용 (더 넓게)
+            padding: 15             // 모달 패딩 축소 (30px → 15px)
+        },
         // 카드 확대 팝업 설정
         popup: {
             background: {

@@ -67,11 +67,26 @@ class UIManager {
         const root = document.documentElement;
         const zLayers = GameConfig.zIndexLayers;
 
+        // Z-index 레이어 설정
         root.style.setProperty('--z-canvas', zLayers.canvas);
         root.style.setProperty('--z-ui-elements', zLayers.uiElements);
         root.style.setProperty('--z-main-menu-buttons', zLayers.mainMenuButtons);
         root.style.setProperty('--z-modals', zLayers.modals);
         root.style.setProperty('--z-overlays', zLayers.overlays);
+
+        // 카드 선택 그리드 패딩 설정
+        const cardSelection = GameConfig.cardSelection;
+        if (cardSelection.grid) {
+            root.style.setProperty('--grid-padding-top', cardSelection.grid.paddingTop + 'px');
+            root.style.setProperty('--grid-padding-bottom', cardSelection.grid.paddingBottom + 'px');
+            root.style.setProperty('--grid-padding-horizontal', cardSelection.grid.paddingHorizontal + 'px');
+        }
+
+        // 카드 선택 모달 높이 및 패딩 설정
+        if (cardSelection.modal) {
+            root.style.setProperty('--modal-height', (cardSelection.modal.heightRatio * 100) + 'vh');
+            root.style.setProperty('--modal-padding', cardSelection.modal.padding + 'px');
+        }
     }
 
     // 이벤트 리스너 설정
@@ -117,11 +132,6 @@ class UIManager {
             closeGallery.addEventListener('click', () => this.hideCardGallery());
         }
 
-        // 카드 선택 건너뛰기
-        const skipSelection = document.getElementById('skip-selection');
-        if (skipSelection) {
-            skipSelection.addEventListener('click', () => this.skipCardSelection());
-        }
     }
 
     // 게임 속도 컨트롤 설정
