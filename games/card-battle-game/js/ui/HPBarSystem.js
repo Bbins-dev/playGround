@@ -204,6 +204,8 @@ class HPBarSystem {
             buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
 
             // 방어력 정보 바로 앞에 버프 삽입 (HP바 오른쪽)
+            // 약간의 간격을 위해 marginRight 추가
+            buffElement.style.marginRight = '8px';
             const defenseInfo = hpBarText.querySelector('.defense-info');
             hpBarText.insertBefore(buffElement, defenseInfo);
         }

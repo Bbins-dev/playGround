@@ -223,6 +223,7 @@
       "taunt_failed": "Taunt failed",
       "stunned": "Stunned!",
       "taunted": "Taunted!",
+      "strength_gain": "Strength gained!",
       "already_stunned": "Already stunned!",
       "already_taunted": "Already taunted!",
       "card_selection": {

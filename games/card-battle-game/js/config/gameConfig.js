@@ -225,6 +225,7 @@ const GameConfig = {
     // 애니메이션 설정
     animations: {
         cardActivation: 2000,      // 카드 발동 시 표시 시간 (ms)
+        cardInterval: 1200,        // 카드 간 발동 간격 (ms)
         turnTransition: 1000,      // 턴 전환 시간 (ms)
         damageDisplay: 1500,       // 대미지 표시 시간 (ms)
         statusEffectDisplay: 1000  // 상태이상 표시 시간 (ms)

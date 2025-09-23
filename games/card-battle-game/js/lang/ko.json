@@ -223,6 +223,7 @@
       "taunt_failed": "도발 실패",
       "stunned": "기절함!",
       "taunted": "도발됨!",
+      "strength_gain": "힘을 얻었습니다!",
       "already_stunned": "이미 기절에 걸려있습니다!",
       "already_taunted": "이미 도발에 걸려있습니다!",
       "card_selection": {

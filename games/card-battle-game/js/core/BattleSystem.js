@@ -217,7 +217,7 @@ class BattleSystem {
 
             // 다음 카드 발동 전 잠시 대기
             if (i < activatableCards.length - 1) {
-                await this.wait(500 / this.gameSpeed);
+                await this.wait(GameConfig.animations.cardInterval / this.gameSpeed);
             }
         }
 
@@ -382,6 +382,19 @@ class BattleSystem {
 
     // 상태이상 결과 처리
     async processStatusResult(result, target, targetPosition) {
+        // 중복 상태이상 체크 (이미 걸린 상태)
+        if (result.duplicate) {
+            // 도발 카드에서 이미 도발된 상태일 때
+            if (result.statusType === 'taunt' || (result.messageKey && result.messageKey.includes('already_taunted'))) {
+                this.effectSystem.showDamageNumber(0, targetPosition, 'already_taunted');
+            }
+            // 기절 카드에서 이미 기절된 상태일 때 (향후 추가될 수 있음)
+            else if (result.statusType === 'stun' || (result.messageKey && result.messageKey.includes('already_stunned'))) {
+                this.effectSystem.showDamageNumber(0, targetPosition, 'already_stunned');
+            }
+            return; // 중복 상태면 추가 처리 중단
+        }
+
         // 상태이상별 효과 표시
         const statusType = result.statusType;
         if (statusType) {
@@ -408,6 +421,11 @@ class BattleSystem {
 
             // 방어력 관련 통계 업데이트
             this.battleStats.defenseBuilt += defenseGain;
+        }
+
+        // 힘 버프 획득 처리 (가시갑옷 카드 등)
+        if (result.strengthGain && result.strengthGain > 0) {
+            this.effectSystem.showDamageNumber(result.strengthGain, userPosition, 'strength');
         }
 
         // 자가 대미지가 있는 경우 대미지 이펙트 표시

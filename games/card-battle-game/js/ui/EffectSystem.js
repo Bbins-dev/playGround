@@ -176,6 +176,18 @@ class EffectSystem {
                 className += ' taunt-number';
                 numberElement.textContent = I18nHelper.getText('auto_battle_card_game.ui.taunted') || '도발됨!';
                 break;
+            case 'strength':
+                className += ' strength-number';
+                numberElement.textContent = I18nHelper.getText('auto_battle_card_game.ui.strength_gain') + ` +${amount}`;
+                break;
+            case 'already_stunned':
+                className += ' already-stunned-number';
+                numberElement.textContent = I18nHelper.getText('auto_battle_card_game.ui.already_stunned') || '이미 기절에 걸려있습니다!';
+                break;
+            case 'already_taunted':
+                className += ' already-taunted-number';
+                numberElement.textContent = I18nHelper.getText('auto_battle_card_game.ui.already_taunted') || '이미 도발에 걸려있습니다!';
+                break;
             default:
                 numberElement.textContent = `-${amount}`;
         }
