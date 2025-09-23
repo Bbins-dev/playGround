@@ -190,7 +190,7 @@
         },
         "taunt": {
           "name": "Taunt",
-          "description": "Make the opponent taunted. When taunted, only attack cards will be activated on their next turn."
+          "description": "Taunt the opponent. When taunted, only attack cards can be used."
         }
       },
       "elements": {
