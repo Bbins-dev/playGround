@@ -191,15 +191,7 @@ class CardBattleGame {
 
     // 이벤트 리스너 설정
     setupEventListeners() {
-        // 언어 변경 이벤트 리스너
-        const languageSelect = document.getElementById('languageSelect');
-        if (languageSelect) {
-            languageSelect.addEventListener('change', (e) => {
-                if (typeof changeLanguage === 'function') {
-                    changeLanguage(e.target.value);
-                }
-            });
-        }
+        // 언어 변경은 i18n.js에서 처리함 (중복 제거)
 
         // 뒤로가기 버튼
         const backButton = document.getElementById('back-to-main');

@@ -72,6 +72,11 @@ class I18n {
             
             // Update all language selectors
             this.updateLanguageSelectors(lang);
+
+            // Update UIManager language (스테이지 인디케이터 등)
+            if (window.gameManager && window.gameManager.uiManager) {
+                window.gameManager.uiManager.updateLanguage();
+            }
         }
     }
     
