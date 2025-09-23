@@ -37,6 +37,8 @@ class UIManager {
         // 승리/패배 모달
         this.victoryDefeatModal = new VictoryDefeatModal(this.gameManager);
 
+        // 스테이지 인디케이터
+        this.stageIndicator = new StageIndicator(this.gameManager);
 
         // 초기화
         this.initialize();
@@ -254,6 +256,10 @@ class UIManager {
                 this.show(elements.mainMenuButtons);
                 // HP 바 숨기기
                 elements.hpBars.forEach(bar => this.hide(bar));
+                // 스테이지 인디케이터 숨기기
+                if (this.stageIndicator) {
+                    this.stageIndicator.hide();
+                }
                 break;
 
             case 'battle':
@@ -263,6 +269,10 @@ class UIManager {
                 this.hide(elements.mainMenuButtons);
                 // HP 바 표시
                 elements.hpBars.forEach(bar => this.show(bar));
+                // 스테이지 인디케이터 표시
+                if (this.stageIndicator) {
+                    this.stageIndicator.show();
+                }
 
                 // 현재 게임 속도에 맞게 버튼 상태 업데이트
                 const currentSpeed = this.gameManager.gameSpeed || 1;
@@ -276,6 +286,10 @@ class UIManager {
                 this.hide(elements.mainMenuButtons);
                 // HP 바 숨기기
                 elements.hpBars.forEach(bar => this.hide(bar));
+                // 스테이지 인디케이터 숨기기
+                if (this.stageIndicator) {
+                    this.stageIndicator.hide();
+                }
                 break;
 
             case 'gameOver':
@@ -285,6 +299,10 @@ class UIManager {
                 this.hide(elements.mainMenuButtons);
                 // HP 바 표시 (게임 오버 화면에서도 표시)
                 elements.hpBars.forEach(bar => this.show(bar));
+                // 스테이지 인디케이터 숨기기 (게임 오버 시)
+                if (this.stageIndicator) {
+                    this.stageIndicator.hide();
+                }
                 break;
         }
     }
@@ -754,6 +772,25 @@ class UIManager {
         // i18n 시스템이 있다면 업데이트
         if (window.I18n) {
             window.I18n.updatePage();
+        }
+
+        // 스테이지 인디케이터 언어 업데이트
+        if (this.stageIndicator) {
+            this.stageIndicator.updateLanguage();
+        }
+    }
+
+    // 스테이지 정보 업데이트
+    updateStageInfo(stage, subStage = 1, maxSubStages = 3) {
+        if (this.stageIndicator) {
+            this.stageIndicator.updateStage(stage, subStage, maxSubStages);
+        }
+    }
+
+    // 스테이지 클리어 효과 재생
+    playStageCompleteEffect() {
+        if (this.stageIndicator) {
+            this.stageIndicator.playStageCompleteEffect();
         }
     }
 

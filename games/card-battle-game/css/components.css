@@ -1172,3 +1172,148 @@
     margin: 10px 0 !important;
     text-align: center;
 }
+
+/* ============================================ */
+/* 스테이지 인디케이터 */
+/* ============================================ */
+
+.stage-indicator {
+    position: absolute;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    /* 크기 및 패딩 */
+    padding: 8px 16px;
+    width: auto;
+    min-width: 180px;
+    height: 32px;
+
+    /* 글래스모피즘 효과 */
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: var(--glass-shadow);
+
+    /* 텍스트 */
+    color: var(--glass-text-primary);
+    font-size: 14px;
+    font-weight: 600;
+    text-shadow: var(--glass-text-shadow);
+
+    /* Z-index 설정 */
+    z-index: var(--z-ui-elements);
+
+    /* 트랜지션 */
+    transition: all 0.3s ease;
+    opacity: 1;
+}
+
+.stage-indicator.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* 스테이지 아이콘 */
+.stage-indicator .stage-icon {
+    font-size: 16px;
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+}
+
+/* 스테이지 텍스트 */
+.stage-indicator .stage-text {
+    flex: 1;
+    text-align: center;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5),
+                 var(--glass-text-shadow);
+}
+
+/* 진행도 점들 */
+.stage-indicator .stage-progress {
+    font-size: 12px;
+    letter-spacing: 2px;
+    opacity: 0.8;
+}
+
+/* 호버 효과 (정보 표시용) */
+.stage-indicator:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateX(-50%) translateY(-1px);
+    box-shadow: 0 12px 40px rgba(31, 38, 135, 0.5);
+}
+
+/* 애니메이션 효과 */
+@keyframes stageIndicatorFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+@keyframes stageIndicatorUpdate {
+    0% {
+        transform: translateX(-50%) scale(1);
+    }
+    50% {
+        transform: translateX(-50%) scale(1.05);
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+    100% {
+        transform: translateX(-50%) scale(1);
+    }
+}
+
+.stage-indicator.animate-in {
+    animation: stageIndicatorFadeIn 0.5s ease-out;
+}
+
+.stage-indicator.animate-update {
+    animation: stageIndicatorUpdate 0.6s ease-in-out;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .stage-indicator {
+        top: 60px;
+        min-width: 160px;
+        height: 28px;
+        padding: 6px 14px;
+        font-size: 13px;
+    }
+
+    .stage-indicator .stage-icon {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .stage-indicator {
+        top: 55px;
+        min-width: 140px;
+        height: 24px;
+        padding: 4px 12px;
+        font-size: 12px;
+        gap: 6px;
+    }
+
+    .stage-indicator .stage-icon {
+        font-size: 12px;
+    }
+
+    .stage-indicator .stage-progress {
+        font-size: 10px;
+        letter-spacing: 1px;
+    }
+}

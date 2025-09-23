@@ -85,6 +85,8 @@
       "name_placeholder": "이름을 입력하세요",
       "confirm": "확인",
       "stage": "스테이지",
+      "stage_display": "Stage 1-1",
+      "stage_display_template": "Stage {stage}-{substage}",
       "victory": "승리!",
       "defeat": "패배",
       "damage": "대미지",

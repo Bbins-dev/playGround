@@ -82,6 +82,13 @@
             <!-- 메뉴화면으로 돌아가기 버튼 -->
             <button id="back-to-menu" class="ui-button back-btn menu-btn" data-i18n="auto_battle_card_game.ui.back_to_menu">←</button>
 
+            <!-- 스테이지 인디케이터 -->
+            <div id="stage-indicator" class="stage-indicator hidden">
+                <span class="stage-icon">🏆</span>
+                <span class="stage-text" data-i18n="auto_battle_card_game.ui.stage_display">Stage 1-1</span>
+                <span class="stage-progress">●○○</span>
+            </div>
+
             <!-- 턴 인디케이터 (동적으로 생성) -->
             <div id="turn-indicator-container"></div>
 
@@ -248,6 +255,7 @@
     <script src="js/entities/Enemy.js"></script>
     <script src="js/ui/HPBarSystem.js"></script>
     <script src="js/ui/EffectSystem.js"></script>
+    <script src="js/ui/StageIndicator.js"></script>
     <script src="js/core/GameManager.js"></script>
     <script src="js/core/BattleSystem.js"></script>
     <script src="js/core/CardManager.js"></script>

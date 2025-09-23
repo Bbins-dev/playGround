@@ -441,6 +441,14 @@ class GameManager {
         this.enemy = new Enemy(`스테이지 ${stageNumber} 적`, stageNumber);
         this.enemy.buildDeck();
 
+        // 스테이지 인디케이터 업데이트 (1-1, 1-2, 1-3 형식)
+        if (this.uiManager) {
+            // 현재는 간단하게 스테이지별로 3개 서브스테이지가 있다고 가정
+            const mainStage = Math.ceil(stageNumber / 3);
+            const subStage = ((stageNumber - 1) % 3) + 1;
+            this.uiManager.updateStageInfo(mainStage, subStage, 3);
+        }
+
         // 전투 시작
         this.startBattle();
     }
@@ -474,6 +482,11 @@ class GameManager {
     // 플레이어 승리 처리
     handlePlayerVictory() {
         try {
+            // 스테이지 클리어 효과 재생
+            if (this.uiManager) {
+                this.uiManager.playStageCompleteEffect();
+            }
+
             // 보상 계산
             const rewards = this.enemy.calculateRewards();
 
@@ -617,6 +630,13 @@ class GameManager {
 
         // 적 덱 구성
         this.enemy.buildDeck();
+
+        // 스테이지 인디케이터 업데이트
+        if (this.uiManager) {
+            const mainStage = Math.ceil(this.currentStage / 3);
+            const subStage = ((this.currentStage - 1) % 3) + 1;
+            this.uiManager.updateStageInfo(mainStage, subStage, 3);
+        }
 
         // 플레이어 상태 초기화
         if (this.player) {
