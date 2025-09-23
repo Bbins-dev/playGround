@@ -489,14 +489,12 @@ class HPBarSystem {
         if (this.playerDefenseOverlay) {
             this.playerDefenseOverlay.style.width = '0%';
             this.playerDefenseOverlay.classList.remove('max-defense');
-            this.playerDefenseNumber.classList.add('hidden');
-            this.playerThornsInfo.classList.add('hidden');
+            this.playerDefenseInfo.classList.add('hidden');
         }
         if (this.enemyDefenseOverlay) {
             this.enemyDefenseOverlay.style.width = '0%';
             this.enemyDefenseOverlay.classList.remove('max-defense');
-            this.enemyDefenseNumber.classList.add('hidden');
-            this.enemyThornsInfo.classList.add('hidden');
+            this.enemyDefenseInfo.classList.add('hidden');
         }
 
         // 상태이상 클리어

@@ -416,8 +416,8 @@ class BattleSystem {
         }
     }
 
-    // 대미지 계산 및 적용
-    dealDamage(target, damage) {
+    // 대미지 계산 및 적용 (첫 번째 버전 - 간단한 형태)
+    dealDamageSimple(target, damage) {
         const actualDamage = target.takeDamage(damage);
 
         // 플레이어가 데미지를 가했는지 받았는지 확인

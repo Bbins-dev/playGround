@@ -1202,13 +1202,13 @@ class GameManager {
         this.gameStats.totalTurns++;
     }
 
-    // 사망 원인 설정
-    setDeathCause(cause) {
-        if (!this.gameStats) return;
-        this.gameStats.deathCause = cause;
-    }
+    // 사망 원인 설정 (중복 제거 - legacy 메서드 삭제)
+    // setDeathCause는 위에 최신 버전이 있음
 
-    // 최종 손패 저장
+    // 최종 손패 저장 (중복 제거 - legacy 메서드 삭제)
+    // finalizeGameStats는 위에 최신 버전이 있음
+
+    // 최종 손패 저장 (legacy 메서드)
     saveFinalHand() {
         if (!this.gameStats || !this.player) return;
 
@@ -1268,8 +1268,8 @@ class GameManager {
         return this.gameStats.cardsNeverUsed[0]; // 첫 번째 미사용 카드
     }
 
-    // 최종 통계 계산 (패배 시 호출)
-    finalizeGameStats() {
+    // 최종 통계 계산 (legacy 메서드 - 패배 시 호출)
+    finalizeGameStatsLegacy() {
         if (!this.gameStats) return;
 
         this.saveFinalHand();

@@ -58,9 +58,14 @@ class Card {
         }
     }
 
-    // 명중률 체크
+    // 명중률 체크 (올바른 구현 확인)
     checkAccuracy() {
-        return Math.random() * 100 < this.accuracy;
+        // Math.random() * 100이 accuracy보다 작으면 성공
+        // 예: 80% 명중률이면 0~79.99는 성공, 80~100은 실패
+        const roll = Math.random() * 100;
+        const hit = roll < this.accuracy;
+
+        return hit;
     }
 
     // 현재 언어에 맞는 카드 이름 가져오기

@@ -285,19 +285,45 @@ window.addEventListener('beforeunload', () => {
     }
 });
 
-// 에러 핸들링
+// 에러 핸들링 (강화 버전)
 window.addEventListener('error', (event) => {
+    console.error('전역 JavaScript 오류 감지:', event.error);
 
+    // 게임이 초기화되어 있다면 안전한 상태로 복귀
     if (cardBattleGame && cardBattleGame.isInitialized()) {
         const gameManager = cardBattleGame.getGameManager();
         if (gameManager && gameManager.switchScreen) {
-            gameManager.switchScreen('menu');
+            try {
+                gameManager.switchScreen('menu');
+            } catch (error) {
+                console.error('메뉴로 전환 중 오류:', error);
+            }
         }
     }
 });
 
-// 처리되지 않은 Promise 거부 처리
+// 처리되지 않은 Promise 거부 처리 (강화 버전)
 window.addEventListener('unhandledrejection', (event) => {
+    console.error('처리되지 않은 Promise 거부:', event.reason);
+
+    // 게임 관련 에러인 경우 메뉴로 이동
+    if (event.reason && event.reason.message &&
+        (event.reason.message.includes('battle') ||
+         event.reason.message.includes('card') ||
+         event.reason.message.includes('game'))) {
+
+        if (cardBattleGame && cardBattleGame.isInitialized()) {
+            const gameManager = cardBattleGame.getGameManager();
+            if (gameManager && gameManager.switchScreen) {
+                try {
+                    gameManager.switchScreen('menu');
+                } catch (error) {
+                    console.error('Promise 에러 후 메뉴 전환 실패:', error);
+                }
+            }
+        }
+    }
+
     event.preventDefault();
 });
 

@@ -32,6 +32,12 @@ class Player {
 
     // HP 관련 메서드
     takeDamage(amount, attacker = null) {
+        // 입력값 유효성 검사
+        if (typeof amount !== 'number' || amount < 0) {
+            console.warn('Player.takeDamage: 유효하지 않은 대미지 값:', amount);
+            return 0;
+        }
+
         const previousHP = this.hp;
         let remainingDamage = amount;
 
@@ -52,15 +58,19 @@ class Player {
         // 마지막 받은 대미지 기록
         this.lastDamageTaken = actualDamage;
 
-
         return actualDamage;
     }
 
     heal(amount) {
+        // 입력값 유효성 검사
+        if (typeof amount !== 'number' || amount < 0) {
+            console.warn('Player.heal: 유효하지 않은 회복량:', amount);
+            return 0;
+        }
+
         const previousHP = this.hp;
         this.hp = Math.min(this.maxHP, this.hp + amount);
         const actualHealing = this.hp - previousHP;
-
 
         return actualHealing;
     }
@@ -127,6 +137,12 @@ class Player {
 
     // 상태이상 관련 메서드
     addStatusEffect(statusType, power = null, duration = null) {
+        // 입력값 유효성 검사
+        if (!statusType || typeof statusType !== 'string') {
+            console.warn('Player.addStatusEffect: 유효하지 않은 상태이상 타입:', statusType);
+            return { success: false, reason: 'invalid_input' };
+        }
+
         // 면역 체크
         if (GameConfig.utils.isImmuneToStatus(this.defenseElement, statusType)) {
             return { success: false, reason: 'immune' };
@@ -139,6 +155,7 @@ class Player {
 
         const statusConfig = GameConfig.statusEffects[statusType];
         if (!statusConfig) {
+            console.warn('Player.addStatusEffect: 존재하지 않는 상태이상:', statusType);
             return { success: false, reason: 'invalid_status' };
         }
 
