@@ -11,8 +11,7 @@ class StageIndicator {
 
         // 상태 추적
         this.currentStage = 1;
-        this.currentSubStage = 1;
-        this.maxSubStages = 3; // 기본값, 설정에서 가져올 수 있음
+        this.fullHealInterval = GameConfig.healing.fullHealInterval || 10; // 10스테이지마다 완전 회복
 
         // 애니메이션 상태
         this.isAnimating = false;
@@ -30,20 +29,18 @@ class StageIndicator {
         this.updateLanguage();
     }
 
-    // 스테이지 정보 업데이트
-    updateStage(stage, subStage = 1, maxSubStages = 3) {
+    // 스테이지 정보 업데이트 (실제 스테이지 번호만 받음)
+    updateStage(stage) {
         // 애니메이션 중이면 대기
         if (this.isAnimating) {
-            setTimeout(() => this.updateStage(stage, subStage, maxSubStages), 100);
+            setTimeout(() => this.updateStage(stage), 100);
             return;
         }
 
-        const hasChanged = (this.currentStage !== stage || this.currentSubStage !== subStage);
+        const hasChanged = (this.currentStage !== stage);
 
         // 상태 업데이트
         this.currentStage = stage;
-        this.currentSubStage = subStage;
-        this.maxSubStages = maxSubStages;
 
         // UI 업데이트
         this.updateText();
@@ -57,25 +54,25 @@ class StageIndicator {
 
     // 텍스트 업데이트
     updateText() {
-        // i18n 템플릿 사용
-        const template = I18nHelper.getText('auto_battle_card_game.ui.stage_display_template') || 'Stage {stage}-{substage}';
-        const displayText = template
-            .replace('{stage}', this.currentStage)
-            .replace('{substage}', this.currentSubStage);
+        // i18n 템플릿 사용 (실제 스테이지 번호만 표시)
+        const template = I18nHelper.getText('auto_battle_card_game.ui.stage_display_template') || 'Stage {stage}';
+        const displayText = template.replace('{stage}', this.currentStage);
 
         this.stageText.textContent = displayText;
 
-        // data-i18n 속성도 업데이트 (필요시)
+        // data-i18n 속성도 업데이트
         this.stageText.setAttribute('data-stage', this.currentStage);
-        this.stageText.setAttribute('data-substage', this.currentSubStage);
     }
 
-    // 진행도 업데이트
+    // 진행도 업데이트 (10개 단위로 표시)
     updateProgress() {
+        // 현재 스테이지에서 10개 단위 내 위치 계산
+        const currentInGroup = ((this.currentStage - 1) % this.fullHealInterval) + 1;
         let progressText = '';
 
-        for (let i = 1; i <= this.maxSubStages; i++) {
-            if (i <= this.currentSubStage) {
+        // 10개 점으로 진행도 표시
+        for (let i = 1; i <= this.fullHealInterval; i++) {
+            if (i <= currentInGroup) {
                 progressText += '●'; // 완료된 단계
             } else {
                 progressText += '○'; // 미완료 단계
@@ -171,10 +168,11 @@ class StageIndicator {
 
     // 현재 스테이지 정보 반환
     getCurrentStageInfo() {
+        const currentInGroup = ((this.currentStage - 1) % this.fullHealInterval) + 1;
         return {
             stage: this.currentStage,
-            subStage: this.currentSubStage,
-            maxSubStages: this.maxSubStages,
+            currentInGroup: currentInGroup,
+            fullHealInterval: this.fullHealInterval,
             displayText: this.stageText.textContent,
             progressText: this.stageProgress.textContent
         };
@@ -182,9 +180,9 @@ class StageIndicator {
 
     // 스테이지 정보를 GameConfig에서 가져와서 업데이트
     updateFromGameConfig() {
-        // GameConfig에서 최대 서브스테이지 수 가져오기
-        if (typeof GameConfig !== 'undefined' && GameConfig.stages) {
-            this.maxSubStages = GameConfig.stages.subStagesPerStage || 3;
+        // GameConfig에서 완전 회복 주기 가져오기
+        if (typeof GameConfig !== 'undefined' && GameConfig.healing) {
+            this.fullHealInterval = GameConfig.healing.fullHealInterval || 10;
         }
 
         // 진행도 다시 계산
@@ -193,10 +191,11 @@ class StageIndicator {
 
     // 디버그 정보 출력
     debug() {
+        const currentInGroup = ((this.currentStage - 1) % this.fullHealInterval) + 1;
         console.log('StageIndicator Debug:', {
             currentStage: this.currentStage,
-            currentSubStage: this.currentSubStage,
-            maxSubStages: this.maxSubStages,
+            currentInGroup: currentInGroup,
+            fullHealInterval: this.fullHealInterval,
             isVisible: !this.indicator.classList.contains('hidden'),
             isAnimating: this.isAnimating,
             displayText: this.stageText.textContent,

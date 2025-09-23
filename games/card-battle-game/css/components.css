@@ -1230,7 +1230,9 @@
     flex: 1;
     text-align: center;
     font-weight: 700;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5),
+    /* 한쪽 대각선 방향으로 은은한 그림자 */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7),
+                 2px 2px 6px rgba(0, 0, 0, 0.4),
                  var(--glass-text-shadow);
 }
 
@@ -1239,6 +1241,9 @@
     font-size: 12px;
     letter-spacing: 2px;
     opacity: 0.8;
+    /* 대각선 방향 은은한 그림자 (조금 더 진하게) */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8),
+                 1px 1px 4px rgba(0, 0, 0, 0.5);
 }
 
 /* 호버 효과 (정보 표시용) */

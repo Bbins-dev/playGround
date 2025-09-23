@@ -441,12 +441,9 @@ class GameManager {
         this.enemy = new Enemy(`스테이지 ${stageNumber} 적`, stageNumber);
         this.enemy.buildDeck();
 
-        // 스테이지 인디케이터 업데이트 (1-1, 1-2, 1-3 형식)
+        // 스테이지 인디케이터 업데이트 (실제 스테이지 번호 표시)
         if (this.uiManager) {
-            // 현재는 간단하게 스테이지별로 3개 서브스테이지가 있다고 가정
-            const mainStage = Math.ceil(stageNumber / 3);
-            const subStage = ((stageNumber - 1) % 3) + 1;
-            this.uiManager.updateStageInfo(mainStage, subStage, 3);
+            this.uiManager.updateStageInfo(stageNumber);
         }
 
         // 전투 시작
@@ -633,9 +630,7 @@ class GameManager {
 
         // 스테이지 인디케이터 업데이트
         if (this.uiManager) {
-            const mainStage = Math.ceil(this.currentStage / 3);
-            const subStage = ((this.currentStage - 1) % 3) + 1;
-            this.uiManager.updateStageInfo(mainStage, subStage, 3);
+            this.uiManager.updateStageInfo(this.currentStage);
         }
 
         // 플레이어 상태 초기화

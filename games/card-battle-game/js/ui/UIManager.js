@@ -780,10 +780,10 @@ class UIManager {
         }
     }
 
-    // 스테이지 정보 업데이트
-    updateStageInfo(stage, subStage = 1, maxSubStages = 3) {
+    // 스테이지 정보 업데이트 (실제 스테이지 번호만 전달)
+    updateStageInfo(stage) {
         if (this.stageIndicator) {
-            this.stageIndicator.updateStage(stage, subStage, maxSubStages);
+            this.stageIndicator.updateStage(stage);
         }
     }
 
