@@ -66,6 +66,9 @@ class Renderer {
         const dpr = window.devicePixelRatio || 1;
         this.canvas.width = this.width * dpr;
         this.canvas.height = this.height * dpr;
+
+        // 변환 상태 리셋 후 DPR 스케일 적용
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.scale(dpr, dpr);
 
         // 캔버스 스타일
@@ -475,12 +478,16 @@ class Renderer {
         this.canvas.width = width;
         this.canvas.height = height;
 
-        // 영역 재계산
+        // 영역 재계산 (초기화 시와 동일한 로직 사용)
+        const hpBarHeight = 60;
+        const handAreaHeight = GameConfig.cardSizes.hand.height * GameConfig.handLayout.rows +
+                              GameConfig.cardSizes.hand.height * GameConfig.handLayout.rowSpacing;
+
         this.areas.enemyHand.width = width - 100;
-        this.areas.playerHand.y = height - 170;
+        this.areas.playerHand.y = height - hpBarHeight - handAreaHeight;  // 초기화와 동일한 계산
         this.areas.playerHand.width = width - 100;
         this.areas.battlefield.width = width - 100;
-        this.areas.battlefield.height = height - 400;
+        this.areas.battlefield.height = height - (hpBarHeight * 2) - (handAreaHeight * 2) - 40;
 
         this.setupCanvas();
     }
