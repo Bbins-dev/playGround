@@ -50,6 +50,12 @@
     --glass-text-glow: 0 0 10px rgba(255, 255, 255, 0.3);
     --glass-victory-glow: 0 0 15px rgba(39, 174, 96, 0.5);
     --glass-defeat-glow: 0 0 15px rgba(231, 76, 60, 0.5);
+
+    /* 스크롤바 색상 */
+    --scrollbar-bg: transparent;
+    --scrollbar-track: rgba(255, 255, 255, 0.05);
+    --scrollbar-thumb: rgba(255, 255, 255, 0.2);
+    --scrollbar-thumb-hover: rgba(255, 255, 255, 0.3);
 }
 
 /* 플레이어 이름 입력 모달 스타일 */
