@@ -58,7 +58,7 @@ body {
 /* 언어 선택기 */
 .language-selector {
     position: absolute;
-    top: 20px;
+    top: 50px;
     right: 20px;
     z-index: 1000;
 }
@@ -95,7 +95,7 @@ body {
 /* 게임 속도 조절 (세련된 스타일) */
 .speed-controls {
     position: absolute;
-    top: 80px;
+    top: 110px;
     right: 20px;
     display: flex;
     flex-direction: column;
@@ -242,8 +242,9 @@ body {
 
 #card-gallery-btn {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 1000;
 }
 
@@ -251,7 +252,7 @@ body {
 /* 메뉴화면으로 돌아가기 버튼 (세련된 스타일) */
 .back-btn.menu-btn {
     position: absolute;
-    top: 20px;
+    top: 50px;
     left: 20px;
     width: 48px;
     height: 48px;
@@ -590,7 +591,7 @@ body {
 /* HP 바 시스템 */
 .hp-bar-container {
     position: absolute;
-    width: 60%;
+    width: calc(60% + 60px);
     height: 30px;
     background: rgba(0, 0, 0, 0.7);
     border: 2px solid #fff;
@@ -605,13 +606,15 @@ body {
 }
 
 .hp-bar-enemy {
-    top: 40px;
-    left: 20%;
+    top: 85px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .hp-bar-player {
-    bottom: 40px;
-    left: 20%;
+    bottom: 85px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .hp-bar-fill {

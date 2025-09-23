@@ -13,6 +13,7 @@ class CardSelectionModal {
         this.detailCard = document.getElementById('card-detail-content');
         this.selectBtn = document.getElementById('card-detail-select');
         this.cancelBtn = document.getElementById('card-detail-cancel');
+        this.mainCancelBtn = document.getElementById('card-selection-cancel');
 
         // 상태 관리
         this.availableCards = [];
@@ -45,6 +46,13 @@ class CardSelectionModal {
                 if (e.target === this.detailModal) {
                     this.hideDetailModal();
                 }
+            });
+        }
+
+        // 메인 취소 버튼 (메인 메뉴로 돌아가기)
+        if (this.mainCancelBtn) {
+            this.mainCancelBtn.addEventListener('click', () => {
+                this.handleMainCancel();
             });
         }
 
@@ -218,6 +226,21 @@ class CardSelectionModal {
         }
         if (this.detailCard) {
             this.detailCard.innerHTML = '';
+        }
+    }
+
+    /**
+     * 메인 취소 버튼 처리 (메인 메뉴로 돌아가기)
+     */
+    handleMainCancel() {
+        // 모달 숨기기
+        this.hide();
+
+        // 게임 매니저를 통해 메인 메뉴로 돌아가기
+        if (this.gameManager && this.gameManager.returnToMainMenu) {
+            this.gameManager.returnToMainMenu();
+        } else {
+            console.warn('[CardSelectionModal] gameManager.returnToMainMenu가 없습니다');
         }
     }
 
