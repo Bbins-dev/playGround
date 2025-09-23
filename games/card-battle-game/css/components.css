@@ -1179,7 +1179,7 @@
 
 .stage-indicator {
     position: absolute;
-    top: 70px;
+    top: 90px;
     left: 50%;
     transform: translateX(-50%);
 
@@ -1291,7 +1291,7 @@
 /* 반응형 디자인 */
 @media (max-width: 768px) {
     .stage-indicator {
-        top: 60px;
+        top: 80px;
         min-width: 160px;
         height: 28px;
         padding: 6px 14px;
@@ -1305,7 +1305,7 @@
 
 @media (max-width: 480px) {
     .stage-indicator {
-        top: 55px;
+        top: 75px;
         min-width: 140px;
         height: 24px;
         padding: 4px 12px;

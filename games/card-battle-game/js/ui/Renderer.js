@@ -7,24 +7,23 @@ class Renderer {
         this.width = canvas.width;
         this.height = canvas.height;
 
-        // 렌더링 영역 정의 (HP바 사이 중앙 배치)
-        const hpBarHeight = 60; // HP바 영역 높이
+        // 렌더링 영역 정의 (GameConfig UI 위치 기반)
         const handAreaHeight = GameConfig.cardSizes.hand.height * GameConfig.handLayout.rows +
                               GameConfig.cardSizes.hand.height * GameConfig.handLayout.rowSpacing;
 
         this.areas = {
-            // 적 손패 영역 (상단 HP바 직후)
+            // 적 손패 영역 (GameConfig.ui.enemyHand 기반)
             enemyHand: {
                 x: 50,
-                y: hpBarHeight,  // HP바 직후 시작
+                y: GameConfig.ui.enemyHand.y - handAreaHeight / 2,  // 중앙 기준으로 계산
                 width: this.width - 100,
                 height: handAreaHeight,
                 maxCards: GameConfig.handLayout.cardsPerRow * GameConfig.handLayout.rows
             },
-            // 플레이어 손패 영역 (하단 HP바 직전)
+            // 플레이어 손패 영역 (GameConfig.ui.playerHand 기반)
             playerHand: {
                 x: 50,
-                y: this.height - hpBarHeight - handAreaHeight,  // HP바 직전 배치
+                y: GameConfig.ui.playerHand.y - handAreaHeight / 2,  // 중앙 기준으로 계산
                 width: this.width - 100,
                 height: handAreaHeight,
                 maxCards: GameConfig.handLayout.cardsPerRow * GameConfig.handLayout.rows
@@ -32,9 +31,9 @@ class Renderer {
             // 중앙 전투 영역
             battlefield: {
                 x: 50,
-                y: hpBarHeight + handAreaHeight + 20,
+                y: GameConfig.ui.enemyHand.y + handAreaHeight / 2 + 20,
                 width: this.width - 100,
-                height: this.height - (hpBarHeight * 2) - (handAreaHeight * 2) - 40
+                height: GameConfig.ui.playerHand.y - GameConfig.ui.enemyHand.y - handAreaHeight - 40
             }
         };
 
@@ -552,16 +551,23 @@ class Renderer {
         this.canvas.width = width;
         this.canvas.height = height;
 
-        // 영역 재계산 (초기화 시와 동일한 로직 사용)
-        const hpBarHeight = 60;
+        // 영역 재계산 (GameConfig 기반으로 수정)
         const handAreaHeight = GameConfig.cardSizes.hand.height * GameConfig.handLayout.rows +
                               GameConfig.cardSizes.hand.height * GameConfig.handLayout.rowSpacing;
 
+        // GameConfig.ui 값 기반으로 위치 재계산 (초기화와 동일)
+        this.areas.enemyHand.x = 50;
+        this.areas.enemyHand.y = GameConfig.ui.enemyHand.y - handAreaHeight / 2;
         this.areas.enemyHand.width = width - 100;
-        this.areas.playerHand.y = height - hpBarHeight - handAreaHeight;  // 초기화와 동일한 계산
+
+        this.areas.playerHand.x = 50;
+        this.areas.playerHand.y = GameConfig.ui.playerHand.y - handAreaHeight / 2;
         this.areas.playerHand.width = width - 100;
+
+        this.areas.battlefield.x = 50;
+        this.areas.battlefield.y = GameConfig.ui.enemyHand.y + handAreaHeight / 2 + 20;
         this.areas.battlefield.width = width - 100;
-        this.areas.battlefield.height = height - (hpBarHeight * 2) - (handAreaHeight * 2) - 40;
+        this.areas.battlefield.height = GameConfig.ui.playerHand.y - GameConfig.ui.enemyHand.y - handAreaHeight - 40;
 
         this.setupCanvas();
     }

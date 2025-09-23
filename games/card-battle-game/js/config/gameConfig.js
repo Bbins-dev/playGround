@@ -277,8 +277,8 @@ const GameConfig = {
     ui: {
         playerInfo: { x: 50, y: 750 },           // 플레이어 정보 위치
         enemyInfo: { x: 50, y: 50 },             // 적 정보 위치
-        playerHand: { x: 375, y: 650 },          // 플레이어 손패 중앙 위치 (HP바에서 더 위로)
-        enemyHand: { x: 375, y: 230 },           // 적 손패 중앙 위치 (HP바에서 더 아래로)
+        playerHand: { x: 375, y: 660 },          // 플레이어 손패 중앙 위치 (화면 중앙+180px)
+        enemyHand: { x: 375, y: 300 },           // 적 손패 중앙 위치 (화면 중앙-180px)
         cardActivation: { x: 375, y: 480 },      // 카드 발동 표시 위치 (화면 중앙)
         stageInfo: { x: 700, y: 750 },           // 스테이지 정보 위치
         enemyName: { x: 700, y: 50 }             // 적 이름 위치

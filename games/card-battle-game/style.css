@@ -8,8 +8,10 @@
 body {
     font-family: 'Arial', sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
+    padding: 20px 0;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 /* 일반 숨김 클래스 - UI 요소 가시성 제어 */
@@ -603,12 +605,12 @@ body {
 }
 
 .hp-bar-enemy {
-    top: 20px;
+    top: 40px;
     left: 20%;
 }
 
 .hp-bar-player {
-    bottom: 20px;
+    bottom: 40px;
     left: 20%;
 }
 
