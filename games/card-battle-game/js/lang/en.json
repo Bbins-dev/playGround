@@ -224,6 +224,7 @@
       "already_taunted": "Already taunted!",
       "card_selection": {
         "initial_title": "Start Card Selection",
+        "instruction": "Choose an attack card to start the game!",
         "reward_title": "Reward Card Selection",
         "replacement_title": "Card Replacement",
         "selected_count": "Selected",

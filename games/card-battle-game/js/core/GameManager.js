@@ -17,7 +17,7 @@ class GameManager {
 
         // 화면 관리
         this.mainMenu = null;
-        this.cardSelection = null;
+        this.cardSelectionModal = null; // DOM 모달로 변경
         this.currentScreen = null;
 
         // 플레이어
@@ -166,7 +166,8 @@ class GameManager {
 
         // 화면들 초기화
         this.mainMenu = new MainMenu(this);
-        this.cardSelection = new CardSelection(this);
+        // 기존 CardSelection 대신 CardSelectionModal 사용
+        this.cardSelectionModal = new CardSelectionModal(this);
 
         // 플레이어 이름 모달 초기화
         this.playerNameModal = new PlayerNameModal();
@@ -268,7 +269,8 @@ class GameManager {
                 this.currentScreen = null; // 전투는 특별 처리
                 break;
             case 'cardSelection':
-                this.currentScreen = this.cardSelection;
+                // CardSelectionModal을 사용하므로 Canvas 화면 불필요
+                this.currentScreen = null;
                 break;
             case 'gameOver':
                 this.currentScreen = null; // 이전 화면 정리
@@ -353,12 +355,14 @@ class GameManager {
         // 플레이어 생성
         this.player = new Player(playerName, true);
 
-        // 카드 선택 화면으로 이동
-        if (this.cardSelection) {
-            this.cardSelection.setupInitialSelection();
-            this.switchScreen('cardSelection');
+        // 새로운 CardSelectionModal 사용
+        if (this.cardSelectionModal) {
+            this.cardSelectionModal.show((selectedCard) => {
+                console.log('선택된 카드:', selectedCard);
+                this.completeInitialCardSelection(selectedCard);
+            });
         } else {
-            console.error('카드 선택 시스템이 초기화되지 않았습니다');
+            console.error('카드 선택 모달이 초기화되지 않았습니다');
             this.initializeNewGame();
         }
     }
@@ -422,8 +426,8 @@ class GameManager {
     }
 
     // 초기 카드 선택 완료
-    completeInitialCardSelection(selectedCardId) {
-        const selectedCard = CardDatabase.createCardInstance(selectedCardId);
+    completeInitialCardSelection(selectedCard) {
+        // selectedCard는 이미 Card 인스턴스임
         if (selectedCard) {
             this.player.addCard(selectedCard);
 

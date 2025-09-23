@@ -1322,3 +1322,84 @@
         letter-spacing: 1px;
     }
 }
+
+/* ============= 카드 선택 모달 스타일 ============= */
+.card-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+    justify-items: center;
+}
+
+.card-selection-item {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 8px;
+}
+
+.card-selection-item:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.selection-instruction {
+    text-align: center;
+    color: var(--glass-text-secondary);
+    margin-bottom: 20px;
+    font-size: 16px;
+    text-shadow: var(--glass-text-shadow);
+}
+
+/* 카드 상세 모달 스타일 */
+.card-detail-content {
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+
+.card-detail-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    min-height: 300px;
+}
+
+.card-detail-display .dom-card {
+    margin: 0 auto;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+    .card-selection-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 15px;
+        padding: 15px;
+        max-height: 60vh;
+    }
+
+    .card-detail-content {
+        width: 95%;
+        max-width: 350px;
+    }
+
+    .card-detail-display {
+        min-height: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-selection-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .selection-instruction {
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+}

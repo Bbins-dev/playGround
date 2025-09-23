@@ -224,6 +224,7 @@
       "already_taunted": "이미 도발에 걸려있습니다!",
       "card_selection": {
         "initial_title": "시작 카드 선택",
+        "instruction": "공격 카드를 선택하여 게임을 시작하세요!",
         "reward_title": "보상 카드 선택",
         "replacement_title": "카드 교체",
         "selected_count": "선택됨",

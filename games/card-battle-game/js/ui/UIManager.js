@@ -12,7 +12,7 @@ class UIManager {
         this.renderer = new Renderer(this.canvas);
 
         // UI 상태
-        this.currentScreen = 'menu'; // 'menu' | 'battle' | 'cardSelection' | 'gallery'
+        this.currentScreen = 'menu'; // 'menu' | 'battle' | 'gallery'
         this.isInteractive = true;
 
         // UI 화면 상태 초기화
@@ -30,8 +30,8 @@ class UIManager {
 
         // 모달 시스템
         this.modals = {
-            cardGallery: document.getElementById('card-gallery-modal'),
-            cardSelection: document.getElementById('card-selection-modal')
+            cardGallery: document.getElementById('card-gallery-modal')
+            // cardSelection은 CardSelectionModal 클래스에서 직접 관리
         };
 
         // 승리/패배 모달
@@ -204,9 +204,6 @@ class UIManager {
         // 화면별 렌더링 (모달이 없을 때만)
         if (this.currentScreen === 'menu' && this.gameManager.mainMenu) {
             this.gameManager.mainMenu.render(this.gameManager.ctx, this.gameManager.canvas);
-        } else if (this.currentScreen === 'cardSelection' && this.gameManager.cardSelection) {
-            // 카드 선택 화면은 CardSelection 클래스에서 직접 렌더링
-            this.gameManager.cardSelection.render(this.gameManager.ctx, this.gameManager.canvas);
         } else if (this.currentScreen === 'gallery' && this.gameManager.cardGallery) {
             // 카드 갤러리는 CardGallery 클래스에서 직접 렌더링
             this.gameManager.cardGallery.render(this.gameManager.ctx, this.gameManager.canvas);
@@ -226,11 +223,7 @@ class UIManager {
             debug: this.gameManager.debug || false
         };
 
-        // 화면별 추가 정보
-        if (this.currentScreen === 'cardSelection') {
-            state.availableCards = this.gameManager.availableCards || [];
-            state.selectedCards = this.gameManager.selectedCards || [];
-        }
+        // 화면별 추가 정보 (cardSelection은 DOM 모달로 처리하므로 제거)
 
         return state;
     }
@@ -289,15 +282,8 @@ class UIManager {
                 this.updateSpeedButton(currentSpeed);
                 break;
 
-            case 'cardSelection':
-                this.hide(elements.speedControls);
-                this.hide(elements.cardGalleryBtn);
-                this.show(elements.backToMenuBtn);      // 메인메뉴로 버튼 표시
-                this.hide(elements.mainMenuButtons);
-                // HP 바 숨기기
-                elements.hpBars.forEach(bar => this.hide(bar));
-                // 스테이지 인디케이터 숨기기
-                if (this.stageIndicator) {
+            // cardSelection 케이스 제거 - DOM 모달로 처리
+            // case 'cardSelection': 더 이상 사용하지 않음
                     this.stageIndicator.hide();
                 }
                 break;
@@ -326,9 +312,7 @@ class UIManager {
             case 'battle':
                 this.initializeBattle();
                 break;
-            case 'cardSelection':
-                this.initializeCardSelection();
-                break;
+            // cardSelection 케이스 제거 - DOM 모달로 처리
             case 'gameOver':
                 // 게임 오버 상태에서는 특별한 초기화 불필요
                 // 모달이 모든 UI 처리를 담당
@@ -352,13 +336,7 @@ class UIManager {
         }
     }
 
-    // 카드 선택 화면 초기화
-    initializeCardSelection() {
-        // HP 바 숨김
-        if (this.gameManager.hpBarSystem) {
-            this.gameManager.hpBarSystem.hide();
-        }
-    }
+    // initializeCardSelection 메서드 제거 - DOM 모달로 처리
 
     // 캔버스 클릭 처리
     handleCanvasClick(event) {
@@ -394,9 +372,7 @@ class UIManager {
             case 'battle':
                 this.handleBattleClick(x, y);
                 break;
-            case 'cardSelection':
-                this.handleCardSelectionClick(x, y);
-                break;
+            // cardSelection 케이스 제거 - DOM 모달로 처리
         }
     }
 
@@ -423,13 +399,7 @@ class UIManager {
         }
     }
 
-    // 카드 선택 클릭 처리
-    handleCardSelectionClick(x, y) {
-        // CardSelection 클래스에서 클릭 처리
-        if (this.gameManager.cardSelection && this.gameManager.cardSelection.handlePointerInput) {
-            this.gameManager.cardSelection.handlePointerInput(x, y, this.gameManager.canvas);
-        }
-    }
+    // handleCardSelectionClick 메서드 제거 - DOM 모달로 처리
 
     // 플레이어 카드 클릭 처리
     handlePlayerCardClick(cardIndex) {
@@ -447,9 +417,8 @@ class UIManager {
         // 각 화면의 특수 키 처리
         if (this.currentScreen === 'menu' && this.gameManager.mainMenu && this.gameManager.mainMenu.handleInput) {
             this.gameManager.mainMenu.handleInput(event.key);
-        } else if (this.currentScreen === 'cardSelection' && this.gameManager.cardSelection && this.gameManager.cardSelection.handleInput) {
-            this.gameManager.cardSelection.handleInput(event.key);
         }
+        // cardSelection은 DOM 모달로 처리하므로 제거
 
         // 전역 키보드 단축키
         switch (event.key) {
