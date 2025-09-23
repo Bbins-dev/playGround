@@ -273,7 +273,7 @@
       "click_to_select_doubleclick_for_detail": "クリックで選択、ダブルクリックで詳細",
       "card_detail_title": "カード詳細",
       "damage": "ダメージ",
-      "defense": "防御",
+      "card_defense": "防御",
       "accuracy": "命中率",
       "no_description": "説明がありません。",
       "play_style_defensive": "守備的",

@@ -273,7 +273,7 @@
       "click_to_select_doubleclick_for_detail": "Click to select, double-click for details",
       "card_detail_title": "Card Details",
       "damage": "Damage",
-      "defense": "Defense",
+      "card_defense": "Defense",
       "accuracy": "Accuracy",
       "no_description": "No description available.",
       "play_style_defensive": "Defensive",
