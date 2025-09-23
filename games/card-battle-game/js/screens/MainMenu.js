@@ -65,33 +65,38 @@ class MainMenu {
             if (button) {
                 this.menuButtons[item.text] = button;
 
+                // 기존 이벤트 리스너 제거 (중복 방지)
+                button.removeEventListener('click', button._mainMenuClickHandler);
+                button.removeEventListener('focus', button._mainMenuFocusHandler);
+
                 // 클릭 이벤트 리스너 추가
-                button.addEventListener('click', () => {
+                button._mainMenuClickHandler = () => {
+                    console.log('🎮 메뉴 버튼 클릭:', item.text); // 디버깅
                     this.currentSelection = index;
                     this.selectCurrent();
-                });
+                };
+                button.addEventListener('click', button._mainMenuClickHandler);
 
                 // 키보드 포커스 이벤트 추가
-                button.addEventListener('focus', () => {
+                button._mainMenuFocusHandler = () => {
                     this.currentSelection = index;
                     this.updateButtonSelection();
-                });
+                };
+                button.addEventListener('focus', button._mainMenuFocusHandler);
             }
         });
     }
 
     // 메뉴 표시
     show() {
-        // 모달이 활성화된 경우 버튼을 표시하지 않음
-        const gameManager = window.gameManager;
-        if (gameManager?.uiManager?.modalState) {
-            return; // 모달 중에는 메뉴 버튼 표시 방지
-        }
-
         if (this.menuContainer) {
             this.menuContainer.classList.remove('hidden');
+            this.menuContainer.style.display = 'flex'; // 명시적으로 표시
             this.updateButtonSelection();
         }
+        // 렌더링 강제 요청
+        this.needsRedraw = true;
+        console.log('🎨 MainMenu show() - needsRedraw 설정됨'); // 디버깅용
     }
 
     // 메뉴 숨기기
@@ -129,6 +134,7 @@ class MainMenu {
 
     // 메뉴 렌더링 (최적화)
     render(ctx, canvas) {
+        console.log('🎨 MainMenu render 호출됨'); // 디버깅용
         const currentTime = performance.now();
 
         // 애니메이션 업데이트 (항상 실행)
@@ -136,9 +142,11 @@ class MainMenu {
 
         // 렌더링이 필요하거나 16ms 이상 지났을 때만 렌더링 (60fps 제한)
         if (!this.needsRedraw && (currentTime - this.lastRenderTime < 16)) {
+            console.log('🎨 MainMenu render 스킵됨 - needsRedraw:', this.needsRedraw); // 디버깅용
             return;
         }
 
+        console.log('🎨 MainMenu 실제 렌더링 시작'); // 디버깅용
         this.renderBackground(ctx, canvas);
         this.renderTitle(ctx, canvas);
         // Canvas 메뉴 렌더링 비활성화 - DOM 버튼 사용
@@ -203,6 +211,7 @@ class MainMenu {
 
     // 제목 렌더링
     renderTitle(ctx, canvas) {
+        console.log('🎨 MainMenu renderTitle 호출됨'); // 디버깅용
         const config = GameConfig.mainMenu.title;
         const subtitleConfig = GameConfig.mainMenu.subtitle;
         const centerX = GameConfig.canvas.width / 2; // 버튼과 동일한 고정 중앙점 사용
@@ -484,10 +493,27 @@ class MainMenu {
 
     // 게임 설명 표시
     showGameTutorial() {
-        const tutorialText = this.getGameTutorialText();
+        const modal = document.getElementById('game-tutorial-modal');
+        const closeBtn = document.getElementById('close-tutorial');
 
-        // 간단한 alert로 일단 표시 (나중에 모달로 개선 가능)
-        alert(tutorialText);
+        if (modal) {
+            modal.classList.remove('hidden');
+
+            // 닫기 버튼 이벤트 (한 번만 등록)
+            if (closeBtn && !closeBtn._tutorialHandler) {
+                closeBtn._tutorialHandler = () => modal.classList.add('hidden');
+                closeBtn.addEventListener('click', closeBtn._tutorialHandler);
+            }
+
+            // ESC 키로 닫기
+            const handleEsc = (e) => {
+                if (e.key === 'Escape') {
+                    modal.classList.add('hidden');
+                    document.removeEventListener('keydown', handleEsc);
+                }
+            };
+            document.addEventListener('keydown', handleEsc);
+        }
     }
 
     // 게임 설명 텍스트 가져오기

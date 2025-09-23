@@ -1326,8 +1326,8 @@
 /* ============= 카드 선택 모달 스타일 ============= */
 .card-selection-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 40px;
     padding: 20px;
     max-height: 70vh;
     overflow-y: auto;

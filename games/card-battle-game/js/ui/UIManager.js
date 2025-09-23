@@ -283,10 +283,6 @@ class UIManager {
                 break;
 
             // cardSelection 케이스 제거 - DOM 모달로 처리
-            // case 'cardSelection': 더 이상 사용하지 않음
-                    this.stageIndicator.hide();
-                }
-                break;
 
             case 'gameOver':
                 this.hide(elements.speedControls);
@@ -463,19 +459,23 @@ class UIManager {
     // 홈페이지로 돌아가기 (게임 허브로)
     backToHomepage() {
         const confirmMessage = this.getI18nText('auto_battle_card_game.ui.confirm_back_to_homepage');
-        if (confirm(confirmMessage)) {
+        console.log('🏠 홈페이지로 돌아가기 요청:', confirmMessage);
+        // 임시로 confirm 비활성화 - 다이얼로그 폭탄 방지
+        // if (confirm(confirmMessage)) {
             // 게임 상태 정리
             this.cleanupGameState();
 
             // 홈페이지로 이동 (로컬 홈페이지)
             window.location.href = '../../';
-        }
+        // }
     }
 
     // 메뉴화면으로 돌아가기 (게임 내 메인 메뉴로)
     backToMenu() {
         const confirmMessage = this.getI18nText('auto_battle_card_game.ui.confirm_back_to_menu');
-        if (confirm(confirmMessage)) {
+        console.log('🔙 메뉴로 돌아가기 요청:', confirmMessage);
+        // 임시로 confirm 비활성화 - 다이얼로그 폭탄 방지
+        // if (confirm(confirmMessage)) {
             // 게임 상태 정리
             this.cleanupGameState();
 
@@ -491,7 +491,7 @@ class UIManager {
 
             // 게임 내 메인 메뉴로 이동
             this.gameManager.showMainMenu();
-        }
+        // }
     }
 
     // 게임 상태 정리 (공통 로직 - 개선된 타이머 정리 포함)

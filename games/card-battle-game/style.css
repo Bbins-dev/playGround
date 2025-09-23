@@ -554,41 +554,6 @@ body {
     font-weight: bold;
 }
 
-/* 카드 선택 그리드 - 갤러리와 동일한 스타일 */
-.card-selection-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 260px);
-    gap: 40px;
-    flex: 1;
-    overflow-y: auto;
-    padding: var(--grid-padding-top, 30px) var(--grid-padding-horizontal, 15px) var(--grid-padding-bottom, 40px);
-    margin-bottom: 0;
-    justify-content: center;
-    /* 스크롤바 스타일 */
-    scrollbar-width: thin;
-    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-bg);
-}
-
-/* 웹킷 기반 브라우저 스크롤바 스타일 */
-.card-selection-grid::-webkit-scrollbar {
-    width: 8px;
-    background: var(--scrollbar-bg);
-}
-
-.card-selection-grid::-webkit-scrollbar-track {
-    background: var(--scrollbar-track);
-    border-radius: 4px;
-}
-
-.card-selection-grid::-webkit-scrollbar-thumb {
-    background: var(--scrollbar-thumb);
-    border-radius: 4px;
-    transition: background 0.3s ease;
-}
-
-.card-selection-grid::-webkit-scrollbar-thumb:hover {
-    background: var(--scrollbar-thumb-hover);
-}
 
 /* 카드 선택 아이템 - 갤러리 카드와 동일한 스타일 */
 .card-selection-item {

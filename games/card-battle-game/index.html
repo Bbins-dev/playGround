@@ -56,7 +56,7 @@
             </div>
 
             <!-- 메인 메뉴 DOM 버튼들 (Canvas 메뉴 대체) -->
-            <div id="main-menu-buttons" class="main-menu-container">
+            <div id="main-menu-buttons" class="main-menu-container" style="display: flex;">
                 <button class="menu-button" id="start-game-btn">
                     <span class="menu-icon">⚔️</span>
                     <span class="menu-text" data-i18n="auto_battle_card_game.ui.start_game">게임 시작</span>
@@ -142,6 +142,21 @@
                     <button id="card-detail-select" class="ui-button primary" data-i18n="auto_battle_card_game.ui.select">선택</button>
                     <button id="card-detail-cancel" class="ui-button secondary" data-i18n="auto_battle_card_game.ui.cancel">취소</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- 게임 설명 모달 -->
+        <div id="game-tutorial-modal" class="modal hidden">
+            <div class="modal-content glass-morphism">
+                <h2 data-i18n="auto_battle_card_game.ui.game_tutorial">게임 설명</h2>
+                <div class="tutorial-content">
+                    <p data-i18n="auto_battle_card_game.tutorial.line1">공격카드 중 하나를 선택하여 게임을 시작하세요!</p>
+                    <p data-i18n="auto_battle_card_game.tutorial.line2">카드는 손패 왼쪽부터 자동으로 발동됩니다!</p>
+                    <p data-i18n="auto_battle_card_game.tutorial.line3">각 스테이지 클리어 시 랜덤으로 등장하는 세개의 카드 중에 하나를 선택하여 손패 왼쪽에 가져옵니다!</p>
+                    <p data-i18n="auto_battle_card_game.tutorial.line4">최대 손패 카드는 10장입니다! 스테이지 클리어시 카드를 선택하여 추가, 손패의 카드와 교체, 다음 스테이지로 스킵 중에 선택 가능합니다!</p>
+                    <p data-i18n="auto_battle_card_game.tutorial.line5">몇 스테이지까지 갈 수 있을까요! 당신의 운을 시험해보세요!</p>
+                </div>
+                <button id="close-tutorial" class="ui-button" data-i18n="auto_battle_card_game.ui.close">닫기</button>
             </div>
         </div>
 
@@ -267,19 +282,28 @@
     <script src="js/entities/Enemy.js"></script>
     <script src="js/ui/HPBarSystem.js"></script>
     <script src="js/ui/EffectSystem.js"></script>
-    <script src="js/ui/StageIndicator.js"></script>
-    <script src="js/core/GameManager.js"></script>
-    <script src="js/core/BattleSystem.js"></script>
-    <script src="js/core/CardManager.js"></script>
+    <!-- UI 기본 컴포넌트 먼저 로드 -->
     <script src="js/ui/CardRenderer.js"></script>
     <script src="js/ui/DOMCardRenderer.js"></script>
     <script src="js/ui/Renderer.js"></script>
-    <script src="js/ui/UIManager.js"></script>
+    <script src="js/ui/AnimationManager.js"></script>
+    <script src="js/ui/StageIndicator.js"></script>
+
+    <!-- 모달 클래스들 -->
     <script src="js/ui/PlayerNameModal.js"></script>
     <script src="js/ui/CardSelectionModal.js"></script>
     <script src="js/ui/VictoryDefeatModal.js"></script>
-    <script src="js/ui/AnimationManager.js"></script>
+
+    <!-- 화면 클래스들 -->
     <script src="js/screens/MainMenu.js"></script>
+
+    <!-- UI 관리자 (모든 UI 컴포넌트 이후) -->
+    <script src="js/ui/UIManager.js"></script>
+
+    <!-- 코어 시스템들 (UI 이후) -->
+    <script src="js/core/BattleSystem.js"></script>
+    <script src="js/core/CardManager.js"></script>
+    <script src="js/core/GameManager.js"></script>
     <!-- CardSelection.js 제거 - CardSelectionModal.js로 대체됨 -->
     <script src="game.js"></script>
 </body>

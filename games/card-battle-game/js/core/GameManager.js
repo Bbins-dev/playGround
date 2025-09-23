@@ -441,6 +441,14 @@ class GameManager {
 
         this.currentStage = stageNumber;
 
+        // 메인 메뉴 숨김 (null 체크)
+        if (this.mainMenu) {
+            this.mainMenu.hide();
+        }
+
+        // 전투 화면으로 전환
+        this.switchScreen('battle');
+
         // 적 생성
         this.enemy = new Enemy(`스테이지 ${stageNumber} 적`, stageNumber);
         this.enemy.buildDeck();
