@@ -109,6 +109,25 @@ class BattleSystem {
             currentPlayer.resetDefense();
         }
 
+        // 스테이지 회복 애니메이션 (플레이어 턴 시작 시만)
+        if (isPlayerTurn && this.gameManager.stageHealingAmount > 0) {
+            const playerPosition = this.effectSystem.getPlayerPosition();
+            this.effectSystem.showDamageNumber(
+                this.gameManager.stageHealingAmount,
+                playerPosition,
+                'heal'
+            );
+
+            // HP바 업데이트
+            this.hpBarSystem.updateHP(this.player, true);
+
+            // 회복량 초기화 (다음 턴에는 표시하지 않도록)
+            this.gameManager.stageHealingAmount = 0;
+
+            // 회복 애니메이션을 위한 잠시 대기
+            await this.wait(800);
+        }
+
         // 기절 상태 체크
         if (currentPlayer.hasStatusEffect('stun')) {
             const position = isPlayerTurn ?

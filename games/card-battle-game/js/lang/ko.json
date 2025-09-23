@@ -107,6 +107,9 @@
       "buffs": {
       },
       "combat_log": "전투 로그",
+      "heal": "회복",
+      "stage_heal": "스테이지 회복",
+      "full_heal": "완전 회복!",
       "enemy_names": {
         "1": "훈련용 허수아비",
         "2": "나무 인형",

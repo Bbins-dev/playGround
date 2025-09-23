@@ -67,6 +67,9 @@ class GameManager {
             cardUsageStats: new Map(), // 카드별 사용 횟수
             elementUsageStats: new Map() // 속성별 사용 횟수
         };
+
+        // 스테이지 회복 추적 (애니메이션용)
+        this.stageHealingAmount = 0;
     }
 
     // 게임 초기화
@@ -564,6 +567,9 @@ class GameManager {
             this.currentStage++;
             console.log('🚀 GameManager: 다음 스테이지로 증가 ->', this.currentStage);
 
+            // 플레이어 체력 회복 처리
+            this.applyStageHealing();
+
             // 다음 적 생성
             this.setupNextBattle();
             console.log('🚀 GameManager: setupNextBattle 완료');
@@ -580,6 +586,29 @@ class GameManager {
     }
 
     /**
+     * 스테이지 클리어 후 체력 회복 처리
+     */
+    applyStageHealing() {
+        if (!this.player) return;
+
+        // 10의 배수 스테이지 체크
+        const isFullHealStage = this.currentStage % GameConfig.healing.fullHealInterval === 0;
+
+        if (isFullHealStage) {
+            // 완전 회복
+            const healAmount = this.player.maxHP - this.player.hp;
+            this.player.hp = this.player.maxHP;
+            this.stageHealingAmount = healAmount;
+            console.log(`💚 스테이지 ${this.currentStage}: 완전 회복 (+${healAmount})`);
+        } else {
+            // 일반 회복 (5 HP)
+            const healAmount = this.player.heal(GameConfig.healing.stageHealing);
+            this.stageHealingAmount = healAmount;
+            console.log(`💚 스테이지 ${this.currentStage}: 일반 회복 (+${healAmount})`);
+        }
+    }
+
+    /**
      * 다음 전투 설정
      */
     setupNextBattle() {
@@ -591,7 +620,6 @@ class GameManager {
 
         // 플레이어 상태 초기화
         if (this.player) {
-            this.player.hp = this.player.maxHP;
             this.player.lastDamageTaken = 0;
             this.player.defense = 0;
             // 모든 상태이상 초기화 (도발, 기절 등)

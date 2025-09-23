@@ -107,6 +107,9 @@
       "buffs": {
       },
       "combat_log": "戦闘ログ",
+      "heal": "回復",
+      "stage_heal": "ステージ回復",
+      "full_heal": "完全回復！",
       "enemy_names": {
         "1": "訓練用かかし",
         "2": "木の人形",

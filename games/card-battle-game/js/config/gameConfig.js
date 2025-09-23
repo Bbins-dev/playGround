@@ -165,8 +165,14 @@ const GameConfig = {
     // 플레이어 설정
     player: {
         maxHandSize: 10,
-        startingHP: 10,
+        startingHP: 80,
         defaultDefenseElement: 'normal'
+    },
+
+    // 체력 회복 시스템
+    healing: {
+        stageHealing: 5,        // 매 스테이지 회복량
+        fullHealInterval: 10    // 10의 배수 스테이지마다 완전 회복
     },
 
     // 플레이어 이름 설정

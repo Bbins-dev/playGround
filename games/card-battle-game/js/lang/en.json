@@ -107,6 +107,9 @@
       "buffs": {
       },
       "combat_log": "Combat Log",
+      "heal": "Heal",
+      "stage_heal": "Stage Healing",
+      "full_heal": "Full Recovery!",
       "enemy_names": {
         "1": "Training Dummy",
         "2": "Wooden Puppet",
