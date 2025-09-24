@@ -1,4 +1,5 @@
 // DOM 기반 카드 렌더러 - CardRenderer와 완전히 동일한 시각적 스타일을 DOM으로 구현
+// 캐시 버스팅: 2025-09-25 00:34
 
 class DOMCardRenderer {
     constructor() {
@@ -469,12 +470,13 @@ class DOMCardRenderer {
         // 이모지만 표시
         const emoji = elementConfig.emoji;
 
-        // 폰트 크기 계산
-        const fontSize = Math.floor(height * config.fontSize);
+        // 폰트 크기 계산 (손패 카드에서 약간 크게)
+        const fontSizeRatio = config.fontSize * 1.15;  // 15% 증가
+        const fontSize = Math.floor(height * fontSizeRatio);
 
-        // 배경색 계산 (투명하게)
+        // 배경색 계산 (연한 회색으로 통일)
         const backgroundColor = config.backgroundOpacity > 0
-            ? `rgba(${ColorUtils.hexToRgb(elementConfig.color)}, ${config.backgroundOpacity})`
+            ? 'rgba(150, 150, 150, 0.7)'  // 연한 회색 배경
             : 'transparent';
 
         // 이모지 위치 계산 (카드 우상단) - DOMCardRenderer만 조정

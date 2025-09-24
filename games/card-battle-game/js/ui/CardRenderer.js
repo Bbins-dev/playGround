@@ -645,9 +645,18 @@ class CardRenderer {
 
         // 배경 그리기 (설정된 경우)
         if (config.backgroundOpacity > 0) {
-            ctx.fillStyle = elementConfig.color || '#666';
+            // 속성색을 어둡게 해서 배경색으로 사용 (라벨과 동일한 방식)
+            const backgroundColor = ColorUtils.darken(elementConfig.color, config.darkenFactor || 0.3);
+            ctx.fillStyle = backgroundColor;
             ctx.globalAlpha = config.backgroundOpacity;
-            this.roundRect(ctx, emojiX, emojiY, emojiSize, emojiSize, config.borderRadius);
+
+            // 완벽한 원형 배경 그리기
+            const centerX = emojiX + emojiSize / 2;
+            const centerY = emojiY + emojiSize / 2;
+            const radius = emojiSize / 2;
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
             ctx.fill();
         }
 

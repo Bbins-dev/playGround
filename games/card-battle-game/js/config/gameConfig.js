@@ -356,7 +356,8 @@ const GameConfig = {
             position: { x: 0.82, y: 0.06 },  // 카드 크기 대비 비율 (우상단)
             fontSize: 0.08,                   // 이모지는 더 크게
             padding: { x: 4, y: 4 },          // 작은 패딩
-            backgroundOpacity: 0,             // 배경 없음
+            backgroundOpacity: 0.9,           // 배경 투명도 (라벨과 동일)
+            darkenFactor: 0.3,                // 속성색을 어둡게 하는 비율 (라벨과 동일)
             borderRadius: 50,                 // 원형
             textColor: '#fff',                // 텍스트 색상
             textOutline: {
