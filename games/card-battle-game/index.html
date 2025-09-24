@@ -152,16 +152,92 @@
 
         <!-- 게임 설명 모달 -->
         <div id="game-tutorial-modal" class="modal hidden">
-            <div class="modal-content glass-morphism">
+            <div class="modal-content glass-morphism tutorial-modal">
                 <h2 data-i18n="auto_battle_card_game.ui.game_tutorial">게임 설명</h2>
-                <div class="tutorial-content">
-                    <p data-i18n="auto_battle_card_game.tutorial.line1">공격카드 중 하나를 선택하여 게임을 시작하세요!</p>
-                    <p data-i18n="auto_battle_card_game.tutorial.line2">카드는 손패 왼쪽부터 자동으로 발동됩니다!</p>
-                    <p data-i18n="auto_battle_card_game.tutorial.line3">각 스테이지 클리어 시 랜덤으로 등장하는 세개의 카드 중에 하나를 선택하여 손패 왼쪽에 가져옵니다!</p>
-                    <p data-i18n="auto_battle_card_game.tutorial.line4">최대 손패 카드는 10장입니다! 스테이지 클리어시 카드를 선택하여 추가, 손패의 카드와 교체, 다음 스테이지로 스킵 중에 선택 가능합니다!</p>
-                    <p data-i18n="auto_battle_card_game.tutorial.line5">몇 스테이지까지 갈 수 있을까요! 당신의 운을 시험해보세요!</p>
+
+                <!-- 기본 게임 플레이 가이드 -->
+                <div class="tutorial-section basic-guide">
+                    <h3 data-i18n="auto_battle_card_game.tutorial.basic_gameplay">🎮 기본 플레이 방법</h3>
+                    <div class="tutorial-content">
+                        <p data-i18n="auto_battle_card_game.tutorial.line1">공격카드 중 하나를 선택하여 게임을 시작하세요!</p>
+                        <p data-i18n="auto_battle_card_game.tutorial.line2">카드는 손패 왼쪽부터 자동으로 발동됩니다!</p>
+                        <p data-i18n="auto_battle_card_game.tutorial.line3">각 스테이지 클리어 시 랜덤으로 등장하는 세개의 카드 중에 하나를 선택하여 손패 왼쪽에 가져옵니다!</p>
+                        <p data-i18n="auto_battle_card_game.tutorial.line4">최대 손패 카드는 10장입니다! 스테이지 클리어시 카드를 선택하여 추가, 손패의 카드와 교체, 다음 스테이지로 스킵 중에 선택 가능합니다!</p>
+                        <p data-i18n="auto_battle_card_game.tutorial.line5">몇 스테이지까지 갈 수 있을까요! 당신의 운을 시험해보세요!</p>
+                    </div>
                 </div>
-                <button id="close-tutorial" class="ui-button" data-i18n="auto_battle_card_game.ui.close">닫기</button>
+
+                <!-- 속성 상성 가이드 -->
+                <div class="tutorial-section element-guide">
+                    <h3 data-i18n="auto_battle_card_game.tutorial.element_system">⚔️ 속성 상성 시스템</h3>
+                    <div class="element-effectiveness">
+                        <div class="effectiveness-row">
+                            <div class="element-item fire">
+                                <span class="element-emoji">🔥</span>
+                                <span class="element-name" data-i18n="auto_battle_card_game.ui.elements.fire">불</span>
+                            </div>
+                            <span class="effectiveness-arrow">→</span>
+                            <div class="element-item poison strong">
+                                <span class="element-emoji">☠️</span>
+                                <span class="element-name" data-i18n="auto_battle_card_game.ui.elements.poison">독</span>
+                                <span class="effectiveness-text strong" data-i18n="auto_battle_card_game.tutorial.strong">강점 1.5배</span>
+                            </div>
+                        </div>
+                        <div class="effectiveness-row">
+                            <div class="element-item water">
+                                <span class="element-emoji">💧</span>
+                                <span class="element-name" data-i18n="auto_battle_card_game.ui.elements.water">물</span>
+                            </div>
+                            <span class="effectiveness-arrow">→</span>
+                            <div class="element-item fire strong">
+                                <span class="element-emoji">🔥</span>
+                                <span class="element-name" data-i18n="auto_battle_card_game.ui.elements.fire">불</span>
+                                <span class="effectiveness-text strong" data-i18n="auto_battle_card_game.tutorial.strong">강점 1.5배</span>
+                            </div>
+                        </div>
+                        <div class="effectiveness-row">
+                            <div class="element-item electric">
+                                <span class="element-emoji">⚡</span>
+                                <span class="element-name" data-i18n="auto_battle_card_game.ui.elements.electric">전기</span>
+                            </div>
+                            <span class="effectiveness-arrow">→</span>
+                            <div class="element-item water strong">
+                                <span class="element-emoji">💧</span>
+                                <span class="element-name" data-i18n="auto_battle_card_game.ui.elements.water">물</span>
+                                <span class="effectiveness-text strong" data-i18n="auto_battle_card_game.tutorial.strong">강점 1.5배</span>
+                            </div>
+                        </div>
+                        <div class="effectiveness-row">
+                            <div class="element-item poison">
+                                <span class="element-emoji">☠️</span>
+                                <span class="element-name" data-i18n="auto_battle_card_game.ui.elements.poison">독</span>
+                            </div>
+                            <span class="effectiveness-arrow">→</span>
+                            <div class="element-item electric strong">
+                                <span class="element-emoji">⚡</span>
+                                <span class="element-name" data-i18n="auto_battle_card_game.ui.elements.electric">전기</span>
+                                <span class="effectiveness-text strong" data-i18n="auto_battle_card_game.tutorial.strong">강점 1.5배</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="element-notes">
+                        <p class="element-note weakness" data-i18n="auto_battle_card_game.tutorial.weakness_note">⚠️ 약점으로 공격하면 0.5배 대미지로 감소합니다!</p>
+                        <p class="element-note normal" data-i18n="auto_battle_card_game.tutorial.normal_note">💯 노멀 속성은 모든 속성에 1.0배 대미지(강점/약점 없음)</p>
+                    </div>
+                </div>
+
+                <!-- 속성 방어 시스템 -->
+                <div class="tutorial-section defense-guide">
+                    <h3 data-i18n="auto_battle_card_game.tutorial.defense_system">🛡️ 속성 방어 시스템</h3>
+                    <div class="defense-explanation">
+                        <p data-i18n="auto_battle_card_game.tutorial.defense_line1">• 손패의 카드 속성에 따라 자동으로 방어 속성이 결정됩니다</p>
+                        <p data-i18n="auto_battle_card_game.tutorial.defense_line2">• 가장 많은 속성의 카드가 방어 속성이 됩니다</p>
+                        <p data-i18n="auto_battle_card_game.tutorial.defense_line3">• 같은 수의 카드를 가진 속성끼리는 상쇄되어 노먀 방어가 됩니다</p>
+                        <p data-i18n="auto_battle_card_game.tutorial.defense_line4">• 방어 카드로 쌓은 방어력은 속성 상성에 영향받지 않습니다</p>
+                    </div>
+                </div>
+
+                <button id="close-tutorial" class="ui-button primary" data-i18n="auto_battle_card_game.ui.close">닫기</button>
             </div>
         </div>
 
