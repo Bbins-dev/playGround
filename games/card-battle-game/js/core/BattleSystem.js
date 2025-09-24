@@ -323,6 +323,10 @@ class BattleSystem {
                 await this.processDefenseResult(result, user, userPosition);
                 break;
 
+            case 'special':
+                await this.processSpecialResult(result, user, targetPosition);
+                break;
+
             default:
         }
 
@@ -674,6 +678,20 @@ class BattleSystem {
         }
 
         return actualDamage;
+    }
+
+    // 특수 카드 결과 처리
+    async processSpecialResult(result, user, targetPosition) {
+        if (result.effectType === 'heal' && result.templateData) {
+            const userPos = user === this.player ?
+                this.effectSystem.getPlayerPosition() :
+                this.effectSystem.getEnemyPosition();
+
+            // 템플릿 직접 사용 (heal_effect 템플릿 활용)
+            const template = I18nHelper.getText('auto_battle_card_game.ui.templates.heal_effect');
+            const message = template.replace('{value}', result.templateData.value);
+            this.effectSystem.showDamageNumber(0, userPos, 'effect', message);
+        }
     }
 
     // 턴 스킵 설정

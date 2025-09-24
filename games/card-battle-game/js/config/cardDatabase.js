@@ -489,23 +489,16 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.bandage.description',
             effect: function(user, target, battleSystem) {
-                const healAmount = this.power;
-
-                // 사용자 체력 회복
-                if (user.heal) {
-                    user.heal(healAmount);
-                } else {
-                    // 폴백: 직접 체력 증가
-                    user.hp = Math.min(user.hp + healAmount, user.maxHP);
-                }
+                const maxHeal = this.power;
+                const actualHealing = user.heal ? user.heal(maxHeal) : 0;
 
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.templates.heal_effect',
-                    healAmount: healAmount,
+                    healAmount: actualHealing,
                     element: this.element,
                     effectType: 'heal',
-                    templateData: { value: healAmount }
+                    templateData: { value: actualHealing }
                 };
             }
         });
