@@ -128,7 +128,7 @@ const CardDatabase = {
             }
         });
 
-        // 뇌진탕 카드 (대미지 2 + 40% 기절)
+        // 뇌진탕 카드 (대미지 2 + 60% 기절)
         this.addCard({
             id: 'concussion',
             nameKey: 'auto_battle_card_game.ui.cards.concussion.name',
@@ -139,7 +139,7 @@ const CardDatabase = {
             cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.concussion.description',
-            stunChance: 100,
+            stunChance: 60,
             effect: function(user, target, battleSystem) {
                 const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
