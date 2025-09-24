@@ -147,7 +147,7 @@ class BattleSystem {
             this.hpBarSystem.updateStatusEffects(currentPlayer, isPlayerTurn);
 
             // 턴 종료
-            this.endTurn();
+            await this.endTurn();
             return;
         }
 
@@ -164,7 +164,7 @@ class BattleSystem {
                 this.effectSystem.showStatusEffect('debuff', position, 0);
 
                 // 턴 종료
-                this.endTurn();
+                await this.endTurn();
                 return;
             }
         }
@@ -185,7 +185,7 @@ class BattleSystem {
         const activatableCards = currentPlayer.getActivatableCards();
 
         if (activatableCards.length === 0) {
-            this.endTurn();
+            await this.endTurn();
             return;
         }
 
@@ -234,7 +234,7 @@ class BattleSystem {
         }
 
         // 모든 카드 발동 완료
-        this.endTurn();
+        await this.endTurn();
     }
 
     // 개별 카드 발동
@@ -494,7 +494,7 @@ class BattleSystem {
     }
 
     // 턴 종료
-    endTurn() {
+    async endTurn() {
         const currentPlayer = this.turnProgress.currentPlayer;
 
 
@@ -506,7 +506,14 @@ class BattleSystem {
         const isPlayerTurn = currentPlayer === this.player;
         this.hpBarSystem.updateStatusEffects(currentPlayer, isPlayerTurn);
 
-        // 턴 종료 처리
+        // 턴 종료 처리 (독 상태이상 체크 포함)
+        const poisonDamageApplied = await this.processPoisonDamage(currentPlayer, isPlayerTurn);
+
+        // 독 데미지 적용 후 즉시 전투 종료 체크
+        if (poisonDamageApplied && this.checkBattleEnd()) {
+            return; // 독 데미지로 전투가 끝났으면 여기서 종료
+        }
+
         currentPlayer.endTurn();
 
         // 턴 전환
@@ -692,6 +699,34 @@ class BattleSystem {
             const message = template.replace('{value}', result.templateData.value);
             this.effectSystem.showDamageNumber(0, userPos, 'effect', message);
         }
+    }
+
+    // 독 상태이상 대미지 처리
+    async processPoisonDamage(player, isPlayerTurn) {
+        const poisonEffect = player.statusEffects.find(e => e.type === 'poisoned');
+        if (!poisonEffect) return false;
+
+        const damage = Math.floor(player.maxHP * poisonEffect.power / 100);
+        if (damage > 0) {
+            const position = isPlayerTurn ?
+                this.effectSystem.getPlayerPosition() :
+                this.effectSystem.getEnemyPosition();
+
+            // 독 데미지 시각적 표시
+            this.effectSystem.showDamageNumber(damage, position, 'poison');
+
+            // 짧은 대기 후 실제 대미지 적용 (시각적 효과와 동기화)
+            await this.wait(200);
+
+            // 실제 대미지 적용
+            const actualDamage = player.takeDamage(damage);
+
+            // HP 바 업데이트
+            await this.hpBarSystem.updateHP(player, isPlayerTurn);
+
+            return actualDamage > 0;
+        }
+        return false;
     }
 
     // 턴 스킵 설정

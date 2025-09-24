@@ -1168,6 +1168,16 @@ body {
         0 0 10px rgba(46, 204, 113, 0.5); /* 초록 글로우 */
 }
 
+.poison-number {
+    color: #9B59B6;
+    text-shadow:
+        3px 3px 0 #000,
+        -3px 3px 0 #000,
+        3px -3px 0 #000,
+        -3px -3px 0 #000,
+        0 0 10px rgba(155, 89, 182, 0.5); /* 보라 글로우 */
+}
+
 .debuff-number {
     color: #E74C3C;
     text-shadow:

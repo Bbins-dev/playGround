@@ -234,9 +234,7 @@ class Player {
     }
 
     endTurn() {
-        // 턴 종료 시 상태이상 처리 (중독)
-        this.processStatusEffect('poisoned', 'end');
-
+        // 독 데미지는 BattleSystem에서 처리하므로 여기서는 제외
         // 상태이상 지속시간 감소
         this.updateStatusEffects();
 

@@ -472,6 +472,9 @@ class HPBarSystem {
             case 'shield':
                 numberElement.textContent = `🛡️+${amount}`;
                 break;
+            case 'poison':
+                numberElement.textContent = `☠️${amount}`;
+                break;
             default:
                 numberElement.textContent = amount;
         }
