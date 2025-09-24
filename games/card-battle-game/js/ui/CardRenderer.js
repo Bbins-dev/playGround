@@ -19,7 +19,7 @@ class CardRenderer {
         ctx.save();
 
         // 카드 배경 그리기
-        this.drawCardBackground(ctx, card, x, y, width, height, isHighlighted || isNextActive);
+        this.drawCardBackground(ctx, card, x, y, width, height, isHighlighted || isNextActive, context);
 
         // 카드 테두리 그리기
         this.drawCardBorder(ctx, card, x, y, width, height, isSelected, isNextActive, isFadingOut, fadeStartTime);
@@ -34,13 +34,19 @@ class CardRenderer {
     }
 
     // 카드 배경 그리기
-    drawCardBackground(ctx, card, x, y, width, height, isActive = false) {
+    drawCardBackground(ctx, card, x, y, width, height, isActive = false, context = 'default') {
         const elementConfig = GameConfig.elements[card.element];
         let bgColor = elementConfig ? elementConfig.color : '#666';
 
-        // 활성화 상태일 때 밝게
+        // 활성화 상태일 때 색상 조정 (context에 따라 다르게)
         if (isActive) {
-            bgColor = ColorUtils.lighten(bgColor, 0.3);
+            if (context === 'runtime' && !this.style.cardColors.enlargedHighlight) {
+                // 확대 카드는 기본 색상 유지 (runtime context인데 enlargedHighlight가 false)
+                // bgColor 변경 없음
+            } else {
+                // 손패 카드는 약간만 밝게
+                bgColor = ColorUtils.lighten(bgColor, this.style.cardColors.handHighlightFactor);
+            }
         }
 
         // 카드 배경
@@ -538,29 +544,21 @@ class CardRenderer {
 
         const config = this.style.elementLabel;
 
-        // 속성명 가져오기 (간단한 다국어 지원)
+        // 속성명 가져오기 (안전한 다국어 지원)
         let elementName = elementConfig.name || card.element;
 
-        // 현재 언어가 영어인 경우 영어 속성명 사용
+        // 언어별 속성명 매핑 (안전한 방식)
         const langSelect = document.getElementById('languageSelect');
-        if (langSelect && langSelect.value === 'en') {
-            const englishNames = {
-                'fire': 'Fire',
-                'water': 'Water',
-                'electric': 'Electric',
-                'poison': 'Poison',
-                'normal': 'Normal'
-            };
-            elementName = englishNames[card.element] || elementName;
-        } else if (langSelect && langSelect.value === 'ja') {
-            const japaneseNames = {
-                'fire': '火',
-                'water': '水',
-                'electric': '電気',
-                'poison': '毒',
-                'normal': 'ノーマル'
-            };
-            elementName = japaneseNames[card.element] || elementName;
+        const currentLang = langSelect ? langSelect.value : 'ko';
+
+        const elementNames = {
+            ko: { fire: '불', water: '물', electric: '전기', poison: '독', normal: '노멀', special: '특수' },
+            en: { fire: 'Fire', water: 'Water', electric: 'Electric', poison: 'Poison', normal: 'Normal', special: 'Special' },
+            ja: { fire: '火', water: '水', electric: '電기', poison: '毒', normal: 'ノーマル', special: '特別' }
+        };
+
+        if (elementNames[currentLang] && elementNames[currentLang][card.element]) {
+            elementName = elementNames[currentLang][card.element];
         }
 
         // 폰트 크기 계산

@@ -19,7 +19,7 @@ class DOMCardRenderer {
         cardElement.className = 'dom-card';
 
         // 카드 기본 스타일
-        this.applyCardStyles(cardElement, card, width, height, isSelected, isHighlighted || isNextActive, opacity);
+        this.applyCardStyles(cardElement, card, width, height, isSelected, isHighlighted || isNextActive, opacity, context);
 
         // 카드 내용 생성
         const content = this.createCardContent(card, width, height, context);
@@ -29,13 +29,19 @@ class DOMCardRenderer {
     }
 
     // 카드 기본 스타일 적용 (CardRenderer.drawCardBackground + drawCardBorder와 동일)
-    applyCardStyles(element, card, width, height, isSelected, isActive, opacity) {
+    applyCardStyles(element, card, width, height, isSelected, isActive, opacity, context = 'default') {
         const elementConfig = GameConfig.elements[card.element];
         let bgColor = elementConfig ? elementConfig.color : '#666';
 
-        // 활성화 상태일 때 밝게 (CardRenderer.lightenColor와 동일 로직)
+        // 활성화 상태일 때 색상 조정 (context에 따라 다르게)
         if (isActive) {
-            bgColor = this.lightenColor(bgColor, 0.3);
+            if (context === 'runtime' && !this.style.cardColors.enlargedHighlight) {
+                // 확대 카드는 기본 색상 유지 (runtime context인데 enlargedHighlight가 false)
+                // bgColor 변경 없음
+            } else {
+                // 손패 카드는 약간만 밝게
+                bgColor = ColorUtils.lighten(bgColor, this.style.cardColors.handHighlightFactor);
+            }
         }
 
         // CardRenderer의 roundRect + gradient와 동일한 스타일
@@ -391,36 +397,28 @@ class DOMCardRenderer {
 
         const config = this.style.elementLabel;
 
-        // 속성명 가져오기 (간단한 다국어 지원)
+        // 속성명 가져오기 (안전한 다국어 지원)
         let elementName = elementConfig.name || card.element;
 
-        // 현재 언어가 영어인 경우 영어 속성명 사용
+        // 언어별 속성명 매핑 (안전한 방식)
         const langSelect = document.getElementById('languageSelect');
-        if (langSelect && langSelect.value === 'en') {
-            const englishNames = {
-                'fire': 'Fire',
-                'water': 'Water',
-                'electric': 'Electric',
-                'poison': 'Poison',
-                'normal': 'Normal'
-            };
-            elementName = englishNames[card.element] || elementName;
-        } else if (langSelect && langSelect.value === 'ja') {
-            const japaneseNames = {
-                'fire': '火',
-                'water': '水',
-                'electric': '電気',
-                'poison': '毒',
-                'normal': 'ノーマル'
-            };
-            elementName = japaneseNames[card.element] || elementName;
+        const currentLang = langSelect ? langSelect.value : 'ko';
+
+        const elementNames = {
+            ko: { fire: '불', water: '물', electric: '전기', poison: '독', normal: '노멀', special: '특수' },
+            en: { fire: 'Fire', water: 'Water', electric: 'Electric', poison: 'Poison', normal: 'Normal', special: 'Special' },
+            ja: { fire: '火', water: '水', electric: '電気', poison: '毒', normal: 'ノーマル', special: '特別' }
+        };
+
+        if (elementNames[currentLang] && elementNames[currentLang][card.element]) {
+            elementName = elementNames[currentLang][card.element];
         }
 
         // 폰트 크기 계산
         const fontSize = Math.floor(height * config.fontSize);
 
         // 배경색 계산 (속성색을 어둡게)
-        const backgroundColor = this.darkenColor(elementConfig.color, config.darkenFactor);
+        const backgroundColor = ColorUtils.darken(elementConfig.color, config.darkenFactor);
 
         // 라벨 위치 계산 (카드 좌상단)
         const labelX = width * config.position.x;
@@ -455,39 +453,6 @@ class DOMCardRenderer {
         return labelElement;
     }
 
-    // 색상 어둡게 하기 (CardRenderer.darkenColor와 동일)
-    darkenColor(color, factor) {
-        if (color.startsWith('#')) {
-            const hex = color.slice(1);
-            const r = parseInt(hex.slice(0, 2), 16);
-            const g = parseInt(hex.slice(2, 4), 16);
-            const b = parseInt(hex.slice(4, 6), 16);
-
-            const newR = Math.floor(r * (1 - factor));
-            const newG = Math.floor(g * (1 - factor));
-            const newB = Math.floor(b * (1 - factor));
-
-            return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
-        }
-        return color;
-    }
-
-    // 색상 밝게 하기 (CardRenderer.lightenColor와 동일)
-    lightenColor(color, factor) {
-        if (color.startsWith('#')) {
-            const hex = color.slice(1);
-            const r = parseInt(hex.slice(0, 2), 16);
-            const g = parseInt(hex.slice(2, 4), 16);
-            const b = parseInt(hex.slice(4, 6), 16);
-
-            const newR = Math.min(255, Math.floor(r + (255 - r) * factor));
-            const newG = Math.min(255, Math.floor(g + (255 - g) * factor));
-            const newB = Math.min(255, Math.floor(b + (255 - b) * factor));
-
-            return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
-        }
-        return color;
-    }
 }
 
 // 전역 객체로 등록

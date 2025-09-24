@@ -363,6 +363,11 @@ const GameConfig = {
         shadows: {
             card: '0 4px 8px rgba(0, 0, 0, 0.3)',
             hover: '0 8px 16px rgba(0, 0, 0, 0.4)'
+        },
+        // 카드 색상 설정 (활성화 상태 등)
+        cardColors: {
+            handHighlightFactor: 0.15,    // 손패 활성 카드 밝기 증가 비율 (기존의 절반)
+            enlargedHighlight: false      // 확대 카드는 기본 색상 유지
         }
     },
 

@@ -297,7 +297,7 @@ class EffectSystem {
             // 통일된 카드 렌더러로 카드 생성
             const cardElement = this.domCardRenderer.createCard(card, cardSize.width, cardSize.height, {
                 isSelected: false,
-                isHighlighted: true, // 확대 시 하이라이트 효과
+                isHighlighted: false, // 확대 카드는 기본 색상 유지
                 isNextActive: false,
                 opacity: 1,
                 context: 'runtime' // 카드 발동 시 실시간 스탯 반영
