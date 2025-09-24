@@ -328,11 +328,21 @@
       }
     },
     "tutorial": {
+      "basic_gameplay": "🎮 Basic Gameplay",
       "line1": "Select one attack card to start the game!",
       "line2": "Cards activate automatically from left to right in your hand!",
       "line3": "After clearing each stage, choose one of three randomly appearing cards to add to the left of your hand!",
       "line4": "Maximum hand size is 10 cards! When clearing stages, you can choose to add a card, replace cards in your hand, or skip to the next stage!",
-      "line5": "How many stages can you reach? Test your luck!"
+      "line5": "How many stages can you reach? Test your luck!",
+      "element_system": "⚔️ Element Type System",
+      "strong": "Strong 1.5x",
+      "weakness_note": "⚠️ Attacking with weakness deals 0.5x damage!",
+      "normal_note": "💯 Normal type has no strengths/weaknesses (1.0x damage to all)",
+      "defense_system": "🛡️ Element Defense System",
+      "defense_line1": "• Your defense element is automatically determined by your hand cards",
+      "defense_line2": "• The most common element in your hand becomes your defense type",
+      "defense_line3": "• Elements with equal card counts cancel out, resulting in Normal defense",
+      "defense_line4": "• Defense points from shield cards are not affected by type effectiveness"
     }
   },
   "upcoming_games": {
