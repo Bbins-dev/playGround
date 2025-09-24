@@ -1006,24 +1006,45 @@ GameConfig.utils = {
             elementCounts[element] = (elementCounts[element] || 0) + 1;
         });
 
-        // 가장 많은 속성 찾기
+        // normal 속성 카드 수 저장
+        const normalCount = elementCounts['normal'] || 0;
+
+        // non-normal 속성들만 필터링
+        const nonNormalElements = Object.keys(elementCounts).filter(element => element !== 'normal');
+        const nonNormalCounts = {};
+        nonNormalElements.forEach(element => {
+            nonNormalCounts[element] = elementCounts[element];
+        });
+
+        // 상쇄 처리: 같은 수를 가진 속성들 제거
+        const countGroups = {};
+        for (const [element, count] of Object.entries(nonNormalCounts)) {
+            if (!countGroups[count]) countGroups[count] = [];
+            countGroups[count].push(element);
+        }
+
+        const remainingElements = {};
+        for (const [count, elements] of Object.entries(countGroups)) {
+            if (elements.length === 1) {
+                // 해당 카드 수를 가진 속성이 하나뿐이면 남김
+                remainingElements[elements[0]] = parseInt(count);
+            }
+            // 2개 이상이면 모두 상쇄되어 제거
+        }
+
+        // 남은 속성 중 가장 많은 것 선택
+        if (Object.keys(remainingElements).length === 0) {
+            return 'normal'; // 모든 속성이 상쇄되었거나 속성 카드가 없음
+        }
+
         let maxCount = 0;
         let defenseElement = 'normal';
-        let tiedElements = [];
 
-        for (const [element, count] of Object.entries(elementCounts)) {
+        for (const [element, count] of Object.entries(remainingElements)) {
             if (count > maxCount) {
                 maxCount = count;
                 defenseElement = element;
-                tiedElements = [element];
-            } else if (count === maxCount) {
-                tiedElements.push(element);
             }
-        }
-
-        // 동점인 경우 normal 우선
-        if (tiedElements.length > 1) {
-            return tiedElements.includes('normal') ? 'normal' : tiedElements[0];
         }
 
         return defenseElement;
