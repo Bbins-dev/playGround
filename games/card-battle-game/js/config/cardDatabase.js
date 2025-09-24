@@ -357,6 +357,125 @@ const CardDatabase = {
                 };
             }
         });
+
+        // 불꽃던지기 카드 (불 속성)
+        this.addCard({
+            id: 'flame_throw',
+            nameKey: 'auto_battle_card_game.ui.cards.flame_throw.name',
+            type: 'attack',
+            element: 'fire',
+            power: 3,
+            accuracy: 80,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.flame_throw.description',
+            effect: function(user, target, battleSystem) {
+                const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
+        // 거품타격 카드 (물 속성, 연속 공격)
+        this.addCard({
+            id: 'bubble_strike',
+            nameKey: 'auto_battle_card_game.ui.cards.bubble_strike.name',
+            type: 'attack',
+            element: 'water',
+            power: 1,
+            accuracy: 100,
+            cost: 1,
+            activationCount: 3, // 기본값, 턴 시작 시 동적으로 2-5로 설정됨
+            descriptionKey: 'auto_battle_card_game.ui.cards.bubble_strike.description',
+            isRandomBash: true, // 마구때리기 타입 카드
+            getRandomActivationCount: function() {
+                return Math.floor(Math.random() * 4) + 2; // 2-5 랜덤
+            },
+            effect: function(user, target, battleSystem) {
+                const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
+        // 번개일격 카드 (전기 속성, 강력하지만 낮은 명중률)
+        this.addCard({
+            id: 'thunder_strike',
+            nameKey: 'auto_battle_card_game.ui.cards.thunder_strike.name',
+            type: 'attack',
+            element: 'electric',
+            power: 5,
+            accuracy: 50,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.thunder_strike.description',
+            effect: function(user, target, battleSystem) {
+                const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
+        // 스모그 카드 (독 속성, 중독 확률)
+        this.addCard({
+            id: 'smog',
+            nameKey: 'auto_battle_card_game.ui.cards.smog.name',
+            type: 'attack',
+            element: 'poison',
+            power: 2,
+            accuracy: 80,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.smog.description',
+            poisonChance: 70,
+            effect: function(user, target, battleSystem) {
+                const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                // 중독 확률 체크 (명중한 경우에만)
+                let poisoned = false;
+                const poisonRoll = Math.random() * 100;
+                if (poisonRoll < this.poisonChance) {
+                    const result = target.addStatusEffect('poisoned', null, 3); // 3턴 지속
+                    poisoned = result.success;
+                }
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    poisoned: poisoned,
+                    statusType: poisoned ? 'poisoned' : null,
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
     },
 
     // i18n을 고려한 카드 이름 가져오기

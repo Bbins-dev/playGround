@@ -357,6 +357,24 @@ class BattleSystem {
             const isTargetPlayer = target === this.player;
             this.hpBarSystem.updateStatusEffects(target, isTargetPlayer);
         }
+
+        // 중독 처리
+        if (result.poisoned) {
+            this.effectSystem.showEffectMessage('poisoned', targetPosition, 'status_applied');
+
+            // 상태이상 UI 즉시 업데이트
+            const isTargetPlayer = target === this.player;
+            this.hpBarSystem.updateStatusEffects(target, isTargetPlayer);
+        }
+
+        // 다른 상태이상 처리 (일반적인 statusType 지원)
+        if (result.statusType && result.statusType !== 'stun' && result.statusType !== 'poisoned') {
+            this.effectSystem.showEffectMessage(result.statusType, targetPosition, 'status_applied');
+
+            // 상태이상 UI 즉시 업데이트
+            const isTargetPlayer = target === this.player;
+            this.hpBarSystem.updateStatusEffects(target, isTargetPlayer);
+        }
     }
 
     // 회복 결과 처리

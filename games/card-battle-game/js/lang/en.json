@@ -191,6 +191,22 @@
         "taunt": {
           "name": "Taunt",
           "description": "Taunt the opponent. When taunted, only attack cards can be used."
+        },
+        "flame_throw": {
+          "name": "Flame Throw",
+          "description": "Throw flames at the enemy for 3 damage."
+        },
+        "bubble_strike": {
+          "name": "Bubble Strike",
+          "description": "Send bubbles to burst for 1 damage 2-5 times."
+        },
+        "thunder_strike": {
+          "name": "Thunder Strike",
+          "description": "Deliver a thunderous strike to the enemy."
+        },
+        "smog": {
+          "name": "Smog",
+          "description": "Envelop the enemy in smog with a chance to poison."
         }
       },
       "buffs": {

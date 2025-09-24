@@ -191,6 +191,22 @@
         "taunt": {
           "name": "도발",
           "description": "상대방을 도발한다. 도발에 걸리면 공격 카드만 사용할 수 있다."
+        },
+        "flame_throw": {
+          "name": "불꽃던지기",
+          "description": "상대에게 불꽃을 던져 3의 데미지를 줍니다."
+        },
+        "bubble_strike": {
+          "name": "거품타격",
+          "description": "상대에게 거품을 보내 터뜨려 1의 데미지를 2-5회 줍니다."
+        },
+        "thunder_strike": {
+          "name": "번개일격",
+          "description": "적에게 천둥같은 일격을 가합니다."
+        },
+        "smog": {
+          "name": "스모그",
+          "description": "적을 스모그로 감싸 일정확률로 중독시킵니다."
         }
       },
       "buffs": {

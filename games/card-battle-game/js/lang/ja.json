@@ -191,6 +191,22 @@
         "taunt": {
           "name": "挑発",
           "description": "相手を挑発する。挑発状態では攻撃カードのみ使用できる。"
+        },
+        "flame_throw": {
+          "name": "フレイムスロー",
+          "description": "相手に炎を投げて３のダメージを与えます。"
+        },
+        "bubble_strike": {
+          "name": "バブルストライク",
+          "description": "相手に泡を送って破裂させ、１のダメージを２～５回与えます。"
+        },
+        "thunder_strike": {
+          "name": "サンダーストライク",
+          "description": "敵に雷のような一撃を加えます。"
+        },
+        "smog": {
+          "name": "スモッグ",
+          "description": "敵をスモッグで包み、一定確率で毒状態にします。"
         }
       },
       "buffs": {
