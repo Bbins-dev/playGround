@@ -906,27 +906,27 @@ body {
 
 /* 속성별 색상 - GameConfig.elements 기반 */
 .defense-element-badge.fire {
-    background: linear-gradient(135deg, #FF6B6B, #FF8A80);
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.85), rgba(255, 138, 128, 0.85));
     border-color: #FF5252;
 }
 
 .defense-element-badge.water {
-    background: linear-gradient(135deg, #87CEEB, #90CAF9);
+    background: linear-gradient(135deg, rgba(135, 206, 235, 0.85), rgba(144, 202, 249, 0.85));
     border-color: #42A5F5;
 }
 
 .defense-element-badge.electric {
-    background: linear-gradient(135deg, #FFD700, #FFEB3B);
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.85), rgba(255, 235, 59, 0.85));
     border-color: #FFC107;
 }
 
 .defense-element-badge.poison {
-    background: linear-gradient(135deg, #9B59B6, #BA68C8);
+    background: linear-gradient(135deg, rgba(155, 89, 182, 0.85), rgba(186, 104, 200, 0.85));
     border-color: #8E24AA;
 }
 
 .defense-element-badge.normal {
-    background: linear-gradient(135deg, #F8F9FA, #E9ECEF);
+    background: linear-gradient(135deg, rgba(248, 249, 250, 0.85), rgba(233, 236, 239, 0.85));
     border-color: #DEE2E6;
 }
 

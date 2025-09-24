@@ -291,7 +291,10 @@ const GameConfig = {
         enemyHand: { x: 375, y: 300 },           // 적 손패 중앙 위치 (화면 중앙-180px)
         cardActivation: { x: 375, y: 480 },      // 카드 발동 표시 위치 (화면 중앙)
         stageInfo: { x: 700, y: 750 },           // 스테이지 정보 위치
-        enemyName: { x: 700, y: 50 }             // 적 이름 위치
+        enemyName: { x: 700, y: 50 },            // 적 이름 위치
+        defenseBadge: {
+            opacity: 0.85                        // 방어속성 배지 투명도 (85% 불투명)
+        }
     },
 
     // 카드 스타일 통일 설정
