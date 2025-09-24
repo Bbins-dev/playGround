@@ -239,13 +239,13 @@ const CardDatabase = {
             }
         });
 
-        // 웅크리기 카드 (방어력 10 + 턴 넘김)
+        // 웅크리기 카드 (방어력 15 + 턴 넘김)
         this.addCard({
             id: 'crouch',
             nameKey: 'auto_battle_card_game.ui.cards.crouch.name',
             type: 'defense',
             element: 'normal',
-            power: 10,
+            power: 15,
             accuracy: 100,
             cost: 1,
             activationCount: 1,

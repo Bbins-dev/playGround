@@ -197,6 +197,7 @@ class BattleSystem {
             if (this.battlePhase !== 'cardActivation') break;
 
             const card = sortedCards[i];
+            let turnSkipped = false;
 
             // 카드의 activationCount만큼 반복 발동
             while (card.canActivate() && this.battlePhase === 'cardActivation') {
@@ -204,7 +205,8 @@ class BattleSystem {
 
                 // 턴 스킵 체크 (웅크리기 등)
                 if (this.checkTurnSkip()) {
-                    break; // 즉시 턴 종료
+                    turnSkipped = true;
+                    break; // 현재 카드 발동 중단
                 }
 
                 // 전투가 종료되었으면 중단
@@ -219,6 +221,11 @@ class BattleSystem {
             }
 
             this.turnProgress.cardsActivated++;
+
+            // 턴 스킵이 설정되었으면 전체 턴 종료
+            if (turnSkipped) {
+                break; // 전체 카드 루프 중단
+            }
 
             // 다음 카드 발동 전 잠시 대기
             if (i < activatableCards.length - 1) {
