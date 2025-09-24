@@ -894,6 +894,24 @@
     text-shadow: var(--glass-text-shadow);
 }
 
+/* 효과 중앙 컨테이너 */
+.effectiveness-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 10px;
+}
+
+.effectiveness-center .effectiveness-arrow {
+    margin: 0;
+    margin-bottom: 4px;
+}
+
+.effectiveness-center .effectiveness-text {
+    margin-top: 0;
+}
+
 /* 효과 텍스트 */
 .effectiveness-text {
     font-size: 12px !important;
@@ -908,6 +926,64 @@
     border: 1px solid rgba(39, 174, 96, 0.5);
     color: #2ECC71 !important;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* 중립/노멀 효과 텍스트 */
+.effectiveness-text.neutral {
+    background: rgba(189, 195, 199, 0.3);
+    border: 1px solid rgba(189, 195, 199, 0.5);
+    color: #BDC3C7 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* 구분선 */
+.effectiveness-divider {
+    width: 100%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 15px 0;
+    position: relative;
+}
+
+.effectiveness-divider::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* 노멀 속성 row */
+.effectiveness-row.neutral {
+    background: rgba(236, 240, 241, 0.05);
+    border-radius: 8px;
+    padding: 8px;
+    margin: 8px 0;
+}
+
+/* 모든 속성 표시용 */
+.element-items-all {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    padding: 8px;
+}
+
+.element-emojis-small {
+    font-size: 16px;
+    line-height: 1;
+    margin-bottom: 4px;
+    letter-spacing: 2px;
+}
+
+/* 노멀 속성 아이템 */
+.element-item.normal {
+    border-left: 3px solid #BDC3C7;
 }
 
 /* 속성별 색상 (선택적 적용) */

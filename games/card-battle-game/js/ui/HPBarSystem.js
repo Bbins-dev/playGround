@@ -275,8 +275,20 @@ class HPBarSystem {
 
         if (!elementConfig) return;
 
-        // 이모지 업데이트
-        defenseElementBadge.textContent = elementConfig.emoji;
+        // 이모지와 텍스트 요소 찾기
+        const emojiElement = defenseElementBadge.querySelector('.badge-emoji');
+        const textElement = defenseElementBadge.querySelector('.badge-text');
+
+        if (emojiElement && textElement) {
+            // 이모지 업데이트
+            emojiElement.textContent = elementConfig.emoji;
+
+            // 텍스트 업데이트 (i18n 지원)
+            const i18nHelper = window.I18nHelper?.instance || new window.I18nHelper();
+            const elementNameKey = `auto_battle_card_game.ui.elements.${defenseElement}`;
+            const elementName = i18nHelper.getText(elementNameKey);
+            textElement.textContent = elementName;
+        }
 
         // 기존 속성 클래스 제거
         defenseElementBadge.classList.remove('fire', 'water', 'electric', 'poison', 'normal');
@@ -579,12 +591,26 @@ class HPBarSystem {
 
         // 방어속성 배지 리셋 (normal로)
         if (this.playerDefenseElement) {
-            this.playerDefenseElement.textContent = '🛡️';
+            const emojiElement = this.playerDefenseElement.querySelector('.badge-emoji');
+            const textElement = this.playerDefenseElement.querySelector('.badge-text');
+            if (emojiElement && textElement) {
+                emojiElement.textContent = '👊';
+                const i18nHelper = window.I18nHelper?.instance || new window.I18nHelper();
+                const elementName = i18nHelper.getText('auto_battle_card_game.ui.elements.normal');
+                textElement.textContent = elementName;
+            }
             this.playerDefenseElement.classList.remove('fire', 'water', 'electric', 'poison');
             this.playerDefenseElement.classList.add('normal');
         }
         if (this.enemyDefenseElement) {
-            this.enemyDefenseElement.textContent = '🛡️';
+            const emojiElement = this.enemyDefenseElement.querySelector('.badge-emoji');
+            const textElement = this.enemyDefenseElement.querySelector('.badge-text');
+            if (emojiElement && textElement) {
+                emojiElement.textContent = '👊';
+                const i18nHelper = window.I18nHelper?.instance || new window.I18nHelper();
+                const elementName = i18nHelper.getText('auto_battle_card_game.ui.elements.normal');
+                textElement.textContent = elementName;
+            }
             this.enemyDefenseElement.classList.remove('fire', 'water', 'electric', 'poison');
             this.enemyDefenseElement.classList.add('normal');
         }

@@ -876,9 +876,10 @@ body {
 
 /* 방어속성 배지 스타일 */
 .defense-element-badge {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
+    gap: 4px;
     min-width: 22px;
     height: 18px;
     font-size: 12px;
@@ -888,6 +889,19 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.3);
     transition: all 0.3s ease;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* 배지 내부 요소들 */
+.defense-element-badge .badge-emoji {
+    font-size: inherit;
+    line-height: 1;
+}
+
+.defense-element-badge .badge-text {
+    font-size: 10px;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
 }
 
 /* 속성별 색상 - GameConfig.elements 기반 */
@@ -946,6 +960,17 @@ body {
     padding: 4px 12px;
     border-width: 3px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    gap: 8px;
+}
+
+/* 큰 배지 내부 텍스트 크기 조정 */
+.defense-badge-wrapper .defense-element-badge .badge-emoji {
+    font-size: 24px;
+}
+
+.defense-badge-wrapper .defense-element-badge .badge-text {
+    font-size: 16px;
+    font-weight: 700;
 }
 
 
