@@ -202,11 +202,15 @@
         },
         "thunder_strike": {
           "name": "번개일격",
-          "description": "적에게 천둥같은 일격을 가합니다."
+          "description": "적에게 번개같은 일격을 가합니다."
         },
         "smog": {
           "name": "스모그",
           "description": "적을 스모그로 감싸 일정확률로 중독시킵니다."
+        },
+        "bandage": {
+          "name": "붕대감기",
+          "description": "붕대로 감아 응급처치한다."
         }
       },
       "buffs": {
@@ -217,7 +221,8 @@
         "water": "물",
         "electric": "전기",
         "poison": "독",
-        "normal": "노멀"
+        "normal": "노멀",
+        "special": "특수"
       },
       "card_types": {
         "attack": "공격",
@@ -235,6 +240,7 @@
       "shield_failed": "방패 사용 실패",
       "thorn_armor_effect": "가시갑옷으로 자신에게 대미지를 가했습니다",
       "thorn_armor_failed": "가시갑옷 사용 실패",
+      "heal_effect": "체력을 회복했습니다",
       "taunt_success": "도발 성공",
       "taunt_failed": "도발 실패",
       "stunned": "기절함!",
@@ -244,7 +250,8 @@
         "already_status": "이미 {name}에 걸려있습니다!",
         "buff_gained": "{name} +{value}",
         "buff_reduced": "{name} {value}",
-        "defense_gained": "🛡️ 방어력 +{value}"
+        "defense_gained": "🛡️ 방어력 +{value}",
+        "heal_effect": "❤️ 체력 +{value}"
       },
       "card_selection": {
         "initial_title": "시작 카드 선택",

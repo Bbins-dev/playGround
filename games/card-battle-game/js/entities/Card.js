@@ -122,10 +122,16 @@ class Card {
         return this.isActive && this.currentActivations < this.activationCount;
     }
 
-    // 발동횟수 표시용 (마구때리기 카드는 "3-5", 일반 카드는 숫자)
+    // 발동횟수 표시용 (마구때리기 카드는 "2-5", 일반 카드는 숫자)
     getDisplayActivationCount() {
         if (this.isRandomBash) {
-            return "3-5";
+            // 카드별로 다른 범위 표시 (마구때리기: 3-5, 거품타격: 2-5)
+            if (this.id === 'bubble_strike') {
+                return "2-5";
+            } else if (this.id === 'random_bash') {
+                return "3-5";
+            }
+            return "2-5"; // 기본값 (새로운 랜덤 카드용)
         }
         return this.activationCount.toString();
     }

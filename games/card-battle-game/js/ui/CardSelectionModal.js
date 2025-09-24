@@ -128,7 +128,10 @@ class CardSelectionModal {
 
         this.grid.innerHTML = '';
 
-        this.availableCards.forEach((card, index) => {
+        // 카드 정렬 적용
+        const sortedCards = this.gameManager.cardManager.sortCards(this.availableCards);
+
+        sortedCards.forEach((card, index) => {
             const cardElement = this.createCardElement(card, index);
             this.grid.appendChild(cardElement);
         });

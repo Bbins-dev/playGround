@@ -151,13 +151,6 @@ class CardManager {
         return CardDatabase.getCard(cardId);
     }
 
-    // 카드 갤러리용 모든 카드 정보 (Card 인스턴스 반환)
-    getAllCardsForGallery() {
-        return this.allCards.map(cardData => {
-            // Card 인스턴스 생성하여 반환
-            return CardDatabase.createCardInstance(cardData.id);
-        }).filter(card => card !== null);
-    }
 
     // 타입별 카드 가져오기
     getCardsByType(type) {
@@ -271,6 +264,53 @@ class CardManager {
         }
 
         return recommendations;
+    }
+
+    // 카드 정렬 메서드 (재사용 가능, 확장성 고려)
+    sortCards(cards) {
+        if (!cards || cards.length === 0) {
+            return [];
+        }
+
+        return cards.slice().sort((a, b) => {
+            // 1차 정렬: 속성별 (normal -> fire -> water -> electric -> poison -> special)
+            const elementOrderA = GameConfig.cardSorting.elementOrder.indexOf(a.element) !== -1
+                ? GameConfig.cardSorting.elementOrder.indexOf(a.element)
+                : 999;
+            const elementOrderB = GameConfig.cardSorting.elementOrder.indexOf(b.element) !== -1
+                ? GameConfig.cardSorting.elementOrder.indexOf(b.element)
+                : 999;
+
+            if (elementOrderA !== elementOrderB) {
+                return elementOrderA - elementOrderB;
+            }
+
+            // 2차 정렬: 타입별 (attack -> defense -> status -> buff -> debuff -> special)
+            const typeOrderA = GameConfig.cardSorting.typeOrder.indexOf(a.type) !== -1
+                ? GameConfig.cardSorting.typeOrder.indexOf(a.type)
+                : 999;
+            const typeOrderB = GameConfig.cardSorting.typeOrder.indexOf(b.type) !== -1
+                ? GameConfig.cardSorting.typeOrder.indexOf(b.type)
+                : 999;
+
+            if (typeOrderA !== typeOrderB) {
+                return typeOrderA - typeOrderB;
+            }
+
+            // 3차 정렬: 카드 ID 알파벳 순 (안정적 정렬)
+            return a.id.localeCompare(b.id);
+        });
+    }
+
+    // 카드 갤러리용 모든 카드 정보 (정렬된 Card 인스턴스 반환)
+    getAllCardsForGallery() {
+        const cardInstances = this.allCards.map(cardData => {
+            // Card 인스턴스 생성하여 반환
+            return CardDatabase.createCardInstance(cardData.id);
+        }).filter(card => card !== null);
+
+        // 정렬 적용
+        return this.sortCards(cardInstances);
     }
 
     // 카드 밸런스 체크 (개발용)

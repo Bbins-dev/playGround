@@ -57,6 +57,15 @@ const GameConfig = {
             strong: null,          // 강점 없음
             weak: null,           // 약점 없음
             immunity: null        // 면역 없음
+        },
+        special: {
+            name: '특수',
+            nameKey: 'auto_battle_card_game.elements.special',
+            color: '#90EE90',      // 연두색
+            emoji: '⭐',
+            strong: null,          // 강점 없음
+            weak: null,           // 약점 없음
+            immunity: null        // 면역 없음
         }
     },
 
@@ -156,9 +165,9 @@ const GameConfig = {
         special: {
             nameKey: 'auto_battle_card_game.ui.card_types.special',
             name: '특수',
-            color: '#F39C12',
-            emoji: '💎',
-            statEmojis: { power: '💎', accuracy: '✅' }
+            color: '#90EE90',
+            emoji: '⭐',
+            statEmojis: { power: '⭐', accuracy: '✅' }
         }
     },
 
@@ -968,6 +977,15 @@ const GameConfig = {
                 }
             }
         }
+    },
+
+    // 카드 정렬 순서 설정 (확장성을 위한 설정)
+    cardSorting: {
+        // 속성 순서: 노멀 -> 불 -> 물 -> 전기 -> 독 -> 특수
+        elementOrder: ['normal', 'fire', 'water', 'electric', 'poison', 'special'],
+
+        // 타입 순서: 공격 -> 방어 -> 상태이상 -> 버프 -> 디버프 -> 특수
+        typeOrder: ['attack', 'defense', 'status', 'buff', 'debuff', 'special']
     }
 };
 
@@ -1000,8 +1018,13 @@ GameConfig.utils = {
 
         const elementCounts = {};
 
-        // 각 속성별 카드 개수 계산
+        // 각 속성별 카드 개수 계산 (특수 카드는 제외)
         cards.forEach(card => {
+            // 특수 카드는 방어속성 계산에서 제외
+            if (card.element === 'special' || card.type === 'special') {
+                return;
+            }
+
             const element = card.element || 'normal';
             elementCounts[element] = (elementCounts[element] || 0) + 1;
         });

@@ -393,7 +393,7 @@ const CardDatabase = {
             power: 1,
             accuracy: 100,
             cost: 1,
-            activationCount: 3, // 기본값, 턴 시작 시 동적으로 2-5로 설정됨
+            activationCount: 2, // 기본값, 턴 시작 시 동적으로 2-5로 설정됨
             descriptionKey: 'auto_battle_card_game.ui.cards.bubble_strike.description',
             isRandomBash: true, // 마구때리기 타입 카드
             getRandomActivationCount: function() {
@@ -473,6 +473,39 @@ const CardDatabase = {
                     statusType: poisoned ? 'poisoned' : null,
                     element: this.element,
                     effectiveness: effectiveness
+                };
+            }
+        });
+
+        // 붕대감기 카드 (특수 카드, 체력 회복)
+        this.addCard({
+            id: 'bandage',
+            nameKey: 'auto_battle_card_game.ui.cards.bandage.name',
+            type: 'special',
+            element: 'special', // 속성 없음을 표현
+            power: 3, // 회복량
+            accuracy: 100,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.bandage.description',
+            effect: function(user, target, battleSystem) {
+                const healAmount = this.power;
+
+                // 사용자 체력 회복
+                if (user.heal) {
+                    user.heal(healAmount);
+                } else {
+                    // 폴백: 직접 체력 증가
+                    user.hp = Math.min(user.hp + healAmount, user.maxHP);
+                }
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.heal_effect',
+                    healAmount: healAmount,
+                    element: this.element,
+                    effectType: 'heal',
+                    templateData: { value: healAmount }
                 };
             }
         });

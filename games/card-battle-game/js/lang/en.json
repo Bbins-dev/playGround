@@ -207,6 +207,10 @@
         "smog": {
           "name": "Smog",
           "description": "Envelop the enemy in smog with a chance to poison."
+        },
+        "bandage": {
+          "name": "Bandage",
+          "description": "Wrap wounds with bandage for first aid."
         }
       },
       "buffs": {
@@ -217,7 +221,8 @@
         "water": "Water",
         "electric": "Electric",
         "poison": "Poison",
-        "normal": "Normal"
+        "normal": "Normal",
+        "special": "Special"
       },
       "card_types": {
         "attack": "Attack",
@@ -235,6 +240,7 @@
       "shield_failed": "Shield failed",
       "thorn_armor_effect": "Thorn armor dealt damage to self",
       "thorn_armor_failed": "Thorn armor failed",
+      "heal_effect": "HP restored",
       "taunt_success": "Taunt successful",
       "taunt_failed": "Taunt failed",
       "stunned": "Stunned!",
@@ -244,7 +250,8 @@
         "already_status": "Already {name}!",
         "buff_gained": "{name} +{value}",
         "buff_reduced": "{name} {value}",
-        "defense_gained": "🛡️ DEF +{value}"
+        "defense_gained": "🛡️ DEF +{value}",
+        "heal_effect": "❤️ HP +{value}"
       },
       "card_selection": {
         "initial_title": "Start Card Selection",

@@ -202,11 +202,15 @@
         },
         "thunder_strike": {
           "name": "サンダーストライク",
-          "description": "敵に雷のような一撃を加えます。"
+          "description": "敵に稲妻のような一撃を加えます。"
         },
         "smog": {
           "name": "スモッグ",
           "description": "敵をスモッグで包み、一定確率で毒状態にします。"
+        },
+        "bandage": {
+          "name": "包帯",
+          "description": "包帯で巻いて応急処置する。"
         }
       },
       "buffs": {
@@ -217,7 +221,8 @@
         "water": "水",
         "electric": "電気",
         "poison": "毒",
-        "normal": "ノーマル"
+        "normal": "ノーマル",
+        "special": "特殊"
       },
       "card_types": {
         "attack": "攻撃",
@@ -235,6 +240,7 @@
       "shield_failed": "シールド使用失敗",
       "thorn_armor_effect": "棘の鎧で自分にダメージを与えました",
       "thorn_armor_failed": "棘の鎧使用失敗",
+      "heal_effect": "体力を回復しました",
       "taunt_success": "挑発成功",
       "taunt_failed": "挑発失敗",
       "stunned": "気絶した！",
@@ -244,7 +250,8 @@
         "already_status": "すでに{name}です！",
         "buff_gained": "{name} +{value}",
         "buff_reduced": "{name} {value}",
-        "defense_gained": "🛡️ 防御力 +{value}"
+        "defense_gained": "🛡️ 防御力 +{value}",
+        "heal_effect": "❤️ 体力 +{value}"
       },
       "card_selection": {
         "initial_title": "スタートカード選択",
