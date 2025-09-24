@@ -22,11 +22,15 @@ class HPBarSystem {
         // 방어력 오버레이 요소들
         this.playerDefenseOverlay = this.playerHPBar.querySelector('.defense-overlay');
         this.playerDefenseNumber = this.playerHPBar.querySelector('.defense-number-overlay');
-        this.playerDefenseElement = this.playerHPBar.querySelector('.defense-element-badge');
+        this.playerDefenseElement = document.getElementById('player-defense-element');
 
         this.enemyDefenseOverlay = this.enemyHPBar.querySelector('.defense-overlay');
         this.enemyDefenseNumber = this.enemyHPBar.querySelector('.defense-number-overlay');
-        this.enemyDefenseElement = this.enemyHPBar.querySelector('.defense-element-badge');
+        this.enemyDefenseElement = document.getElementById('enemy-defense-element');
+
+        // 방어속성 배지 래퍼들
+        this.playerBadgeWrapper = document.querySelector('.defense-badge-wrapper.badge-above');
+        this.enemyBadgeWrapper = document.querySelector('.defense-badge-wrapper.badge-below');
 
         // 애니메이션 상태 추적
         this.animating = {
@@ -527,11 +531,17 @@ class HPBarSystem {
     show() {
         this.playerHPBar.style.display = 'flex';
         this.enemyHPBar.style.display = 'flex';
+        // 방어속성 배지도 함께 표시
+        if (this.playerBadgeWrapper) this.playerBadgeWrapper.style.display = 'block';
+        if (this.enemyBadgeWrapper) this.enemyBadgeWrapper.style.display = 'block';
     }
 
     hide() {
         this.playerHPBar.style.display = 'none';
         this.enemyHPBar.style.display = 'none';
+        // 방어속성 배지도 함께 숨김
+        if (this.playerBadgeWrapper) this.playerBadgeWrapper.style.display = 'none';
+        if (this.enemyBadgeWrapper) this.enemyBadgeWrapper.style.display = 'none';
     }
 
     // 초기화

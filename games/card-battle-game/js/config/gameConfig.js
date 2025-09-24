@@ -703,6 +703,28 @@ const GameConfig = {
                 particles: 5,
                 color: '#3498db'
             }
+        },
+        // 방어속성 배지 설정 (HP바 외부 위치)
+        badge: {
+            sizeMultiplier: 3.0,            // 기존 크기의 3배
+            positions: {
+                player: {
+                    offsetY: 120,           // HP바로부터 위쪽 거리 (bottom: 120px in CSS)
+                    placement: 'above'      // 이름 위에 배치
+                },
+                enemy: {
+                    offsetY: 120,           // HP바로부터 아래쪽 거리 (top: 120px in CSS)
+                    placement: 'below'      // 이름 아래에 배치
+                }
+            },
+            styling: {
+                minWidth: 66,               // CSS에서 사용하는 크기값들 (3배)
+                height: 54,
+                fontSize: 36,
+                borderRadius: 27,
+                borderWidth: 3,
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)'
+            }
         }
     },
 

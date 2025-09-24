@@ -916,6 +916,38 @@ body {
     border-color: #DEE2E6;
 }
 
+/* 방어속성 배지 래퍼 스타일 */
+.defense-badge-wrapper {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 10;
+    display: none; /* 기본적으로 숨김 - HPBarSystem에서 show/hide 제어 */
+}
+
+/* 플레이어 배지 - 이름 위 (HP바 영역 밖) */
+.defense-badge-wrapper.badge-above {
+    bottom: 120px;
+}
+
+/* 적 배지 - 이름 아래 (HP바 영역 밖) */
+.defense-badge-wrapper.badge-below {
+    top: 120px;
+}
+
+/* 배지 크기 증가 (3배) */
+.defense-badge-wrapper .defense-element-badge {
+    min-width: 66px;
+    height: 54px;
+    font-size: 36px;
+    border-radius: 27px;
+    margin: 0;
+    padding: 4px 12px;
+    border-width: 3px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
 
 /* 방어력 깨지는 애니메이션 */
 @keyframes defenseShatter {
