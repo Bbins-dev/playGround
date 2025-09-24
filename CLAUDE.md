@@ -169,6 +169,16 @@ Without trailing slash, relative paths like `./style.css` resolve incorrectly.
 - ❌ `if (hitRoll >= this.accuracy)` 카드 effect 내부 금지
 - 결과: 80% 카드가 64% 명중률로 변경됨
 
+## 🃏 카드 렌더링 타입 구분
+
+**Card Battle Game 카드 렌더링 컨텍스트 정리**
+
+1. **카드 갤러리** (`CardGallery`) - 모든 카드 보기 화면, DOMCardRenderer 사용
+2. **손패 카드** (`context: 'hand'`) - 인게임 작은 카드 (120×168px), 위치 조정 적용
+3. **승리 모달 카드** - 작은 카드(보상 선택), 확대 카드(선택 시 디테일 뷰)
+4. **인게임 발동 카드** (`context: 'runtime'`) - 전투 중 확대 이미지 (400×560px)
+5. **카드 교체 모달** (`CardSelectionModal`) - 교체할 손패 선택 화면, DOM 렌더링
+
 ## 🔄 스테이지 전환 규칙
 
 **스테이지 전환 시 상태 초기화**: `GameManager.setupNextBattle()`에서 처리

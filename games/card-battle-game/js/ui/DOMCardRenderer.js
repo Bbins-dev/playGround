@@ -470,9 +470,8 @@ class DOMCardRenderer {
         // 이모지만 표시
         const emoji = elementConfig.emoji;
 
-        // 폰트 크기 계산 (손패 카드에서 약간 크게)
-        const fontSizeRatio = config.fontSize * 1.15;  // 15% 증가
-        const fontSize = Math.floor(height * fontSizeRatio);
+        // 폰트 크기 계산 (원본 크기 사용)
+        const fontSize = Math.floor(height * config.fontSize);
 
         // 배경색 계산 (연한 회색으로 통일)
         const backgroundColor = config.backgroundOpacity > 0

@@ -268,7 +268,8 @@ class Renderer {
                 isNextActive: isNextActive || isFadingOut,
                 isFadingOut,
                 fadeStartTime,
-                index: globalIndex
+                index: globalIndex,
+                context: 'hand'  // 손패 카드임을 명시
             });
         });
     }

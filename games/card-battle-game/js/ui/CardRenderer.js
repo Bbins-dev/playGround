@@ -28,10 +28,10 @@ class CardRenderer {
         this.drawCardContent(ctx, card, x, y, width, height, context);
 
         // 속성 라벨 그리기 (카드 내용 위에 오버레이)
-        this.drawElementLabel(ctx, card, x, y, width, height);
+        this.drawElementLabel(ctx, card, x, y, width, height, context);
 
         // 속성 이모지 그리기 (우측 상단)
-        this.drawElementEmoji(ctx, card, x, y, width, height);
+        this.drawElementEmoji(ctx, card, x, y, width, height, context);
 
         ctx.restore();
     }
@@ -541,7 +541,7 @@ class CardRenderer {
     }
 
     // 속성 라벨 그리기
-    drawElementLabel(ctx, card, x, y, width, height) {
+    drawElementLabel(ctx, card, x, y, width, height, context = 'default') {
         const elementConfig = GameConfig.elements[card.element];
         if (!elementConfig) return;
 
@@ -580,7 +580,8 @@ class CardRenderer {
         const labelHeight = fontSize + config.padding.y * 2;
 
         // 라벨 위치 계산 (카드 좌상단)
-        const labelX = x + width * config.position.x;
+        const isHandCard = context === 'hand';
+        const labelX = x + width * config.position.x + (isHandCard ? 3 : 0);  // 손패 카드에서 3px 오른쪽
         const labelY = y + height * config.position.y;
 
         // 배경색 계산 (속성색을 어둡게)
@@ -617,7 +618,7 @@ class CardRenderer {
     }
 
     // 속성 이모지 그리기 (우상단)
-    drawElementEmoji(ctx, card, x, y, width, height) {
+    drawElementEmoji(ctx, card, x, y, width, height, context = 'default') {
         const elementConfig = GameConfig.elements[card.element];
         if (!elementConfig || !elementConfig.emoji) return;
 
@@ -635,7 +636,10 @@ class CardRenderer {
         const textWidth = textMetrics.width;
 
         // 이모지 배경 크기 계산 (원형)
-        const emojiSize = Math.max(textWidth, fontSize) + config.padding.x * 2;
+        // 손패 카드일 때만 padding 줄이기
+        const isHandCard = context === 'hand';
+        const adjustedPadding = isHandCard ? 2 : config.padding.x;
+        const emojiSize = Math.max(textWidth, fontSize) + adjustedPadding * 2;
 
         // 이모지 위치 계산 (카드 우상단)
         const emojiX = x + width * config.position.x - emojiSize / 2;
@@ -666,8 +670,8 @@ class CardRenderer {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
-        const textX = emojiX + emojiSize / 2;
-        const textY = emojiY + emojiSize / 2;
+        const textX = emojiX + emojiSize / 2 + (isHandCard ? 2 : 0);  // 손패 카드에서 2px 오른쪽
+        const textY = emojiY + emojiSize / 2 + (isHandCard ? 2 : 0);  // 손패 카드에서 2px 아래
 
         if (config.textOutline.enabled) {
             // 외곽선
