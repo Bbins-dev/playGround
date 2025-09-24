@@ -7,7 +7,7 @@ class Card {
 
         // 기본값 처리 및 특별 관리가 필요한 속성들 재설정
         this.name = cardData.name || this.id; // 백업용
-        this.accuracy = cardData.accuracy || 100;
+        this.accuracy = cardData.accuracy || 70;
         this.cost = cardData.cost || 1;
         this.activationCount = cardData.activationCount || 1;
         this.description = cardData.description || ''; // 백업용

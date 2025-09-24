@@ -331,7 +331,7 @@ const CardDatabase = {
             type: 'status',
             element: 'normal',
             power: 0,
-            accuracy: 80,
+            accuracy: 70,
             cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.taunt.description',
