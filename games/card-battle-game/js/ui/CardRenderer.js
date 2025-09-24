@@ -30,6 +30,9 @@ class CardRenderer {
         // 속성 라벨 그리기 (카드 내용 위에 오버레이)
         this.drawElementLabel(ctx, card, x, y, width, height);
 
+        // 속성 이모지 그리기 (우측 상단)
+        this.drawElementEmoji(ctx, card, x, y, width, height);
+
         ctx.restore();
     }
 
@@ -561,12 +564,15 @@ class CardRenderer {
             elementName = elementNames[currentLang][card.element];
         }
 
+        // 텍스트만 사용 (이모지는 별도로 처리)
+        const labelText = elementName;
+
         // 폰트 크기 계산
         const fontSize = Math.floor(height * config.fontSize);
         ctx.font = `bold ${fontSize}px Arial`;
 
         // 텍스트 크기 측정
-        const textMetrics = ctx.measureText(elementName);
+        const textMetrics = ctx.measureText(labelText);
         const textWidth = textMetrics.width;
 
         // 라벨 크기 계산
@@ -601,11 +607,68 @@ class CardRenderer {
             // 외곽선
             ctx.strokeStyle = config.textOutline.color;
             ctx.lineWidth = config.textOutline.width;
-            ctx.strokeText(elementName, textX, textY);
+            ctx.strokeText(labelText, textX, textY);
         }
 
         // 메인 텍스트
-        ctx.fillText(elementName, textX, textY);
+        ctx.fillText(labelText, textX, textY);
+
+        ctx.restore();
+    }
+
+    // 속성 이모지 그리기 (우상단)
+    drawElementEmoji(ctx, card, x, y, width, height) {
+        const elementConfig = GameConfig.elements[card.element];
+        if (!elementConfig || !elementConfig.emoji) return;
+
+        const config = this.style.elementEmoji;
+
+        // 이모지 가져오기
+        const emoji = elementConfig.emoji;
+
+        // 폰트 크기 계산
+        const fontSize = Math.floor(height * config.fontSize);
+        ctx.font = `${fontSize}px Arial`;
+
+        // 텍스트 크기 측정
+        const textMetrics = ctx.measureText(emoji);
+        const textWidth = textMetrics.width;
+
+        // 이모지 배경 크기 계산 (원형)
+        const emojiSize = Math.max(textWidth, fontSize) + config.padding.x * 2;
+
+        // 이모지 위치 계산 (카드 우상단)
+        const emojiX = x + width * config.position.x - emojiSize / 2;
+        const emojiY = y + height * config.position.y;
+
+        ctx.save();
+
+        // 배경 그리기 (설정된 경우)
+        if (config.backgroundOpacity > 0) {
+            ctx.fillStyle = elementConfig.color || '#666';
+            ctx.globalAlpha = config.backgroundOpacity;
+            this.roundRect(ctx, emojiX, emojiY, emojiSize, emojiSize, config.borderRadius);
+            ctx.fill();
+        }
+
+        // 이모지 그리기
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = config.textColor;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        const textX = emojiX + emojiSize / 2;
+        const textY = emojiY + emojiSize / 2;
+
+        if (config.textOutline.enabled) {
+            // 외곽선
+            ctx.strokeStyle = config.textOutline.color;
+            ctx.lineWidth = config.textOutline.width;
+            ctx.strokeText(emoji, textX, textY);
+        }
+
+        // 메인 텍스트
+        ctx.fillText(emoji, textX, textY);
 
         ctx.restore();
     }

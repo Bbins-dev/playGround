@@ -109,6 +109,9 @@ class DOMCardRenderer {
         // 속성 라벨 (오버레이로 추가)
         content.appendChild(this.createElementLabel(card, width, height));
 
+        // 속성 이모지 (우측 상단 추가)
+        content.appendChild(this.createElementEmoji(card, width, height));
+
         return content;
     }
 
@@ -414,6 +417,9 @@ class DOMCardRenderer {
             elementName = elementNames[currentLang][card.element];
         }
 
+        // 텍스트만 사용 (이모지는 별도 표시)
+        const labelText = elementName;
+
         // 폰트 크기 계산
         const fontSize = Math.floor(height * config.fontSize);
 
@@ -448,9 +454,51 @@ class DOMCardRenderer {
                     ${config.textOutline.width}px ${config.textOutline.width}px 0 ${config.textOutline.color};
             ` : ''}
         `;
-        labelElement.textContent = elementName;
+        labelElement.textContent = labelText;
 
         return labelElement;
+    }
+
+    // 카드 속성 이모지 생성 (우측 상단)
+    createElementEmoji(card, width, height) {
+        const elementConfig = GameConfig.elements[card.element];
+        if (!elementConfig?.emoji) return document.createTextNode('');
+
+        const config = this.style.elementEmoji;
+
+        // 이모지만 표시
+        const emoji = elementConfig.emoji;
+
+        // 폰트 크기 계산
+        const fontSize = Math.floor(height * config.fontSize);
+
+        // 배경색 계산 (투명하게)
+        const backgroundColor = config.backgroundOpacity > 0
+            ? `rgba(${ColorUtils.hexToRgb(elementConfig.color)}, ${config.backgroundOpacity})`
+            : 'transparent';
+
+        // 이모지 위치 계산 (카드 우상단) - DOMCardRenderer만 조정
+        const emojiX = width * 0.70;  // DOMCardRenderer 전용 위치
+        const emojiY = height * 0.06;  // DOMCardRenderer 전용 Y 위치
+
+        const emojiElement = document.createElement('div');
+        emojiElement.style.cssText = `
+            position: absolute;
+            left: ${emojiX}px;
+            top: ${emojiY}px;
+            background-color: ${backgroundColor};
+            padding: ${config.padding.y}px ${config.padding.x}px;
+            border-radius: ${config.borderRadius}px;
+            font-size: ${fontSize}px;
+            font-family: Arial;
+            text-align: center;
+            white-space: nowrap;
+            z-index: 10;
+            line-height: 1;
+        `;
+        emojiElement.textContent = emoji;
+
+        return emojiElement;
     }
 
 }

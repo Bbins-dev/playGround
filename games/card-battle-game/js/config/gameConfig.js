@@ -338,9 +338,9 @@ const GameConfig = {
         },
         // 속성 라벨 설정
         elementLabel: {
-            position: { x: 0.04, y: 0.08 },  // 카드 크기 대비 비율 (좌상단)
+            position: { x: 0.04, y: 0.08 },  // 카드 크기 대비 비율 (좌상단, 원래 위치로 복원)
             fontSize: 0.045,                  // 카드 높이 대비 폰트 크기
-            padding: { x: 6, y: 3 },          // 라벨 내부 패딩
+            padding: { x: 6, y: 3 },          // 라벨 내부 패딩 (원래 크기로 복원)
             backgroundOpacity: 0.9,           // 배경 투명도
             darkenFactor: 0.3,                // 속성색을 어둡게 하는 비율
             borderRadius: 4,                  // 모서리 둥글기
@@ -349,6 +349,20 @@ const GameConfig = {
                 enabled: true,
                 color: '#000',
                 width: 0.5
+            }
+        },
+        // 속성 이모지 설정 (우상단)
+        elementEmoji: {
+            position: { x: 0.82, y: 0.06 },  // 카드 크기 대비 비율 (우상단)
+            fontSize: 0.08,                   // 이모지는 더 크게
+            padding: { x: 4, y: 4 },          // 작은 패딩
+            backgroundOpacity: 0,             // 배경 없음
+            borderRadius: 50,                 // 원형
+            textColor: '#fff',                // 텍스트 색상
+            textOutline: {
+                enabled: true,
+                color: '#000',
+                width: 1
             }
         },
         // 카드 이름 개선 설정

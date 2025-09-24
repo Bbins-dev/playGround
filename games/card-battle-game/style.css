@@ -950,27 +950,27 @@ body {
     top: 120px;
 }
 
-/* 배지 크기 증가 (3배) */
+/* 배지 크기 증가 (2배) */
 .defense-badge-wrapper .defense-element-badge {
-    min-width: 66px;
-    height: 54px;
-    font-size: 36px;
-    border-radius: 27px;
+    min-width: 44px;
+    height: 36px;
+    font-size: 24px;
+    border-radius: 18px;
     margin: 0;
-    padding: 4px 12px;
-    border-width: 3px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    gap: 8px;
+    padding: 3px 8px;
+    border-width: 2px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+    gap: 6px;
 }
 
 /* 큰 배지 내부 텍스트 크기 조정 */
 .defense-badge-wrapper .defense-element-badge .badge-emoji {
-    font-size: 24px;
+    font-size: 16px;
 }
 
 .defense-badge-wrapper .defense-element-badge .badge-text {
-    font-size: 16px;
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 600;
 }
 
 
