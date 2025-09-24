@@ -107,7 +107,7 @@ const GameConfig = {
             name: '화상',
             emoji: '🔥',
             description: '턴 시작 시 최대 HP의 일정 비율 대미지',
-            defaultPercent: 5,
+            defaultPercent: 10,
             color: '#E67E22'
         },
         poisoned: {
