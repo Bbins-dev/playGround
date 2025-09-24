@@ -874,6 +874,48 @@ body {
     display: none;
 }
 
+/* 방어속성 배지 스타일 */
+.defense-element-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 18px;
+    font-size: 12px;
+    border-radius: 9px;
+    margin: 0 4px;
+    padding: 1px 4px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* 속성별 색상 - GameConfig.elements 기반 */
+.defense-element-badge.fire {
+    background: linear-gradient(135deg, #FF6B6B, #FF8A80);
+    border-color: #FF5252;
+}
+
+.defense-element-badge.water {
+    background: linear-gradient(135deg, #87CEEB, #90CAF9);
+    border-color: #42A5F5;
+}
+
+.defense-element-badge.electric {
+    background: linear-gradient(135deg, #FFD700, #FFEB3B);
+    border-color: #FFC107;
+}
+
+.defense-element-badge.poison {
+    background: linear-gradient(135deg, #9B59B6, #BA68C8);
+    border-color: #8E24AA;
+}
+
+.defense-element-badge.normal {
+    background: linear-gradient(135deg, #F8F9FA, #E9ECEF);
+    border-color: #DEE2E6;
+}
+
 
 /* 방어력 깨지는 애니메이션 */
 @keyframes defenseShatter {
@@ -1105,6 +1147,78 @@ body {
         3px -3px 0 #000,
         -3px -3px 0 #000,
         0 0 10px rgba(255, 165, 0, 0.6); /* 오렌지 글로우 */
+}
+
+/* 약점 데미지 (0.5배) */
+.weak-number {
+    color: #95A5A6 !important;
+    font-size: 48px !important;
+    opacity: 0.8;
+    text-shadow:
+        2px 2px 0 #000,
+        -2px 2px 0 #000,
+        2px -2px 0 #000,
+        -2px -2px 0 #000;
+    animation: floatUp 1.5s ease-out forwards;
+}
+
+/* 강점 데미지 (1.5배) */
+.strong-number {
+    font-size: 96px !important;
+    color: #FF4444 !important;
+    text-shadow:
+        0 0 10px #FF0000,
+        0 0 20px #FF0000,
+        0 0 30px #FF0000,
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        2px 2px 0 #000;
+    animation: strongHit 0.5s ease-out, floatUp 1.5s ease-out forwards;
+}
+
+@keyframes strongHit {
+    0% {
+        transform: scale(0.8);
+        text-shadow:
+            0 0 5px #FF0000,
+            0 0 10px #FF0000;
+    }
+    25% {
+        transform: scale(1.3) rotate(3deg);
+        text-shadow:
+            0 0 15px #FF0000,
+            0 0 30px #FF0000,
+            0 0 40px #FF6600,
+            -2px -2px 0 #000,
+            2px -2px 0 #000,
+            -2px 2px 0 #000,
+            2px 2px 0 #000;
+    }
+    50% {
+        transform: scale(1.1) rotate(-2deg);
+        text-shadow:
+            0 0 12px #FF0000,
+            0 0 25px #FF0000,
+            0 0 35px #FF3300;
+    }
+    75% {
+        transform: scale(1.2) rotate(1deg);
+        text-shadow:
+            0 0 10px #FF0000,
+            0 0 20px #FF0000,
+            0 0 30px #FF0000;
+    }
+    100% {
+        transform: scale(1);
+        text-shadow:
+            0 0 8px #FF0000,
+            0 0 15px #FF0000,
+            -2px -2px 0 #000,
+            2px -2px 0 #000,
+            -2px 2px 0 #000,
+            2px 2px 0 #000;
+    }
 }
 
 /* 반응형 폰트 크기 */

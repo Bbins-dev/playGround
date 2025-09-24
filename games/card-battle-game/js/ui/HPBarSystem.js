@@ -22,9 +22,11 @@ class HPBarSystem {
         // 방어력 오버레이 요소들
         this.playerDefenseOverlay = this.playerHPBar.querySelector('.defense-overlay');
         this.playerDefenseNumber = this.playerHPBar.querySelector('.defense-number-overlay');
+        this.playerDefenseElement = this.playerHPBar.querySelector('.defense-element-badge');
 
         this.enemyDefenseOverlay = this.enemyHPBar.querySelector('.defense-overlay');
         this.enemyDefenseNumber = this.enemyHPBar.querySelector('.defense-number-overlay');
+        this.enemyDefenseElement = this.enemyHPBar.querySelector('.defense-element-badge');
 
         // 애니메이션 상태 추적
         this.animating = {
@@ -257,6 +259,28 @@ class HPBarSystem {
         this.updateBuffs(player, isPlayer);
     }
 
+    // 방어속성 배지 업데이트
+    updateDefenseElementBadge(player, isPlayer = true) {
+        const defenseElementBadge = isPlayer ? this.playerDefenseElement : this.enemyDefenseElement;
+
+        if (!defenseElementBadge) return;
+
+        // 현재 방어속성 가져오기 (player.defenseElement)
+        const defenseElement = player.defenseElement || 'normal';
+        const elementConfig = GameConfig.elements[defenseElement];
+
+        if (!elementConfig) return;
+
+        // 이모지 업데이트
+        defenseElementBadge.textContent = elementConfig.emoji;
+
+        // 기존 속성 클래스 제거
+        defenseElementBadge.classList.remove('fire', 'water', 'electric', 'poison', 'normal');
+
+        // 새 속성 클래스 추가
+        defenseElementBadge.classList.add(defenseElement);
+    }
+
     // 방어력 감소 애니메이션 (턴 시작 시 0으로 초기화)
     animateDefenseDecrease(player, isPlayer = true) {
         const targetElements = isPlayer ? {
@@ -395,6 +419,10 @@ class HPBarSystem {
         // 버프 업데이트
         this.updateBuffs(player, true);
         this.updateBuffs(enemy, false);
+
+        // 방어속성 배지 업데이트
+        this.updateDefenseElementBadge(player, true);
+        this.updateDefenseElementBadge(enemy, false);
     }
 
     // 이름 업데이트
@@ -538,6 +566,18 @@ class HPBarSystem {
         // 색상 리셋
         this.playerFill.style.background = 'linear-gradient(90deg, #2ECC71, #27AE60)';
         this.enemyFill.style.background = 'linear-gradient(90deg, #2ECC71, #27AE60)';
+
+        // 방어속성 배지 리셋 (normal로)
+        if (this.playerDefenseElement) {
+            this.playerDefenseElement.textContent = '🛡️';
+            this.playerDefenseElement.classList.remove('fire', 'water', 'electric', 'poison');
+            this.playerDefenseElement.classList.add('normal');
+        }
+        if (this.enemyDefenseElement) {
+            this.enemyDefenseElement.textContent = '🛡️';
+            this.enemyDefenseElement.classList.remove('fire', 'water', 'electric', 'poison');
+            this.enemyDefenseElement.classList.add('normal');
+        }
     }
 }
 

@@ -334,8 +334,9 @@ class BattleSystem {
             // 실제 대미지 적용
             const actualDamage = target.takeDamage(damage);
 
-            // 피격 효과
-            await this.effectSystem.showHitEffect(targetPosition, card.element, damage);
+            // 피격 효과 (속성 상성 정보 포함)
+            const effectiveness = result.effectiveness || 1.0;
+            await this.effectSystem.showHitEffect(targetPosition, card.element, damage, effectiveness);
 
             // 통계 업데이트
             if (target === this.enemy) {

@@ -10,7 +10,7 @@ class EffectSystem {
     }
 
     // 피격 효과 (고전 게임 스타일)
-    async showHitEffect(targetPosition, element, damage = 0) {
+    async showHitEffect(targetPosition, element, damage = 0, effectiveness = 1.0) {
         // Step 1: 속성별 색상 플래시
         if (element && element !== 'normal') {
             await this.showElementFlash(element);
@@ -19,9 +19,15 @@ class EffectSystem {
         // Step 2: 피격 깜빡임 효과
         await this.showHitBlink(targetPosition);
 
-        // Step 3: 대미지 숫자 표시 (동시에)
+        // Step 3: 대미지 숫자 표시 (속성 상성에 따른 스타일 적용)
         if (damage > 0) {
-            this.showDamageNumber(damage, targetPosition, 'damage');
+            let damageType = 'damage';
+            if (effectiveness > 1.0) {
+                damageType = 'strong'; // 1.5배 데미지
+            } else if (effectiveness < 1.0) {
+                damageType = 'weak';   // 0.5배 데미지
+            }
+            this.showDamageNumber(damage, targetPosition, damageType);
         }
     }
 
@@ -207,6 +213,14 @@ class EffectSystem {
                 case 'zero':
                     className += ' zero-number';
                     numberElement.textContent = '0';
+                    break;
+                case 'strong':
+                    className += ' strong-number';
+                    numberElement.textContent = `-${amount}`;
+                    break;
+                case 'weak':
+                    className += ' weak-number';
+                    numberElement.textContent = `-${amount}`;
                     break;
                 case 'heal':
                     className = 'damage-number heal-number';
