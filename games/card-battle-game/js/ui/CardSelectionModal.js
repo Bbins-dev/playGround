@@ -149,7 +149,8 @@ class CardSelectionModal {
             isSelected: false,
             isHighlighted: false,
             isNextActive: false,
-            opacity: 1
+            opacity: 1,
+            context: 'default' // 카드 선택 모달은 기본값
         });
 
         // 카드 선택 스타일 적용
@@ -179,7 +180,8 @@ class CardSelectionModal {
             isSelected: false,
             isHighlighted: true,
             isNextActive: false,
-            opacity: 1
+            opacity: 1,
+            context: 'default' // 카드 선택 모달은 기본값
         });
 
         // 카드 상세 내용 업데이트

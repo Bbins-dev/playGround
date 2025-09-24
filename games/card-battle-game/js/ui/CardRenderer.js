@@ -12,7 +12,8 @@ class CardRenderer {
             isHighlighted = false,
             isNextActive = false,
             isFadingOut = false,
-            fadeStartTime = null
+            fadeStartTime = null,
+            context = 'default'
         } = options;
 
         ctx.save();
@@ -24,7 +25,7 @@ class CardRenderer {
         this.drawCardBorder(ctx, card, x, y, width, height, isSelected, isNextActive, isFadingOut, fadeStartTime);
 
         // 카드 내용 그리기
-        this.drawCardContent(ctx, card, x, y, width, height);
+        this.drawCardContent(ctx, card, x, y, width, height, context);
 
         // 속성 라벨 그리기 (카드 내용 위에 오버레이)
         this.drawElementLabel(ctx, card, x, y, width, height);
@@ -121,7 +122,7 @@ class CardRenderer {
     }
 
     // 카드 내용 그리기
-    drawCardContent(ctx, card, x, y, width, height) {
+    drawCardContent(ctx, card, x, y, width, height, context = 'default') {
         // 폰트 크기 계산
         const emojiSize = Math.floor(height * this.style.fontRatio.emoji);
         const nameSize = Math.floor(height * this.style.fontRatio.name);
@@ -147,7 +148,7 @@ class CardRenderer {
         this.drawCardType(ctx, card, centerX, typeY, typeSize);
 
         // 스탯 정보
-        this.drawCardStats(ctx, card, x, y, width, height, statsSize);
+        this.drawCardStats(ctx, card, x, y, width, height, statsSize, context);
 
         // 카드 설명 (손패, 선택화면, 확대화면에서 표시)
         if (width >= 100) {
@@ -275,45 +276,61 @@ class CardRenderer {
         this.drawTextWithOutline(ctx, typeName, x, y);
     }
 
-    // 스탯 정보 그리기
-    drawCardStats(ctx, card, x, y, width, height, fontSize) {
+    // 스탯 정보 그리기 (context 기반 동적 표시)
+    drawCardStats(ctx, card, x, y, width, height, fontSize, context = 'default') {
         ctx.font = `bold ${fontSize}px Arial`;
         ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#fff';
 
+        const statsY = y + height * this.style.layout.stats.y;
         const leftX = x + 15;
         const centerX = x + width / 2;
         const rightX = x + width - 15;
-        const statsY = y + height * this.style.layout.stats.y;
 
-        // 카드 타입별 이모티콘 가져오기
-        const cardType = GameConfig.cardTypes[card.type] || GameConfig.cardTypes.attack;
-        const powerEmoji = cardType.statEmojis ? cardType.statEmojis.power : '💪';
-        const accuracyEmoji = cardType.statEmojis ? cardType.statEmojis.accuracy : '🎯';
+        // 카드의 현재 스탯 가져오기 (context에 따라 다름)
+        const stats = card.getDisplayStats ? card.getDisplayStats(context) : {
+            power: card.power,
+            accuracy: card.accuracy,
+            activation: card.activationCount
+        };
 
-        // 주 스탯 (좌측) - 타입별 처리
-        ctx.textAlign = 'left';
-        ctx.fillStyle = '#fff';
-        if (card.type === 'status' && card.power === 0) {
-            // 상태이상 카드에서 주 스탯이 없는 경우 (도발 등)
-            // 주 스탯 표시 안 함
-        } else if (card.type === 'status' && card.activationCount > 1) {
-            // 상태이상 카드에서 턴 기반인 경우
-            this.drawTextWithOutline(ctx, `${powerEmoji}${card.activationCount}턴`, leftX, statsY);
-        } else {
-            // 일반적인 경우 (공격력, 방어력, 버프/디버프 수치)
-            this.drawTextWithOutline(ctx, `${powerEmoji}${card.power}`, leftX, statsY);
-        }
+        // GameConfig에서 스탯 표시 설정 가져오기
+        const statConfig = GameConfig.statDisplay;
+        const typeEmojiConfig = statConfig.typeStatEmojis[card.type] || statConfig.typeStatEmojis.attack;
 
-        // 발동횟수 (중앙)
-        ctx.textAlign = 'center';
-        ctx.fillStyle = '#fff';
-        const activationCount = card.getDisplayActivationCount ? card.getDisplayActivationCount() : card.activationCount;
-        this.drawTextWithOutline(ctx, `🔄${activationCount}`, centerX, statsY);
+        // 스탯 정의에 따라 동적으로 스탯 표시
+        const alignments = ['left', 'center', 'right'];
+        const positions = [leftX, centerX, rightX];
 
-        // 발동률 (우측)
-        ctx.textAlign = 'right';
-        ctx.fillStyle = '#fff';
-        this.drawTextWithOutline(ctx, `${accuracyEmoji}${card.accuracy}%`, rightX, statsY);
+        statConfig.definitions.forEach((def, index) => {
+            if (index >= positions.length) return;
+
+            // 조건부 표시 체크
+            if (def.showCondition && !def.showCondition(card, context)) {
+                return;
+            }
+
+            let value = stats[def.key];
+            let emoji = def.emoji;
+
+            // 타입별 이모지 오버라이드
+            if (def.key === 'power' && typeEmojiConfig.power) {
+                emoji = typeEmojiConfig.power;
+            } else if (def.key === 'accuracy' && typeEmojiConfig.accuracy) {
+                emoji = typeEmojiConfig.accuracy;
+            }
+
+            ctx.textAlign = alignments[index];
+
+            // 특별 처리 (상태이상 카드 턴 표시)
+            if (def.key === 'power' && card.type === 'status' && card.activationCount > 1) {
+                this.drawTextWithOutline(ctx, `${emoji}${card.activationCount}턴`, positions[index], statsY);
+            } else {
+                // 포맷팅 적용
+                const formattedValue = def.format ? def.format(value, card) : value;
+                this.drawTextWithOutline(ctx, `${emoji}${formattedValue}`, positions[index], statsY);
+            }
+        });
     }
 
     // 카드 설명 그리기

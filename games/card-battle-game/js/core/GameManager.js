@@ -663,6 +663,15 @@ class GameManager {
             this.player.clearAllStatusEffects();
             // 모든 버프 초기화 (힘 버프 등)
             this.player.clearBuffs();
+
+            // 플레이어 카드들의 런타임 스탯 초기화
+            if (this.player.hand) {
+                this.player.hand.forEach(card => {
+                    if (card.resetRuntimeStats) {
+                        card.resetRuntimeStats();
+                    }
+                });
+            }
         }
 
         // 새 Enemy 인스턴스는 이미 lastDamageTaken = 0으로 초기화됨

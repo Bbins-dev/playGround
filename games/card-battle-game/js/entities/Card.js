@@ -122,6 +122,32 @@ class Card {
         return this.isActive && this.currentActivations < this.activationCount;
     }
 
+    // 표시용 스탯 가져오기 (context에 따라 다른 값 반환)
+    getDisplayStats(context = 'default') {
+        const stats = {};
+
+        if (context === 'runtime') {
+            // 런타임 - 버프/디버프가 적용된 실시간 스탯
+            stats.power = this.buffedPower !== undefined ? this.buffedPower : this.power;
+            stats.accuracy = this.modifiedAccuracy !== undefined ? this.modifiedAccuracy : this.accuracy;
+            stats.activation = this.modifiedActivationCount !== undefined ? this.modifiedActivationCount : this.activationCount;
+        } else {
+            // 기본값 - 원래 카드 스펙
+            stats.power = this.power;
+            stats.accuracy = this.accuracy;
+            stats.activation = this.activationCount;
+        }
+
+        return stats;
+    }
+
+    // 런타임 스탯 초기화 (스테이지 전환 시 사용)
+    resetRuntimeStats() {
+        this.buffedPower = undefined;
+        this.modifiedAccuracy = undefined;
+        this.modifiedActivationCount = undefined;
+    }
+
     // 발동횟수 표시용 (마구때리기 카드는 "2-5", 일반 카드는 숫자)
     getDisplayActivationCount() {
         if (this.isRandomBash) {

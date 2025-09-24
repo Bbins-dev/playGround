@@ -553,7 +553,8 @@ class UIManager {
             isSelected: false,
             isHighlighted: false,
             isNextActive: false,
-            opacity: 1
+            opacity: 1,
+            context: 'default' // 카드갤러리는 항상 기본값
         });
 
         // 갤러리 스타일 클래스 추가

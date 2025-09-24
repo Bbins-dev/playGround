@@ -299,7 +299,8 @@ class EffectSystem {
                 isSelected: false,
                 isHighlighted: true, // 확대 시 하이라이트 효과
                 isNextActive: false,
-                opacity: 1
+                opacity: 1,
+                context: 'runtime' // 카드 발동 시 실시간 스탯 반영
             });
 
             // 오버레이 컨테이너 생성

@@ -11,7 +11,8 @@ class DOMCardRenderer {
             isSelected = false,
             isHighlighted = false,
             isNextActive = false,
-            opacity = 1
+            opacity = 1,
+            context = 'default'
         } = options;
 
         const cardElement = document.createElement('div');
@@ -21,7 +22,7 @@ class DOMCardRenderer {
         this.applyCardStyles(cardElement, card, width, height, isSelected, isHighlighted || isNextActive, opacity);
 
         // 카드 내용 생성
-        const content = this.createCardContent(card, width, height);
+        const content = this.createCardContent(card, width, height, context);
         cardElement.appendChild(content);
 
         return cardElement;
@@ -66,7 +67,7 @@ class DOMCardRenderer {
     }
 
     // 카드 내용 생성 (CardRenderer.drawCardContent와 동일)
-    createCardContent(card, width, height) {
+    createCardContent(card, width, height, context = 'default') {
         const content = document.createElement('div');
         content.style.cssText = `
             position: relative;
@@ -92,7 +93,7 @@ class DOMCardRenderer {
         content.appendChild(this.createCardType(card, typeSize, height));
 
         // 스탯 정보
-        content.appendChild(this.createCardStats(card, width, height, statsSize));
+        content.appendChild(this.createCardStats(card, width, height, statsSize, context));
 
         // 카드 설명 (일정 크기 이상일 때만)
         if (width >= 100) {
@@ -245,8 +246,8 @@ class DOMCardRenderer {
         return typeElement;
     }
 
-    // 스탯 정보 (CardRenderer.drawCardStats와 동일)
-    createCardStats(card, width, height, fontSize) {
+    // 스탯 정보 (context 기반 동적 표시)
+    createCardStats(card, width, height, fontSize, context = 'default') {
         const statsContainer = document.createElement('div');
         const y = height * this.style.layout.stats.y;
 
@@ -265,50 +266,53 @@ class DOMCardRenderer {
             font-weight: bold;
         `;
 
-        // 카드 타입별 이모티콘 가져오기
-        const cardType = GameConfig.cardTypes[card.type] || GameConfig.cardTypes.attack;
-        const powerEmoji = cardType.statEmojis ? cardType.statEmojis.power : '💪';
-        const accuracyEmoji = cardType.statEmojis ? cardType.statEmojis.accuracy : '🎯';
+        // 카드의 현재 스탯 가져오기 (context에 따라 다름)
+        const stats = card.getDisplayStats ? card.getDisplayStats(context) : {
+            power: card.power,
+            accuracy: card.accuracy,
+            activation: card.activationCount
+        };
 
-        // 주 스탯 (좌측) - 타입별 처리
-        const powerElement = document.createElement('span');
-        powerElement.style.cssText = `
-            color: #fff;
-            ${this.getTextOutlineStyle()}
-        `;
+        // GameConfig에서 스탯 표시 설정 가져오기
+        const statConfig = GameConfig.statDisplay;
+        const typeEmojiConfig = statConfig.typeStatEmojis[card.type] || statConfig.typeStatEmojis.attack;
 
-        if (card.type === 'status' && card.power === 0) {
-            // 상태이상 카드에서 주 스탯이 없는 경우 (도발 등)
-            powerElement.textContent = '';
-            powerElement.style.display = 'none';
-        } else if (card.type === 'status' && card.activationCount > 1) {
-            // 상태이상 카드에서 턴 기반인 경우
-            powerElement.textContent = `${powerEmoji}${card.activationCount}턴`;
-        } else {
-            // 일반적인 경우 (공격력, 방어력, 버프/디버프 수치)
-            powerElement.textContent = `${powerEmoji}${card.power}`;
-        }
+        // 스탯 정의에 따라 동적으로 스탯 표시
+        statConfig.definitions.forEach((def, index) => {
+            const element = document.createElement('span');
+            element.style.cssText = `
+                color: #fff;
+                ${this.getTextOutlineStyle()}
+            `;
 
-        // 발동횟수 (중앙)
-        const activationElement = document.createElement('span');
-        activationElement.style.cssText = `
-            color: #fff;
-            ${this.getTextOutlineStyle()}
-        `;
-        const activationCount = card.getDisplayActivationCount ? card.getDisplayActivationCount() : card.activationCount;
-        activationElement.textContent = `🔄${activationCount}`;
+            let value = stats[def.key];
+            let emoji = def.emoji;
 
-        // 발동률 (우측)
-        const accuracyElement = document.createElement('span');
-        accuracyElement.style.cssText = `
-            color: #fff;
-            ${this.getTextOutlineStyle()}
-        `;
-        accuracyElement.textContent = `${accuracyEmoji}${card.accuracy}%`;
+            // 타입별 이모지 오버라이드
+            if (def.key === 'power' && typeEmojiConfig.power) {
+                emoji = typeEmojiConfig.power;
+            } else if (def.key === 'accuracy' && typeEmojiConfig.accuracy) {
+                emoji = typeEmojiConfig.accuracy;
+            }
 
-        statsContainer.appendChild(powerElement);
-        statsContainer.appendChild(activationElement);
-        statsContainer.appendChild(accuracyElement);
+            // 조건부 표시 체크
+            if (def.showCondition && !def.showCondition(card, context)) {
+                element.style.display = 'none';
+                statsContainer.appendChild(element);
+                return;
+            }
+
+            // 특별 처리 (상태이상 카드 턴 표시)
+            if (def.key === 'power' && card.type === 'status' && card.activationCount > 1) {
+                element.textContent = `${emoji}${card.activationCount}턴`;
+            } else {
+                // 포맷팅 적용
+                const formattedValue = def.format ? def.format(value, card) : value;
+                element.textContent = `${emoji}${formattedValue}`;
+            }
+
+            statsContainer.appendChild(element);
+        });
 
         return statsContainer;
     }

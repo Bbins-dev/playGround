@@ -986,6 +986,47 @@ const GameConfig = {
 
         // 타입 순서: 공격 -> 방어 -> 상태이상 -> 버프 -> 디버프 -> 특수
         typeOrder: ['attack', 'defense', 'status', 'buff', 'debuff', 'special']
+    },
+
+    // 카드 스탯 표시 시스템
+    statDisplay: {
+        definitions: [
+            {
+                key: 'power',
+                emoji: '💪',
+                format: (value) => value,
+                showCondition: (card, context) => {
+                    // 상태이상 카드에서 주 스탯이 없는 경우 숨김
+                    if (card.type === 'status' && card.power === 0) return false;
+                    return true;
+                }
+            },
+            {
+                key: 'activation',
+                emoji: '🔄',
+                format: (value, card) => {
+                    // getDisplayActivationCount 메서드가 있으면 사용
+                    if (card.getDisplayActivationCount) {
+                        return card.getDisplayActivationCount();
+                    }
+                    return value;
+                }
+            },
+            {
+                key: 'accuracy',
+                emoji: '🎯',
+                format: (value) => `${value}%`
+            }
+        ],
+        // 카드 타입별 스탯 이모지 매핑
+        typeStatEmojis: {
+            attack: { power: '💪', accuracy: '🎯' },
+            defense: { power: '🛡️', accuracy: '🎯' },
+            status: { power: '⏱️', accuracy: '🎯' },
+            buff: { power: '⬆️', accuracy: '🎯' },
+            debuff: { power: '⬇️', accuracy: '🎯' },
+            special: { power: '⭐', accuracy: '🎯' }
+        }
     }
 };
 

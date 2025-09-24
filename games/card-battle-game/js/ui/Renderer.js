@@ -334,7 +334,8 @@ class Renderer {
             isNextActive = false,
             isFadingOut = false,
             fadeStartTime = null,
-            index = 0
+            index = 0,
+            context = 'default'
         } = options;
 
         // 통일된 카드 렌더러 사용
@@ -343,7 +344,8 @@ class Renderer {
             isHighlighted: false,
             isNextActive,
             isFadingOut,
-            fadeStartTime
+            fadeStartTime,
+            context // options에서 전달받은 context 사용
         });
     }
 
@@ -424,7 +426,8 @@ class Renderer {
 
             this.renderCard(card, x, y, cardSize, {
                 isPlayer: true,
-                isNextActive: isSelected
+                isNextActive: isSelected,
+                context: 'default' // 카드 선택 화면은 기본값
             });
         });
     }
@@ -478,7 +481,8 @@ class Renderer {
 
         this.renderCard(card, x, y, this.cardSizes.hand, {
             isPlayer: true,
-            isNextActive: true
+            isNextActive: true,
+            context: 'runtime' // 카드 이동 애니메이션도 실시간 스탯
         });
     }
 
