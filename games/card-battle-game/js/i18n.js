@@ -62,14 +62,14 @@ class I18n {
             if (!this.translations[lang]) {
                 await this.loadLanguage(lang);
             }
-            
+
             this.currentLanguage = lang;
             document.documentElement.lang = lang;
             this.applyTranslations();
-            
+
             // Save language preference (use config key)
             localStorage.setItem(this.storageKey, lang);
-            
+
             // Update all language selectors
             this.updateLanguageSelectors(lang);
 
@@ -77,6 +77,11 @@ class I18n {
             if (window.gameManager && window.gameManager.uiManager) {
                 window.gameManager.uiManager.updateLanguage();
             }
+
+            // 추가 번역 적용 (모달이 열려있다면)
+            setTimeout(() => {
+                this.applyTranslations();
+            }, 50);
         }
     }
     

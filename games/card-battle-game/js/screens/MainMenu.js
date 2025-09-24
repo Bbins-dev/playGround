@@ -482,6 +482,16 @@ class MainMenu {
         if (modal) {
             modal.classList.remove('hidden');
 
+            // 모달이 열릴 때 i18n 적용 (새로 추가된 요소들을 위해)
+            if (typeof applyTutorialTranslations === 'function') {
+                // 짧은 지연 후 번역 적용 (DOM 렌더링 완료 후)
+                setTimeout(() => {
+                    applyTutorialTranslations();
+                    // 추가로 속성 이름들을 강제로 업데이트
+                    this.forceUpdateElementNames();
+                }, 100);
+            }
+
             // 닫기 버튼 이벤트 (한 번만 등록)
             if (closeBtn && !closeBtn._tutorialHandler) {
                 closeBtn._tutorialHandler = () => modal.classList.add('hidden');
@@ -607,6 +617,37 @@ class MainMenu {
                     this.selectCurrent();
                 }
             }
+        });
+    }
+
+    // 속성 이름들을 강제로 업데이트하는 메서드
+    forceUpdateElementNames() {
+        if (!window.i18nSystem) return;
+
+        const elementNames = {
+            'fire': window.i18nSystem.getTranslation('auto_battle_card_game.elements.fire'),
+            'water': window.i18nSystem.getTranslation('auto_battle_card_game.elements.water'),
+            'electric': window.i18nSystem.getTranslation('auto_battle_card_game.elements.electric'),
+            'poison': window.i18nSystem.getTranslation('auto_battle_card_game.elements.poison')
+        };
+
+        const strongText = window.i18nSystem.getTranslation('auto_battle_card_game.tutorial.strong');
+
+        // 모든 속성 이름 요소들을 찾아서 업데이트
+        document.querySelectorAll('[data-i18n="auto_battle_card_game.elements.fire"]').forEach(el => {
+            if (elementNames.fire) el.textContent = elementNames.fire;
+        });
+        document.querySelectorAll('[data-i18n="auto_battle_card_game.elements.water"]').forEach(el => {
+            if (elementNames.water) el.textContent = elementNames.water;
+        });
+        document.querySelectorAll('[data-i18n="auto_battle_card_game.elements.electric"]').forEach(el => {
+            if (elementNames.electric) el.textContent = elementNames.electric;
+        });
+        document.querySelectorAll('[data-i18n="auto_battle_card_game.elements.poison"]').forEach(el => {
+            if (elementNames.poison) el.textContent = elementNames.poison;
+        });
+        document.querySelectorAll('[data-i18n="auto_battle_card_game.tutorial.strong"]').forEach(el => {
+            if (strongText) el.textContent = strongText;
         });
     }
 

@@ -788,6 +788,294 @@
     }
 }
 
+/* =============================================== */
+/* 튜토리얼 모달 스타일 개선 */
+/* =============================================== */
+
+/* 튜토리얼 모달 기본 설정 */
+.tutorial-modal {
+    max-width: 700px !important;
+    width: 95% !important;
+    max-height: 80vh !important;
+    overflow-y: auto;
+    padding: 30px !important;
+    padding-bottom: 40px !important;
+}
+
+/* 튜토리얼 모달 닫기 버튼 */
+.tutorial-modal #close-tutorial {
+    margin-top: 30px !important;
+    margin-bottom: 10px !important;
+    width: 100%;
+    min-height: 45px !important;
+}
+
+/* 튜토리얼 섹션 구분 */
+.tutorial-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tutorial-section:last-child {
+    margin-bottom: 20px;
+}
+
+/* 섹션 제목 스타일 */
+.tutorial-section h3 {
+    color: var(--glass-text-primary) !important;
+    font-size: 20px !important;
+    font-weight: 700;
+    margin: 0 0 15px 0;
+    text-shadow: var(--glass-text-shadow), var(--glass-text-glow);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 8px;
+}
+
+/* 튜토리얼 내용 텍스트 개선 */
+.tutorial-content p {
+    color: var(--glass-text-secondary) !important;
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+    margin: 12px 0 !important;
+    padding: 8px 0;
+    text-shadow: var(--glass-text-shadow);
+    font-weight: 500;
+}
+
+/* 속성 효과 표시 영역 */
+.element-effectiveness {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 15px 0;
+}
+
+/* 속성 효과 각 행 */
+.effectiveness-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* 속성 아이템 */
+.element-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 80px;
+    text-align: center;
+}
+
+.element-emoji {
+    font-size: 28px !important;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+.element-name {
+    color: var(--glass-text-primary) !important;
+    font-size: 14px !important;
+    font-weight: 600;
+    text-shadow: var(--glass-text-shadow);
+}
+
+/* 효과 화살표 */
+.effectiveness-arrow {
+    font-size: 20px !important;
+    color: var(--glass-text-secondary) !important;
+    margin: 0 10px;
+    text-shadow: var(--glass-text-shadow);
+}
+
+/* 효과 텍스트 */
+.effectiveness-text {
+    font-size: 12px !important;
+    font-weight: 600;
+    padding: 3px 6px;
+    border-radius: 4px;
+    margin-top: 4px;
+}
+
+.effectiveness-text.strong {
+    background: rgba(39, 174, 96, 0.3);
+    border: 1px solid rgba(39, 174, 96, 0.5);
+    color: #2ECC71 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* 속성별 색상 (선택적 적용) */
+.element-item.fire { border-left: 3px solid #FF6B6B; }
+.element-item.water { border-left: 3px solid #87CEEB; }
+.element-item.electric { border-left: 3px solid #FFD700; }
+.element-item.poison { border-left: 3px solid #9B59B6; }
+
+/* 주석 스타일 */
+.element-notes {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.element-note {
+    color: var(--glass-text-secondary) !important;
+    font-size: 15px !important;
+    font-weight: 600;
+    margin: 0 !important;
+    padding: 12px 16px;
+    border-radius: 10px;
+    text-shadow: var(--glass-text-shadow);
+}
+
+.element-note.weakness {
+    background: rgba(231, 76, 60, 0.15);
+    border: 2px solid rgba(231, 76, 60, 0.4);
+    border-left: 4px solid #e74c3c;
+    color: #ff6b6b !important;
+}
+
+.element-note.normal {
+    background: rgba(149, 165, 166, 0.1);
+    border: 2px solid rgba(149, 165, 166, 0.3);
+    border-left: 4px solid #95a5a6;
+    color: var(--glass-text-primary) !important;
+}
+
+/* 방어 설명 영역 */
+.defense-explanation p {
+    color: var(--glass-text-secondary) !important;
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+    margin: 10px 0 !important;
+    padding: 6px 0;
+    text-shadow: var(--glass-text-shadow);
+}
+
+/* 튜토리얼 모달 커스텀 스크롤바 */
+.tutorial-modal::-webkit-scrollbar {
+    width: 8px;
+}
+
+.tutorial-modal::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+    border-radius: 4px;
+}
+
+.tutorial-modal::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tutorial-modal::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .tutorial-modal {
+        width: 98% !important;
+        max-height: 90vh !important;
+    }
+
+    .tutorial-section {
+        margin-bottom: 20px;
+        padding: 15px;
+    }
+
+    .tutorial-section h3 {
+        font-size: 18px !important;
+        margin-bottom: 12px;
+    }
+
+    .tutorial-content p {
+        font-size: 15px !important;
+        line-height: 1.5 !important;
+        margin: 10px 0 !important;
+    }
+
+    .effectiveness-row {
+        padding: 10px 12px;
+        gap: 8px;
+    }
+
+    .element-item {
+        min-width: 70px;
+        gap: 4px;
+    }
+
+    .element-emoji {
+        font-size: 24px !important;
+    }
+
+    .element-name {
+        font-size: 13px !important;
+    }
+
+    .effectiveness-arrow {
+        font-size: 18px !important;
+        margin: 0 8px;
+    }
+
+    .effectiveness-text {
+        font-size: 11px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .tutorial-modal {
+        width: 99% !important;
+        max-height: 95vh !important;
+    }
+
+    .tutorial-section {
+        margin-bottom: 15px;
+        padding: 12px;
+    }
+
+    .tutorial-section h3 {
+        font-size: 16px !important;
+        margin-bottom: 10px;
+    }
+
+    .tutorial-content p {
+        font-size: 14px !important;
+        margin: 8px 0 !important;
+    }
+
+    .effectiveness-row {
+        flex-direction: column;
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .effectiveness-arrow {
+        transform: rotate(90deg);
+        margin: 5px 0;
+    }
+
+    .element-item {
+        min-width: 60px;
+    }
+
+    .element-note {
+        font-size: 13px !important;
+        padding: 8px 12px;
+    }
+
+    .defense-explanation p {
+        font-size: 14px !important;
+        margin: 8px 0 !important;
+    }
+}
+
 /* 카드 보상 선택 영역 */
 .card-rewards-container {
     margin: 20px 0;

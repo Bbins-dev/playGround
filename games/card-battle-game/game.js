@@ -351,6 +351,13 @@ function changeLanguage(lang) {
     }
 }
 
+// 튜토리얼 모달을 위한 강제 번역 적용 함수
+function applyTutorialTranslations() {
+    if (window.i18nSystem) {
+        window.i18nSystem.applyTranslations();
+    }
+}
+
 function getI18nText(key) {
     // I18nHelper를 우선 사용
     if (window.I18nHelper) {
