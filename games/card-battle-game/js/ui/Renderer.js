@@ -86,6 +86,9 @@ class Renderer {
 
     // 메인 렌더링
     render(gameState) {
+        // 영역 위치 재계산 (GameConfig 변경사항 반영)
+        this.updateAreas();
+
         this.clearCanvas();
         this.drawBackground(gameState);
 
@@ -549,6 +552,18 @@ class Renderer {
         return cardIndex >= 0 && cardIndex < cardCount ? cardIndex : -1;
     }
 
+    // 영역 위치 업데이트 (GameConfig 변경사항 반영)
+    updateAreas() {
+        const handAreaHeight = GameConfig.cardSizes.hand.height * GameConfig.handLayout.rows +
+                              GameConfig.cardSizes.hand.height * GameConfig.handLayout.rowSpacing;
+
+        // GameConfig.ui 값 기반으로 위치 재계산
+        this.areas.enemyHand.y = GameConfig.ui.enemyHand.y - handAreaHeight / 2;
+        this.areas.playerHand.y = GameConfig.ui.playerHand.y - handAreaHeight / 2;
+        this.areas.battlefield.y = GameConfig.ui.enemyHand.y + handAreaHeight / 2 + 20;
+        this.areas.battlefield.height = GameConfig.ui.playerHand.y - GameConfig.ui.enemyHand.y - handAreaHeight - 40;
+    }
+
     // 화면 크기 조정
     resize(width, height) {
         this.width = width;
@@ -556,23 +571,16 @@ class Renderer {
         this.canvas.width = width;
         this.canvas.height = height;
 
-        // 영역 재계산 (GameConfig 기반으로 수정)
-        const handAreaHeight = GameConfig.cardSizes.hand.height * GameConfig.handLayout.rows +
-                              GameConfig.cardSizes.hand.height * GameConfig.handLayout.rowSpacing;
-
-        // GameConfig.ui 값 기반으로 위치 재계산 (초기화와 동일)
+        // 너비 관련 영역 조정
         this.areas.enemyHand.x = 50;
-        this.areas.enemyHand.y = GameConfig.ui.enemyHand.y - handAreaHeight / 2;
         this.areas.enemyHand.width = width - 100;
-
         this.areas.playerHand.x = 50;
-        this.areas.playerHand.y = GameConfig.ui.playerHand.y - handAreaHeight / 2;
         this.areas.playerHand.width = width - 100;
-
         this.areas.battlefield.x = 50;
-        this.areas.battlefield.y = GameConfig.ui.enemyHand.y + handAreaHeight / 2 + 20;
         this.areas.battlefield.width = width - 100;
-        this.areas.battlefield.height = GameConfig.ui.playerHand.y - GameConfig.ui.enemyHand.y - handAreaHeight - 40;
+
+        // 위치 재계산 (공통 로직 사용)
+        this.updateAreas();
 
         this.setupCanvas();
     }
