@@ -1171,6 +1171,24 @@ const GameConfig = {
             maxWidth: '98vw',
             maxHeight: '98vh',
             padding: 30
+        },
+
+        // 승리 모달 - 카드 보상 선택을 위한 충분한 공간
+        victory: {
+            width: 720,      // 96% of canvas width
+            height: 1150,    // 96% of canvas height
+            maxWidth: '98vw',
+            maxHeight: '98vh',
+            padding: 25
+        },
+
+        // 패배 모달 - 게임 통계 표시를 위한 충분한 공간 (기존 battleResult와 동일)
+        defeat: {
+            width: 720,      // 96% of canvas width
+            height: 1150,    // 96% of canvas height
+            maxWidth: '98vw',
+            maxHeight: '98vh',
+            padding: 25
         }
     }
 };

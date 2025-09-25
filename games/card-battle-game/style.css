@@ -62,6 +62,18 @@
     --modal-game-tutorial-max-width: 98vw;
     --modal-game-tutorial-max-height: 98vh;
     --modal-game-tutorial-padding: 30px;
+
+    --modal-victory-width: 720px;
+    --modal-victory-height: 1150px;
+    --modal-victory-max-width: 98vw;
+    --modal-victory-max-height: 98vh;
+    --modal-victory-padding: 25px;
+
+    --modal-defeat-width: 720px;
+    --modal-defeat-height: 1150px;
+    --modal-defeat-max-width: 98vw;
+    --modal-defeat-max-height: 98vh;
+    --modal-defeat-padding: 25px;
 }
 
 * {
@@ -473,6 +485,24 @@ body {
     max-width: var(--modal-card-detail-max-width);
     max-height: var(--modal-card-detail-max-height);
     padding: var(--modal-card-detail-padding);
+}
+
+/* 승리 모달 전용 스타일 - Configuration-Driven */
+#victory-modal .modal-content {
+    width: var(--modal-victory-width);
+    height: var(--modal-victory-height);
+    max-width: var(--modal-victory-max-width);
+    max-height: var(--modal-victory-max-height);
+    padding: var(--modal-victory-padding);
+}
+
+/* 패배 모달 전용 스타일 - Configuration-Driven */
+#defeat-modal .modal-content {
+    width: var(--modal-defeat-width);
+    height: var(--modal-defeat-height);
+    max-width: var(--modal-defeat-max-width);
+    max-height: var(--modal-defeat-max-height);
+    padding: var(--modal-defeat-padding);
 }
 
 .modal-content h2 {
