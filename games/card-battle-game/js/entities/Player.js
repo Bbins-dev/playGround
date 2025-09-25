@@ -157,7 +157,17 @@ class Player {
             return { success: false, reason: 'immune' };
         }
 
-        // 중복 상태이상 체크
+        // 화상의 경우 중복 적용 시 턴 수 누적
+        const existingEffect = this.statusEffects.find(effect => effect.type === statusType);
+        if (existingEffect && statusType === 'burn') {
+            // 화상은 중복 적용 시 턴 수 누적
+            const additionalTurns = duration || statusConfig.duration || 1;
+            existingEffect.turnsLeft += additionalTurns;
+            console.log(`[DEBUG] ${this.name} burn duration extended: +${additionalTurns} turns (total: ${existingEffect.turnsLeft})`);
+            return { success: true, extended: true, statusType: statusType };
+        }
+
+        // 기타 상태이상은 중복 불가
         const hasDuplicate = this.hasStatusEffect(statusType);
         console.log(`[DEBUG] ${this.name} duplicate check for ${statusType}: ${hasDuplicate}`);
         if (hasDuplicate) {

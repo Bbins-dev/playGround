@@ -107,8 +107,15 @@ class BattleSystem {
             this.gameManager.updateStatsOnTurn();
         }
 
-        // 턴 시작 처리
+        // 턴 시작 처리 (화상 데미지 포함)
         currentPlayer.startTurn();
+
+        // 화상 데미지 후 즉시 사망 체크
+        if (currentPlayer.hasStatusEffect('burn') && currentPlayer.isDead()) {
+            // 화상 데미지로 사망했을 경우 즉시 전투 종료
+            this.checkBattleEnd();
+            return;
+        }
 
         // 방어력 초기화 처리 (플레이어와 적 모두)
         if (currentPlayer.defense > 0) {

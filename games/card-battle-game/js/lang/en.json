@@ -194,7 +194,7 @@
         },
         "flame_throw": {
           "name": "Flame Throw",
-          "description": "Throw flames at the enemy for 3 damage."
+          "description": "Throw flames at the enemy for 3 damage. Low chance to inflict burn on hit."
         },
         "bubble_strike": {
           "name": "Bubble Strike",
@@ -248,6 +248,8 @@
       "templates": {
         "status_applied": "{name} applied!",
         "already_status": "Already {name}!",
+        "burn_extended": "🔥 Burn duration extended!",
+        "burn_damage": "🔥 {value} burn damage!",
         "buff_gained": "{name} +{value}",
         "buff_reduced": "{name} {value}",
         "defense_gained": "🛡️ DEF +{value}",

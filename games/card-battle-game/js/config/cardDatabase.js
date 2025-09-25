@@ -369,15 +369,26 @@ const CardDatabase = {
             cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.flame_throw.description',
+            burnChance: 15,
             effect: function(user, target, battleSystem) {
                 const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
+                // 화상 확률 체크 (명중 성공 시에만)
+                let burned = false;
+                const burnRoll = Math.random() * 100;
+                if (burnRoll < this.burnChance) {
+                    const result = target.addStatusEffect('burn', 15, 1);
+                    burned = result.success;
+                }
+
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.damage',
                     damage: finalDamage,
+                    burned: burned,
+                    statusType: burned ? 'burn' : null,
                     element: this.element,
                     effectiveness: effectiveness
                 };
