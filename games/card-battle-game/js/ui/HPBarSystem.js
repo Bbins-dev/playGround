@@ -605,6 +605,9 @@ class HPBarSystem {
         // 방어속성 배지도 함께 표시
         if (this.playerBadgeWrapper) this.playerBadgeWrapper.style.display = 'block';
         if (this.enemyBadgeWrapper) this.enemyBadgeWrapper.style.display = 'block';
+        // 효과 컨테이너들의 display 속성 초기화 (CSS active 클래스에 맡김)
+        if (this.playerEffectsContainer) this.playerEffectsContainer.style.display = '';
+        if (this.enemyEffectsContainer) this.enemyEffectsContainer.style.display = '';
     }
 
     hide() {
@@ -613,6 +616,9 @@ class HPBarSystem {
         // 방어속성 배지도 함께 숨김
         if (this.playerBadgeWrapper) this.playerBadgeWrapper.style.display = 'none';
         if (this.enemyBadgeWrapper) this.enemyBadgeWrapper.style.display = 'none';
+        // 효과 컨테이너들도 함께 숨김
+        if (this.playerEffectsContainer) this.playerEffectsContainer.style.display = 'none';
+        if (this.enemyEffectsContainer) this.enemyEffectsContainer.style.display = 'none';
     }
 
     // 초기화
