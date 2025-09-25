@@ -920,7 +920,7 @@ class GameManager {
                 root.style.setProperty('--modal-padding', `${GameConfig.modals.common.padding}px`);
             }
 
-            // 개별 모달별 크기 설정
+            // 개별 모달별 크기 설정 (반응형 제거 - 고정 크기만 사용)
             Object.keys(GameConfig.modals).forEach(modalType => {
                 if (modalType === 'common') return; // 공통 설정은 건너뛰기
 
@@ -929,8 +929,6 @@ class GameManager {
 
                 root.style.setProperty(`${prefix}-width`, `${modalConfig.width}px`);
                 root.style.setProperty(`${prefix}-height`, `${modalConfig.height}px`);
-                root.style.setProperty(`${prefix}-max-width`, modalConfig.maxWidth);
-                root.style.setProperty(`${prefix}-max-height`, modalConfig.maxHeight);
                 root.style.setProperty(`${prefix}-padding`, `${modalConfig.padding}px`);
             });
         }

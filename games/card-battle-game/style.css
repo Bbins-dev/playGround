@@ -455,8 +455,6 @@ body {
 #card-gallery-modal .modal-content {
     width: var(--modal-card-gallery-width);
     height: var(--modal-card-gallery-height);
-    max-width: var(--modal-card-gallery-max-width);
-    max-height: var(--modal-card-gallery-max-height);
     padding: var(--modal-card-gallery-padding);
 }
 
@@ -464,8 +462,6 @@ body {
 #card-selection-modal .modal-content {
     width: var(--modal-card-selection-width);
     height: var(--modal-card-selection-height);
-    max-width: var(--modal-card-selection-max-width);
-    max-height: var(--modal-card-selection-max-height);
     padding: var(--modal-card-selection-padding);
 }
 
@@ -473,8 +469,6 @@ body {
 #player-name-modal .modal-content {
     width: var(--modal-player-name-width);
     height: var(--modal-player-name-height);
-    max-width: var(--modal-player-name-max-width);
-    max-height: var(--modal-player-name-max-height);
     padding: var(--modal-player-name-padding);
 }
 
@@ -482,8 +476,6 @@ body {
 #card-detail-modal .modal-content {
     width: var(--modal-card-detail-width);
     height: var(--modal-card-detail-height);
-    max-width: var(--modal-card-detail-max-width);
-    max-height: var(--modal-card-detail-max-height);
     padding: var(--modal-card-detail-padding);
 }
 
@@ -491,8 +483,6 @@ body {
 #victory-modal .modal-content {
     width: var(--modal-victory-width);
     height: var(--modal-victory-height);
-    max-width: var(--modal-victory-max-width);
-    max-height: var(--modal-victory-max-height);
     padding: var(--modal-victory-padding);
 }
 
@@ -500,8 +490,6 @@ body {
 #defeat-modal .modal-content {
     width: var(--modal-defeat-width);
     height: var(--modal-defeat-height);
-    max-width: var(--modal-defeat-max-width);
-    max-height: var(--modal-defeat-max-height);
     padding: var(--modal-defeat-padding);
 }
 
