@@ -334,7 +334,6 @@
 
 /* 버튼 컴포넌트 */
 .btn {
-    width: 100%;
     background: var(--accent-primary);
     color: white;
     border: none;
@@ -548,19 +547,9 @@
     .mobile-only {
         display: block;
     }
-    
+
     .desktop-only {
         display: none;
-    }
-    
-    .language-selector {
-        top: 45px;
-        right: 15px;
-    }
-    
-    .game-language-selector {
-        bottom: 15px;
-        right: 15px;
     }
 }
 
@@ -749,16 +738,6 @@
         font-size: 15px;
     }
 
-    .modal-buttons {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .ui-button.primary,
-    .ui-button.secondary {
-        width: 100%;
-        min-width: auto;
-    }
 }
 
 @media (max-width: 480px) {
@@ -1660,40 +1639,7 @@
     animation: stageIndicatorUpdate 0.6s ease-in-out;
 }
 
-/* 반응형 디자인 */
-@media (max-width: 768px) {
-    .stage-indicator {
-        top: 80px;
-        min-width: 160px;
-        height: 28px;
-        padding: 6px 14px;
-        font-size: 13px;
-    }
-
-    .stage-indicator .stage-icon {
-        font-size: 14px;
-    }
-}
-
-@media (max-width: 480px) {
-    .stage-indicator {
-        top: 75px;
-        min-width: 140px;
-        height: 24px;
-        padding: 4px 12px;
-        font-size: 12px;
-        gap: 6px;
-    }
-
-    .stage-indicator .stage-icon {
-        font-size: 12px;
-    }
-
-    .stage-indicator .stage-progress {
-        font-size: 10px;
-        letter-spacing: 1px;
-    }
-}
+/* 반응형 디자인 - 제거됨 */
 
 /* ============= 카드 선택 모달 스타일 ============= */
 .card-selection-grid {
