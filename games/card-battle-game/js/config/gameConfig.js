@@ -838,8 +838,8 @@ const GameConfig = {
         // HP 바 및 효과 표시 개선
         hpBar: {
             height: 40,          // Increased from 30px
-            fontSize: 16,        // Increased from 14px
-            numberFontSize: 18   // New: HP number size
+            fontSize: 24,        // Increased from 14px
+            numberFontSize: 24   // New: HP number size
         },
 
         statusEffects: {

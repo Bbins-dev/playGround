@@ -747,14 +747,8 @@ body {
     border-radius: inherit;
 }
 
-.hp-label {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.9);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-}
-
 .hp-number {
-    font-size: var(--hp-number-font-size, 18px);
+    font-size: var(--hp-number-font-size, 24px);
     font-weight: bold;
     color: white;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -940,7 +934,7 @@ body {
     left: 50%;
     transform: translateX(-50%);
     color: white;
-    font-size: var(--hp-bar-font-size, 16px);
+    font-size: var(--hp-bar-font-size, 24px);
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
@@ -950,7 +944,7 @@ body {
     align-items: center;
     flex-shrink: 0;
     color: white;
-    font-size: 14px;
+    font-size: 18px;
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
     white-space: nowrap;
@@ -980,6 +974,7 @@ body {
     left: 50%;
     transform: translateX(-50%);
     z-index: 1;
+    font-size: 24px;
 }
 
 .hp-bar-text .entity-name {
@@ -1178,36 +1173,36 @@ body {
     display: none; /* 기본적으로 숨김 - HPBarSystem에서 show/hide 제어 */
 }
 
-/* 플레이어 배지 - 이름 위 (HP바 영역 밖) */
+/* 플레이어 배지 - HP바에서 더 위로 멀어지게 */
 .defense-badge-wrapper.badge-above {
-    bottom: 120px;
+    bottom: 140px;
 }
 
-/* 적 배지 - 이름 아래 (HP바 영역 밖) */
+/* 적 배지 - HP바에서 더 아래로 멀어지게 */
 .defense-badge-wrapper.badge-below {
-    top: 120px;
+    top: 140px;
 }
 
-/* 배지 크기 증가 (2배) */
+/* 배지 크기 증가 (더욱 크게) */
 .defense-badge-wrapper .defense-element-badge {
-    min-width: 44px;
-    height: 36px;
-    font-size: 24px;
-    border-radius: 18px;
+    min-width: 80px;
+    height: 56px;
+    font-size: 32px;
+    border-radius: 10px;
     margin: 0;
-    padding: 3px 8px;
-    border-width: 2px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
-    gap: 6px;
+    padding: 6px 16px;
+    border-width: 3px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    gap: 10px;
 }
 
 /* 큰 배지 내부 텍스트 크기 조정 */
 .defense-badge-wrapper .defense-element-badge .badge-emoji {
-    font-size: 16px;
+    font-size: 24px;
 }
 
 .defense-badge-wrapper .defense-element-badge .badge-text {
-    font-size: 12px;
+    font-size: 16px;
     font-weight: 600;
 }
 
