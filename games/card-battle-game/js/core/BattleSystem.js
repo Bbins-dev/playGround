@@ -507,6 +507,9 @@ class BattleSystem {
     async endTurn() {
         const currentPlayer = this.turnProgress.currentPlayer;
 
+        // 디버그: 턴 종료 처리 시작
+        console.log(`[DEBUG] endTurn: ${currentPlayer.name} turn ending (isPlayer: ${currentPlayer === this.player})`);
+        console.log(`[DEBUG] ${currentPlayer.name} status effects:`, currentPlayer.statusEffects);
 
         // 상태이상 해제 (턴 종료 시)
         currentPlayer.removeStatusEffect('taunt');
@@ -718,10 +721,18 @@ class BattleSystem {
 
     // 독 상태이상 대미지 처리
     async processPoisonDamage(player, isPlayerTurn) {
+        console.log(`[DEBUG] processPoisonDamage: ${player.name} (isPlayerTurn: ${isPlayerTurn})`);
         const poisonEffect = player.statusEffects.find(e => e.type === 'poisoned');
-        if (!poisonEffect) return false;
 
+        if (!poisonEffect) {
+            console.log(`[DEBUG] No poison effect found on ${player.name}`);
+            return false;
+        }
+
+        console.log(`[DEBUG] Poison effect found on ${player.name}:`, poisonEffect);
         const damage = Math.floor(player.maxHP * poisonEffect.power / 100);
+        console.log(`[DEBUG] Calculated poison damage: ${damage} (${poisonEffect.power}% of ${player.maxHP})`);
+
         if (damage > 0) {
             const position = isPlayerTurn ?
                 this.effectSystem.getPlayerPosition() :

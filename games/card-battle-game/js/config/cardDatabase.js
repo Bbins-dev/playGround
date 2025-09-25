@@ -460,9 +460,18 @@ const CardDatabase = {
                 // 중독 확률 체크 (명중한 경우에만)
                 let poisoned = false;
                 const poisonRoll = Math.random() * 100;
+                console.log(`[DEBUG] Smog poison roll: ${poisonRoll.toFixed(1)} vs ${this.poisonChance}% on ${target.name}`);
+
                 if (poisonRoll < this.poisonChance) {
                     const result = target.addStatusEffect('poisoned', null, 3); // 3턴 지속
                     poisoned = result.success;
+                    console.log(`[DEBUG] Poison application result on ${target.name}:`, result);
+                    if (poisoned) {
+                        console.log(`[DEBUG] ${target.name} is now poisoned for 3 turns`);
+                        console.log(`[DEBUG] ${target.name} status effects after poison:`, target.statusEffects);
+                    }
+                } else {
+                    console.log(`[DEBUG] Poison roll failed for ${target.name}`);
                 }
 
                 return {

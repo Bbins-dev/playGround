@@ -226,6 +226,10 @@ class EffectSystem {
                     className = 'damage-number heal-number';
                     numberElement.textContent = `+${amount}`;
                     break;
+                case 'poison':
+                    className += ' poison-number';
+                    numberElement.textContent = `☠️-${amount}`;
+                    break;
                 case 'shield':
                 case 'defense':
                     className = 'damage-number shield-number';

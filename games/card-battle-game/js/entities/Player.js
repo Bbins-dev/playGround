@@ -140,6 +140,9 @@ class Player {
 
     // 상태이상 관련 메서드
     addStatusEffect(statusType, power = null, duration = null) {
+        console.log(`[DEBUG] addStatusEffect called on ${this.name}: ${statusType}, power=${power}, duration=${duration}`);
+        console.log(`[DEBUG] ${this.name} defenseElement: ${this.defenseElement}`);
+
         // 입력값 유효성 검사
         if (!statusType || typeof statusType !== 'string') {
             console.warn('Player.addStatusEffect: 유효하지 않은 상태이상 타입:', statusType);
@@ -147,12 +150,18 @@ class Player {
         }
 
         // 면역 체크
-        if (GameConfig.utils.isImmuneToStatus(this.defenseElement, statusType)) {
+        const isImmune = GameConfig.utils.isImmuneToStatus(this.defenseElement, statusType);
+        console.log(`[DEBUG] ${this.name} immunity check for ${statusType}: ${isImmune}`);
+        if (isImmune) {
+            console.log(`[DEBUG] ${this.name} is immune to ${statusType}`);
             return { success: false, reason: 'immune' };
         }
 
         // 중복 상태이상 체크
-        if (this.hasStatusEffect(statusType)) {
+        const hasDuplicate = this.hasStatusEffect(statusType);
+        console.log(`[DEBUG] ${this.name} duplicate check for ${statusType}: ${hasDuplicate}`);
+        if (hasDuplicate) {
+            console.log(`[DEBUG] ${this.name} already has ${statusType}`);
             return { success: false, duplicate: true, statusType: statusType };
         }
 
@@ -293,13 +302,18 @@ class Player {
 
     // 상태이상 지속시간 업데이트
     updateStatusEffects() {
+        console.log(`[DEBUG] updateStatusEffects for ${this.name} - before:`, this.statusEffects.map(e => `${e.type}:${e.turnsLeft}`));
+
         this.statusEffects = this.statusEffects.filter(effect => {
             if (effect.turnsLeft > 0) {
                 effect.turnsLeft--;
+                console.log(`[DEBUG] ${this.name} ${effect.type} duration: ${effect.turnsLeft + 1} -> ${effect.turnsLeft}`);
                 return effect.turnsLeft > 0;
             }
             return effect.turnsLeft === -1; // 영구 상태이상
         });
+
+        console.log(`[DEBUG] updateStatusEffects for ${this.name} - after:`, this.statusEffects.map(e => `${e.type}:${e.turnsLeft}`));
     }
 
     // 턴에서 발동 가능한 카드 필터링 (상태이상 고려)

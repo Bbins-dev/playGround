@@ -56,7 +56,7 @@ const GameConfig = {
             emoji: '☠️',
             strong: 'electric',    // 전기에 강함
             weak: 'fire',          // 불에 약함
-            immunity: 'poison'     // 중독 면역
+            immunity: 'poisoned'   // 중독 면역
         },
         normal: {
             name: '노멀',
@@ -124,7 +124,7 @@ const GameConfig = {
             name: '중독',
             emoji: '☠️',
             description: '턴 종료 시 최대 HP의 일정 비율 대미지',
-            defaultPercent: 7,
+            defaultPercent: 15,
             color: '#9B59B6'
         }
     },
