@@ -401,23 +401,23 @@ const GameConfig = {
     // 메인 메뉴 레이아웃 설정
     mainMenu: {
         title: {
-            size: 56,                            // 제목 폰트 크기
-            y: 150,                              // 제목 Y 위치
+            size: 64,                            // 제목 폰트 크기 (56 → 64)
+            y: 280,                              // 제목 Y 위치 (150 → 280, 중앙으로)
             shadowOffset: 4                      // 그림자 오프셋
         },
         subtitle: {
-            size: 20,                            // 부제목 폰트 크기
-            offsetY: 60                          // 제목으로부터의 Y 오프셋
+            size: 24,                            // 부제목 폰트 크기 (20 → 24)
+            offsetY: 70                          // 제목으로부터의 Y 오프셋 (60 → 70)
         },
         menuItems: {
-            startY: 280,                         // 메뉴 시작 Y 위치
-            itemHeight: 60,                      // 메뉴 아이템 간격
-            width: 320,                          // 메뉴 아이템 너비
-            height: 50,                          // 메뉴 아이템 높이
-            iconSize: 28,                        // 아이콘 크기
+            startY: 420,                         // 메뉴 시작 Y 위치 (280 → 420, 중앙으로)
+            itemHeight: 80,                      // 메뉴 아이템 간격 (60 → 80)
+            width: 380,                          // 메뉴 아이템 너비 (320 → 380)
+            height: 65,                          // 메뉴 아이템 높이 (50 → 65)
+            iconSize: 32,                        // 아이콘 크기 (28 → 32)
             textSize: {
-                normal: 18,                      // 일반 텍스트 크기
-                selected: 20                     // 선택된 텍스트 크기
+                normal: 22,                      // 일반 텍스트 크기 (18 → 22)
+                selected: 24                     // 선택된 텍스트 크기 (20 → 24)
             },
             // 위치는 렌더링 시 동적으로 계산 (중앙 정렬)
             centerAligned: true                  // 완전 중앙 정렬 활성화
@@ -435,6 +435,16 @@ const GameConfig = {
             lineHeight: 20,                      // 줄 간격
             fontSize: 14                         // 폰트 크기
         }
+    },
+
+    // 언어 선택기 설정
+    languageSelector: {
+        fontSize: 18,                            // 폰트 크기 (14 → 18)
+        padding: {
+            vertical: 12,                        // 세로 패딩 (8 → 12)
+            horizontal: 16                       // 가로 패딩 (12 → 16)
+        },
+        borderRadius: 8                          // 모서리 둥글기 (5 → 8)
     },
 
     // 카드 선택 화면 설정
@@ -1159,7 +1169,14 @@ const GameConfig = {
                     bottom: 20,  // 40px → 20px
                     sides: 20    // 40px → 20px
                 },
-                marginTop: 15    // 30px → 15px
+                marginTop: 15,   // 30px → 15px
+                button: {
+                    fontSize: 20,    // 버튼 폰트 크기
+                    padding: {
+                        vertical: 16,   // 세로 패딩
+                        horizontal: 32  // 가로 패딩
+                    }
+                }
             }
         },
 

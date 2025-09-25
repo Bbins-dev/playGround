@@ -147,9 +147,9 @@ body {
     background: rgba(0, 0, 0, 0.7);
     color: white;
     border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    font-size: 14px;
+    padding: var(--language-selector-padding-vertical) var(--language-selector-padding-horizontal);
+    border-radius: var(--language-selector-border-radius);
+    font-size: var(--language-selector-font-size);
     cursor: pointer;
 }
 
@@ -475,6 +475,66 @@ body {
     width: var(--modal-player-name-width);
     height: var(--modal-player-name-height);
     padding: var(--modal-player-name-padding);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(245, 245, 245, 0.95));
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+}
+
+/* 플레이어 이름 모달 제목 스타일 */
+#player-name-modal h2 {
+    color: #2c3e50;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-shadow: none;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* 플레이어 이름 모달 버튼 스타일 */
+#player-name-modal .ui-button {
+    padding: 14px 28px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-transform: none;
+    letter-spacing: 0.3px;
+}
+
+#player-name-modal .ui-button.primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+#player-name-modal .ui-button.primary:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(103, 126, 234, 0.3);
+}
+
+#player-name-modal .ui-button.secondary {
+    background: rgba(255, 255, 255, 0.7);
+    color: #666;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#player-name-modal .ui-button.secondary:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* 카드 상세 모달 전용 스타일 - Configuration-Driven */
@@ -771,7 +831,7 @@ body {
     border: 2px solid #3498db;
     border-radius: 10px;
     color: white;
-    font-size: 18px;
+    font-size: var(--menu-text-size-normal);
     font-weight: bold;
     cursor: pointer;
     display: flex;
@@ -796,13 +856,13 @@ body {
 }
 
 .menu-icon {
-    font-size: 24px;
+    font-size: var(--menu-icon-size);
     display: flex;
     align-items: center;
 }
 
 .menu-text {
-    font-size: 18px;
+    font-size: var(--menu-text-size-normal);
     font-weight: bold;
 }
 

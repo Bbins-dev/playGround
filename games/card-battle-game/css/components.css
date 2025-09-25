@@ -60,35 +60,44 @@
 
 /* 플레이어 이름 입력 모달 스타일 */
 .name-input-container {
-    margin: 20px 0;
+    margin: 40px 0;
     text-align: center;
+    width: 100%;
 }
 
 .name-input {
     width: var(--input-width, 300px);
-    max-width: 80%;
-    padding: 12px 16px;
+    max-width: 85%;
+    padding: 16px 20px;
     font-size: 18px;
-    border: 2px solid var(--color-primary);
-    border-radius: 8px;
-    background: var(--color-bg-light);
-    color: var(--color-text-primary);
+    font-weight: 500;
+    border: none;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.8);
+    color: #2c3e50;
     text-align: center;
     outline: none;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     font-family: inherit;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border: 2px solid transparent;
 }
 
 .name-input:focus {
-    border-color: var(--color-primary-dark);
-    background: var(--color-bg-white);
-    box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 8px 30px rgba(103, 126, 234, 0.2),
+                0 0 0 3px rgba(103, 126, 234, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px) scale(1.02);
+    border-color: rgba(103, 126, 234, 0.4);
 }
 
 .name-input::placeholder {
-    color: var(--color-text-muted);
-    font-style: italic;
+    color: rgba(44, 62, 80, 0.6);
+    font-style: normal;
+    font-weight: 400;
 }
 
 .modal-buttons {
@@ -189,9 +198,9 @@
     background: rgba(0, 0, 0, 0.5);
     color: white;
     border: none;
-    border-radius: 5px;
-    padding: 8px 12px;
-    font-size: 16px;
+    border-radius: var(--language-selector-border-radius);
+    padding: var(--language-selector-padding-vertical) var(--language-selector-padding-horizontal);
+    font-size: var(--language-selector-font-size);
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: inherit;
@@ -226,9 +235,9 @@
     background: rgba(0, 0, 0, 0.5);
     color: white;
     border: none;
-    border-radius: 5px;
-    padding: 8px 12px;
-    font-size: 16px;
+    border-radius: var(--language-selector-border-radius);
+    padding: var(--language-selector-padding-vertical) var(--language-selector-padding-horizontal);
+    font-size: var(--language-selector-font-size);
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: inherit;
@@ -263,9 +272,9 @@
     background: rgba(0, 0, 0, 0.5);
     color: white;
     border: none;
-    border-radius: 5px;
-    padding: 8px 12px;
-    font-size: 16px;
+    border-radius: var(--language-selector-border-radius);
+    padding: var(--language-selector-padding-vertical) var(--language-selector-padding-horizontal);
+    font-size: var(--language-selector-font-size);
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: inherit;
@@ -1661,6 +1670,14 @@
     padding: var(--card-selection-footer-padding-top) var(--card-selection-footer-padding-sides) var(--card-selection-footer-padding-bottom) var(--card-selection-footer-padding-sides);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     margin-top: var(--card-selection-footer-margin-top);
+}
+
+/* 카드 선택 화면 버튼 스타일 */
+.card-selection-footer .ui-button {
+    font-size: var(--card-selection-button-font-size);
+    padding: var(--card-selection-button-padding-vertical) var(--card-selection-button-padding-horizontal);
+    min-height: 48px;
+    font-weight: 600;
 }
 
 /* 카드 선택 그리드 커스텀 스크롤바 */

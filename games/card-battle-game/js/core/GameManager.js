@@ -903,6 +903,21 @@ class GameManager {
             root.style.setProperty('--menu-button-width', `${GameConfig.mainMenu.menuItems.width}px`);
             root.style.setProperty('--menu-button-height', `${GameConfig.mainMenu.menuItems.height}px`);
             root.style.setProperty('--menu-start-y', `${GameConfig.mainMenu.menuItems.startY}px`);
+            root.style.setProperty('--menu-item-height', `${GameConfig.mainMenu.menuItems.itemHeight}px`);
+            root.style.setProperty('--menu-icon-size', `${GameConfig.mainMenu.menuItems.iconSize}px`);
+            root.style.setProperty('--menu-text-size-normal', `${GameConfig.mainMenu.menuItems.textSize.normal}px`);
+            root.style.setProperty('--menu-text-size-selected', `${GameConfig.mainMenu.menuItems.textSize.selected}px`);
+            root.style.setProperty('--menu-title-size', `${GameConfig.mainMenu.title.size}px`);
+            root.style.setProperty('--menu-title-y', `${GameConfig.mainMenu.title.y}px`);
+            root.style.setProperty('--menu-subtitle-size', `${GameConfig.mainMenu.subtitle.size}px`);
+        }
+
+        // 언어 선택기 설정
+        if (GameConfig.languageSelector) {
+            root.style.setProperty('--language-selector-font-size', `${GameConfig.languageSelector.fontSize}px`);
+            root.style.setProperty('--language-selector-padding-vertical', `${GameConfig.languageSelector.padding.vertical}px`);
+            root.style.setProperty('--language-selector-padding-horizontal', `${GameConfig.languageSelector.padding.horizontal}px`);
+            root.style.setProperty('--language-selector-border-radius', `${GameConfig.languageSelector.borderRadius}px`);
         }
 
         // 표준 입력 크기 (GameConfig에서 정의되지 않은 경우 기본값 유지)
@@ -957,6 +972,13 @@ class GameManager {
                         root.style.setProperty('--card-selection-footer-padding-bottom', `${footerConfig.padding.bottom}px`);
                         root.style.setProperty('--card-selection-footer-padding-sides', `${footerConfig.padding.sides}px`);
                         root.style.setProperty('--card-selection-footer-margin-top', `${footerConfig.marginTop}px`);
+
+                        // Footer 버튼 설정
+                        if (footerConfig.button) {
+                            root.style.setProperty('--card-selection-button-font-size', `${footerConfig.button.fontSize}px`);
+                            root.style.setProperty('--card-selection-button-padding-vertical', `${footerConfig.button.padding.vertical}px`);
+                            root.style.setProperty('--card-selection-button-padding-horizontal', `${footerConfig.button.padding.horizontal}px`);
+                        }
                     }
                 }
             });
