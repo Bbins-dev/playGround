@@ -393,7 +393,7 @@ const GameConfig = {
         },
         // 카드 색상 설정 (활성화 상태 등)
         cardColors: {
-            handHighlightFactor: 0.15,    // 손패 활성 카드 밝기 증가 비율 (기존의 절반)
+            handHighlightFactor: 0.05,    // 손패 활성 카드 밝기 증가 비율 (5%로 감소)
             enlargedHighlight: false      // 확대 카드는 기본 색상 유지
         }
     },

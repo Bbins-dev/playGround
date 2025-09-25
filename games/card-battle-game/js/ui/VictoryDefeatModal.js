@@ -22,6 +22,9 @@ class VictoryDefeatModal {
         this.victoryAddToDeckBtn = document.getElementById('victory-add-to-deck');
         this.victoryReplaceCardBtn = document.getElementById('victory-replace-card');
         this.victoryCancelSelectionBtn = document.getElementById('victory-cancel-selection');
+        this.victoryHandConfirmationButtons = document.getElementById('victory-hand-confirmation-buttons');
+        this.victoryConfirmReplacementBtn = document.getElementById('victory-confirm-replacement');
+        this.victoryCancelHandSelectionBtn = document.getElementById('victory-cancel-hand-selection');
 
         // 패배 모달 요소들
         this.defeatModal = document.getElementById('defeat-modal');
@@ -92,6 +95,18 @@ class VictoryDefeatModal {
         if (this.cancelReplaceBtn) {
             this.cancelReplaceBtn.addEventListener('click', () => {
                 this.handleCancelReplace();
+            });
+        }
+
+        if (this.victoryConfirmReplacementBtn) {
+            this.victoryConfirmReplacementBtn.addEventListener('click', () => {
+                this.handleConfirmReplacement();
+            });
+        }
+
+        if (this.victoryCancelHandSelectionBtn) {
+            this.victoryCancelHandSelectionBtn.addEventListener('click', () => {
+                this.handleCancelHandSelection();
             });
         }
 
@@ -390,12 +405,16 @@ class VictoryDefeatModal {
         if (this.victoryContinueBtn) {
             this.victoryContinueBtn.classList.add('hidden');
         }
+        if (this.victoryHandConfirmationButtons) {
+            this.victoryHandConfirmationButtons.classList.add('hidden');
+        }
 
         // 모든 카드 선택 상태 초기화
         this.updateCardSelection(-1);
 
         // 선택된 카드 상세 정보 숨김
         this.hideSelectedCardDetail();
+        this.hideSelectedHandCardDetail();
     }
 
     /**
@@ -503,8 +522,10 @@ class VictoryDefeatModal {
         if (cardIndex >= 0 && cardIndex < this.rewardCards.length) {
             this.selectedRewardCard = this.rewardCards[cardIndex];
 
-            // UI 업데이트: 선택된 카드 강조
-            this.updateCardSelection(cardIndex);
+            // 보상 카드 3개 숨기기
+            if (this.victoryCardRewards) {
+                this.victoryCardRewards.classList.add('hidden');
+            }
 
             // 선택된 카드 확대 표시
             this.showSelectedCardDetail(this.selectedRewardCard);
@@ -728,18 +749,104 @@ class VictoryDefeatModal {
     selectHandCard(handIndex) {
         this.selectedHandCardIndex = handIndex;
 
-        // UI 업데이트
-        const handCards = this.handCardsForReplace.querySelectorAll('.hand-card');
-        handCards.forEach((card, index) => {
-            if (index === handIndex) {
-                card.classList.add('selected');
-            } else {
-                card.classList.remove('selected');
+        if (this.gameManager && this.gameManager.player && this.gameManager.player.hand[handIndex]) {
+            const selectedCard = this.gameManager.player.hand[handIndex];
+
+            // 손패 교체 영역 숨기기
+            if (this.victoryHandReplace) {
+                this.victoryHandReplace.classList.add('hidden');
             }
+
+            // 선택된 손패 카드 확대 표시
+            this.showSelectedHandCardDetail(selectedCard);
+
+            // 확인/취소 버튼 표시
+            this.showHandConfirmationButtons();
+        }
+    }
+
+    /**
+     * 선택된 손패 카드 확대 표시
+     * @param {Object} card - 표시할 카드 데이터
+     */
+    showSelectedHandCardDetail(card) {
+        const detailContainer = document.getElementById('selected-hand-card-detail');
+        if (!detailContainer || !card) return;
+
+        // 기존 컨텐츠 제거
+        detailContainer.innerHTML = '';
+
+        // Canvas 생성
+        const canvas = document.createElement('canvas');
+        const cardSize = GameConfig.cardSizes.victoryDetail; // 승리 모달 확대 카드 크기 사용
+        canvas.width = cardSize.width;
+        canvas.height = cardSize.height;
+        canvas.style.borderRadius = '12px';
+        canvas.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+
+        const ctx = canvas.getContext('2d');
+
+        // CardRenderer로 카드 렌더링
+        this.cardRenderer.renderCard(ctx, card, 0, 0, cardSize.width, cardSize.height, {
+            isSelected: true,
+            isHighlighted: true,
+            opacity: 1
         });
 
-        // 교체 실행
+        detailContainer.appendChild(canvas);
+
+        // 컨테이너 표시
+        detailContainer.classList.remove('hidden');
+    }
+
+    /**
+     * 선택된 손패 카드 상세 정보 숨김
+     */
+    hideSelectedHandCardDetail() {
+        const detailContainer = document.getElementById('selected-hand-card-detail');
+        if (detailContainer) {
+            detailContainer.classList.add('hidden');
+            detailContainer.innerHTML = '';
+        }
+    }
+
+    /**
+     * 손패 확인 버튼들 표시
+     */
+    showHandConfirmationButtons() {
+        if (this.victoryHandConfirmationButtons) {
+            this.victoryHandConfirmationButtons.classList.remove('hidden');
+        }
+    }
+
+    /**
+     * 손패 확인 버튼들 숨김
+     */
+    hideHandConfirmationButtons() {
+        if (this.victoryHandConfirmationButtons) {
+            this.victoryHandConfirmationButtons.classList.add('hidden');
+        }
+    }
+
+    /**
+     * 교체 확인 처리
+     */
+    handleConfirmReplacement() {
         this.executeCardReplacement();
+    }
+
+    /**
+     * 손패 선택 취소 처리
+     */
+    handleCancelHandSelection() {
+        this.selectedHandCardIndex = null;
+        this.hideSelectedHandCardDetail();
+        this.hideHandConfirmationButtons();
+
+        // 손패 교체 영역 다시 표시
+        if (this.victoryHandReplace) {
+            this.victoryHandReplace.classList.remove('hidden');
+        }
     }
 
     /**
@@ -770,6 +877,11 @@ class VictoryDefeatModal {
         this.selectedRewardCard = null;
         this.updateCardSelection(-1); // 모든 선택 해제
         this.hideSelectedCardDetail(); // 선택된 카드 상세 정보 숨김
+
+        // 보상 카드 3개 다시 표시
+        if (this.victoryCardRewards) {
+            this.victoryCardRewards.classList.remove('hidden');
+        }
 
         // 기본 버튼들 다시 표시
         if (this.victorySelectionButtons) {
