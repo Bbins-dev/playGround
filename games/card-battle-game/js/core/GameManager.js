@@ -895,6 +895,8 @@ class GameManager {
         // 카드 크기
         root.style.setProperty('--card-preview-width', `${GameConfig.cardSizes.preview.width}px`);
         root.style.setProperty('--card-preview-height', `${GameConfig.cardSizes.preview.height}px`);
+        root.style.setProperty('--card-large-width', `${GameConfig.cardSizes.large.width}px`);
+        root.style.setProperty('--card-large-height', `${GameConfig.cardSizes.large.height}px`);
         root.style.setProperty('--card-hand-width', `${GameConfig.cardSizes.hand.width / 2}px`); // CSS에서 축소
         root.style.setProperty('--card-hand-height', `${GameConfig.cardSizes.hand.height / 2}px`); // CSS에서 축소
 

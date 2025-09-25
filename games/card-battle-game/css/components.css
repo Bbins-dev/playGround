@@ -1721,27 +1721,40 @@
 
 /* 카드 상세 모달 스타일 */
 .card-detail-content {
-    max-width: 500px;
-    width: 90%;
+    max-width: 650px;
+    width: 95%;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .card-detail-display {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 20px 0;
-    min-height: 480px;
+    margin: 40px 0 50px 0; /* 상단 40px, 하단 50px */
+    min-height: 680px;
+    flex: 1; /* flex 계열 체에서 남은 공간 채우기 */
 }
 
 .card-detail-display .dom-card {
     margin: 0 auto;
 }
 
-/* 카드 디테일 모달 버튼 간격 최적화 */
+/* 카드 디테일 모달 버튼 간격 및 크기 최적화 */
 .card-detail-content .modal-buttons {
-    margin-top: 15px;
-    gap: 15px;
+    margin-top: 50px;
+    gap: 25px;
+}
+
+/* 카드 상세 모달 버튼 크기 확대 */
+#card-detail-modal .ui-button {
+    padding: 16px 32px;
+    font-size: 20px;
+    font-weight: 700;
+    min-width: 140px;
+    border-radius: 12px;
 }
 
 /* 모바일 반응형 */

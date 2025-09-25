@@ -51,11 +51,11 @@
     --modal-battle-result-max-height: 98vh;
     --modal-battle-result-padding: 25px;
 
-    --modal-card-detail-width: 650px;
-    --modal-card-detail-height: 1050px;
+    --modal-card-detail-width: 720px;
+    --modal-card-detail-height: 1000px;
     --modal-card-detail-max-width: 95vw;
     --modal-card-detail-max-height: 90vh;
-    --modal-card-detail-padding: 30px;
+    --modal-card-detail-padding: 40px;
 
     --modal-game-tutorial-width: 720px;
     --modal-game-tutorial-height: 1150px;
@@ -563,6 +563,13 @@ body {
     margin-bottom: 20px;
     color: #2c3e50;
     font-size: 24px;
+}
+
+/* 카드 상세 모달 제목 크기 확대 */
+#card-detail-modal .modal-content h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 40px;
 }
 
 /* 글래스모피즘 모달의 텍스트 가독성 개선 */

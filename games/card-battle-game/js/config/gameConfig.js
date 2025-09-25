@@ -212,7 +212,7 @@ const GameConfig = {
         hand: { width: 120, height: 168 },       // 손패 카드 크기 (20% 확대)
         enlarged: { width: 400, height: 560 },   // 발동 시 확대 크기 (33% 증가)
         preview: { width: 260, height: 364 },    // 갤러리 미리보기 크기 (확대됨)
-        large: { width: 320, height: 448 },      // 카드 디테일 모달 크기 (preview보다 크고 enlarged보다 작음)
+        large: { width: 480, height: 672 },      // 카드 디테일 모달 크기 (대폭 확대)
         victory: { width: 180, height: 252 },    // 승리 모달 보상 카드 크기 (50% 확대)
         victoryDetail: { width: 360, height: 504 } // 승리 모달 확대 카드 크기 (260% 확대)
     },
@@ -1196,9 +1196,9 @@ const GameConfig = {
 
         // 카드 상세 모달 - 카드 확대 표시
         cardDetail: {
-            width: 650,      // 87% of canvas width
-            height: 1050,    // 88% of canvas height
-            padding: 30
+            width: 720,      // 96% of canvas width
+            height: 1000,    // 83% of canvas height (높이 증가)
+            padding: 40
         },
 
         // 게임 튜토리얼 모달 - 게임 설명을 위한 충분한 공간
