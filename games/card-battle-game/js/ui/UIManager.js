@@ -540,16 +540,14 @@ class UIManager {
 
     // 갤러리 카드 요소 생성 (통일된 DOMCardRenderer 사용)
     createCardGalleryElement(card) {
-        // DOMCardRenderer 인스턴스 생성
-        if (!this.domCardRenderer) {
-            this.domCardRenderer = new DOMCardRenderer();
-        }
+        // DOMCardRenderer 인스턴스를 매번 새로 생성 (최신 설정 반영)
+        const domCardRenderer = new DOMCardRenderer();
 
         // 갤러리 카드 크기 (gameConfig에서 가져오기)
         const cardSize = GameConfig.cardSizes.preview;
 
         // 통일된 카드 렌더러로 카드 생성
-        const cardElement = this.domCardRenderer.createCard(card, cardSize.width, cardSize.height, {
+        const cardElement = domCardRenderer.createCard(card, cardSize.width, cardSize.height, {
             isSelected: false,
             isHighlighted: false,
             isNextActive: false,

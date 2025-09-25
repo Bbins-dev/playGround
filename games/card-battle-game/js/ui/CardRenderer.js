@@ -2,7 +2,12 @@
 
 class CardRenderer {
     constructor() {
-        this.style = GameConfig.cardStyle;
+        // 캐시하지 않고 항상 실시간으로 참조
+    }
+
+    // 실시간 스타일 참조 메소드
+    get style() {
+        return GameConfig.cardStyle;
     }
 
     // 메인 카드 렌더링 메서드
@@ -172,7 +177,7 @@ class CardRenderer {
         if (!typeConfig?.emoji) return;
 
         ctx.font = `${fontSize}px Arial`;
-        ctx.fillStyle = '#fff';
+        ctx.fillStyle = this.getOptimalTextColor(card);
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
@@ -196,7 +201,7 @@ class CardRenderer {
 
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillStyle = '#fff';
+        ctx.fillStyle = this.getOptimalTextColor(card);
 
         if (config.dynamicSizing) {
             // 동적 폰트 크기 조절
@@ -278,7 +283,7 @@ class CardRenderer {
             : typeConfig?.name || card.type;
 
         ctx.font = `${fontSize}px Arial`;
-        ctx.fillStyle = '#fff';
+        ctx.fillStyle = this.getOptimalTextColor(card);
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
@@ -289,7 +294,7 @@ class CardRenderer {
     drawCardStats(ctx, card, x, y, width, height, fontSize, context = 'default') {
         ctx.font = `bold ${fontSize}px Arial`;
         ctx.textBaseline = 'middle';
-        ctx.fillStyle = '#fff';
+        ctx.fillStyle = this.getOptimalTextColor(card);
 
         const statsY = y + height * this.style.layout.stats.y;
         const leftX = x + 15;
@@ -355,7 +360,7 @@ class CardRenderer {
         if (!description) return;
 
         ctx.font = `${fontSize}px Arial`;
-        ctx.fillStyle = '#fff';
+        ctx.fillStyle = this.getOptimalTextColor(card);
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
 
@@ -418,6 +423,11 @@ class CardRenderer {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(card.cost.toString(), x, y);
+    }
+
+    // 모든 카드에 약간 회색빛 텍스트 사용 (가독성 개선)
+    getOptimalTextColor(card) {
+        return '#F5F5F5';  // 순백색보다 아주 약간 회색 (96% 밝기)
     }
 
     // 외곽선이 있는 텍스트 그리기 - TextRenderer 사용

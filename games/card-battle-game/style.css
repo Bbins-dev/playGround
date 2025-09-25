@@ -65,8 +65,6 @@
 
     --modal-victory-width: 720px;
     --modal-victory-height: 1150px;
-    --modal-victory-max-width: 98vw;
-    --modal-victory-max-height: 98vh;
     --modal-victory-padding: 25px;
 
     --modal-defeat-width: 720px;
@@ -544,7 +542,7 @@ body {
     padding: var(--modal-card-detail-padding);
 }
 
-/* 승리 모달 전용 스타일 - Configuration-Driven */
+/* 승리 모달 전용 스타일 - Configuration-Driven (반응형 제거) */
 #victory-modal .modal-content {
     width: var(--modal-victory-width);
     height: var(--modal-victory-height);
@@ -569,7 +567,7 @@ body {
 #card-detail-modal .modal-content h2 {
     font-size: 32px;
     font-weight: 700;
-    margin-bottom: 40px;
+    margin-bottom: 5px;
 }
 
 /* 글래스모피즘 모달의 텍스트 가독성 개선 */
@@ -1792,9 +1790,10 @@ body {
 }
 
 #victory-modal .victory-option-text {
-    font-size: 20px;
-    margin-bottom: 20px;
+    font-size: 28px;
+    margin-bottom: 30px;
     line-height: 1.4;
+    font-weight: 600;
 }
 
 #victory-modal .card-selection-hint {

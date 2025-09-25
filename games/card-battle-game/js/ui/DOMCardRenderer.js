@@ -3,7 +3,12 @@
 
 class DOMCardRenderer {
     constructor() {
-        this.style = GameConfig.cardStyle;
+        // 캐시하지 않고 항상 실시간으로 참조
+    }
+
+    // 실시간 스타일 참조 메소드
+    get style() {
+        return GameConfig.cardStyle;
     }
 
     // 메인 카드 DOM 요소 생성
@@ -290,9 +295,16 @@ class DOMCardRenderer {
         // 스탯 정의에 따라 동적으로 스탯 표시
         statConfig.definitions.forEach((def, index) => {
             const element = document.createElement('span');
+
+            // 실시간 설정 참조
+            const textOutline = GameConfig.cardStyle.textOutline;
+            const textShadow = textOutline.enabled
+                ? TextRenderer.getTextOutlineStyle(textOutline.width, textOutline.color)
+                : '';
+
             element.style.cssText = `
-                color: #fff;
-                ${this.getTextOutlineStyle()}
+                color: #F5F5F5;
+                ${textShadow}
             `;
 
             let value = stats[def.key];
@@ -384,13 +396,19 @@ class DOMCardRenderer {
 
     // 텍스트 외곽선 스타일 - TextRenderer 사용
     getTextOutlineStyle() {
-        if (!this.style.textOutline.enabled) {
-            return 'color: #fff;';
+        // 매번 실시간으로 GameConfig에서 직접 가져오기
+        const textOutline = GameConfig.cardStyle.textOutline;
+
+        if (!textOutline.enabled) {
+            return 'color: #F5F5F5;';  // 미세한 회색만
         }
 
+        // 외곽선이 활성화된 경우 TextRenderer를 통해 CSS text-shadow 생성
+        const textShadow = TextRenderer.getTextOutlineStyle(textOutline.width, textOutline.color);
+
         return `
-            color: #fff;
-            ${TextRenderer.getTextOutlineStyle(this.style.textOutline.width, this.style.textOutline.color)}
+            color: #F5F5F5;
+            ${textShadow}
         `;
     }
 
