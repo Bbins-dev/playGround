@@ -7,7 +7,7 @@ const GameConfig = {
     // 화면 설정 - 고정 크기 (반응형 제거)
     canvas: {
         width: 750,
-        height: 960,
+        height: 1200,
         targetFPS: 60
     },
 
