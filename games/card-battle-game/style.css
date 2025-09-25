@@ -1,4 +1,25 @@
-/* 카드 배틀 게임 - 고정 크기 750x960 */
+/* 카드 배틀 게임 - Configuration-Driven 치수 시스템 */
+:root {
+    /* Canvas 크기 */
+    --canvas-width: 750px;
+    --canvas-height: 1200px;
+
+    /* 카드 크기 - GameConfig 기반 동기화 */
+    --card-preview-width: 260px;    /* GameConfig.cardSizes.preview.width */
+    --card-preview-height: 364px;   /* GameConfig.cardSizes.preview.height */
+    --card-hand-width: 60px;        /* 손패 카드 축소 크기 */
+    --card-hand-height: 80px;       /* 손패 카드 축소 크기 */
+
+    /* 메뉴 크기 - GameConfig 기반 */
+    --menu-button-width: 320px;     /* GameConfig.mainMenu.menuItems.width */
+    --menu-button-height: 50px;     /* GameConfig.mainMenu.menuItems.height */
+    --menu-start-y: 280px;          /* GameConfig.mainMenu.menuItems.startY */
+
+    /* 입력 요소 크기 */
+    --input-width: 300px;           /* 표준 입력 너비 */
+    --element-min-width: 60px;      /* 최소 요소 너비 */
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -19,11 +40,11 @@ body {
     display: none !important;
 }
 
-/* 고정 크기 게임 컨테이너 - 더 이상 반응형 없음 */
+/* 설정 기반 게임 컨테이너 */
 .game-container {
     position: fixed;
-    width: 750px;
-    height: 1200px;
+    width: var(--canvas-width);
+    height: var(--canvas-height);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -33,18 +54,18 @@ body {
     border-radius: 8px;
 }
 
-/* 게임 래퍼 - 고정 크기 */
+/* 게임 래퍼 - 설정 기반 크기 */
 .game-wrapper {
     position: relative;
-    width: 750px;
-    height: 1200px;
+    width: var(--canvas-width);
+    height: var(--canvas-height);
 }
 
-/* 캔버스 고정 크기 */
+/* 캔버스 설정 기반 크기 */
 #gameCanvas {
     position: absolute;
-    width: 750px !important;
-    height: 1200px !important;
+    width: var(--canvas-width) !important;
+    height: var(--canvas-height) !important;
     top: 0;
     left: 0;
     background: #2c3e50;
@@ -82,8 +103,8 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 750px;
-    height: 1200px;
+    width: var(--canvas-width);
+    height: var(--canvas-height);
     pointer-events: none;
     z-index: 100; /* Canvas 위에 배치 */
 }
@@ -402,7 +423,7 @@ body {
 /* 카드 갤러리 그리드 */
 #card-gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, 260px);
+    grid-template-columns: repeat(auto-fill, var(--card-preview-width));
     gap: 40px;
     flex: 1;
     overflow-y: auto;
@@ -435,10 +456,10 @@ body {
     background: var(--scrollbar-thumb-hover);
 }
 
-/* 갤러리 카드 스타일 */
+/* 갤러리 카드 스타일 - Configuration-Driven */
 .gallery-card {
-    width: 260px;
-    height: 364px;
+    width: var(--card-preview-width);
+    height: var(--card-preview-height);
     border-radius: 8px;
     background: linear-gradient(135deg, rgba(52, 73, 94, 0.9), rgba(44, 62, 80, 0.9));
     border: 2px solid #3498db;
@@ -558,10 +579,10 @@ body {
 }
 
 
-/* 카드 선택 아이템 - 갤러리 카드와 동일한 스타일 */
+/* 카드 선택 아이템 - Configuration-Driven */
 .card-selection-item {
-    width: 260px;
-    height: 364px;
+    width: var(--card-preview-width);
+    height: var(--card-preview-height);
     border-radius: 8px;
     background: linear-gradient(135deg, rgba(52, 73, 94, 0.9), rgba(44, 62, 80, 0.9));
     border: 2px solid #3498db;
@@ -644,7 +665,7 @@ body {
 .main-menu-container {
     position: absolute;
     left: 50%;
-    top: 280px; /* GameConfig.mainMenu.menuItems.startY와 동일 */
+    top: var(--menu-start-y); /* GameConfig.mainMenu.menuItems.startY */
     transform: translateX(-50%);
     display: flex;
     flex-direction: column;
@@ -658,8 +679,8 @@ body {
 }
 
 .menu-button {
-    width: 300px; /* GameConfig.mainMenu.menuItems.width */
-    height: 60px; /* GameConfig.mainMenu.menuItems.height */
+    width: var(--menu-button-width); /* GameConfig.mainMenu.menuItems.width */
+    height: var(--menu-button-height); /* GameConfig.mainMenu.menuItems.height */
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6));
     border: 2px solid #3498db;
     border-radius: 10px;
@@ -1464,7 +1485,7 @@ body {
 /* 반응형 미디어 쿼리 - 그리드만 조정, 카드 크기는 고정 */
 @media (max-width: 1200px) {
     #card-gallery-grid {
-        grid-template-columns: repeat(auto-fit, 260px);
+        grid-template-columns: repeat(auto-fit, var(--card-preview-width));
         gap: 40px;
         justify-content: center;
     }
@@ -1477,7 +1498,7 @@ body {
 
 @media (max-width: 768px) {
     #card-gallery-grid {
-        grid-template-columns: repeat(auto-fit, 260px);
+        grid-template-columns: repeat(auto-fit, var(--card-preview-width));
         gap: 40px;
         justify-content: center;
     }
@@ -1491,7 +1512,7 @@ body {
 
 @media (max-width: 480px) {
     #card-gallery-grid {
-        grid-template-columns: repeat(auto-fit, 260px);
+        grid-template-columns: repeat(auto-fit, var(--card-preview-width));
         gap: 40px;
         justify-content: center;
     }

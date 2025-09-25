@@ -4,8 +4,8 @@ class Renderer {
     constructor(canvas) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
-        this.width = canvas.width;
-        this.height = canvas.height;
+        this.width = GameConfig.canvas.width;
+        this.height = GameConfig.canvas.height;
 
         // 렌더링 영역 정의 (GameConfig UI 위치 기반)
         const handAreaHeight = GameConfig.cardSizes.hand.height * GameConfig.handLayout.rows +
@@ -66,10 +66,10 @@ class Renderer {
 
     // 캔버스 설정
     setupCanvas() {
-        // 고해상도 디스플레이 지원
+        // 고해상도 디스플레이 지원 - GameConfig 기반
         const dpr = window.devicePixelRatio || 1;
-        this.canvas.width = this.width * dpr;
-        this.canvas.height = this.height * dpr;
+        this.canvas.width = GameConfig.canvas.width * dpr;
+        this.canvas.height = GameConfig.canvas.height * dpr;
 
         // 변환 상태 리셋 후 DPR 스케일 적용
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -566,10 +566,10 @@ class Renderer {
 
     // 화면 크기 조정
     resize(width, height) {
-        this.width = width;
-        this.height = height;
-        this.canvas.width = width;
-        this.canvas.height = height;
+        this.width = GameConfig.canvas.width;
+        this.height = GameConfig.canvas.height;
+        this.canvas.width = GameConfig.canvas.width;
+        this.canvas.height = GameConfig.canvas.height;
 
         // 너비 관련 영역 조정
         this.areas.enemyHand.x = 50;

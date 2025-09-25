@@ -169,12 +169,12 @@ class RenderOptimizer {
 
     // 뷰포트 컬링 - 화면에 보이지 않는 요소 제외
     isInViewport(x, y, width, height, viewportX = 0, viewportY = 0, viewportWidth, viewportHeight) {
-        // GameConfig 기본값 설정
+        // GameConfig 기본값 설정 - Configuration-Driven
         if (typeof viewportWidth === 'undefined') {
             viewportWidth = (typeof GameConfig !== 'undefined' && GameConfig.canvas?.width) || 750;
         }
         if (typeof viewportHeight === 'undefined') {
-            viewportHeight = (typeof GameConfig !== 'undefined' && GameConfig.canvas?.height) || 960;
+            viewportHeight = (typeof GameConfig !== 'undefined' && GameConfig.canvas?.height) || 1200;
         }
 
         return !(x + width < viewportX ||

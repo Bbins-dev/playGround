@@ -1,13 +1,12 @@
 // Canvas 유틸리티 - 공통 캔버스 작업들
 class CanvasUtils {
-    // 마우스/터치 좌표를 캔버스 좌표로 변환
-    static getCanvasCoordinates(event, canvas) {
+    // 마우스/터치 좌표를 캔버스 좌표로 변환 (GameConfig 기반, 완전 기능)
+    static getCanvasCoordinates(event, canvas, displayScale = { x: 1, y: 1 }) {
         const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
 
         let clientX, clientY;
 
+        // 마우스 또는 터치 이벤트 처리
         if (event.touches && event.touches.length > 0) {
             clientX = event.touches[0].clientX;
             clientY = event.touches[0].clientY;
@@ -16,9 +15,18 @@ class CanvasUtils {
             clientY = event.clientY;
         }
 
+        // 디스플레이 스케일 고려한 좌표 계산
+        const canvasX = (clientX - rect.left) / displayScale.x;
+        const canvasY = (clientY - rect.top) / displayScale.y;
+
+        // Canvas 경계 내부인지 확인
+        const isInBounds = canvasX >= 0 && canvasX <= GameConfig.canvas.width &&
+                          canvasY >= 0 && canvasY <= GameConfig.canvas.height;
+
         return {
-            x: (clientX - rect.left) * scaleX,
-            y: (clientY - rect.top) * scaleY
+            x: Math.max(0, Math.min(GameConfig.canvas.width, canvasX)),
+            y: Math.max(0, Math.min(GameConfig.canvas.height, canvasY)),
+            inBounds: isInBounds
         };
     }
 

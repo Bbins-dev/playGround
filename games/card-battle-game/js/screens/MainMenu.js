@@ -156,13 +156,13 @@ class MainMenu {
     // 배경 렌더링
     renderBackground(ctx, canvas) {
         // 밝은 그라데이션 배경으로 변경
-        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        const gradient = ctx.createLinearGradient(0, 0, 0, GameConfig.canvas.height);
         gradient.addColorStop(0, '#2E4057');  // 더 밝은 블루
         gradient.addColorStop(0.5, '#48729B'); // 밝은 파란색
         gradient.addColorStop(1, '#5D8AA8');   // 하늘색
 
         ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, GameConfig.canvas.width, GameConfig.canvas.height);
 
         // 배경 패턴
         this.renderBackgroundPattern(ctx, canvas);
@@ -183,8 +183,8 @@ class MainMenu {
         const cardSize = config.cardSize;
         const spacing = config.spacing;
 
-        for (let x = -cardSize.width; x < canvas.width + cardSize.width; x += spacing) {
-            for (let y = -cardSize.height; y < canvas.height + cardSize.height; y += spacing) {
+        for (let x = -cardSize.width; x < GameConfig.canvas.width + cardSize.width; x += spacing) {
+            for (let y = -cardSize.height; y < GameConfig.canvas.height + cardSize.height; y += spacing) {
                 const offsetX = (y / spacing) % 2 === 0 ? 0 : spacing / 2;
 
                 ctx.strokeStyle = '#fff';
@@ -368,9 +368,9 @@ class MainMenu {
         ctx.font = `${config.fontSize}px Arial`;
         ctx.textAlign = 'center';
 
-        const startY = canvas.height + config.startY;
+        const startY = GameConfig.canvas.height + config.startY;
         instructions.forEach((instruction, index) => {
-            ctx.fillText(instruction, canvas.width / 2, startY + index * config.lineHeight);
+            ctx.fillText(instruction, GameConfig.canvas.width / 2, startY + index * config.lineHeight);
         });
 
         ctx.restore();
@@ -603,7 +603,7 @@ class MainMenu {
     // 마우스/터치 입력 처리
     handlePointerInput(x, y, canvas) {
         const config = GameConfig.mainMenu.menuItems;
-        const centerX = canvas.width / 2;
+        const centerX = GameConfig.canvas.width / 2;
 
         // 메뉴 아이템 클릭 체크
         this.menuItems.forEach((item, index) => {

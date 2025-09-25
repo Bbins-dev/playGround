@@ -65,7 +65,7 @@
 }
 
 .name-input {
-    width: 300px;
+    width: var(--input-width, 300px);
     max-width: 80%;
     padding: 12px 16px;
     font-size: 18px;
@@ -1138,7 +1138,7 @@
     }
 
     .element-item {
-        min-width: 60px;
+        min-width: var(--element-min-width, 60px);
     }
 
     .element-note {
@@ -1308,8 +1308,8 @@
 }
 
 .hand-card .card-visual {
-    width: 60px;
-    height: 80px;
+    width: var(--card-hand-width, 60px);
+    height: var(--card-hand-height, 80px);
     margin-bottom: 8px;
 }
 

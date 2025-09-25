@@ -749,42 +749,16 @@ class GameManager {
         }
     }
 
-    // 마우스/터치 좌표 계산 (레터박스 고려)
+    // 마우스 좌표 계산 - CanvasUtils 사용 (중복 제거)
     getCanvasCoordinates(event) {
-        const rect = this.canvas.getBoundingClientRect();
-
-        // 레터박스를 고려한 정확한 좌표 계산
-        const canvasX = (event.clientX - rect.left) / this.displayScale.x;
-        const canvasY = (event.clientY - rect.top) / this.displayScale.y;
-
-        // Canvas 경계 내부인지 확인
-        const isInBounds = canvasX >= 0 && canvasX <= GameConfig.canvas.width &&
-                          canvasY >= 0 && canvasY <= GameConfig.canvas.height;
-
-        return {
-            x: Math.max(0, Math.min(GameConfig.canvas.width, canvasX)),
-            y: Math.max(0, Math.min(GameConfig.canvas.height, canvasY)),
-            inBounds: isInBounds
-        };
+        return CanvasUtils.getCanvasCoordinates(event, this.canvas, this.displayScale);
     }
 
-    // 터치 좌표 계산 (레터박스 고려)
+    // 터치 좌표 계산 - CanvasUtils 사용 (중복 제거)
     getTouchCoordinates(touch) {
-        const rect = this.canvas.getBoundingClientRect();
-
-        // 레터박스를 고려한 정확한 좌표 계산
-        const canvasX = (touch.clientX - rect.left) / this.displayScale.x;
-        const canvasY = (touch.clientY - rect.top) / this.displayScale.y;
-
-        // Canvas 경계 내부인지 확인
-        const isInBounds = canvasX >= 0 && canvasX <= GameConfig.canvas.width &&
-                          canvasY >= 0 && canvasY <= GameConfig.canvas.height;
-
-        return {
-            x: Math.max(0, Math.min(GameConfig.canvas.width, canvasX)),
-            y: Math.max(0, Math.min(GameConfig.canvas.height, canvasY)),
-            inBounds: isInBounds
-        };
+        // 터치 이벤트를 위한 임시 이벤트 객체 생성
+        const touchEvent = { touches: [touch] };
+        return CanvasUtils.getCanvasCoordinates(touchEvent, this.canvas, this.displayScale);
     }
 
     // Canvas 이벤트 핸들러들은 DOM 메뉴 전환으로 더 이상 필요하지 않음
@@ -881,13 +855,16 @@ class GameManager {
 
     }
 
-    // Canvas 크기 동적 업데이트 (레터박스 방식)
+    // Canvas 크기 동적 업데이트 (Configuration-Driven)
     updateCanvasSize() {
         if (!this.canvas) return;
 
-        // 고정 크기 설정 - 더 이상 반응형 없음
-        this.canvas.width = GameConfig.canvas.width;  // 1247
-        this.canvas.height = GameConfig.canvas.height; // 832
+        // GameConfig 기반 동적 크기 설정
+        this.canvas.width = GameConfig.canvas.width;
+        this.canvas.height = GameConfig.canvas.height;
+
+        // CSS 변수 동기화 - 단일 진실의 원천 유지
+        this.syncCSSVariables();
 
         // 스케일 비율은 1:1 고정 (반응형 제거)
         this.displayScale = {
@@ -895,7 +872,35 @@ class GameManager {
             y: 1
         };
 
-        // Canvas 고정 크기 설정 완료
+        console.log(`Canvas 크기 설정 완료: ${GameConfig.canvas.width}x${GameConfig.canvas.height}`);
+    }
+
+    // CSS 변수와 GameConfig 동기화 - Configuration-Driven Development
+    syncCSSVariables() {
+        const root = document.documentElement;
+
+        // Canvas 크기
+        root.style.setProperty('--canvas-width', `${GameConfig.canvas.width}px`);
+        root.style.setProperty('--canvas-height', `${GameConfig.canvas.height}px`);
+
+        // 카드 크기
+        root.style.setProperty('--card-preview-width', `${GameConfig.cardSizes.preview.width}px`);
+        root.style.setProperty('--card-preview-height', `${GameConfig.cardSizes.preview.height}px`);
+        root.style.setProperty('--card-hand-width', `${GameConfig.cardSizes.hand.width / 2}px`); // CSS에서 축소
+        root.style.setProperty('--card-hand-height', `${GameConfig.cardSizes.hand.height / 2}px`); // CSS에서 축소
+
+        // 메뉴 크기
+        if (GameConfig.mainMenu) {
+            root.style.setProperty('--menu-button-width', `${GameConfig.mainMenu.menuItems.width}px`);
+            root.style.setProperty('--menu-button-height', `${GameConfig.mainMenu.menuItems.height}px`);
+            root.style.setProperty('--menu-start-y', `${GameConfig.mainMenu.menuItems.startY}px`);
+        }
+
+        // 표준 입력 크기 (GameConfig에서 정의되지 않은 경우 기본값 유지)
+        root.style.setProperty('--input-width', '300px');
+        root.style.setProperty('--element-min-width', '60px');
+
+        console.log('CSS 변수와 GameConfig 동기화 완료');
     }
 
     // 게임 속도 설정

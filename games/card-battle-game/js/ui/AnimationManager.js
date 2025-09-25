@@ -386,9 +386,9 @@ class AnimationManager {
         const sequenceId = `battleAction_${Date.now()}`;
 
         const userPosition = user === 'player' ?
-            { x: 640, y: 600 } : { x: 640, y: 120 };
+            GameConfig.ui.playerHand : GameConfig.ui.enemyHand;
         const targetPosition = target === 'player' ?
-            { x: 640, y: 600 } : { x: 640, y: 120 };
+            GameConfig.ui.playerHand : GameConfig.ui.enemyHand;
 
         const animations = [
             {
