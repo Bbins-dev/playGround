@@ -792,22 +792,23 @@
 /* 튜토리얼 모달 스타일 개선 */
 /* =============================================== */
 
-/* 튜토리얼 모달 기본 설정 */
+/* 튜토리얼 모달 기본 설정 - Configuration-Driven */
 .tutorial-modal {
-    max-width: 700px !important;
-    width: 95% !important;
-    max-height: 80vh !important;
+    width: var(--modal-game-tutorial-width, 700px);
+    max-width: var(--modal-game-tutorial-max-width, 95vw);
+    height: var(--modal-game-tutorial-height, 80vh);
+    max-height: var(--modal-game-tutorial-max-height, 95vh);
     overflow-y: auto;
-    padding: 30px !important;
-    padding-bottom: 40px !important;
+    padding: var(--modal-game-tutorial-padding, 30px);
+    padding-bottom: 40px;
 }
 
 /* 튜토리얼 모달 닫기 버튼 */
 .tutorial-modal #close-tutorial {
-    margin-top: 30px !important;
-    margin-bottom: 10px !important;
+    margin-top: 30px;
+    margin-bottom: 10px;
     width: 100%;
-    min-height: 45px !important;
+    min-height: 45px;
 }
 
 /* 튜토리얼 섹션 구분 */
@@ -1057,8 +1058,8 @@
 /* 반응형 디자인 */
 @media (max-width: 768px) {
     .tutorial-modal {
-        width: 98% !important;
-        max-height: 90vh !important;
+        width: var(--modal-game-tutorial-max-width, 98vw);
+        max-height: var(--modal-game-tutorial-max-height, 90vh);
     }
 
     .tutorial-section {
@@ -1107,8 +1108,8 @@
 
 @media (max-width: 480px) {
     .tutorial-modal {
-        width: 99% !important;
-        max-height: 95vh !important;
+        width: var(--modal-game-tutorial-max-width, 99vw);
+        max-height: var(--modal-game-tutorial-max-height, 95vh);
     }
 
     .tutorial-section {

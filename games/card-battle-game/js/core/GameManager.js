@@ -909,7 +909,33 @@ class GameManager {
         root.style.setProperty('--input-width', '300px');
         root.style.setProperty('--element-min-width', '60px');
 
-        console.log('CSS 변수와 GameConfig 동기화 완료 (뷰포트 스케일링 포함)');
+        // 모달 크기 설정 - Configuration-Driven
+        if (GameConfig.modals) {
+            // 공통 모달 설정
+            if (GameConfig.modals.common) {
+                root.style.setProperty('--modal-overlay', GameConfig.modals.common.overlay);
+                root.style.setProperty('--modal-backdrop-blur', GameConfig.modals.common.backdropBlur);
+                root.style.setProperty('--modal-border-radius', `${GameConfig.modals.common.borderRadius}px`);
+                root.style.setProperty('--modal-box-shadow', GameConfig.modals.common.boxShadow);
+                root.style.setProperty('--modal-padding', `${GameConfig.modals.common.padding}px`);
+            }
+
+            // 개별 모달별 크기 설정
+            Object.keys(GameConfig.modals).forEach(modalType => {
+                if (modalType === 'common') return; // 공통 설정은 건너뛰기
+
+                const modalConfig = GameConfig.modals[modalType];
+                const prefix = `--modal-${modalType.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
+
+                root.style.setProperty(`${prefix}-width`, `${modalConfig.width}px`);
+                root.style.setProperty(`${prefix}-height`, `${modalConfig.height}px`);
+                root.style.setProperty(`${prefix}-max-width`, modalConfig.maxWidth);
+                root.style.setProperty(`${prefix}-max-height`, modalConfig.maxHeight);
+                root.style.setProperty(`${prefix}-padding`, `${modalConfig.padding}px`);
+            });
+        }
+
+        console.log('CSS 변수와 GameConfig 동기화 완료 (뷰포트 스케일링 + 모달 크기 포함)');
     }
 
     // 뷰포트 스케일링 계산 및 적용

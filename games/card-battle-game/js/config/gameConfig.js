@@ -1106,6 +1106,72 @@ const GameConfig = {
             debuff: { power: '⬇️', accuracy: '🎯' },
             special: { power: '⭐', accuracy: '🎯' }
         }
+    },
+
+    // 모달 크기 및 레이아웃 설정 - Configuration-Driven
+    modals: {
+        // 공통 모달 설정
+        common: {
+            overlay: 'rgba(0, 0, 0, 0.7)',
+            backdropBlur: '8px',
+            borderRadius: 20,
+            boxShadow: '0 25px 60px rgba(0, 0, 0, 0.4)',
+            padding: 30
+        },
+
+        // 카드 갤러리 모달 - 큰 카드들을 위한 넓은 공간 (더 길게)
+        cardGallery: {
+            width: 720,      // 96% of 750px canvas width
+            height: 1150,    // 96% of 1200px canvas height
+            maxWidth: '98vw',
+            maxHeight: '98vh',
+            padding: 25
+        },
+
+        // 카드 선택 모달 - 카드 선택을 위한 충분한 공간 (최대한 길게)
+        cardSelection: {
+            width: 720,      // 96% of canvas width
+            height: 1180,    // 98% of canvas height
+            maxWidth: '98vw',
+            maxHeight: '99vh',
+            padding: 15
+        },
+
+        // 플레이어 이름 입력 모달 - 간단한 입력을 위한 적당한 크기 (더 길게)
+        playerName: {
+            width: 550,      // 73% of canvas width
+            height: 500,     // 42% of canvas height
+            maxWidth: '85vw',
+            maxHeight: '70vh',
+            padding: 40
+        },
+
+        // 승리/패배 모달 - 결과 표시를 위한 충분한 공간 (최대한 길게)
+        battleResult: {
+            width: 720,      // 96% of canvas width
+            height: 1150,    // 96% of canvas height
+            maxWidth: '98vw',
+            maxHeight: '98vh',
+            padding: 25
+        },
+
+        // 카드 상세 모달 - 카드 확대 표시 (더 길게)
+        cardDetail: {
+            width: 650,      // 87% of canvas width
+            height: 1050,    // 88% of canvas height
+            maxWidth: '95vw',
+            maxHeight: '90vh',
+            padding: 30
+        },
+
+        // 게임 튜토리얼 모달 - 게임 설명을 위한 충분한 공간
+        gameTutorial: {
+            width: 720,      // 96% of canvas width
+            height: 1150,    // 96% of canvas height
+            maxWidth: '98vw',
+            maxHeight: '98vh',
+            padding: 30
+        }
     }
 };
 

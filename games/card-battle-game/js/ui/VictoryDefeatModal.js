@@ -250,9 +250,23 @@ class VictoryDefeatModal {
             if (mvpCard && window.CardDatabase) {
                 const cardData = CardDatabase.getCard(mvpCard);
                 if (cardData) {
-                    // 카드 이름 번역
+                    // 카드 이름 번역 - 다양한 방법 시도
+                    let translatedName = null;
+
+                    // 1. 언어팩에서 카드 이름 찾기
                     const cardNameKey = `auto_battle_card_game.cards.${mvpCard}.name`;
-                    const translatedName = I18nHelper.getText(cardNameKey) || cardData.name;
+                    translatedName = I18nHelper.getText(cardNameKey);
+
+                    // 2. CardDatabase의 nameKey 사용
+                    if (!translatedName && cardData.nameKey) {
+                        translatedName = I18nHelper.getText(cardData.nameKey);
+                    }
+
+                    // 3. CardDatabase의 name 사용 (기본값)
+                    if (!translatedName) {
+                        translatedName = cardData.name;
+                    }
+
                     this.defeatMvpCard.textContent = translatedName;
                 } else {
                     this.defeatMvpCard.textContent = mvpCard;

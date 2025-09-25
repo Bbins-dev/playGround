@@ -102,6 +102,11 @@ class BattleSystem {
         this.turnProgress.currentCardIndex = 0;
         this.turnProgress.cardsActivated = 0;
 
+        // 턴 통계 업데이트 (플레이어 턴만)
+        if (isPlayerTurn) {
+            this.gameManager.updateStatsOnTurn();
+        }
+
         // 턴 시작 처리
         currentPlayer.startTurn();
 
@@ -458,6 +463,11 @@ class BattleSystem {
 
             // 방어력 관련 통계 업데이트
             this.battleStats.defenseBuilt += defenseGain;
+
+            // 게임 매니저 통계 업데이트 (플레이어만)
+            if (user === this.player) {
+                this.gameManager.updateStatsOnDefense(defenseGain);
+            }
         }
 
         // 힘 버프 획득 처리 (가시갑옷 카드 등)
@@ -679,6 +689,11 @@ class BattleSystem {
             this.battleStats.totalDamageReceived += actualDamage;
         }
 
+        // 게임 매니저 통계 업데이트 (플레이어가 피해를 받은 경우)
+        if (target === this.player && actualDamage > 0) {
+            this.gameManager.updateStatsOnPlayerDamage(actualDamage);
+        }
+
         // HP 바 업데이트
         if (this.hpBarSystem) {
             this.hpBarSystem.updatePlayerInfo(this.player, this.enemy);
@@ -720,6 +735,11 @@ class BattleSystem {
 
             // 실제 대미지 적용
             const actualDamage = player.takeDamage(damage);
+
+            // 게임 매니저 통계 업데이트 (플레이어가 독 피해를 받은 경우)
+            if (player === this.player && actualDamage > 0) {
+                this.gameManager.updateStatsOnPlayerDamage(actualDamage);
+            }
 
             // HP 바 업데이트
             await this.hpBarSystem.updateHP(player, isPlayerTurn);
