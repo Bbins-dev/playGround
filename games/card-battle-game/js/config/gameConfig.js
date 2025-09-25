@@ -317,7 +317,7 @@ const GameConfig = {
         },
         textOutline: {
             enabled: true,
-            color: '#333333',  // 검정에 가깝지만 살짝 연한 색상
+            color: '#000000',  // 완전한 검정
             width: 1
         },
         fontRatio: {
