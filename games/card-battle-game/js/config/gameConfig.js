@@ -632,9 +632,9 @@ const GameConfig = {
         },
         enemy: {
             gradientStops: [
-                { position: 0, color: '#4a2828' },
-                { position: 0.5, color: '#5c2835' },
-                { position: 1, color: '#3d1f1f' }
+                { position: 0, color: '#6b3535' },
+                { position: 0.5, color: '#7a3f42' },
+                { position: 1, color: '#5a2d2d' }
             ]
         }
     },
