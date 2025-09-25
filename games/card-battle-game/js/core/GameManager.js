@@ -930,6 +930,28 @@ class GameManager {
                 root.style.setProperty(`${prefix}-width`, `${modalConfig.width}px`);
                 root.style.setProperty(`${prefix}-height`, `${modalConfig.height}px`);
                 root.style.setProperty(`${prefix}-padding`, `${modalConfig.padding}px`);
+
+                // cardSelection 모달 그리드 설정
+                if (modalType === 'cardSelection' && modalConfig.grid) {
+                    const gridConfig = modalConfig.grid;
+                    const footerConfig = modalConfig.footer;
+
+                    // 그리드 CSS 변수 동기화
+                    root.style.setProperty('--card-selection-grid-max-height', `${gridConfig.maxHeight}px`);
+                    root.style.setProperty('--card-selection-grid-padding-top', `${gridConfig.padding.top}px`);
+                    root.style.setProperty('--card-selection-grid-padding-bottom', `${gridConfig.padding.bottom}px`);
+                    root.style.setProperty('--card-selection-grid-padding-sides', `${gridConfig.padding.sides}px`);
+                    root.style.setProperty('--card-selection-grid-gap-row', `${gridConfig.gap.row}px`);
+                    root.style.setProperty('--card-selection-grid-gap-column', `${gridConfig.gap.column}px`);
+
+                    // Footer CSS 변수 동기화
+                    if (footerConfig) {
+                        root.style.setProperty('--card-selection-footer-padding-top', `${footerConfig.padding.top}px`);
+                        root.style.setProperty('--card-selection-footer-padding-bottom', `${footerConfig.padding.bottom}px`);
+                        root.style.setProperty('--card-selection-footer-padding-sides', `${footerConfig.padding.sides}px`);
+                        root.style.setProperty('--card-selection-footer-margin-top', `${footerConfig.marginTop}px`);
+                    }
+                }
             });
         }
 

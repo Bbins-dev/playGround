@@ -1130,7 +1130,31 @@ const GameConfig = {
         cardSelection: {
             width: 720,      // 96% of canvas width
             height: 1180,    // 98% of canvas height
-            padding: 15
+            padding: 15,
+
+            // 카드 그리드 설정
+            grid: {
+                maxHeight: 900,  // 75vh(900px) → 더 많은 카드 표시 공간
+                padding: {
+                    top: 20,     // 40px → 20px (패딩 최적화)
+                    bottom: 10,  // 20px → 10px
+                    sides: 20    // 40px → 20px
+                },
+                gap: {
+                    row: 20,     // 30px → 20px (수직 간격 줄임)
+                    column: 120  // 카드 간 좌우 충분한 여백 확보
+                }
+            },
+
+            // Footer 영역 설정
+            footer: {
+                padding: {
+                    top: 15,     // 30px → 15px
+                    bottom: 20,  // 40px → 20px
+                    sides: 20    // 40px → 20px
+                },
+                marginTop: 15    // 30px → 15px
+            }
         },
 
         // 플레이어 이름 입력 모달 - 간단한 입력을 위한 적당한 크기
