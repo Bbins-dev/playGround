@@ -213,7 +213,7 @@ const GameConfig = {
         enlarged: { width: 400, height: 560 },   // 발동 시 확대 크기 (33% 증가)
         preview: { width: 260, height: 364 },    // 갤러리 미리보기 크기 (확대됨)
         large: { width: 320, height: 448 },      // 카드 디테일 모달 크기 (preview보다 크고 enlarged보다 작음)
-        victory: { width: 120, height: 168 },    // 승리 모달 보상 카드 크기 (20% 확대)
+        victory: { width: 180, height: 252 },    // 승리 모달 보상 카드 크기 (50% 확대)
         victoryDetail: { width: 360, height: 504 } // 승리 모달 확대 카드 크기 (260% 확대)
     },
 

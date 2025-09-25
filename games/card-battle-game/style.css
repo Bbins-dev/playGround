@@ -1717,3 +1717,64 @@ body {
         justify-content: center;
     }
 }
+
+/* 승리 모달 텍스트 크기 증가 */
+#victory-modal h2 {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+#victory-modal .victory-reward-text {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+#victory-modal .victory-option-text {
+    font-size: 20px;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+#victory-modal .card-selection-hint {
+    font-size: 18px;
+    color: #666;
+    font-style: italic;
+    margin-top: 15px;
+}
+
+#victory-modal .ui-button {
+    font-size: 20px;
+}
+
+#victory-modal .hand-replace-container p {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+/* 패배 모달 텍스트 크기 증가 */
+#defeat-modal h2 {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+#defeat-modal h3 {
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+#defeat-modal .stat-label,
+#defeat-modal .stat-value {
+    font-size: 20px;
+}
+
+#defeat-modal p {
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+#defeat-modal .ui-button {
+    font-size: 20px;
+}
