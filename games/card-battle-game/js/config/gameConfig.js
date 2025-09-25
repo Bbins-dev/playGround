@@ -833,6 +833,31 @@ const GameConfig = {
                     critical: 'rgba(243, 156, 18, 0.3)'
                 }
             }
+        },
+
+        // HP 바 및 효과 표시 개선
+        hpBar: {
+            height: 40,          // Increased from 30px
+            fontSize: 16,        // Increased from 14px
+            numberFontSize: 18   // New: HP number size
+        },
+
+        statusEffects: {
+            iconSize: 36,        // Increased from 32px
+            fontSize: 14,        // Increased from 11px
+            columns: 2,          // Grid layout
+            spacing: 8,          // Gap between icons
+            verticalSpacing: 6,  // Gap between rows
+            maxRows: 4           // Maximum 4 rows (8 effects)
+        },
+
+        buffs: {
+            iconSize: 36,        // Match status effects
+            fontSize: 14,        // Match status effects
+            columns: 2,          // Grid layout
+            spacing: 8,
+            verticalSpacing: 6,
+            maxRows: 4
         }
     },
 

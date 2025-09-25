@@ -616,10 +616,10 @@ body {
 .hp-bar-container {
     position: absolute;
     width: calc(60% + 60px);
-    height: 30px;
+    height: var(--hp-bar-height, 40px);
     background: rgba(0, 0, 0, 0.7);
     border: 2px solid #fff;
-    border-radius: 15px;
+    border-radius: 20px;
     overflow: hidden;
     display: none; /* 기본적으로 숨김 */
     align-items: center;
@@ -658,7 +658,7 @@ body {
 }
 
 .hp-number {
-    font-size: 16px;
+    font-size: var(--hp-number-font-size, 18px);
     font-weight: bold;
     color: white;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -844,7 +844,7 @@ body {
     align-items: center;
     flex-shrink: 0;
     color: white;
-    font-size: 12px;
+    font-size: var(--hp-bar-font-size, 16px);
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
@@ -901,6 +901,116 @@ body {
 
 .defense-info.hidden {
     display: none;
+}
+
+/* 새로운 효과 컨테이너 시스템 */
+.effects-container {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1001;
+    display: none; /* 기본적으로 숨김 */
+}
+
+.effects-container.active {
+    display: block;
+}
+
+/* 플레이어 효과 위치 (HP바 위쪽) */
+.player-effects {
+    bottom: 130px; /* HP바 위 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(60% + 60px);
+}
+
+/* 적 효과 위치 (HP바 아래쪽) */
+.enemy-effects {
+    top: 130px; /* HP바 아래 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(60% + 60px);
+}
+
+/* 상태이상 그리드 (왼쪽 정렬) */
+.status-effects-grid {
+    position: absolute;
+    display: grid;
+    grid-template-columns: repeat(var(--effect-columns, 2), 1fr);
+    gap: var(--effect-vertical-spacing, 6px) var(--effect-spacing, 8px);
+    left: 0;
+}
+
+/* 버프 그리드 (오른쪽 정렬) */
+.buffs-grid {
+    position: absolute;
+    display: grid;
+    grid-template-columns: repeat(var(--effect-columns, 2), 1fr);
+    gap: var(--effect-vertical-spacing, 6px) var(--effect-spacing, 8px);
+    right: 0;
+}
+
+/* 플레이어 상태이상 - 위로 증가 */
+.player-status {
+    grid-auto-flow: row;
+    align-content: end;
+}
+
+/* 플레이어 버프 - 위로 증가 */
+.player-buffs {
+    grid-auto-flow: row;
+    align-content: end;
+}
+
+/* 적 상태이상 - 아래로 증가 */
+.enemy-status {
+    grid-auto-flow: row;
+    align-content: start;
+}
+
+/* 적 버프 - 아래로 증가 */
+.enemy-buffs {
+    grid-auto-flow: row;
+    align-content: start;
+}
+
+/* 업데이트된 상태이상 라벨 */
+.status-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 18px;
+    position: relative;
+    z-index: 10;
+    font-size: var(--effect-font-size, 14px);
+    font-weight: bold;
+    color: white;
+    border: 1px solid;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    pointer-events: auto;
+    min-width: var(--effect-icon-size, 36px);
+    min-height: var(--effect-icon-size, 36px);
+}
+
+/* 업데이트된 버프 라벨 */
+.buff-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+    z-index: 10;
+    padding: 4px 10px;
+    border-radius: 18px;
+    font-size: var(--effect-font-size, 14px);
+    font-weight: bold;
+    color: white;
+    border: 1px solid;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    pointer-events: auto;
+    min-width: var(--effect-icon-size, 36px);
+    min-height: var(--effect-icon-size, 36px);
 }
 
 /* 방어속성 배지 스타일 */

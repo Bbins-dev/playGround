@@ -26,12 +26,18 @@
             <!-- UI 오버레이 -->
             <div id="ui-overlay" class="ui-overlay">
             <!-- HP 바들 -->
+            <!-- 적 효과 컨테이너들 -->
+            <div id="enemy-effects-container" class="effects-container enemy-effects">
+                <div id="enemy-status-effects-grid" class="status-effects-grid enemy-status"></div>
+                <div id="enemy-buffs-grid" class="buffs-grid enemy-buffs"></div>
+            </div>
+
             <div id="enemy-hp-bar" class="hp-bar-container hp-bar-enemy">
                 <div class="hp-bar-fill" style="width: 100%;"></div>
                 <!-- 방어력 오버레이 -->
                 <div class="defense-overlay" style="width: 0%;"></div>
                 <div class="hp-bar-text">
-                    <span class="hp-info">HP: <span class="hp-number">10/10</span><span class="status-effects" id="enemy-status-effects"></span></span>
+                    <span class="hp-info">HP: <span class="hp-number">10/10</span></span>
                     <span class="entity-name" data-i18n="auto_battle_card_game.ui.enemy">적</span>
                     <span class="defense-info hidden"><span class="defense-number-overlay">0</span></span>
                 </div>
@@ -53,12 +59,18 @@
                 </div>
             </div>
 
+            <!-- 플레이어 효과 컨테이너들 -->
+            <div id="player-effects-container" class="effects-container player-effects">
+                <div id="player-status-effects-grid" class="status-effects-grid player-status"></div>
+                <div id="player-buffs-grid" class="buffs-grid player-buffs"></div>
+            </div>
+
             <div id="player-hp-bar" class="hp-bar-container hp-bar-player">
                 <div class="hp-bar-fill" style="width: 100%;"></div>
                 <!-- 방어력 오버레이 -->
                 <div class="defense-overlay" style="width: 0%;"></div>
                 <div class="hp-bar-text">
-                    <span class="hp-info">HP: <span class="hp-number">10/10</span><span class="status-effects" id="player-status-effects"></span></span>
+                    <span class="hp-info">HP: <span class="hp-number">10/10</span></span>
                     <span class="entity-name" data-i18n="auto_battle_card_game.ui.player">플레이어</span>
                     <span class="defense-info hidden"><span class="defense-number-overlay">0</span></span>
                 </div>

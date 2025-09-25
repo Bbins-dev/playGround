@@ -32,11 +32,52 @@ class HPBarSystem {
         this.playerBadgeWrapper = document.querySelector('.defense-badge-wrapper.badge-above');
         this.enemyBadgeWrapper = document.querySelector('.defense-badge-wrapper.badge-below');
 
+        // 새로운 효과 컨테이너들
+        this.playerEffectsContainer = document.getElementById('player-effects-container');
+        this.playerStatusGrid = document.getElementById('player-status-effects-grid');
+        this.playerBuffsGrid = document.getElementById('player-buffs-grid');
+
+        this.enemyEffectsContainer = document.getElementById('enemy-effects-container');
+        this.enemyStatusGrid = document.getElementById('enemy-status-effects-grid');
+        this.enemyBuffsGrid = document.getElementById('enemy-buffs-grid');
+
         // 애니메이션 상태 추적
         this.animating = {
             player: false,
             enemy: false
         };
+
+        // CSS 변수 동기화 초기화
+        this.syncCSSVariables();
+    }
+
+    // CSS 변수 동기화 메서드
+    syncCSSVariables() {
+        if (!GameConfig.battleHUD) return;
+
+        const root = document.documentElement;
+
+        // HP 바 설정
+        if (GameConfig.battleHUD.hpBar) {
+            root.style.setProperty('--hp-bar-height', `${GameConfig.battleHUD.hpBar.height}px`);
+            root.style.setProperty('--hp-bar-font-size', `${GameConfig.battleHUD.hpBar.fontSize}px`);
+            root.style.setProperty('--hp-number-font-size', `${GameConfig.battleHUD.hpBar.numberFontSize}px`);
+        }
+
+        // 상태이상 설정
+        if (GameConfig.battleHUD.statusEffects) {
+            const statusConfig = GameConfig.battleHUD.statusEffects;
+            root.style.setProperty('--effect-columns', statusConfig.columns);
+            root.style.setProperty('--effect-spacing', `${statusConfig.spacing}px`);
+            root.style.setProperty('--effect-vertical-spacing', `${statusConfig.verticalSpacing}px`);
+            root.style.setProperty('--effect-icon-size', `${statusConfig.iconSize}px`);
+            root.style.setProperty('--effect-font-size', `${statusConfig.fontSize}px`);
+        }
+
+        // 버프 설정 (상태이상과 동일한 값 사용)
+        if (GameConfig.battleHUD.buffs) {
+            // 버프는 상태이상과 동일한 CSS 변수 사용
+        }
     }
 
     // HP 바 업데이트 (Promise 반환으로 수정)
@@ -138,9 +179,10 @@ class HPBarSystem {
         });
     }
 
-    // 상태이상 표시 업데이트 (강화 버전)
+    // 상태이상 표시 업데이트 (새로운 그리드 시스템)
     updateStatusEffects(player, isPlayer = true) {
-        const statusContainer = isPlayer ? this.playerStatus : this.enemyStatus;
+        const statusContainer = isPlayer ? this.playerStatusGrid : this.enemyStatusGrid;
+        const effectsContainer = isPlayer ? this.playerEffectsContainer : this.enemyEffectsContainer;
 
         // 기존 상태이상 클리어
         statusContainer.innerHTML = '';
@@ -150,6 +192,17 @@ class HPBarSystem {
             this.showScreenBorderEffect('#F39C12');
         } else if (isPlayer) {
             this.clearScreenBorderEffect();
+        }
+
+        // 상태이상이 있는 경우 컨테이너 활성화, 없으면 비활성화
+        if (player.statusEffects.length > 0) {
+            effectsContainer.classList.add('active');
+        } else {
+            // 상태이상이 없고 버프도 없으면 컨테이너 숨김
+            const buffsContainer = isPlayer ? this.playerBuffsGrid : this.enemyBuffsGrid;
+            if (!buffsContainer.children.length) {
+                effectsContainer.classList.remove('active');
+            }
         }
 
         // 새 상태이상들 추가
@@ -180,22 +233,23 @@ class HPBarSystem {
         });
     }
 
-    // 버프 표시 업데이트
+    // 버프 표시 업데이트 (새로운 그리드 시스템)
     updateBuffs(player, isPlayer = true) {
-        const hpBarText = isPlayer ?
-            this.playerHPBar.querySelector('.hp-bar-text') :
-            this.enemyHPBar.querySelector('.hp-bar-text');
+        const buffsContainer = isPlayer ? this.playerBuffsGrid : this.enemyBuffsGrid;
+        const effectsContainer = isPlayer ? this.playerEffectsContainer : this.enemyEffectsContainer;
 
         // 기존 버프 라벨 제거
-        const existingBuffs = hpBarText.querySelectorAll('.buff-label');
-        existingBuffs.forEach(buff => buff.remove());
+        buffsContainer.innerHTML = '';
 
         // 힘 버프 표시
         if (player.getStrength && player.getStrength() > 0) {
             const strengthValue = player.getStrength();
             const buffConfig = GameConfig.buffs.strength;
 
-            const buffElement = document.createElement('span');
+            // 버프가 있는 경우 컨테이너 활성화
+            effectsContainer.classList.add('active');
+
+            const buffElement = document.createElement('div');
             buffElement.className = 'buff-label';
 
             // 버프 텍스트 생성
@@ -209,11 +263,13 @@ class HPBarSystem {
             buffElement.style.borderColor = buffConfig.color;
             buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
 
-            // 방어력 정보 바로 앞에 버프 삽입 (HP바 오른쪽)
-            // 더 넓은 간격을 위해 marginRight 증가
-            buffElement.style.marginRight = '20px';
-            const defenseInfo = hpBarText.querySelector('.defense-info');
-            hpBarText.insertBefore(buffElement, defenseInfo);
+            buffsContainer.appendChild(buffElement);
+        } else {
+            // 버프가 없고 상태이상도 없으면 컨테이너 숨김
+            const statusContainer = isPlayer ? this.playerStatusGrid : this.enemyStatusGrid;
+            if (!statusContainer.children.length) {
+                effectsContainer.classList.remove('active');
+            }
         }
     }
 
@@ -581,9 +637,14 @@ class HPBarSystem {
             this.enemyDefenseInfo.classList.add('hidden');
         }
 
-        // 상태이상 클리어
-        this.playerStatus.innerHTML = '';
-        this.enemyStatus.innerHTML = '';
+        // 효과 컨테이너들 클리어 및 숨김
+        if (this.playerStatusGrid) this.playerStatusGrid.innerHTML = '';
+        if (this.playerBuffsGrid) this.playerBuffsGrid.innerHTML = '';
+        if (this.enemyStatusGrid) this.enemyStatusGrid.innerHTML = '';
+        if (this.enemyBuffsGrid) this.enemyBuffsGrid.innerHTML = '';
+
+        if (this.playerEffectsContainer) this.playerEffectsContainer.classList.remove('active');
+        if (this.enemyEffectsContainer) this.enemyEffectsContainer.classList.remove('active');
 
         // 화면 테두리 효과 제거
         this.clearScreenBorderEffect();
