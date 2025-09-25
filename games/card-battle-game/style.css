@@ -40,18 +40,21 @@ body {
     display: none !important;
 }
 
-/* 설정 기반 게임 컨테이너 */
+/* 설정 기반 게임 컨테이너 - Configuration-Driven 자동 스케일링 */
 .game-container {
     position: fixed;
     width: var(--canvas-width);
     height: var(--canvas-height);
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
     background: #000000;
     overflow: hidden;
     border: 2px solid #333;
     border-radius: 8px;
+
+    /* Configuration-driven viewport scaling - JavaScript에서 계산된 값 사용 */
+    transform: translate(-50%, -50%) scale(var(--viewport-scale, 1));
+    transform-origin: center;
 }
 
 /* 게임 래퍼 - 설정 기반 크기 */

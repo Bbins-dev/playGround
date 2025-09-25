@@ -11,6 +11,15 @@ const GameConfig = {
         targetFPS: 60
     },
 
+    // 뷰포트 스케일링 설정
+    viewport: {
+        autoScale: true,                    // 자동 스케일링 활성화
+        scaleMethod: 'fit',                 // 'fit': 화면에 맞춤, 'fill': 화면 채움
+        minScale: 0.3,                      // 최소 스케일 배율
+        maxScale: 2.0,                      // 최대 스케일 배율
+        maintainAspectRatio: true           // 종횡비 유지
+    },
+
     // 속성 시스템
     elements: {
         fire: {

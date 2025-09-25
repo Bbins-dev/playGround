@@ -188,10 +188,11 @@ class GameManager {
             ['close-gallery', 'click', () => this.hideCardGallery()]
         ]);
 
-        // 키보드 이벤트 (resize 이벤트 제거 - 고정 크기)
+        // 키보드 이벤트 및 뷰포트 스케일링 이벤트
         this.addEventListeners([
             [document, 'keydown', (e) => this.handleKeyDown(e)],
-            [this.canvas, 'wheel', (e) => this.handleWheelInput(e)]
+            [this.canvas, 'wheel', (e) => this.handleWheelInput(e)],
+            [window, 'resize', () => this.handleResize()]
         ]);
 
         // Canvas 이벤트는 메뉴가 DOM으로 전환되어 더 이상 필요하지 않음
@@ -883,6 +884,14 @@ class GameManager {
         root.style.setProperty('--canvas-width', `${GameConfig.canvas.width}px`);
         root.style.setProperty('--canvas-height', `${GameConfig.canvas.height}px`);
 
+        // 뷰포트 스케일링 설정 - JavaScript로 정확한 계산
+        if (GameConfig.viewport && GameConfig.viewport.autoScale) {
+            this.updateViewportScale();
+            root.style.setProperty('--viewport-auto-scale', 'true');
+        } else {
+            root.style.setProperty('--viewport-auto-scale', 'false');
+        }
+
         // 카드 크기
         root.style.setProperty('--card-preview-width', `${GameConfig.cardSizes.preview.width}px`);
         root.style.setProperty('--card-preview-height', `${GameConfig.cardSizes.preview.height}px`);
@@ -900,7 +909,46 @@ class GameManager {
         root.style.setProperty('--input-width', '300px');
         root.style.setProperty('--element-min-width', '60px');
 
-        console.log('CSS 변수와 GameConfig 동기화 완료');
+        console.log('CSS 변수와 GameConfig 동기화 완료 (뷰포트 스케일링 포함)');
+    }
+
+    // 뷰포트 스케일링 계산 및 적용
+    updateViewportScale() {
+        if (!GameConfig.viewport || !GameConfig.viewport.autoScale) return;
+
+        const root = document.documentElement;
+
+        // 실제 뷰포트 크기 (레티나 디스플레이 고려)
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        // 스케일 비율 계산
+        const scaleX = viewportWidth / GameConfig.canvas.width;
+        const scaleY = viewportHeight / GameConfig.canvas.height;
+
+        // 화면에 맞는 최적 스케일 (종횡비 유지)
+        let optimalScale = Math.min(scaleX, scaleY);
+
+        // 설정된 최소/최대 스케일 제한 적용
+        optimalScale = Math.max(GameConfig.viewport.minScale, optimalScale);
+        optimalScale = Math.min(GameConfig.viewport.maxScale, optimalScale);
+
+        // CSS 변수로 설정
+        root.style.setProperty('--viewport-scale', optimalScale);
+
+        console.log(`뷰포트 스케일링 업데이트: ${optimalScale.toFixed(3)}x (뷰포트: ${viewportWidth}x${viewportHeight})`);
+    }
+
+    // 윈도우 리사이즈 핸들러
+    handleResize() {
+        // 디바운스로 성능 최적화
+        if (this.resizeTimeout) {
+            clearTimeout(this.resizeTimeout);
+        }
+
+        this.resizeTimeout = setTimeout(() => {
+            this.updateViewportScale();
+        }, 100);
     }
 
     // 게임 속도 설정
