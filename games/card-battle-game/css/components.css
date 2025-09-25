@@ -1698,7 +1698,7 @@
     text-align: center;
     color: var(--glass-text-secondary);
     margin-bottom: 20px;
-    font-size: 16px;
+    font-size: var(--card-selection-instruction-font-size);
     text-shadow: var(--glass-text-shadow);
 }
 
@@ -1746,7 +1746,6 @@
     }
 
     .selection-instruction {
-        font-size: 14px;
         margin-bottom: 15px;
     }
 }

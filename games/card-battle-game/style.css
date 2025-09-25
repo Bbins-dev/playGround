@@ -465,6 +465,11 @@ body {
     padding: var(--modal-card-selection-padding);
 }
 
+/* 카드 선택 모달 제목 스타일 */
+#card-selection-modal .modal-content h2 {
+    font-size: var(--card-selection-title-font-size);
+}
+
 /* 플레이어 이름 모달 전용 스타일 - Configuration-Driven */
 #player-name-modal .modal-content {
     width: var(--modal-player-name-width);

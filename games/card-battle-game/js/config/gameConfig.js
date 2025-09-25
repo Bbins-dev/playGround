@@ -1132,6 +1132,12 @@ const GameConfig = {
             height: 1180,    // 98% of canvas height
             padding: 15,
 
+            // 텍스트 폰트 크기 설정
+            text: {
+                title: 40,       // 제목 폰트 크기 (시작 카드 선택)
+                instruction: 24  // 설명 텍스트 폰트 크기
+            },
+
             // 카드 그리드 설정
             grid: {
                 maxHeight: 900,  // 75vh(900px) → 더 많은 카드 표시 공간

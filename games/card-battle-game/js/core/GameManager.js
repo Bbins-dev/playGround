@@ -935,6 +935,13 @@ class GameManager {
                 if (modalType === 'cardSelection' && modalConfig.grid) {
                     const gridConfig = modalConfig.grid;
                     const footerConfig = modalConfig.footer;
+                    const textConfig = modalConfig.text;
+
+                    // 텍스트 폰트 크기 CSS 변수 동기화
+                    if (textConfig) {
+                        root.style.setProperty('--card-selection-title-font-size', `${textConfig.title}px`);
+                        root.style.setProperty('--card-selection-instruction-font-size', `${textConfig.instruction}px`);
+                    }
 
                     // 그리드 CSS 변수 동기화
                     root.style.setProperty('--card-selection-grid-max-height', `${gridConfig.maxHeight}px`);
