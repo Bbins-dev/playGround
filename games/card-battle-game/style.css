@@ -1472,6 +1472,16 @@ body {
         0 0 10px rgba(155, 89, 182, 0.5); /* 보라 글로우 */
 }
 
+.burn-number {
+    color: #FF7F50; /* 코랄색 */
+    text-shadow:
+        3px 3px 0 #000,
+        -3px 3px 0 #000,
+        3px -3px 0 #000,
+        -3px -3px 0 #000,
+        0 0 10px rgba(255, 127, 80, 0.5); /* 코랄 글로우 */
+}
+
 .debuff-number {
     color: #E74C3C;
     text-shadow:

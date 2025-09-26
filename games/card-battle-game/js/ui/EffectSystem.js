@@ -200,6 +200,16 @@ class EffectSystem {
 
     // 메시지 타입 자동 판별
     getMessageType(customText, type) {
+        // MISS 메시지는 항상 중앙 영역에 표시
+        if (type === 'miss') {
+            return 'damage';
+        }
+
+        // 상태이상 대미지 타입들은 status 존에 표시
+        if (type === 'poison' || type === 'burn') {
+            return 'status';
+        }
+
         // 타입이 명시적으로 status나 buff인 경우 우선 적용
         if (type === 'status' || type === 'buff') {
             return type;
@@ -312,6 +322,10 @@ class EffectSystem {
                     className += ' poison-number';
                     numberElement.textContent = `☠️-${amount}`;
                     break;
+                case 'burn':
+                    className += ' burn-number';
+                    numberElement.textContent = `🔥-${amount}`;
+                    break;
                 case 'shield':
                 case 'defense':
                     className = 'damage-number shield-number';
@@ -334,9 +348,16 @@ class EffectSystem {
 
         // 기본 위치 계산
         const centerX = GameConfig.canvas.width / 2;
-        const targetY = isPlayerDamage ?
-            GameConfig.canvas.height * config.position.playerY :
-            GameConfig.canvas.height * config.position.enemyY;
+        let targetY;
+
+        // MISS 메시지는 화면 Y축 중앙에 표시
+        if (type === 'miss') {
+            targetY = GameConfig.canvas.height / 2;
+        } else {
+            targetY = isPlayerDamage ?
+                GameConfig.canvas.height * config.position.playerY :
+                GameConfig.canvas.height * config.position.enemyY;
+        }
 
         const basePosition = { x: centerX, y: targetY };
 

@@ -830,17 +830,13 @@ class BattleSystem {
 
     // 화상 상태이상 데미지 처리
     async processBurnDamage(player, isPlayerTurn) {
-        console.log(`[DEBUG] processBurnDamage: ${player.name} (isPlayerTurn: ${isPlayerTurn})`);
         const burnEffect = player.statusEffects.find(e => e.type === 'burn');
 
         if (!burnEffect) {
-            console.log(`[DEBUG] No burn effect found on ${player.name}`);
             return false;
         }
 
-        console.log(`[DEBUG] Burn effect found on ${player.name}:`, burnEffect);
         const damage = Math.floor(player.maxHP * burnEffect.power / 100);
-        console.log(`[DEBUG] Calculated burn damage: ${damage} (${burnEffect.power}% of ${player.maxHP})`);
 
         if (damage > 0) {
             const position = isPlayerTurn ?
@@ -848,7 +844,7 @@ class BattleSystem {
                 this.effectSystem.getEnemyPosition();
 
             // 화상 데미지 시각적 표시 (읽기 시간 포함)
-            await this.effectSystem.showEffectMessage('burn', position, 'burn_damage', damage);
+            await this.effectSystem.showDamageNumber(damage, position, 'burn');
 
             // 실제 데미지 적용
             const actualDamage = player.takeDamage(damage);
