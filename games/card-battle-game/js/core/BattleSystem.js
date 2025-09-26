@@ -107,17 +107,7 @@ class BattleSystem {
             this.gameManager.updateStatsOnTurn();
         }
 
-        // 턴 시작 처리 (화상 데미지 포함)
-        currentPlayer.startTurn();
-
-        // 화상 데미지 후 즉시 사망 체크
-        if (currentPlayer.hasStatusEffect('burn') && currentPlayer.isDead()) {
-            // 화상 데미지로 사망했을 경우 즉시 전투 종료
-            this.checkBattleEnd();
-            return;
-        }
-
-        // 방어력 초기화 처리 (플레이어와 적 모두)
+        // 1. 먼저 방어력 초기화 처리 (플레이어와 적 모두)
         if (currentPlayer.defense > 0) {
             // 방어력 감소 애니메이션 실행
             await this.hpBarSystem.animateDefenseDecrease(currentPlayer, isPlayerTurn);
@@ -125,6 +115,19 @@ class BattleSystem {
             // 실제 방어력 초기화
             currentPlayer.resetDefense();
         }
+
+        // 2. 그 다음 화상 데미지 처리 (방어력 초기화 후)
+        const burnDamageApplied = await this.processBurnDamage(currentPlayer, isPlayerTurn);
+
+        // 화상 데미지 후 즉시 사망 체크
+        if (burnDamageApplied && currentPlayer.isDead()) {
+            // 화상 데미지로 사망했을 경우 즉시 전투 종료
+            this.checkBattleEnd();
+            return;
+        }
+
+        // 3. 마지막으로 턴 시작 처리 (화상 처리 제외)
+        currentPlayer.startTurn();
 
         // 스테이지 회복 애니메이션 (플레이어 턴 시작 시만)
         if (isPlayerTurn && this.gameManager.stageHealingAmount > 0) {
@@ -762,6 +765,50 @@ class BattleSystem {
             // HP 바 업데이트
             await this.hpBarSystem.updateHP(player, isPlayerTurn);
 
+            return actualDamage > 0;
+        }
+        return false;
+    }
+
+    // 화상 상태이상 데미지 처리
+    async processBurnDamage(player, isPlayerTurn) {
+        console.log(`[DEBUG] processBurnDamage: ${player.name} (isPlayerTurn: ${isPlayerTurn})`);
+        const burnEffect = player.statusEffects.find(e => e.type === 'burn');
+
+        if (!burnEffect) {
+            console.log(`[DEBUG] No burn effect found on ${player.name}`);
+            return false;
+        }
+
+        console.log(`[DEBUG] Burn effect found on ${player.name}:`, burnEffect);
+        const damage = Math.floor(player.maxHP * burnEffect.power / 100);
+        console.log(`[DEBUG] Calculated burn damage: ${damage} (${burnEffect.power}% of ${player.maxHP})`);
+
+        if (damage > 0) {
+            const position = isPlayerTurn ?
+                this.effectSystem.getPlayerPosition() :
+                this.effectSystem.getEnemyPosition();
+
+            // 화상 데미지 시각적 표시
+            this.effectSystem.showEffectMessage('burn', position, 'burn_damage', damage);
+
+            // 짧은 대기 후 실제 데미지 적용 (시각적 효과와 동기화)
+            await this.wait(200);
+
+            // 실제 데미지 적용
+            const actualDamage = player.takeDamage(damage);
+
+            // 게임 매니저 통계 업데이트 (플레이어가 화상 피해를 받은 경우)
+            if (player === this.player && actualDamage > 0) {
+                this.gameManager.updateStatsOnPlayerDamage(actualDamage);
+            }
+
+            // HP 바 업데이트
+            if (this.hpBarSystem) {
+                await this.hpBarSystem.updatePlayerInfo(this.player, this.enemy);
+            }
+
+            console.log(`[DEBUG] Burn damage applied: ${actualDamage} to ${player.name} (HP: ${player.hp}/${player.maxHP})`);
             return actualDamage > 0;
         }
         return false;

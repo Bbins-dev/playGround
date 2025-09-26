@@ -247,8 +247,8 @@ class Player {
         });
 
 
-        // 턴 시작 시 상태이상 처리 (화상)
-        this.processStatusEffect('burn', 'start');
+        // 화상 데미지는 BattleSystem에서 처리하므로 여기서는 제외
+        // this.processStatusEffect('burn', 'start'); // BattleSystem으로 이동됨
 
     }
 
