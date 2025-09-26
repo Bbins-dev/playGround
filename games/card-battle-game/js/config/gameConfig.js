@@ -595,9 +595,9 @@ const GameConfig = {
         // 피격 숫자 표시 설정
         damageNumber: {
             fontSize: {
-                large: 72,      // 큰 화면
-                medium: 60,     // 중간 화면
-                mobile: 50      // 모바일
+                large: 96,      // 큰 화면 (72→96)
+                medium: 80,     // 중간 화면 (60→80)
+                mobile: 70      // 모바일 (50→70)
             },
             position: {
                 // 전투 영역 기준 위치 (캔버스 상하 1/3 지점)
@@ -605,6 +605,20 @@ const GameConfig = {
                 enemyY: 0.25,   // 캔버스 높이의 25% 지점 (상단 1/3)
                 randomX: 60,    // X축 랜덤 분산 범위 (-60 ~ +60px)
                 randomY: 20     // Y축 랜덤 분산 범위 (-20 ~ +20px)
+            },
+            messageZones: {
+                damage: {
+                    xRange: [-60, 60],    // 중앙 존 (일반 대미지)
+                    yRange: [-20, 20]
+                },
+                status: {
+                    xRange: [-280, -120], // 왼쪽 존 (상태이상) - 더 왼쪽으로
+                    yRange: [-20, 20]
+                },
+                buff: {
+                    xRange: [120, 280],   // 오른쪽 존 (버프/강화) - 더 오른쪽으로
+                    yRange: [-20, 20]
+                }
             },
             animation: {
                 duration: 1200, // 애니메이션 지속 시간 (ms)

@@ -168,8 +168,11 @@ class EffectSystem {
             .replace('{name}', fullName)
             .replace('{value}', value);
 
-        // 숫자 표시 (기존 showDamageNumber 활용)
-        this.showDamageNumber(0, position, 'effect', message);
+        // 메시지 타입 결정: 상태이상은 status 존, 버프는 buff 존
+        const messageTypeForZone = GameConfig.statusEffects[effectType] ? 'status' : 'buff';
+
+        // 숫자 표시 (존 정보를 위해 타입 전달)
+        this.showDamageNumber(0, position, messageTypeForZone, message);
     }
 
     // 방어력 획득 메시지 표시 (템플릿 기반)
@@ -184,15 +187,59 @@ class EffectSystem {
         this.showDamageNumber(0, position, 'shield', message);
     }
 
+    // 메시지 타입 자동 판별
+    getMessageType(customText, type) {
+        // 타입이 명시적으로 status나 buff인 경우 우선 적용
+        if (type === 'status' || type === 'buff') {
+            return type;
+        }
+
+        if (customText) {
+            // 상태이상 이모지 체크
+            if (customText.match(/[🔥☠️⚡💨❄️🌪️]/)) {
+                return 'status';
+            }
+            // 버프/강화 관련 체크
+            if (customText.includes('STR') || customText.includes('DEF') ||
+                customText.includes('💪') || customText.includes('🛡️') ||
+                customText.includes('방어력') || customText.includes('힘')) {
+                return 'buff';
+            }
+        }
+        // 기본값은 중앙 존
+        return 'damage';
+    }
+
+    // 존별 랜덤 위치 생성
+    getRandomPositionInZone(zoneType, basePosition) {
+        const zones = GameConfig.cardSelection.damageNumber.messageZones;
+        const zone = zones[zoneType] || zones.damage;
+
+        const randomX = Math.random() * (zone.xRange[1] - zone.xRange[0]) + zone.xRange[0];
+        const randomY = Math.random() * (zone.yRange[1] - zone.yRange[0]) + zone.yRange[0];
+
+        return {
+            x: basePosition.x + randomX,
+            y: basePosition.y + randomY
+        };
+    }
+
     // 대미지/회복/효과 숫자 표시
     showDamageNumber(amount, position, type = 'damage', customText = null) {
         const numberElement = document.createElement('div');
         let className = 'damage-number';
 
+        // 메시지 타입 결정
+        const messageType = this.getMessageType(customText, type);
+
         // 커스텀 텍스트가 있으면 우선 사용
         if (customText) {
+            // 타입 우선 확인 (자해 대미지)
+            if (type === 'self_damage') {
+                className = 'damage-number'; // 빨간색 대미지 색상
+            }
             // 메시지 내용에 따라 적절한 색상 클래스 결정
-            if (customText.includes('🛡️') || customText.includes('Defense') || customText.includes('방어력') || customText.includes('防御力')) {
+            else if (customText.includes('🛡️') || customText.includes('Defense') || customText.includes('방어력') || customText.includes('防御力')) {
                 className = 'damage-number shield-number';
             } else if (customText.includes('♥') || customText.includes('Heal') || customText.includes('회복') || customText.includes('回復')) {
                 className = 'damage-number heal-number';
@@ -235,6 +282,10 @@ class EffectSystem {
                     className = 'damage-number shield-number';
                     numberElement.textContent = `+${amount}`;
                     break;
+                case 'self_damage':
+                    className += ' damage-number';  // 빨간색 대미지 스타일
+                    // customText에서 이미 처리되므로 여기서는 설정하지 않음
+                    break;
                 default:
                     numberElement.textContent = `-${amount}`;
             }
@@ -242,22 +293,23 @@ class EffectSystem {
 
         numberElement.className = className;
 
-        // 새로운 위치 계산 시스템 (gameConfig 기반)
+        // 존 기반 위치 계산 시스템
         const config = GameConfig.cardSelection.damageNumber;
         const isPlayerDamage = position.y > GameConfig.canvas.height / 2;
 
-        // 전투 영역 중앙 기준으로 위치 계산
+        // 기본 위치 계산
         const centerX = GameConfig.canvas.width / 2;
         const targetY = isPlayerDamage ?
             GameConfig.canvas.height * config.position.playerY :
             GameConfig.canvas.height * config.position.enemyY;
 
-        // 랜덤 분산 적용
-        const randomX = (Math.random() - 0.5) * config.position.randomX * 2; // -60 ~ +60px
-        const randomY = (Math.random() - 0.5) * config.position.randomY * 2; // -20 ~ +20px
+        const basePosition = { x: centerX, y: targetY };
 
-        numberElement.style.left = (centerX + randomX) + 'px';
-        numberElement.style.top = (targetY + randomY) + 'px';
+        // 메시지 타입에 따른 존별 랜덤 위치 생성
+        const finalPosition = this.getRandomPositionInZone(messageType, basePosition);
+
+        numberElement.style.left = finalPosition.x + 'px';
+        numberElement.style.top = finalPosition.y + 'px';
 
         // 반응형 폰트 크기 설정
         const fontSize = this.getResponsiveFontSize();

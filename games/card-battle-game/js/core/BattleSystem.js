@@ -401,6 +401,17 @@ class BattleSystem {
             const isTargetPlayer = target === this.player;
             this.hpBarSystem.updateStatusEffects(target, isTargetPlayer);
         }
+
+        // 자해 대미지 처리 (공격 카드의 경우)
+        const selfDamage = result.selfDamage || 0;
+        if (selfDamage > 0) {
+            // 공격을 한 사용자의 위치 계산 (target 반대)
+            const attackerPosition = target === this.player ?
+                this.effectSystem.getEnemyPosition() :
+                this.effectSystem.getPlayerPosition();
+
+            await this.showSelfDamageEffect(attackerPosition, selfDamage);
+        }
     }
 
     // 회복 결과 처리
@@ -487,8 +498,20 @@ class BattleSystem {
 
         // 자가 대미지가 있는 경우 대미지 이펙트 표시
         if (selfDamage > 0) {
-            await this.effectSystem.showHitEffect(userPosition, result.element, selfDamage);
+            await this.showSelfDamageEffect(userPosition, selfDamage);
         }
+    }
+
+    // 자해 대미지 이펙트 표시 (템플릿 기반)
+    async showSelfDamageEffect(position, selfDamage) {
+        // 템플릿 기반 자해 대미지 숫자 표시
+        let template = I18nHelper.getText('auto_battle_card_game.ui.templates.self_damage');
+        if (!template) {
+            template = '-{value}'; // fallback
+        }
+
+        const message = template.replace('{value}', selfDamage);
+        this.effectSystem.showDamageNumber(0, position, 'self_damage', message);
     }
 
     // 대미지 계산 및 적용 (첫 번째 버전 - 간단한 형태)

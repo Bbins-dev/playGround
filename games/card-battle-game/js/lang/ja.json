@@ -270,14 +270,15 @@
       "sand_throw_failed": "砂投げ失敗",
       "hot_breath_failed": "熱い息失敗",
       "templates": {
-        "status_applied": "{name}になりました！",
-        "already_status": "すでに{name}です！",
+        "status_applied": "{name}!!",
+        "already_status": "すでに{name}!",
         "burn_extended": "🔥 火傷の持続時間が延長されました！",
         "burn_damage": "🔥 火傷で{value}ダメージ！",
         "buff_gained": "{name} +{value}",
         "buff_reduced": "{name} {value}",
         "defense_gained": "🛡️ 防御力 +{value}",
         "heal_effect": "❤️ 体力 +{value}",
+        "self_damage": "-{value}",
         "self_knockout": "自傷ダメージで倒れました！",
         "karura_strike_effect": "自分に{selfDamage}ダメージ！相手に{damage}ダメージ！"
       },

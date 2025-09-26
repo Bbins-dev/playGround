@@ -270,14 +270,15 @@
       "sand_throw_failed": "모래뿌리기 실패",
       "hot_breath_failed": "뜨거운 입김 실패",
       "templates": {
-        "status_applied": "{name}에 걸렸습니다!",
-        "already_status": "이미 {name}에 걸려있습니다!",
+        "status_applied": "{name}!!",
+        "already_status": "이미 {name}!",
         "burn_extended": "🔥 화상 지속시간이 연장되었습니다!",
         "burn_damage": "🔥 화상으로 {value} 데미지!",
         "buff_gained": "{name} +{value}",
         "buff_reduced": "{name} {value}",
         "defense_gained": "🛡️ 방어력 +{value}",
         "heal_effect": "❤️ 체력 +{value}",
+        "self_damage": "-{value}",
         "self_knockout": "자해 피해로 쓰러졌습니다!",
         "karura_strike_effect": "자신에게 {selfDamage} 피해! 상대에게 {damage} 피해!"
       },

@@ -270,7 +270,7 @@
       "sand_throw_failed": "Sand Throw failed",
       "hot_breath_failed": "Hot Breath failed",
       "templates": {
-        "status_applied": "{name} applied!",
+        "status_applied": "{name}!!",
         "already_status": "Already {name}!",
         "burn_extended": "🔥 Burn duration extended!",
         "burn_damage": "🔥 {value} burn damage!",
@@ -278,6 +278,7 @@
         "buff_reduced": "{name} {value}",
         "defense_gained": "🛡️ DEF +{value}",
         "heal_effect": "❤️ HP +{value}",
+        "self_damage": "-{value}",
         "self_knockout": "Knocked out by self-damage!",
         "karura_strike_effect": "{selfDamage} self-damage! {damage} damage to opponent!"
       },
