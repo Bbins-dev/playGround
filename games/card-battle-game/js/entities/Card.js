@@ -78,6 +78,14 @@ class Card {
             }
         }
 
+        // 둔화 상태이상 체크 (상태이상 카드만) - 곱셈 방식으로 감소
+        if (this.type === 'status' && user && user.hasStatusEffect('slow')) {
+            const slowEffect = user.statusEffects.find(e => e.type === 'slow');
+            if (slowEffect) {
+                actualAccuracy = Math.max(0, actualAccuracy * (1 - slowEffect.power / 100));
+            }
+        }
+
         // Math.random() * 100이 accuracy보다 작으면 성공
         // 예: 80% 명중률이면 0~79.99는 성공, 80~100은 실패
         const roll = Math.random() * 100;

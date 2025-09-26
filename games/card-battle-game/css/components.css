@@ -226,7 +226,7 @@
 /* 메인 페이지 언어 선택기 */
 .language-selector {
     position: fixed;
-    top: 50px;
+    top: 20px;
     right: 20px;
     z-index: 1000;
 }

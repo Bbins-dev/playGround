@@ -144,6 +144,15 @@ const GameConfig = {
             defaultReduction: 30,
             duration: 2,
             color: '#8B4513'
+        },
+        slow: {
+            nameKey: 'auto_battle_card_game.ui.status_effects.slow',
+            name: '둔화',
+            emoji: '🐢',
+            description: '상태이상 카드의 발동률 30% 감소',
+            defaultReduction: 30,
+            duration: 2,
+            color: '#6C757D'
         }
     },
 
@@ -168,6 +177,11 @@ const GameConfig = {
             className: 'status-border-insult',
             color: '#8B4513',
             priority: 4
+        },
+        slow: {
+            className: 'status-border-slow',
+            color: '#6C757D',
+            priority: 5
         }
     },
 
@@ -599,12 +613,12 @@ const GameConfig = {
 
     // 언어 선택기 설정
     languageSelector: {
-        fontSize: 18,                            // 폰트 크기 (14 → 18)
+        fontSize: 26,                            // 폰트 크기 (22 → 26) - 더 큰 크기
         padding: {
-            vertical: 12,                        // 세로 패딩 (8 → 12)
-            horizontal: 16                       // 가로 패딩 (12 → 16)
+            vertical: 14,                        // 세로 패딩 (12 → 14)
+            horizontal: 20                       // 가로 패딩 (18 → 20)
         },
-        borderRadius: 8                          // 모서리 둥글기 (5 → 8)
+        borderRadius: 8                          // 모서리 둥글기
     },
 
     // 카드 선택 화면 설정

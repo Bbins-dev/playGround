@@ -105,7 +105,8 @@
         "burn": "Burn",
         "poisoned": "Poison",
         "sand": "Sand",
-        "insult": "Insult"
+        "insult": "Insult",
+        "slow": "Slow"
       },
       "buffs": {
       },
@@ -237,6 +238,10 @@
         "insult": {
           "name": "Insult",
           "description": "Insults the opponent, reducing defense card activation rate by 30% for 2 turns."
+        },
+        "net_throw": {
+          "name": "Net Throw",
+          "description": "Slows the opponent, reducing status card activation rate by 30% for 2 turns."
         }
       },
       "buffs": {

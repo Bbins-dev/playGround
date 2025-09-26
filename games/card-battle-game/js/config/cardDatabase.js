@@ -778,6 +778,41 @@ const CardDatabase = {
                 };
             }
         });
+
+        // 그물투척 카드 (노멀 속성, 상태이상카드 발동률 감소)
+        this.addCard({
+            id: 'net_throw',
+            nameKey: 'auto_battle_card_game.ui.cards.net_throw.name',
+            type: 'status',
+            element: 'normal',
+            power: 0,
+            accuracy: 70,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.net_throw.description',
+            effect: function(user, target, battleSystem) {
+                // 둔화 상태 적용 (2턴, 상태이상카드 발동률 30% 감소)
+                const result = target.addStatusEffect('slow', GameConfig.statusEffects.slow.defaultReduction, 2);
+
+                let messageKey;
+                if (result.success) {
+                    messageKey = 'auto_battle_card_game.ui.templates.status_applied';
+                } else if (result.duplicate) {
+                    messageKey = 'auto_battle_card_game.ui.templates.already_status';
+                } else {
+                    messageKey = 'auto_battle_card_game.ui.net_throw_failed';
+                }
+
+                return {
+                    success: result.success,
+                    messageKey: messageKey,
+                    element: this.element,
+                    duplicate: result.duplicate,
+                    statusType: result.success ? 'slow' : null,
+                    templateData: { name: GameConfig.statusEffects.slow.name }
+                };
+            }
+        });
     },
 
     // i18n을 고려한 카드 이름 가져오기

@@ -105,7 +105,8 @@
         "burn": "화상",
         "poisoned": "중독",
         "sand": "모래",
-        "insult": "모욕"
+        "insult": "모욕",
+        "slow": "둔화"
       },
       "buffs": {
       },
@@ -237,6 +238,10 @@
         "insult": {
           "name": "모욕",
           "description": "상대를 모욕하여 2턴간 방어카드의 발동률 30% 감소시킵니다."
+        },
+        "net_throw": {
+          "name": "그물투척",
+          "description": "상대를 둔화시켜 2턴간 상태이상카드의 발동률을 30% 감소시킵니다."
         }
       },
       "buffs": {
