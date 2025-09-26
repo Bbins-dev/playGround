@@ -150,6 +150,7 @@ if (roll >= accuracy) return false;
 - **이중 명중률 체크 금지**: Card.js에서만 처리
 - **자해 카드**: `CardDatabase.processSelfDamage()` 공통 유틸리티 사용 (즉사 체크 자동화)
 - **속성 면역**: 불속성만 화상 면역, 물속성은 화상에 걸림
+- **퍼센트 감소 계산**: 반드시 곱셈 방식 사용 `value * (1 - percent/100)` (뺄셈 금지 ❌ `value - percent`)
 - **중앙 통계 시스템**: 모든 대미지는 `GameManager.recordDamage()`로만 기록 (방어력 포함)
 
 ## 🚀 Quick Development

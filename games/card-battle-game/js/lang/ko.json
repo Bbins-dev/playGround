@@ -104,7 +104,8 @@
         "paralysis": "마비",
         "burn": "화상",
         "poisoned": "중독",
-        "sand": "모래"
+        "sand": "모래",
+        "insult": "모욕"
       },
       "buffs": {
       },
@@ -232,6 +233,10 @@
         "hot_breath": {
           "name": "뜨거운 입김",
           "description": "상대에게 화상을 입힙니다."
+        },
+        "insult": {
+          "name": "모욕",
+          "description": "상대를 모욕하여 2턴간 방어카드의 발동률 30% 감소시킵니다."
         }
       },
       "buffs": {
@@ -269,6 +274,7 @@
       "push_back_failed": "밀쳐내기 실패",
       "sand_throw_failed": "모래뿌리기 실패",
       "hot_breath_failed": "뜨거운 입김 실패",
+      "insult_failed": "모욕 실패",
       "templates": {
         "status_applied": "{name}!!",
         "already_status": "이미 {name}!",

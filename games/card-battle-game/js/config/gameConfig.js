@@ -135,6 +135,15 @@ const GameConfig = {
             defaultReduction: 30,
             duration: 2,
             color: '#D4A76A'
+        },
+        insult: {
+            nameKey: 'auto_battle_card_game.ui.status_effects.insult',
+            name: '모욕',
+            emoji: '😤',
+            description: '방어 카드의 발동률 30% 감소',
+            defaultReduction: 30,
+            duration: 2,
+            color: '#8B4513'
         }
     },
 

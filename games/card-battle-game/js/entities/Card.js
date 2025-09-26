@@ -62,11 +62,19 @@ class Card {
     checkAccuracy(user) {
         let actualAccuracy = this.accuracy;
 
-        // 모래 상태이상 체크 (공격 카드만)
+        // 모래 상태이상 체크 (공격 카드만) - 곱셈 방식으로 감소
         if (this.type === 'attack' && user && user.hasStatusEffect('sand')) {
             const sandEffect = user.statusEffects.find(e => e.type === 'sand');
             if (sandEffect) {
-                actualAccuracy = Math.max(0, actualAccuracy - sandEffect.power);
+                actualAccuracy = Math.max(0, actualAccuracy * (1 - sandEffect.power / 100));
+            }
+        }
+
+        // 모욕 상태이상 체크 (방어 카드만) - 곱셈 방식으로 감소
+        if (this.type === 'defense' && user && user.hasStatusEffect('insult')) {
+            const insultEffect = user.statusEffects.find(e => e.type === 'insult');
+            if (insultEffect) {
+                actualAccuracy = Math.max(0, actualAccuracy * (1 - insultEffect.power / 100));
             }
         }
 

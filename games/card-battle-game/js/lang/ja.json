@@ -104,7 +104,8 @@
         "paralysis": "麻痺",
         "burn": "火傷",
         "poisoned": "毒",
-        "sand": "砂"
+        "sand": "砂",
+        "insult": "侮辱"
       },
       "buffs": {
       },
@@ -232,6 +233,10 @@
         "hot_breath": {
           "name": "熱い息",
           "description": "相手に火傷を負わせます。"
+        },
+        "insult": {
+          "name": "侮辱",
+          "description": "相手を侮辱し、2ターンの間防御カードの発動率を30%減少させます。"
         }
       },
       "buffs": {
@@ -269,6 +274,7 @@
       "push_back_failed": "押し返し失敗",
       "sand_throw_failed": "砂投げ失敗",
       "hot_breath_failed": "熱い息失敗",
+      "insult_failed": "侮辱失敗",
       "templates": {
         "status_applied": "{name}!!",
         "already_status": "すでに{name}!",

@@ -104,7 +104,8 @@
         "paralysis": "Paralysis",
         "burn": "Burn",
         "poisoned": "Poison",
-        "sand": "Sand"
+        "sand": "Sand",
+        "insult": "Insult"
       },
       "buffs": {
       },
@@ -232,6 +233,10 @@
         "hot_breath": {
           "name": "Hot Breath",
           "description": "Inflicts burn on the opponent."
+        },
+        "insult": {
+          "name": "Insult",
+          "description": "Insults the opponent, reducing defense card activation rate by 30% for 2 turns."
         }
       },
       "buffs": {
@@ -269,6 +274,7 @@
       "push_back_failed": "Push Back failed",
       "sand_throw_failed": "Sand Throw failed",
       "hot_breath_failed": "Hot Breath failed",
+      "insult_failed": "Insult failed",
       "templates": {
         "status_applied": "{name}!!",
         "already_status": "Already {name}!",
