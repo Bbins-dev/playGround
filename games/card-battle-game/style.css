@@ -187,12 +187,12 @@ body {
         rgba(31, 41, 55, 0.92));
     color: #d1d5db;
     border: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 8px 16px;
+    padding: 10px 20px;
     border-radius: 12px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 400;
-    min-width: 65px;
+    min-width: 75px;
     text-align: center;
     transition: all 0.25s cubic-bezier(0.4, 0.0, 0.2, 1);
     backdrop-filter: blur(6px);
@@ -202,6 +202,19 @@ body {
     position: relative;
     overflow: hidden;
     user-select: none;
+}
+
+/* 언어별 속도 버튼 폰트 크기 조정 */
+.lang-ko .speed-btn {
+    font-size: 17px;
+}
+
+.lang-ja .speed-btn {
+    font-size: 18px;
+}
+
+.lang-en .speed-btn {
+    font-size: 17px;
 }
 
 .speed-btn::before {
@@ -1771,6 +1784,13 @@ body {
 /* 모욕 상태이상 테두리 */
 .game-wrapper.status-border-insult {
     --status-border-color: #8B4513;
+    border: 3px solid var(--status-border-color);
+    animation: status-border-pulse 2s infinite;
+}
+
+/* 둔화 상태이상 테두리 */
+.game-wrapper.status-border-slow {
+    --status-border-color: #6C757D;
     border: 3px solid var(--status-border-color);
     animation: status-border-pulse 2s infinite;
 }

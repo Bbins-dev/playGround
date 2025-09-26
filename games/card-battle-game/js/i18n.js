@@ -65,6 +65,11 @@ class I18n {
 
             this.currentLanguage = lang;
             document.documentElement.lang = lang;
+
+            // Add language class to body for language-specific styling
+            document.body.className = document.body.className.replace(/lang-\w+/g, '');
+            document.body.classList.add(`lang-${lang}`);
+
             this.applyTranslations();
 
             // Save language preference (use config key)
@@ -175,6 +180,9 @@ if (window.location.pathname.includes('/games/')) {
         const storageKey = window.PlayGroundConfig?.site.languageStorageKey || 'selectedLanguage';
         const defaultLang = window.PlayGroundConfig?.site.defaultLanguage || 'ko';
         const savedLang = localStorage.getItem(storageKey) || defaultLang;
+
+        // Add initial language class to body
+        document.body.classList.add(`lang-${savedLang}`);
 
         // For games, use relative path for language files
         const basePath = '../../js/lang/';
