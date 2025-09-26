@@ -1465,11 +1465,11 @@ class GameManager {
         if (target === 'player') {
             this.gameStats.totalDamageReceived += amount;
 
-            // 대미지 타입별 세부 통계
-            if (this.gameStats.damageByType[damageType] !== undefined) {
+            // 대미지 타입별 세부 통계 (안전한 접근)
+            if (this.gameStats.damageByType && this.gameStats.damageByType[damageType] !== undefined) {
                 this.gameStats.damageByType[damageType] += amount;
             } else {
-                console.warn(`Unknown damage type: ${damageType}`);
+                console.warn(`Unknown damage type: ${damageType} or damageByType not initialized`);
             }
         }
 

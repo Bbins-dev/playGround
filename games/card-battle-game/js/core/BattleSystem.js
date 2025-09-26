@@ -417,6 +417,10 @@ class BattleSystem {
                 this.effectSystem.getEnemyPosition() :
                 this.effectSystem.getPlayerPosition();
 
+            // 실제 자해 대미지 적용
+            const attacker = target === this.player ? this.enemy : this.player;
+            const actualSelfDamage = attacker.takeDamage(selfDamage);
+
             // GameManager 중앙 통계 시스템 업데이트 (자해 대미지)
             if (target === this.enemy && this.gameManager && this.gameManager.recordDamage) {
                 // 플레이어가 적을 공격했다면 플레이어가 자해를 받음
@@ -514,6 +518,9 @@ class BattleSystem {
 
         // 자가 대미지가 있는 경우 대미지 이펙트 표시
         if (selfDamage > 0) {
+            // 실제 자해 대미지 적용
+            const actualSelfDamage = user.takeDamage(selfDamage);
+
             // GameManager 중앙 통계 시스템 업데이트 (자해 대미지)
             if (user === this.player && this.gameManager && this.gameManager.recordDamage) {
                 this.gameManager.recordDamage('self', 'player', selfDamage, 'self');
