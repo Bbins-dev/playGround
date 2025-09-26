@@ -265,29 +265,12 @@ class VictoryDefeatModal {
             if (mvpCard && window.CardDatabase) {
                 const cardData = CardDatabase.getCard(mvpCard);
                 if (cardData) {
-                    // 카드 이름 번역 - 다양한 방법 시도
-                    let translatedName = null;
-
-                    // 1. 언어팩에서 카드 이름 찾기
-                    const cardNameKey = `auto_battle_card_game.cards.${mvpCard}.name`;
-                    translatedName = I18nHelper.getText(cardNameKey);
-
-                    // 2. CardDatabase의 nameKey 사용
-                    if (!translatedName && cardData.nameKey) {
-                        translatedName = I18nHelper.getText(cardData.nameKey);
-                    }
-
-                    // 3. CardDatabase의 name 사용 (기본값)
-                    if (!translatedName) {
-                        translatedName = cardData.name;
-                    }
-
-                    this.defeatMvpCard.textContent = translatedName;
+                    this.renderMvpCard(cardData);
                 } else {
-                    this.defeatMvpCard.textContent = mvpCard;
+                    this.showMvpCardText(mvpCard);
                 }
             } else {
-                this.defeatMvpCard.textContent = I18nHelper.getText('auto_battle_card_game.ui.none') || '-';
+                this.showMvpCardText(I18nHelper.getText('auto_battle_card_game.ui.none') || '-');
             }
         }
     }
@@ -305,6 +288,40 @@ class VictoryDefeatModal {
             'unlucky': '불운한'
         };
         return styleTexts[playStyle] || '균형잡힌';
+    }
+
+    /**
+     * MVP 카드를 Canvas로 렌더링
+     * @param {Object} cardData - 카드 데이터
+     */
+    renderMvpCard(cardData) {
+        // 기존 컨텐츠 제거
+        this.defeatMvpCard.innerHTML = '';
+
+        // Canvas 생성
+        const canvas = document.createElement('canvas');
+        const cardSize = GameConfig.cardSizes.victoryDetail; // 확대된 카드 크기 사용
+        canvas.width = cardSize.width;
+        canvas.height = cardSize.height;
+
+        const ctx = canvas.getContext('2d');
+
+        // CardRenderer로 카드 렌더링
+        this.cardRenderer.renderCard(ctx, cardData, 0, 0, cardSize.width, cardSize.height, {
+            isSelected: true,
+            isHighlighted: true,
+            opacity: 1
+        });
+
+        this.defeatMvpCard.appendChild(canvas);
+    }
+
+    /**
+     * MVP 카드를 텍스트로 표시 (카드 데이터가 없는 경우)
+     * @param {string} text - 표시할 텍스트
+     */
+    showMvpCardText(text) {
+        this.defeatMvpCard.innerHTML = `<p style="margin: 0; font-size: 18px; font-weight: bold; text-align: center; color: var(--glass-text-primary);">${text}</p>`;
     }
 
     /**

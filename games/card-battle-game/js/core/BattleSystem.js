@@ -410,6 +410,14 @@ class BattleSystem {
                 this.effectSystem.getEnemyPosition() :
                 this.effectSystem.getPlayerPosition();
 
+            // 자해 대미지 통계 업데이트 - 플레이어가 받은 대미지로 처리
+            if (target === this.enemy && this.gameManager) {
+                // 플레이어가 적을 공격했다면 플레이어가 자해를 받음
+                this.gameManager.updateStatsOnPlayerDamage(selfDamage);
+            } else if (target === this.player && this.gameManager) {
+                // 적이 플레이어를 공격했다면 적이 자해를 받음 (플레이어 통계에는 반영 안함)
+            }
+
             await this.showSelfDamageEffect(attackerPosition, selfDamage);
         }
     }
@@ -498,6 +506,11 @@ class BattleSystem {
 
         // 자가 대미지가 있는 경우 대미지 이펙트 표시
         if (selfDamage > 0) {
+            // 자해 대미지 통계 업데이트 (플레이어만)
+            if (user === this.player && this.gameManager) {
+                this.gameManager.updateStatsOnPlayerDamage(selfDamage);
+            }
+
             await this.showSelfDamageEffect(userPosition, selfDamage);
         }
     }

@@ -213,7 +213,81 @@ const GameConfig = {
     enemy: {
         maxHandSize: 10,
         startingHP: 10,
-        defaultDefenseElement: 'normal'
+        defaultDefenseElement: 'normal',
+        // 스테이지별 적 설정 (1-10스테이지)
+        stageConfigs: {
+            1: {
+                hp: 10,
+                cards: [{ id: 'random_bash', count: 1 }]
+            },
+            2: {
+                hp: 15,
+                cards: [{ id: 'heavy_strike', count: 1 }]
+            },
+            3: {
+                hp: 20,
+                cards: [
+                    { id: 'sand_throw', count: 1 },
+                    { id: 'random_bash', count: 1 }
+                ]
+            },
+            4: {
+                hp: 25,
+                cards: [
+                    { id: 'wear_armor', count: 1 },
+                    { id: 'shield_bash', count: 1 }
+                ]
+            },
+            5: {
+                hp: 30,
+                cards: [
+                    { id: 'taunt', count: 1 },
+                    { id: 'large_shield', count: 1 },
+                    { id: 'shield_bash', count: 1 }
+                ]
+            },
+            6: {
+                hp: 35,
+                cards: [
+                    { id: 'sand_throw', count: 1 },
+                    { id: 'heavy_strike', count: 1 },
+                    { id: 'crouch', count: 1 }
+                ]
+            },
+            7: {
+                hp: 40,
+                cards: [
+                    { id: 'concussion', count: 1 },
+                    { id: 'wear_armor', count: 1 },
+                    { id: 'raise_shield', count: 1 },
+                    { id: 'shield_bash', count: 1 }
+                ]
+            },
+            8: {
+                hp: 50,
+                cards: [
+                    { id: 'taunt', count: 1 },
+                    { id: 'wear_armor', count: 1 },
+                    { id: 'random_bash', count: 1 },
+                    { id: 'shield_bash', count: 1 }
+                ]
+            },
+            9: {
+                hp: 60,
+                cards: [
+                    { id: 'heavy_strike', count: 3 },
+                    { id: 'crouch', count: 1 }
+                ]
+            },
+            10: {
+                hp: 100,
+                cards: [
+                    { id: 'raise_shield', count: 7 },
+                    { id: 'shield_bash', count: 1 },
+                    { id: 'crouch', count: 1 }
+                ]
+            }
+        }
     },
 
     // 카드 크기 설정

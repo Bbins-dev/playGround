@@ -26,9 +26,15 @@ class Enemy extends Player {
 
     // 스테이지별 특성 설정
     setupStageCharacteristics() {
-        // 1-30스테이지는 HP 10으로 고정
-        if (this.stage <= 30) {
-            this.maxHP = GameConfig.enemy.startingHP; // 10으로 고정
+        // GameConfig에서 스테이지별 설정 가져오기
+        const stageConfig = GameConfig.enemy.stageConfigs[this.stage];
+
+        if (stageConfig) {
+            // 설정된 스테이지는 GameConfig 값 사용
+            this.maxHP = stageConfig.hp;
+        } else if (this.stage <= 30) {
+            // 설정되지 않은 1-30스테이지는 기본값 사용
+            this.maxHP = GameConfig.enemy.startingHP;
         } else {
             // 31스테이지 이후는 기존 방식
             const hpMultiplier = 1 + (this.stage - 31) * 0.3;
@@ -72,17 +78,21 @@ class Enemy extends Player {
     buildDeck() {
         this.hand = [];
 
-        // 스테이지 4 테스트용: 방패 카드 7장만
-        if (this.stage === 4) {
-            for (let i = 0; i < 7; i++) {
-                const shieldCard = CardDatabase.createCardInstance('raise_shield');
-                if (shieldCard) {
-                    this.addCard(shieldCard);
+        // GameConfig에서 스테이지별 카드 구성 가져오기
+        const stageConfig = GameConfig.enemy.stageConfigs[this.stage];
+
+        if (stageConfig && stageConfig.cards) {
+            // 설정된 스테이지는 GameConfig의 카드 구성 사용
+            for (const cardConfig of stageConfig.cards) {
+                for (let i = 0; i < cardConfig.count; i++) {
+                    const card = CardDatabase.createCardInstance(cardConfig.id);
+                    if (card) {
+                        this.addCard(card);
+                    }
                 }
             }
-        }
-        // 스테이지 3 이상: 도발 + 마구때리기 콤보 사용
-        else if (this.stage >= 3 && this.stage <= 30) {
+        } else if (this.stage >= 3 && this.stage <= 30) {
+            // 설정되지 않은 3-30스테이지는 기존 로직 유지
             const tauntCard = CardDatabase.createCardInstance('taunt');
             const bashCard = CardDatabase.createCardInstance('random_bash');
 
@@ -92,9 +102,8 @@ class Enemy extends Player {
             if (bashCard) {
                 this.addCard(bashCard);
             }
-        }
-        // 1~2스테이지는 마구때리기 카드로만 시작
-        else if (this.stage <= 2) {
+        } else if (this.stage <= 2) {
+            // 1~2스테이지는 마구때리기 카드로만 시작
             const basicCard = CardDatabase.createCardInstance('random_bash');
             if (basicCard) {
                 this.addCard(basicCard);
