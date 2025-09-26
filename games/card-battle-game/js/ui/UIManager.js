@@ -636,6 +636,39 @@ class UIManager {
         this.updateUIVisibility();
     }
 
+    // 플레이어 상태이상에 따른 화면 테두리 효과 업데이트 (Configuration-Driven)
+    updateStatusBorder() {
+        const gameWrapper = document.querySelector('.game-wrapper');
+        if (!gameWrapper || !this.gameManager?.player) return;
+
+        // 기존 상태이상 테두리 클래스 제거
+        Object.values(GameConfig.statusBorderEffects).forEach(effect => {
+            gameWrapper.classList.remove(effect.className);
+        });
+
+        // 플레이어의 현재 상태이상 확인
+        const playerStatusEffects = this.gameManager.player.statusEffects || [];
+
+        if (playerStatusEffects.length === 0) return;
+
+        // 우선순위가 가장 높은 상태이상 찾기 (낮은 숫자가 높은 우선순위)
+        let highestPriorityEffect = null;
+        let highestPriority = Number.MAX_SAFE_INTEGER;
+
+        playerStatusEffects.forEach(statusEffect => {
+            const borderConfig = GameConfig.statusBorderEffects[statusEffect.type];
+            if (borderConfig && borderConfig.priority < highestPriority) {
+                highestPriority = borderConfig.priority;
+                highestPriorityEffect = borderConfig;
+            }
+        });
+
+        // 가장 우선순위가 높은 상태이상의 테두리 효과 적용
+        if (highestPriorityEffect) {
+            gameWrapper.classList.add(highestPriorityEffect.className);
+        }
+    }
+
     // 승리 모달 표시
     showVictoryModal(stage, callback, rewardCards = null) {
         // 모든 UI 요소 즉시 숨기기

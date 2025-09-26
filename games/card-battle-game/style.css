@@ -1238,36 +1238,36 @@ body {
     display: none; /* 기본적으로 숨김 - HPBarSystem에서 show/hide 제어 */
 }
 
-/* 플레이어 배지 - HP바에서 더 위로 멀어지게 */
+/* 플레이어 배지 - 손패 영역 아래쪽에 가깝게 (10px 더 올림) */
 .defense-badge-wrapper.badge-above {
-    bottom: 140px;
+    bottom: 210px;  /* 5px 더 올림 */
 }
 
-/* 적 배지 - HP바에서 더 아래로 멀어지게 */
+/* 적 배지 - 손패 영역 위쪽에 가깝게 (5px 더 내림) */
 .defense-badge-wrapper.badge-below {
-    top: 140px;
+    top: 205px;     /* 5px 더 내림 */
 }
 
-/* 배지 크기 증가 (더욱 크게) */
+/* 배지 크기 확대 (GameConfig와 동기화) */
 .defense-badge-wrapper .defense-element-badge {
-    min-width: 80px;
-    height: 56px;
-    font-size: 32px;
-    border-radius: 10px;
+    min-width: 62px;
+    height: 50px;
+    font-size: 34px;
+    border-radius: 25px;
     margin: 0;
-    padding: 6px 16px;
+    padding: 6px 14px;
     border-width: 3px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    gap: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    gap: 9px;
 }
 
-/* 큰 배지 내부 텍스트 크기 조정 */
+/* 확대된 배지 내부 텍스트 크기 조정 */
 .defense-badge-wrapper .defense-element-badge .badge-emoji {
-    font-size: 24px;
+    font-size: 22px;
 }
 
 .defense-badge-wrapper .defense-element-badge .badge-text {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
 }
 
@@ -1733,6 +1733,46 @@ body {
     50% {
         box-shadow: 0 0 15px #FFD700;
     }
+}
+
+/* 상태이상 화면 테두리 효과 */
+@keyframes status-border-pulse {
+    0%, 100% {
+        box-shadow: 0 0 10px var(--status-border-color, #9B59B6);
+        opacity: 0.6;
+    }
+    50% {
+        box-shadow: 0 0 30px var(--status-border-color, #9B59B6);
+        opacity: 1;
+    }
+}
+
+/* 독 상태이상 테두리 */
+.game-wrapper.status-border-poison {
+    --status-border-color: #9B59B6;
+    border: 3px solid var(--status-border-color);
+    animation: status-border-pulse 2s infinite;
+}
+
+/* 화상 상태이상 테두리 */
+.game-wrapper.status-border-burn {
+    --status-border-color: #E67E22;
+    border: 3px solid var(--status-border-color);
+    animation: status-border-pulse 2s infinite;
+}
+
+/* 모래 상태이상 테두리 */
+.game-wrapper.status-border-sand {
+    --status-border-color: #D4A76A;
+    border: 3px solid var(--status-border-color);
+    animation: status-border-pulse 2s infinite;
+}
+
+/* 모욕 상태이상 테두리 */
+.game-wrapper.status-border-insult {
+    --status-border-color: #8B4513;
+    border: 3px solid var(--status-border-color);
+    animation: status-border-pulse 2s infinite;
 }
 
 @keyframes fadeIn {

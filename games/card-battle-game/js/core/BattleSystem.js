@@ -398,6 +398,11 @@ class BattleSystem {
             // 상태이상 UI 즉시 업데이트
             const isTargetPlayer = target === this.player;
             this.hpBarSystem.updateStatusEffects(target, isTargetPlayer);
+
+            // 플레이어의 상태이상 테두리 효과 업데이트
+            if (isTargetPlayer && this.gameManager?.uiManager) {
+                this.gameManager.uiManager.updateStatusBorder();
+            }
         }
 
         // 다른 상태이상 처리 (일반적인 statusType 지원)
@@ -407,6 +412,11 @@ class BattleSystem {
             // 상태이상 UI 즉시 업데이트
             const isTargetPlayer = target === this.player;
             this.hpBarSystem.updateStatusEffects(target, isTargetPlayer);
+
+            // 플레이어의 상태이상 테두리 효과 업데이트
+            if (isTargetPlayer && this.gameManager?.uiManager) {
+                this.gameManager.uiManager.updateStatusBorder();
+            }
         }
 
         // 자해 대미지 처리 (공격 카드의 경우)
@@ -591,6 +601,11 @@ class BattleSystem {
 
         // 5. UI 업데이트 (차감된 상태 반영)
         this.hpBarSystem.updateStatusEffects(currentPlayer, isPlayerTurn);
+
+        // 6. 플레이어의 상태이상 테두리 효과 업데이트 (턴 종료 시)
+        if (isPlayerTurn && this.gameManager?.uiManager) {
+            this.gameManager.uiManager.updateStatusBorder();
+        }
 
         // 턴 전환
         this.currentTurn = this.currentTurn === 'player' ? 'enemy' : 'player';

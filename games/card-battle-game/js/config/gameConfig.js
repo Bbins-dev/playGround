@@ -147,6 +147,37 @@ const GameConfig = {
         }
     },
 
+    // 상태이상 화면 테두리 효과 설정 (Configuration-Driven)
+    statusBorderEffects: {
+        poisoned: {
+            className: 'status-border-poison',
+            color: '#9B59B6',
+            priority: 2
+        },
+        burn: {
+            className: 'status-border-burn',
+            color: '#E67E22',
+            priority: 1  // 최고 우선순위
+        },
+        sand: {
+            className: 'status-border-sand',
+            color: '#D4A76A',
+            priority: 3
+        },
+        insult: {
+            className: 'status-border-insult',
+            color: '#8B4513',
+            priority: 4
+        }
+    },
+
+    // 테두리 애니메이션 설정
+    statusBorderAnimation: {
+        type: 'pulse',
+        duration: 2000,    // 2초 주기
+        intensity: 0.8     // 투명도 변화 강도
+    },
+
     // 버프 정의
     buffs: {
         // TODO: 힘 버프 등 다른 버프 시스템 구현 예정
@@ -897,24 +928,24 @@ const GameConfig = {
         },
         // 방어속성 배지 설정 (HP바 외부 위치)
         badge: {
-            sizeMultiplier: 3.0,            // 기존 크기의 3배
+            sizeMultiplier: 2.8,            // 기존 크기의 2.8배 (다시 키움)
             positions: {
                 player: {
-                    offsetY: 120,           // HP바로부터 위쪽 거리 (bottom: 120px in CSS)
-                    placement: 'above'      // 이름 위에 배치
+                    offsetY: 20,            // 손패 하단에서 위쪽 거리
+                    placement: 'hand_bottom' // 손패 하단 기준
                 },
                 enemy: {
-                    offsetY: 120,           // HP바로부터 아래쪽 거리 (top: 120px in CSS)
-                    placement: 'below'      // 이름 아래에 배치
+                    offsetY: 20,            // 손패 상단에서 아래쪽 거리
+                    placement: 'hand_top'   // 손패 상단 기준
                 }
             },
             styling: {
-                minWidth: 66,               // CSS에서 사용하는 크기값들 (3배)
-                height: 54,
-                fontSize: 36,
-                borderRadius: 27,
+                minWidth: 62,               // CSS에서 사용하는 크기값들 (2.8배)
+                height: 50,
+                fontSize: 34,
+                borderRadius: 25,
                 borderWidth: 3,
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)'
+                boxShadow: '0 4px 10px rgba(0, 0, 0, 0.5)'
             }
         }
     },
