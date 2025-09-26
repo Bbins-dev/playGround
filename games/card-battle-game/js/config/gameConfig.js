@@ -127,6 +127,15 @@ const GameConfig = {
             description: '턴 종료 시 최대 HP의 일정 비율 대미지',
             defaultPercent: 15,
             color: '#9B59B6'
+        },
+        sand: {
+            nameKey: 'auto_battle_card_game.ui.status_effects.sand',
+            name: '모래',
+            emoji: '💨',
+            description: '공격 카드의 명중률 30% 감소',
+            defaultReduction: 30,
+            duration: 2,
+            color: '#D4A76A'
         }
     },
 
@@ -304,6 +313,43 @@ const GameConfig = {
         enemyName: { x: 700, y: 50 },            // 적 이름 위치
         defenseBadge: {
             opacity: 0.85                        // 방어속성 배지 투명도 (85% 불투명)
+        },
+        handAreaBackground: {
+            enabled: true,                       // 손패 영역 배경 활성화
+            opacity: 0.15,                       // 배경 투명도 (15% 불투명 - 은은한 효과)
+            gradientEnabled: true,               // 그라데이션 효과 사용
+            gradientOpacity: {
+                start: 0.05,                     // 그라데이션 시작 투명도
+                end: 0.25                        // 그라데이션 끝 투명도
+            },
+            borderRadius: 10                     // 배경 모서리 둥글기
+        },
+        stageIndicator: {
+            position: {
+                top: 25                          // 상단에서 25px (기존 45px에서 올림)
+            },
+            size: {
+                fontSize: 24,                    // 메인 폰트 크기 (기존 16px → 24px)
+                iconSize: 24,                    // 아이콘 크기 (기존 16px → 24px)
+                progressFontSize: 18,            // 진행도 점 크기 (기존 12px → 18px)
+                padding: 16,                     // 내부 패딩 (기존 12px → 16px)
+                minWidth: 200                    // 최소 너비
+            }
+        },
+        galleryButton: {
+            position: {
+                bottom: 20                       // 하단에서 20px (기존 40px에서 내림)
+            },
+            size: {
+                padding: {
+                    vertical: 16,                // 세로 패딩 (기존 12px → 16px)
+                    horizontal: 24               // 가로 패딩 (기존 20px → 24px)
+                },
+                fontSize: 18,                    // 폰트 크기 (기존 14px → 18px)
+                fontWeight: 600,                 // 폰트 굵기
+                borderRadius: 18,                // 모서리 둥글기 (기존 14px → 18px)
+                minWidth: 140                    // 최소 너비
+            }
         }
     },
 

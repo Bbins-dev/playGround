@@ -522,6 +522,76 @@ const CardDatabase = {
                 };
             }
         });
+
+        // 밀쳐내기 카드 (노멀 상태이상, 기절)
+        this.addCard({
+            id: 'push_back',
+            nameKey: 'auto_battle_card_game.ui.cards.push_back.name',
+            type: 'status',
+            element: 'normal',
+            power: 0,
+            accuracy: 40,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.push_back.description',
+            effect: function(user, target, battleSystem) {
+                // 기절 상태 적용 (1턴)
+                const result = target.addStatusEffect('stun', null, 1);
+
+                let messageKey;
+                if (result.success) {
+                    messageKey = 'auto_battle_card_game.ui.templates.status_applied';
+                } else if (result.duplicate) {
+                    messageKey = 'auto_battle_card_game.ui.templates.already_status';
+                } else {
+                    messageKey = 'auto_battle_card_game.ui.push_back_failed';
+                }
+
+                return {
+                    success: result.success,
+                    messageKey: messageKey,
+                    element: this.element,
+                    duplicate: result.duplicate,
+                    statusType: result.success ? 'stun' : null,
+                    templateData: { name: GameConfig.statusEffects.stun.name }
+                };
+            }
+        });
+
+        // 모래뿌리기 카드 (노멀 상태이상, 명중률 감소)
+        this.addCard({
+            id: 'sand_throw',
+            nameKey: 'auto_battle_card_game.ui.cards.sand_throw.name',
+            type: 'status',
+            element: 'normal',
+            power: 0,
+            accuracy: 70,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.sand_throw.description',
+            effect: function(user, target, battleSystem) {
+                // 모래 상태 적용 (2턴, 30% 명중률 감소)
+                const result = target.addStatusEffect('sand', 30, 2);
+
+                let messageKey;
+                if (result.success) {
+                    messageKey = 'auto_battle_card_game.ui.templates.status_applied';
+                } else if (result.duplicate) {
+                    messageKey = 'auto_battle_card_game.ui.templates.already_status';
+                } else {
+                    messageKey = 'auto_battle_card_game.ui.sand_throw_failed';
+                }
+
+                return {
+                    success: result.success,
+                    messageKey: messageKey,
+                    element: this.element,
+                    duplicate: result.duplicate,
+                    statusType: result.success ? 'sand' : null,
+                    templateData: { name: GameConfig.statusEffects.sand.name }
+                };
+            }
+        });
     },
 
     // i18n을 고려한 카드 이름 가져오기

@@ -986,6 +986,29 @@ class GameManager {
             });
         }
 
+        // 스테이지 인디케이터 설정
+        if (GameConfig.ui.stageIndicator) {
+            const stageConfig = GameConfig.ui.stageIndicator;
+            root.style.setProperty('--stage-indicator-top', `${stageConfig.position.top}px`);
+            root.style.setProperty('--stage-indicator-font-size', `${stageConfig.size.fontSize}px`);
+            root.style.setProperty('--stage-indicator-icon-size', `${stageConfig.size.iconSize}px`);
+            root.style.setProperty('--stage-indicator-progress-font-size', `${stageConfig.size.progressFontSize}px`);
+            root.style.setProperty('--stage-indicator-padding', `${stageConfig.size.padding}px`);
+            root.style.setProperty('--stage-indicator-min-width', `${stageConfig.size.minWidth}px`);
+        }
+
+        // 갤러리 버튼 설정
+        if (GameConfig.ui.galleryButton) {
+            const galleryConfig = GameConfig.ui.galleryButton;
+            root.style.setProperty('--gallery-button-bottom', `${galleryConfig.position.bottom}px`);
+            root.style.setProperty('--gallery-button-padding-vertical', `${galleryConfig.size.padding.vertical}px`);
+            root.style.setProperty('--gallery-button-padding-horizontal', `${galleryConfig.size.padding.horizontal}px`);
+            root.style.setProperty('--gallery-button-font-size', `${galleryConfig.size.fontSize}px`);
+            root.style.setProperty('--gallery-button-font-weight', `${galleryConfig.size.fontWeight}`);
+            root.style.setProperty('--gallery-button-border-radius', `${galleryConfig.size.borderRadius}px`);
+            root.style.setProperty('--gallery-button-min-width', `${galleryConfig.size.minWidth}px`);
+        }
+
         console.log('CSS 변수와 GameConfig 동기화 완료 (뷰포트 스케일링 + 모달 크기 포함)');
     }
 

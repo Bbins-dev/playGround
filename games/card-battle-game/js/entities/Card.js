@@ -36,8 +36,8 @@ class Card {
             // 발동 횟수 증가 (먼저 차감)
             this.currentActivations++;
 
-            // 명중률 체크
-            if (!this.checkAccuracy()) {
+            // 명중률 체크 (사용자를 전달)
+            if (!this.checkAccuracy(user)) {
                 return {
                     success: false,
                     message: `${this.name} 빗나감!`,
@@ -59,11 +59,21 @@ class Card {
     }
 
     // 명중률 체크 (올바른 구현 확인)
-    checkAccuracy() {
+    checkAccuracy(user) {
+        let actualAccuracy = this.accuracy;
+
+        // 모래 상태이상 체크 (공격 카드만)
+        if (this.type === 'attack' && user && user.hasStatusEffect('sand')) {
+            const sandEffect = user.statusEffects.find(e => e.type === 'sand');
+            if (sandEffect) {
+                actualAccuracy = Math.max(0, actualAccuracy - sandEffect.power);
+            }
+        }
+
         // Math.random() * 100이 accuracy보다 작으면 성공
         // 예: 80% 명중률이면 0~79.99는 성공, 80~100은 실패
         const roll = Math.random() * 100;
-        const hit = roll < this.accuracy;
+        const hit = roll < actualAccuracy;
 
         return hit;
     }

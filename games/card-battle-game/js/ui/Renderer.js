@@ -174,9 +174,62 @@ class Renderer {
         }
     }
 
+    // 손패 영역 배경 그리기
+    drawHandAreaBackground(player, area) {
+        const config = GameConfig.ui.handAreaBackground;
+        if (!config.enabled) return;
+
+        // 현재 방어 속성 가져오기
+        const defenseElement = player.defenseElement || 'normal';
+        const elementConfig = GameConfig.elements[defenseElement];
+        if (!elementConfig) return;
+
+        const baseColor = elementConfig.color;
+
+        this.ctx.save();
+
+        if (config.gradientEnabled) {
+            // 그라데이션 배경
+            const gradient = this.ctx.createLinearGradient(
+                area.x, area.y,
+                area.x, area.y + area.height
+            );
+
+            // 상단은 더 투명하게, 하단은 더 진하게
+            gradient.addColorStop(0, this.hexToRgba(baseColor, config.gradientOpacity.start));
+            gradient.addColorStop(1, this.hexToRgba(baseColor, config.gradientOpacity.end));
+
+            this.ctx.fillStyle = gradient;
+        } else {
+            // 단색 배경
+            this.ctx.fillStyle = this.hexToRgba(baseColor, config.opacity);
+        }
+
+        // 둥근 모서리 배경 그리기
+        this.roundRect(area.x, area.y, area.width, area.height, config.borderRadius);
+        this.ctx.fill();
+
+        this.ctx.restore();
+    }
+
+    // Hex 색상을 RGBA로 변환하는 헬퍼 메소드
+    hexToRgba(hex, alpha) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        if (!result) return `rgba(255, 255, 255, ${alpha})`;
+
+        const r = parseInt(result[1], 16);
+        const g = parseInt(result[2], 16);
+        const b = parseInt(result[3], 16);
+
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
     // 손패 렌더링 - 두 줄 레이아웃
     renderHand(player, area, isPlayer = true, battleSystem = null) {
         if (!player.hand || player.hand.length === 0) return;
+
+        // 손패 영역 배경 그리기
+        this.drawHandAreaBackground(player, area);
 
         const cardCount = player.hand.length;
         const cardSize = this.cardSizes.hand;

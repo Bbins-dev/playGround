@@ -1541,7 +1541,7 @@
 
 .stage-indicator {
     position: absolute;
-    top: 45px;
+    top: var(--stage-indicator-top, 45px);
     left: 50%;
     transform: translateX(-50%);
 
@@ -1550,9 +1550,9 @@
     gap: 8px;
 
     /* 크기 및 패딩 */
-    padding: 8px 16px;
+    padding: var(--stage-indicator-padding, 8px) 16px;
     width: auto;
-    min-width: 180px;
+    min-width: var(--stage-indicator-min-width, 180px);
     height: 32px;
 
     /* 글래스모피즘 효과 */
@@ -1564,7 +1564,7 @@
 
     /* 텍스트 */
     color: var(--glass-text-primary);
-    font-size: 14px;
+    font-size: var(--stage-indicator-font-size, 14px);
     font-weight: 600;
     text-shadow: var(--glass-text-shadow);
 
@@ -1583,7 +1583,7 @@
 
 /* 스테이지 아이콘 */
 .stage-indicator .stage-icon {
-    font-size: 16px;
+    font-size: var(--stage-indicator-icon-size, 16px);
     filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
 }
 
@@ -1600,7 +1600,7 @@
 
 /* 진행도 점들 */
 .stage-indicator .stage-progress {
-    font-size: 12px;
+    font-size: var(--stage-indicator-progress-font-size, 12px);
     letter-spacing: 2px;
     opacity: 0.8;
     /* 대각선 방향 은은한 그림자 (조금 더 진하게) */

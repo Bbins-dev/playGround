@@ -103,7 +103,8 @@
         "stun": "기절",
         "paralysis": "마비",
         "burn": "화상",
-        "poisoned": "중독"
+        "poisoned": "중독",
+        "sand": "모래"
       },
       "buffs": {
       },
@@ -211,6 +212,14 @@
         "bandage": {
           "name": "붕대감기",
           "description": "붕대로 감아 응급처치한다."
+        },
+        "push_back": {
+          "name": "밀쳐내기",
+          "description": "상대를 밀쳐내 기절시킵니다."
+        },
+        "sand_throw": {
+          "name": "모래뿌리기",
+          "description": "상대의 눈에 모래를 뿌려 2턴간 공격카드의 명중률 30% 감소"
         }
       },
       "buffs": {
@@ -245,6 +254,8 @@
       "taunt_failed": "도발 실패",
       "stunned": "기절함!",
       "taunted": "도발됨!",
+      "push_back_failed": "밀쳐내기 실패",
+      "sand_throw_failed": "모래뿌리기 실패",
       "templates": {
         "status_applied": "{name}에 걸렸습니다!",
         "already_status": "이미 {name}에 걸려있습니다!",

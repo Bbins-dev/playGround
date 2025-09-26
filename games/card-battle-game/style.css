@@ -320,10 +320,17 @@ body {
 
 #card-gallery-btn {
     position: absolute;
-    bottom: 40px;
+    bottom: var(--gallery-button-bottom, 40px);
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
+
+    /* 설정 가능한 크기 */
+    padding: var(--gallery-button-padding-vertical, 12px) var(--gallery-button-padding-horizontal, 20px);
+    font-size: var(--gallery-button-font-size, 14px);
+    font-weight: var(--gallery-button-font-weight, 400);
+    border-radius: var(--gallery-button-border-radius, 14px);
+    min-width: var(--gallery-button-min-width, auto);
 }
 
 

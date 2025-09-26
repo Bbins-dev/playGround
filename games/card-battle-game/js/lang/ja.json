@@ -103,7 +103,8 @@
         "stun": "気絶",
         "paralysis": "麻痺",
         "burn": "火傷",
-        "poisoned": "毒"
+        "poisoned": "毒",
+        "sand": "砂"
       },
       "buffs": {
       },
@@ -211,6 +212,14 @@
         "bandage": {
           "name": "包帯",
           "description": "包帯で巻いて応急処置する。"
+        },
+        "push_back": {
+          "name": "押し返し",
+          "description": "相手を押し返して気絶させます。"
+        },
+        "sand_throw": {
+          "name": "砂投げ",
+          "description": "相手の目に砂を投げて2ターン間攻撃カードの命中率30%減少"
         }
       },
       "buffs": {
@@ -245,6 +254,8 @@
       "taunt_failed": "挑発失敗",
       "stunned": "気絶した！",
       "taunted": "挑発された！",
+      "push_back_failed": "押し返し失敗",
+      "sand_throw_failed": "砂投げ失敗",
       "templates": {
         "status_applied": "{name}になりました！",
         "already_status": "すでに{name}です！",
