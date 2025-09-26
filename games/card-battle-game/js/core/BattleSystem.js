@@ -364,11 +364,18 @@ class BattleSystem {
             const effectiveness = result.effectiveness || 1.0;
             await this.effectSystem.showHitEffect(targetPosition, card.element, damage, effectiveness);
 
-            // 통계 업데이트
+            // 통계 업데이트 (기존 BattleSystem 통계)
             if (target === this.enemy) {
                 this.battleStats.totalDamageDealt += actualDamage;
             } else {
                 this.battleStats.totalDamageReceived += actualDamage;
+            }
+
+            // GameManager 중앙 통계 시스템 업데이트 (원래 대미지 사용)
+            if (this.gameManager && this.gameManager.recordDamage) {
+                const source = target === this.enemy ? 'player' : 'enemy';
+                const targetType = target === this.enemy ? 'enemy' : 'player';
+                this.gameManager.recordDamage(source, targetType, damage, 'normal');
             }
         } else if (damage === 0) {
             // 0 데미지 표시 (방어력으로 무효화된 경우 등)
@@ -410,12 +417,13 @@ class BattleSystem {
                 this.effectSystem.getEnemyPosition() :
                 this.effectSystem.getPlayerPosition();
 
-            // 자해 대미지 통계 업데이트 - 플레이어가 받은 대미지로 처리
-            if (target === this.enemy && this.gameManager) {
+            // GameManager 중앙 통계 시스템 업데이트 (자해 대미지)
+            if (target === this.enemy && this.gameManager && this.gameManager.recordDamage) {
                 // 플레이어가 적을 공격했다면 플레이어가 자해를 받음
-                this.gameManager.updateStatsOnPlayerDamage(selfDamage);
-            } else if (target === this.player && this.gameManager) {
-                // 적이 플레이어를 공격했다면 적이 자해를 받음 (플레이어 통계에는 반영 안함)
+                this.gameManager.recordDamage('self', 'player', selfDamage, 'self');
+            } else if (target === this.player && this.gameManager && this.gameManager.recordDamage) {
+                // 적이 플레이어를 공격했다면 적이 자해를 받음 (적의 통계는 추적하지 않음)
+                // 현재는 플레이어 통계만 추적하므로 별도 처리 없음
             }
 
             await this.showSelfDamageEffect(attackerPosition, selfDamage);
@@ -506,9 +514,9 @@ class BattleSystem {
 
         // 자가 대미지가 있는 경우 대미지 이펙트 표시
         if (selfDamage > 0) {
-            // 자해 대미지 통계 업데이트 (플레이어만)
-            if (user === this.player && this.gameManager) {
-                this.gameManager.updateStatsOnPlayerDamage(selfDamage);
+            // GameManager 중앙 통계 시스템 업데이트 (자해 대미지)
+            if (user === this.player && this.gameManager && this.gameManager.recordDamage) {
+                this.gameManager.recordDamage('self', 'player', selfDamage, 'self');
             }
 
             await this.showSelfDamageEffect(userPosition, selfDamage);
@@ -733,16 +741,24 @@ class BattleSystem {
     dealDamage(target, amount, attacker = null) {
         const actualDamage = target.takeDamage(amount, attacker);
 
-        // 전투 통계 업데이트
+        // 전투 통계 업데이트 (기존 BattleSystem 통계)
         if (attacker === this.player) {
             this.battleStats.totalDamageDealt += actualDamage;
         } else if (attacker === this.enemy) {
             this.battleStats.totalDamageReceived += actualDamage;
         }
 
-        // 게임 매니저 통계 업데이트 (플레이어가 피해를 받은 경우)
-        if (target === this.player && actualDamage > 0) {
-            this.gameManager.updateStatsOnPlayerDamage(actualDamage);
+        // GameManager 중앙 통계 시스템 업데이트 (원래 대미지 사용)
+        if (this.gameManager && this.gameManager.recordDamage) {
+            // 플레이어가 적에게 준 대미지
+            if (attacker === this.player && target === this.enemy) {
+                this.gameManager.recordDamage('player', 'enemy', amount, 'normal');
+            }
+            // 플레이어가 받은 대미지
+            if (target === this.player) {
+                const source = attacker === this.enemy ? 'enemy' : 'unknown';
+                this.gameManager.recordDamage(source, 'player', amount, 'normal');
+            }
         }
 
         // HP 바 업데이트
@@ -795,9 +811,9 @@ class BattleSystem {
             // 실제 대미지 적용
             const actualDamage = player.takeDamage(damage);
 
-            // 게임 매니저 통계 업데이트 (플레이어가 독 피해를 받은 경우)
-            if (player === this.player && actualDamage > 0) {
-                this.gameManager.updateStatsOnPlayerDamage(actualDamage);
+            // GameManager 중앙 통계 시스템 업데이트 (원래 대미지 사용)
+            if (player === this.player && this.gameManager && this.gameManager.recordDamage) {
+                this.gameManager.recordDamage('status', 'player', damage, 'poison');
             }
 
             // HP 바 업데이트
@@ -836,9 +852,9 @@ class BattleSystem {
             // 실제 데미지 적용
             const actualDamage = player.takeDamage(damage);
 
-            // 게임 매니저 통계 업데이트 (플레이어가 화상 피해를 받은 경우)
-            if (player === this.player && actualDamage > 0) {
-                this.gameManager.updateStatsOnPlayerDamage(actualDamage);
+            // GameManager 중앙 통계 시스템 업데이트 (원래 대미지 사용)
+            if (player === this.player && this.gameManager && this.gameManager.recordDamage) {
+                this.gameManager.recordDamage('status', 'player', damage, 'burn');
             }
 
             // HP 바 업데이트

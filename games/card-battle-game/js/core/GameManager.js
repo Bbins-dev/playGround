@@ -65,7 +65,16 @@ class GameManager {
             laziestCard: null,
             playStyle: 'balanced',
             cardUsageStats: new Map(), // 카드별 사용 횟수
-            elementUsageStats: new Map() // 속성별 사용 횟수
+            elementUsageStats: new Map(), // 속성별 사용 횟수
+            // 대미지 타입별 통계
+            damageByType: {
+                normal: 0,
+                burn: 0,
+                poison: 0,
+                self: 0,
+                reflect: 0,
+                thorns: 0
+            }
         };
 
         // 스테이지 회복 추적 (애니메이션용)
@@ -1441,6 +1450,52 @@ class GameManager {
 
         // 게임 시간 계산
         this.gameStats.gameDuration = Date.now() - this.gameStats.gameStartTime;
+    }
+
+    // 중앙 대미지 기록 시스템 (확장성과 정확성을 위한 통합 메서드)
+    recordDamage(source, target, amount, damageType = 'normal') {
+        if (!this.gameStats || typeof amount !== 'number' || amount < 0) {
+            console.warn('GameManager.recordDamage: Invalid parameters', { source, target, amount, damageType });
+            return;
+        }
+
+        console.log(`[STATS] Recording damage: ${source} → ${target}, ${amount} (${damageType})`);
+
+        // 플레이어가 받은 모든 대미지 기록 (방어력으로 막힌 것도 포함)
+        if (target === 'player') {
+            this.gameStats.totalDamageReceived += amount;
+
+            // 대미지 타입별 세부 통계
+            if (this.gameStats.damageByType[damageType] !== undefined) {
+                this.gameStats.damageByType[damageType] += amount;
+            } else {
+                console.warn(`Unknown damage type: ${damageType}`);
+            }
+        }
+
+        // 플레이어가 적에게 가한 대미지
+        if (source === 'player' && target === 'enemy') {
+            this.gameStats.totalDamageDealt += amount;
+        }
+    }
+
+    // 회복 기록 시스템 (향후 확장용)
+    recordHealing(target, amount, healType = 'normal') {
+        if (!this.gameStats || typeof amount !== 'number' || amount < 0) return;
+
+        if (target === 'player') {
+            this.gameStats.totalHealing = (this.gameStats.totalHealing || 0) + amount;
+        }
+    }
+
+    // 방어력 기록 시스템 (기존 메서드 보완)
+    recordDefense(amount, wasted = false) {
+        if (!this.gameStats || typeof amount !== 'number' || amount < 0) return;
+
+        this.gameStats.totalDefenseBuilt += amount;
+        if (wasted) {
+            this.gameStats.wastedDefense += amount;
+        }
     }
 }
 

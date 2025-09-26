@@ -133,7 +133,7 @@ if (roll >= accuracy) return false;
 - `games/card-battle-game/js/lang/*.json` - 다국어 지원
 
 ### 시스템 파일
-- `js/core/GameManager.js` - CSS 변수 동기화 담당
+- `js/core/GameManager.js` - CSS 변수 동기화, 중앙 통계 시스템
 - `js/utils/CanvasUtils.js` - 좌표 변환 중앙화
 - `js/ui/Renderer.js` - Canvas 렌더링
 
@@ -150,6 +150,7 @@ if (roll >= accuracy) return false;
 - **이중 명중률 체크 금지**: Card.js에서만 처리
 - **자해 카드**: `CardDatabase.processSelfDamage()` 공통 유틸리티 사용 (즉사 체크 자동화)
 - **속성 면역**: 불속성만 화상 면역, 물속성은 화상에 걸림
+- **중앙 통계 시스템**: 모든 대미지는 `GameManager.recordDamage()`로만 기록 (방어력 포함)
 
 ## 🚀 Quick Development
 

@@ -8,6 +8,14 @@ const CardDatabase = {
     processSelfDamage: function(user, selfDamage, battleSystem, element = 'normal') {
         user.takeDamage(selfDamage);
 
+        // GameManager 중앙 통계 시스템 업데이트 (자해 대미지)
+        if (battleSystem && battleSystem.gameManager && battleSystem.gameManager.recordDamage) {
+            const targetType = user === battleSystem.player ? 'player' : 'enemy';
+            if (targetType === 'player') {
+                battleSystem.gameManager.recordDamage('self', 'player', selfDamage, 'self');
+            }
+        }
+
         // 자해 피해로 사망 시 즉시 패배 처리
         if (user.isDead() && battleSystem) {
             battleSystem.checkBattleEnd();
