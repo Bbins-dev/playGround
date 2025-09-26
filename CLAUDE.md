@@ -56,6 +56,13 @@ CSS Variables (--canvas-width, --card-preview-width)
 - ✅ `cd games/card-battle-game && npx serve -p 3000`
 - ❌ `npx serve` (프로젝트 루트에서 실행 시 잘못된 페이지 로드)
 
+### 🌐 브라우저 테스트 규칙
+**Claude는 스스로 브라우저 테스트를 하지 않음**:
+- ❌ Claude가 임의로 브라우저 열기/테스트/스크린샷 촬영 금지
+- ✅ 사용자가 **직접 요청**하면 `mcp__microsoft-playwright-mcp__*` 도구 사용 가능
+- ✅ 구현 완료 후 사용자에게 "테스트해보세요" 안내만 전달
+- ✅ 서버 실행 상태 확인까지만 담당
+
 ## ⚠️ 자주 하는 실수들 (방금도 이런 실수 있었음!)
 
 ### 1. 좌표 변환 직접 계산
