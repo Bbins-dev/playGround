@@ -4,6 +4,25 @@ const CardDatabase = {
     // 카드 데이터 저장소
     cards: {},
 
+    // 자해 대미지 처리 공통 유틸리티
+    processSelfDamage: function(user, selfDamage, battleSystem, element = 'normal') {
+        user.takeDamage(selfDamage);
+
+        // 자해 피해로 사망 시 즉시 패배 처리
+        if (user.isDead() && battleSystem) {
+            battleSystem.checkBattleEnd();
+            return {
+                success: false,
+                messageKey: 'auto_battle_card_game.ui.templates.self_knockout',
+                selfDamage: selfDamage,
+                selfKnockout: true,
+                element: element
+            };
+        }
+
+        return null; // 생존 시 null 반환 (정상 진행)
+    },
+
     // 카드 추가 메서드
     addCard: function(cardData) {
         this.cards[cardData.id] = cardData;
@@ -306,21 +325,11 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.thorn_armor.description',
             effect: function(user, target, battleSystem) {
-                // 자신에게 대미지 1
                 const selfDamage = this.power;
-                user.takeDamage(selfDamage);
 
-                // 자해 피해로 사망 시 즉시 패배 처리 (힘 버프 받지 않음)
-                if (user.isDead() && battleSystem) {
-                    battleSystem.checkBattleEnd();
-                    return {
-                        success: false,
-                        messageKey: 'auto_battle_card_game.ui.templates.self_knockout',
-                        selfDamage: selfDamage,
-                        selfKnockout: true,
-                        element: this.element
-                    };
-                }
+                // 공통 자해 대미지 처리
+                const selfDamageResult = CardDatabase.processSelfDamage(user, selfDamage, battleSystem, this.element);
+                if (selfDamageResult) return selfDamageResult; // 사망 시 즉시 반환
 
                 // 생존했으면 힘 버프 1 추가
                 const strengthGain = 1;
@@ -619,21 +628,11 @@ const CardDatabase = {
             selfDamage: 10,
             burnChance: 100, // 명중 시 100% 확률로 화상
             effect: function(user, target, battleSystem) {
-                // 먼저 자신에게 피해 적용
                 const selfDamage = this.selfDamage;
-                user.takeDamage(selfDamage);
 
-                // 자해 피해로 사망 시 즉시 패배 처리
-                if (user.isDead() && battleSystem) {
-                    battleSystem.checkBattleEnd();
-                    return {
-                        success: false,
-                        messageKey: 'auto_battle_card_game.ui.templates.self_knockout',
-                        selfDamage: selfDamage,
-                        selfKnockout: true,
-                        element: this.element
-                    };
-                }
+                // 공통 자해 대미지 처리
+                const selfDamageResult = CardDatabase.processSelfDamage(user, selfDamage, battleSystem, this.element);
+                if (selfDamageResult) return selfDamageResult; // 사망 시 즉시 반환
 
                 // 생존했으면 상대에게 공격 실행
                 const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
