@@ -1439,6 +1439,7 @@ body {
     pointer-events: none;
     z-index: 500;
     transform-origin: center;
+    white-space: nowrap; /* 줄바꿈 방지 */
 }
 
 .heal-number {

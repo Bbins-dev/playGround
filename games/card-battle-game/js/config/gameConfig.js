@@ -668,11 +668,7 @@ const GameConfig = {
         // 확인 대화상자 설정
         // 피격 숫자 표시 설정
         damageNumber: {
-            fontSize: {
-                large: 140,     // 큰 화면 (120→140) 더 크게
-                medium: 120,    // 중간 화면 (100→120) 더 크게
-                mobile: 100     // 모바일 (85→100) 더 크게
-            },
+            fontSize: 90,       // 고정 크기 (반응형 제거)
             position: {
                 // 전투 영역 기준 위치 (캔버스 상하 1/3 지점)
                 playerY: 0.75,  // 캔버스 높이의 75% 지점 (하단 1/3)
@@ -682,20 +678,21 @@ const GameConfig = {
             },
             messageZones: {
                 damage: {
-                    xRange: [-60, 60],    // 중앙 존 (일반 대미지)
-                    yRange: [-20, 20]
+                    xRange: [-80, 80],      // 중앙 존 약간 확대 (겹침 방지)
+                    yRange: [-40, 40]       // Y 범위 2배 확대 (수직 공간 활용)
                 },
                 status: {
-                    xRange: [-280, -120], // 왼쪽 존 (상태이상) - 더 왼쪽으로
-                    yRange: [-20, 20]
+                    xRange: [-300, -140],   // 왼쪽 존 간격 증가 (겹침 방지)
+                    yRange: [-60, 60]       // Y 범위 3배 확대 (더 넓은 분산)
                 },
                 buff: {
-                    xRange: [120, 280],   // 오른쪽 존 (버프/강화) - 더 오른쪽으로
-                    yRange: [-20, 20]
+                    xRange: [100, 200],     // 화면 안쪽으로 조정 (줄바꿈 방지)
+                    yRange: [-60, 60]       // Y 범위 3배 확대 (더 넓은 분산)
                 }
             },
             animation: {
                 duration: 1200, // 애니메이션 지속 시간 (ms)
+                readDelay: 500, // 메시지 읽기 대기시간 (ms) - 템플릿 기반 통합 관리
                 scaleStart: 0.5,
                 scaleMax: 1.3,
                 scaleEnd: 0.8,
@@ -706,6 +703,19 @@ const GameConfig = {
                 heal: '#2ECC71',
                 buff: '#2ECC71',
                 debuff: '#E74C3C'
+            },
+            // z-index 우선순위 설정 (높을수록 위에 표시)
+            zIndexPriority: {
+                damage: 700,        // 실제 대미지 숫자 (최상위)
+                status: 500,        // 상태이상 메시지
+                buff: 500,          // 버프 메시지
+                defense: 500,       // 방어력 메시지
+                heal: 600,          // 회복 메시지 (대미지보다는 낮지만 다른 것보다 높게)
+                default: 500        // 기본값
+            },
+            // 메시지 위치 오프셋 설정 (픽셀 단위)
+            positionOffset: {
+                damageFromStatus: -40   // 피격 데미지가 상태이상 메시지보다 위에 표시되도록 Y 오프셋
             }
         },
 

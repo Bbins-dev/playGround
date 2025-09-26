@@ -7,6 +7,9 @@ class EffectSystem {
 
         // 현재 진행 중인 효과들 추적
         this.activeEffects = new Map();
+
+        // 현재 표시 중인 메시지들의 위치 추적 (겹침 방지)
+        this.activeMessages = [];
     }
 
     // 피격 효과 (고전 게임 스타일)
@@ -27,7 +30,15 @@ class EffectSystem {
             } else if (effectiveness < 1.0) {
                 damageType = 'weak';   // 0.5배 데미지
             }
-            this.showDamageNumber(damage, targetPosition, damageType);
+
+            // 피격 데미지는 상태이상 메시지와 겹치지 않도록 위쪽에 표시 (Configuration-Driven)
+            const offsetY = GameConfig.cardSelection.damageNumber.positionOffset.damageFromStatus;
+            const damagePosition = {
+                x: targetPosition.x,
+                y: targetPosition.y + offsetY  // 음수 값으로 위로 올림
+            };
+
+            this.showDamageNumber(damage, damagePosition, damageType);
         }
     }
 
@@ -144,8 +155,8 @@ class EffectSystem {
         return configs[type];
     }
 
-    // 템플릿 기반 효과 메시지 표시
-    showEffectMessage(effectType, position, templateType, value = 0) {
+    // 템플릿 기반 효과 메시지 표시 (async - 읽기 시간 포함)
+    async showEffectMessage(effectType, position, templateType, value = 0) {
         // GameConfig에서 효과 설정 가져오기
         const config = GameConfig.statusEffects[effectType] || GameConfig.buffs[effectType];
         if (!config) {
@@ -172,11 +183,11 @@ class EffectSystem {
         const messageTypeForZone = GameConfig.statusEffects[effectType] ? 'status' : 'buff';
 
         // 숫자 표시 (존 정보를 위해 타입 전달)
-        this.showDamageNumber(0, position, messageTypeForZone, message);
+        await this.showDamageNumber(0, position, messageTypeForZone, message);
     }
 
-    // 방어력 획득 메시지 표시 (템플릿 기반)
-    showDefenseGainMessage(position, value) {
+    // 방어력 획득 메시지 표시 (템플릿 기반, async - 읽기 시간 포함)
+    async showDefenseGainMessage(position, value) {
         let template = I18nHelper.getText('auto_battle_card_game.ui.templates.defense_gained');
         if (!template) {
             console.warn('Defense gained template not found');
@@ -184,7 +195,7 @@ class EffectSystem {
         }
 
         let message = template.replace('{value}', value);
-        this.showDamageNumber(0, position, 'shield', message);
+        await this.showDamageNumber(0, position, 'shield', message);
     }
 
     // 메시지 타입 자동 판별
@@ -210,22 +221,46 @@ class EffectSystem {
         return 'damage';
     }
 
-    // 존별 랜덤 위치 생성
+    // 충돌 감지 (기존 메시지와 최소 거리 유지)
+    checkCollision(newPosition, minDistance = 100) {
+        for (const activeMsg of this.activeMessages) {
+            const dx = newPosition.x - activeMsg.x;
+            const dy = newPosition.y - activeMsg.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < minDistance) {
+                return true; // 충돌 감지
+            }
+        }
+        return false; // 충돌 없음
+    }
+
+    // 존별 랜덤 위치 생성 (충돌 방지 포함)
     getRandomPositionInZone(zoneType, basePosition) {
         const zones = GameConfig.cardSelection.damageNumber.messageZones;
         const zone = zones[zoneType] || zones.damage;
 
-        const randomX = Math.random() * (zone.xRange[1] - zone.xRange[0]) + zone.xRange[0];
-        const randomY = Math.random() * (zone.yRange[1] - zone.yRange[0]) + zone.yRange[0];
+        let attempts = 0;
+        let position;
+        const maxAttempts = 10; // 최대 시도 횟수
 
-        return {
-            x: basePosition.x + randomX,
-            y: basePosition.y + randomY
-        };
+        do {
+            const randomX = Math.random() * (zone.xRange[1] - zone.xRange[0]) + zone.xRange[0];
+            const randomY = Math.random() * (zone.yRange[1] - zone.yRange[0]) + zone.yRange[0];
+
+            position = {
+                x: basePosition.x + randomX,
+                y: basePosition.y + randomY
+            };
+
+            attempts++;
+        } while (this.checkCollision(position) && attempts < maxAttempts);
+
+        return position;
     }
 
-    // 대미지/회복/효과 숫자 표시
-    showDamageNumber(amount, position, type = 'damage', customText = null) {
+    // 대미지/회복/효과 숫자 표시 (async - 읽기 시간 포함)
+    async showDamageNumber(amount, position, type = 'damage', customText = null) {
         const numberElement = document.createElement('div');
         let className = 'damage-number';
 
@@ -308,12 +343,56 @@ class EffectSystem {
         // 메시지 타입에 따른 존별 랜덤 위치 생성
         const finalPosition = this.getRandomPositionInZone(messageType, basePosition);
 
-        numberElement.style.left = finalPosition.x + 'px';
+        // 고정 폰트 크기 설정 (GameConfig 기반)
+        const fontSize = GameConfig.cardSelection.damageNumber.fontSize;
+        numberElement.style.fontSize = fontSize + 'px';
+
+        // 버프 메시지의 경우 텍스트 끝 기준으로 정렬 (화면 밖으로 나가지 않게)
+        if (messageType === 'buff') {
+            // 텍스트 너비 측정을 위해 임시로 DOM에 추가
+            numberElement.style.visibility = 'hidden';
+            this.numbersContainer.appendChild(numberElement);
+            const textWidth = numberElement.offsetWidth;
+            numberElement.remove();
+            numberElement.style.visibility = 'visible';
+
+            // 텍스트 끝이 화면 밖으로 나가지 않도록 조정
+            const maxX = GameConfig.canvas.width - textWidth - 20; // 20px 여백
+            const adjustedX = Math.min(finalPosition.x, maxX);
+
+            numberElement.style.left = adjustedX + 'px';
+        } else {
+            numberElement.style.left = finalPosition.x + 'px';
+        }
+
         numberElement.style.top = finalPosition.y + 'px';
 
-        // 반응형 폰트 크기 설정
-        const fontSize = this.getResponsiveFontSize();
-        numberElement.style.fontSize = fontSize + 'px';
+        // z-index 우선순위 적용 (Configuration-Driven)
+        const zIndexPriority = GameConfig.cardSelection.damageNumber.zIndexPriority;
+        let zIndex = zIndexPriority.default;
+
+        // 실제 대미지 숫자는 최상위에 표시
+        if (type === 'damage' || type === 'strong' || type === 'weak' || type === 'self_damage') {
+            zIndex = zIndexPriority.damage;
+        } else if (type === 'heal') {
+            zIndex = zIndexPriority.heal;
+        } else if (messageType === 'status') {
+            zIndex = zIndexPriority.status;
+        } else if (messageType === 'buff') {
+            zIndex = zIndexPriority.buff;
+        } else if (customText && (customText.includes('🛡️') || customText.includes('방어력'))) {
+            zIndex = zIndexPriority.defense;
+        }
+
+        numberElement.style.zIndex = zIndex;
+
+        // 활성 메시지 목록에 추가 (겹침 방지를 위해)
+        const messageInfo = {
+            x: finalPosition.x,
+            y: finalPosition.y,
+            element: numberElement
+        };
+        this.activeMessages.push(messageInfo);
 
         this.numbersContainer.appendChild(numberElement);
 
@@ -322,22 +401,17 @@ class EffectSystem {
             if (numberElement.parentNode) {
                 numberElement.remove();
             }
+            // activeMessages에서도 제거
+            const index = this.activeMessages.findIndex(msg => msg.element === numberElement);
+            if (index !== -1) {
+                this.activeMessages.splice(index, 1);
+            }
         }, config.animation.duration);
+
+        // 템플릿 기반 통합 읽기 시간 대기 (Configuration-Driven)
+        await new Promise(resolve => setTimeout(resolve, config.animation.readDelay));
     }
 
-    // 반응형 폰트 크기 계산
-    getResponsiveFontSize() {
-        const config = GameConfig.cardSelection.damageNumber.fontSize;
-        const screenWidth = window.innerWidth;
-
-        if (screenWidth <= 768) {
-            return config.mobile;
-        } else if (screenWidth <= 1024) {
-            return config.medium;
-        } else {
-            return config.large;
-        }
-    }
 
     // 카드 발동 효과 (중앙 확대) - 통일된 DOMCardRenderer 사용
     showCardActivation(card, duration = 2000) {
@@ -413,6 +487,7 @@ class EffectSystem {
         this.effectsContainer.innerHTML = '';
         this.numbersContainer.innerHTML = '';
         this.activeEffects.clear();
+        this.activeMessages = []; // 메시지 목록도 초기화
     }
 
     // 복합 효과 (여러 효과 조합)

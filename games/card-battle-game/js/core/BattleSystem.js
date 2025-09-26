@@ -154,8 +154,8 @@ class BattleSystem {
                 this.effectSystem.getPlayerPosition() :
                 this.effectSystem.getEnemyPosition();
 
-            // 기절 효과 표시
-            this.effectSystem.showEffectMessage('stun', position, 'status_applied');
+            // 기절 효과 표시 (읽기 시간 포함)
+            await this.effectSystem.showEffectMessage('stun', position, 'status_applied');
 
             // 기절 해제
             currentPlayer.removeStatusEffect('stun');
@@ -384,7 +384,7 @@ class BattleSystem {
 
         // 기절 처리
         if (result.stunned) {
-            this.effectSystem.showEffectMessage('stun', targetPosition, 'status_applied');
+            await this.effectSystem.showEffectMessage('stun', targetPosition, 'status_applied');
 
             // 상태이상 UI 즉시 업데이트
             const isTargetPlayer = target === this.player;
@@ -393,7 +393,7 @@ class BattleSystem {
 
         // 중독 처리
         if (result.poisoned) {
-            this.effectSystem.showEffectMessage('poisoned', targetPosition, 'status_applied');
+            await this.effectSystem.showEffectMessage('poisoned', targetPosition, 'status_applied');
 
             // 상태이상 UI 즉시 업데이트
             const isTargetPlayer = target === this.player;
@@ -402,7 +402,7 @@ class BattleSystem {
 
         // 다른 상태이상 처리 (일반적인 statusType 지원)
         if (result.statusType && result.statusType !== 'stun' && result.statusType !== 'poisoned') {
-            this.effectSystem.showEffectMessage(result.statusType, targetPosition, 'status_applied');
+            await this.effectSystem.showEffectMessage(result.statusType, targetPosition, 'status_applied');
 
             // 상태이상 UI 즉시 업데이트
             const isTargetPlayer = target === this.player;
@@ -447,7 +447,7 @@ class BattleSystem {
     async processBuffResult(result, user, targetPosition) {
         // 방어력 획득인지 확인
         if (result.defenseGain) {
-            this.effectSystem.showDefenseGainMessage(targetPosition, result.defenseGain);
+            await this.effectSystem.showDefenseGainMessage(targetPosition, result.defenseGain);
         }
 
         // 기타 버프 효과 - 현재 사용되지 않음 (모든 버프는 개별 처리됨)
@@ -465,7 +465,7 @@ class BattleSystem {
             // 어떤 상태이상 타입이든 템플릿 기반으로 처리
             const statusType = result.statusType || this.extractStatusTypeFromMessage(result.messageKey);
             if (statusType) {
-                this.effectSystem.showEffectMessage(statusType, targetPosition, 'already_status');
+                await this.effectSystem.showEffectMessage(statusType, targetPosition, 'already_status');
             }
             return; // 중복 상태면 추가 처리 중단
         }
@@ -474,7 +474,7 @@ class BattleSystem {
         const statusType = result.statusType;
         if (statusType) {
             // 템플릿 기반으로 상태이상 적용 메시지 표시
-            this.effectSystem.showEffectMessage(statusType, targetPosition, 'status_applied');
+            await this.effectSystem.showEffectMessage(statusType, targetPosition, 'status_applied');
 
             // 상태이상 UI 즉시 업데이트
             const isTargetPlayer = target === this.player;
@@ -500,7 +500,7 @@ class BattleSystem {
 
         if (defenseGain > 0) {
             // 방어력 숫자 연출 표시 (템플릿 기반)
-            this.effectSystem.showDefenseGainMessage(userPosition, defenseGain);
+            await this.effectSystem.showDefenseGainMessage(userPosition, defenseGain);
 
             // 방어력 관련 통계 업데이트
             this.battleStats.defenseBuilt += defenseGain;
@@ -513,7 +513,7 @@ class BattleSystem {
 
         // 힘 버프 획득 처리 (가시갑옷 카드 등)
         if (result.strengthGain && result.strengthGain > 0) {
-            this.effectSystem.showEffectMessage('strength', userPosition, 'buff_gained', result.strengthGain);
+            await this.effectSystem.showEffectMessage('strength', userPosition, 'buff_gained', result.strengthGain);
         }
 
         // 자가 대미지가 있는 경우 대미지 이펙트 표시
@@ -809,11 +809,8 @@ class BattleSystem {
                 this.effectSystem.getPlayerPosition() :
                 this.effectSystem.getEnemyPosition();
 
-            // 독 데미지 시각적 표시
-            this.effectSystem.showDamageNumber(damage, position, 'poison');
-
-            // 짧은 대기 후 실제 대미지 적용 (시각적 효과와 동기화)
-            await this.wait(200);
+            // 독 데미지 시각적 표시 (읽기 시간 포함)
+            await this.effectSystem.showDamageNumber(damage, position, 'poison');
 
             // 실제 대미지 적용
             const actualDamage = player.takeDamage(damage);
@@ -850,11 +847,8 @@ class BattleSystem {
                 this.effectSystem.getPlayerPosition() :
                 this.effectSystem.getEnemyPosition();
 
-            // 화상 데미지 시각적 표시
-            this.effectSystem.showEffectMessage('burn', position, 'burn_damage', damage);
-
-            // 짧은 대기 후 실제 데미지 적용 (시각적 효과와 동기화)
-            await this.wait(200);
+            // 화상 데미지 시각적 표시 (읽기 시간 포함)
+            await this.effectSystem.showEffectMessage('burn', position, 'burn_damage', damage);
 
             // 실제 데미지 적용
             const actualDamage = player.takeDamage(damage);
