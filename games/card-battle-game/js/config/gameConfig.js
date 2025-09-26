@@ -37,8 +37,7 @@ const GameConfig = {
             color: '#87CEEB',      // 하늘색
             emoji: '💧',
             strong: 'fire',        // 불에 강함
-            weak: 'electric',      // 전기에 약함
-            immunity: 'burn'       // 화상 면역
+            weak: 'electric'       // 전기에 약함
         },
         electric: {
             name: '전기',

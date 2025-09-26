@@ -701,6 +701,41 @@ const CardDatabase = {
                 };
             }
         });
+
+        // 뜨거운 입김 카드 (불 속성, 순수 화상 효과)
+        this.addCard({
+            id: 'hot_breath',
+            nameKey: 'auto_battle_card_game.ui.cards.hot_breath.name',
+            type: 'status',
+            element: 'fire',
+            power: 0,
+            accuracy: 70,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.hot_breath.description',
+            effect: function(user, target, battleSystem) {
+                // 화상 상태 적용 (1턴 지속)
+                const result = target.addStatusEffect('burn', GameConfig.statusEffects.burn.defaultPercent, 1);
+
+                let messageKey;
+                if (result.success) {
+                    messageKey = 'auto_battle_card_game.ui.templates.status_applied';
+                } else if (result.duplicate) {
+                    messageKey = 'auto_battle_card_game.ui.templates.already_status';
+                } else {
+                    messageKey = 'auto_battle_card_game.ui.hot_breath_failed';
+                }
+
+                return {
+                    success: result.success,
+                    messageKey: messageKey,
+                    element: this.element,
+                    duplicate: result.duplicate,
+                    statusType: result.success ? 'burn' : null,
+                    templateData: { name: GameConfig.statusEffects.burn.name }
+                };
+            }
+        });
     },
 
     // i18n을 고려한 카드 이름 가져오기

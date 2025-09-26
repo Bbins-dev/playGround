@@ -228,6 +228,10 @@
         "fireball": {
           "name": "Fireball",
           "description": "A powerful flame strike that deals 4 damage. Has a chance to inflict burn."
+        },
+        "hot_breath": {
+          "name": "Hot Breath",
+          "description": "Inflicts burn on the opponent."
         }
       },
       "buffs": {
@@ -264,6 +268,7 @@
       "taunted": "Taunted!",
       "push_back_failed": "Push Back failed",
       "sand_throw_failed": "Sand Throw failed",
+      "hot_breath_failed": "Hot Breath failed",
       "templates": {
         "status_applied": "{name} applied!",
         "already_status": "Already {name}!",

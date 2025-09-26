@@ -228,6 +228,10 @@
         "fireball": {
           "name": "화염구",
           "description": "강력한 화염 일격으로 4 데미지를 줍니다. 일정 확률로 화상을 입힙니다."
+        },
+        "hot_breath": {
+          "name": "뜨거운 입김",
+          "description": "상대에게 화상을 입힙니다."
         }
       },
       "buffs": {
@@ -264,6 +268,7 @@
       "taunted": "도발됨!",
       "push_back_failed": "밀쳐내기 실패",
       "sand_throw_failed": "모래뿌리기 실패",
+      "hot_breath_failed": "뜨거운 입김 실패",
       "templates": {
         "status_applied": "{name}에 걸렸습니다!",
         "already_status": "이미 {name}에 걸려있습니다!",

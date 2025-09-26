@@ -228,6 +228,10 @@
         "fireball": {
           "name": "ファイアボール",
           "description": "強力な炎の一撃で4ダメージを与えます。一定確率で火傷を負わせます。"
+        },
+        "hot_breath": {
+          "name": "熱い息",
+          "description": "相手に火傷を負わせます。"
         }
       },
       "buffs": {
@@ -264,6 +268,7 @@
       "taunted": "挑発された！",
       "push_back_failed": "押し返し失敗",
       "sand_throw_failed": "砂投げ失敗",
+      "hot_breath_failed": "熱い息失敗",
       "templates": {
         "status_applied": "{name}になりました！",
         "already_status": "すでに{name}です！",
