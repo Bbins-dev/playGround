@@ -1426,7 +1426,7 @@ body {
 /* 대미지/회복 숫자 - 획기적 개선 */
 .damage-number {
     position: absolute;
-    font-size: 72px;  /* 기본 32px → 72px로 대폭 확대 */
+    font-size: 60px;  /* GameConfig와 일치 */
     font-weight: 900; /* bold → 900으로 더 굵게 */
     color: #FF0000;   /* 더 진한 빨간색 */
     text-shadow:
@@ -1587,18 +1587,7 @@ body {
     }
 }
 
-/* 반응형 폰트 크기 */
-@media (max-width: 768px) {
-    .damage-number {
-        font-size: 50px !important; /* 모바일에서 50px */
-    }
-}
-
-@media (max-width: 1024px) and (min-width: 769px) {
-    .damage-number {
-        font-size: 60px !important; /* 태블릿에서 60px */
-    }
-}
+/* 반응형 폰트 크기 제거됨 - 고정 크기 사용 */
 
 /* 효과 오버레이 */
 .effect-overlay {
