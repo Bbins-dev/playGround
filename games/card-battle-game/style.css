@@ -1253,7 +1253,7 @@ body {
     min-width: 62px;
     height: 50px;
     font-size: 34px;
-    border-radius: 25px;
+    border-radius: 8px; /* 모서리가 둥근 사각형으로 변경 */
     margin: 0;
     padding: 6px 14px;
     border-width: 3px;

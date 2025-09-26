@@ -943,7 +943,7 @@ const GameConfig = {
                 minWidth: 62,               // CSS에서 사용하는 크기값들 (2.8배)
                 height: 50,
                 fontSize: 34,
-                borderRadius: 25,
+                borderRadius: 8,            // 모서리가 둥근 사각형으로 변경
                 borderWidth: 3,
                 boxShadow: '0 4px 10px rgba(0, 0, 0, 0.5)'
             }
