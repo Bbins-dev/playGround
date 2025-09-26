@@ -669,9 +669,9 @@ const GameConfig = {
         // 피격 숫자 표시 설정
         damageNumber: {
             fontSize: {
-                large: 96,      // 큰 화면 (72→96)
-                medium: 80,     // 중간 화면 (60→80)
-                mobile: 70      // 모바일 (50→70)
+                large: 140,     // 큰 화면 (120→140) 더 크게
+                medium: 120,    // 중간 화면 (100→120) 더 크게
+                mobile: 100     // 모바일 (85→100) 더 크게
             },
             position: {
                 // 전투 영역 기준 위치 (캔버스 상하 1/3 지점)

@@ -175,7 +175,7 @@ class Renderer {
     }
 
     // 손패 영역 배경 그리기
-    drawHandAreaBackground(player, area) {
+    drawHandAreaBackground(player, area, isPlayer = true) {
         const config = GameConfig.ui.handAreaBackground;
         if (!config.enabled) return;
 
@@ -195,9 +195,15 @@ class Renderer {
                 area.x, area.y + area.height
             );
 
-            // 상단은 더 투명하게, 하단은 더 진하게
-            gradient.addColorStop(0, this.hexToRgba(baseColor, config.gradientOpacity.start));
-            gradient.addColorStop(1, this.hexToRgba(baseColor, config.gradientOpacity.end));
+            if (isPlayer) {
+                // 플레이어: 아래→위 (적과 대칭)
+                gradient.addColorStop(0, this.hexToRgba(baseColor, config.gradientOpacity.end));
+                gradient.addColorStop(1, this.hexToRgba(baseColor, config.gradientOpacity.start));
+            } else {
+                // 적: 위→아래 (기존)
+                gradient.addColorStop(0, this.hexToRgba(baseColor, config.gradientOpacity.start));
+                gradient.addColorStop(1, this.hexToRgba(baseColor, config.gradientOpacity.end));
+            }
 
             this.ctx.fillStyle = gradient;
         } else {
@@ -229,7 +235,7 @@ class Renderer {
         if (!player.hand || player.hand.length === 0) return;
 
         // 손패 영역 배경 그리기
-        this.drawHandAreaBackground(player, area);
+        this.drawHandAreaBackground(player, area, isPlayer);
 
         const cardCount = player.hand.length;
         const cardSize = this.cardSizes.hand;
