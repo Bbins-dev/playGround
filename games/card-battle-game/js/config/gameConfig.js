@@ -691,7 +691,7 @@ const GameConfig = {
                     yRange: [-40, 40]       // Y 범위 2배 확대 (수직 공간 활용)
                 },
                 status: {
-                    xRange: [-200, -50],    // 상태이상 메시지 위치 조정 (화면 안쪽으로)
+                    xRange: [-300, -120],   // 상태이상 메시지를 더 왼쪽으로 이동 (겹침 방지)
                     yRange: [-60, 60]       // Y 범위 3배 확대 (더 넓은 분산)
                 },
                 buff: {
@@ -724,7 +724,8 @@ const GameConfig = {
             },
             // 메시지 위치 오프셋 설정 (픽셀 단위)
             positionOffset: {
-                damageFromStatus: -40   // 피격 데미지가 상태이상 메시지보다 위에 표시되도록 Y 오프셋
+                damageFromStatus: -40,  // 피격 데미지가 상태이상 메시지보다 위에 표시되도록 Y 오프셋
+                statusDamageFromApplied: -80 // 상태이상 대미지가 상태이상 적용 메시지보다 위에 표시되도록 Y 오프셋
             }
         },
 

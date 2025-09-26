@@ -362,7 +362,16 @@ class EffectSystem {
         const basePosition = { x: centerX, y: targetY };
 
         // 메시지 타입에 따른 존별 랜덤 위치 생성
-        const finalPosition = this.getRandomPositionInZone(messageType, basePosition);
+        let finalPosition = this.getRandomPositionInZone(messageType, basePosition);
+
+        // 상태이상 메시지는 피격 대미지와 겹치지 않도록 위치 조정
+        if (messageType === 'status' && customText) {
+            const offsetY = GameConfig.cardSelection.damageNumber.positionOffset.statusDamageFromApplied;
+            finalPosition = {
+                x: finalPosition.x,
+                y: finalPosition.y + offsetY  // 음수 값으로 위로 올림
+            };
+        }
 
         // 고정 폰트 크기 설정 (GameConfig 기반)
         const fontSize = GameConfig.cardSelection.damageNumber.fontSize;
