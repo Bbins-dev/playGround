@@ -310,7 +310,19 @@ const CardDatabase = {
                 const selfDamage = this.power;
                 user.takeDamage(selfDamage);
 
-                // 힘 버프 1 추가
+                // 자해 피해로 사망 시 즉시 패배 처리 (힘 버프 받지 않음)
+                if (user.isDead() && battleSystem) {
+                    battleSystem.checkBattleEnd();
+                    return {
+                        success: false,
+                        messageKey: 'auto_battle_card_game.ui.templates.self_knockout',
+                        selfDamage: selfDamage,
+                        selfKnockout: true,
+                        element: this.element
+                    };
+                }
+
+                // 생존했으면 힘 버프 1 추가
                 const strengthGain = 1;
                 user.addStrength(strengthGain);
 
@@ -589,6 +601,103 @@ const CardDatabase = {
                     duplicate: result.duplicate,
                     statusType: result.success ? 'sand' : null,
                     templateData: { name: GameConfig.statusEffects.sand.name }
+                };
+            }
+        });
+
+        // 카루라 일격 카드 (불 속성, 자해 + 강력한 공격 + 확정 화상)
+        this.addCard({
+            id: 'karura_strike',
+            nameKey: 'auto_battle_card_game.ui.cards.karura_strike.name',
+            type: 'attack',
+            element: 'fire',
+            power: 12,
+            accuracy: 90,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.karura_strike.description',
+            selfDamage: 10,
+            burnChance: 100, // 명중 시 100% 확률로 화상
+            effect: function(user, target, battleSystem) {
+                // 먼저 자신에게 피해 적용
+                const selfDamage = this.selfDamage;
+                user.takeDamage(selfDamage);
+
+                // 자해 피해로 사망 시 즉시 패배 처리
+                if (user.isDead() && battleSystem) {
+                    battleSystem.checkBattleEnd();
+                    return {
+                        success: false,
+                        messageKey: 'auto_battle_card_game.ui.templates.self_knockout',
+                        selfDamage: selfDamage,
+                        selfKnockout: true,
+                        element: this.element
+                    };
+                }
+
+                // 생존했으면 상대에게 공격 실행
+                const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                // 화상 확률 체크 (명중 성공 시에만)
+                let burned = false;
+                const burnRoll = Math.random() * 100;
+                if (burnRoll < this.burnChance) {
+                    const result = target.addStatusEffect('burn', GameConfig.statusEffects.burn.defaultPercent, 1);
+                    burned = result.success;
+                }
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.karura_strike_effect',
+                    damage: finalDamage,
+                    selfDamage: selfDamage,
+                    burned: burned,
+                    statusType: burned ? 'burn' : null,
+                    element: this.element,
+                    effectiveness: effectiveness,
+                    templateData: {
+                        selfDamage: selfDamage,
+                        damage: finalDamage
+                    }
+                };
+            }
+        });
+
+        // 화염구 카드 (불 속성, 중간 대미지 + 화상 확률)
+        this.addCard({
+            id: 'fireball',
+            nameKey: 'auto_battle_card_game.ui.cards.fireball.name',
+            type: 'attack',
+            element: 'fire',
+            power: 4,
+            accuracy: 70,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.fireball.description',
+            burnChance: 60, // 명중 시 60% 확률로 화상
+            effect: function(user, target, battleSystem) {
+                const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                // 화상 확률 체크 (명중 성공 시에만)
+                let burned = false;
+                const burnRoll = Math.random() * 100;
+                if (burnRoll < this.burnChance) {
+                    const result = target.addStatusEffect('burn', GameConfig.statusEffects.burn.defaultPercent, 1);
+                    burned = result.success;
+                }
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    burned: burned,
+                    statusType: burned ? 'burn' : null,
+                    element: this.element,
+                    effectiveness: effectiveness
                 };
             }
         });

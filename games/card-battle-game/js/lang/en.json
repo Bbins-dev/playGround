@@ -220,6 +220,14 @@
         "sand_throw": {
           "name": "Sand Throw",
           "description": "Throw sand in opponent's eyes, reducing attack accuracy by 30% for 2 turns"
+        },
+        "karura_strike": {
+          "name": "Karura Strike",
+          "description": "A technique learned from the Karura clan. Deal 10 damage to yourself, then deal 12 damage to opponent and inflict burn."
+        },
+        "fireball": {
+          "name": "Fireball",
+          "description": "A powerful flame strike that deals 4 damage. Has a chance to inflict burn."
         }
       },
       "buffs": {
@@ -264,7 +272,9 @@
         "buff_gained": "{name} +{value}",
         "buff_reduced": "{name} {value}",
         "defense_gained": "🛡️ DEF +{value}",
-        "heal_effect": "❤️ HP +{value}"
+        "heal_effect": "❤️ HP +{value}",
+        "self_knockout": "Knocked out by self-damage!",
+        "karura_strike_effect": "{selfDamage} self-damage! {damage} damage to opponent!"
       },
       "card_selection": {
         "initial_title": "Start Card Selection",
