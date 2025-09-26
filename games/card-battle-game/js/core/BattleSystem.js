@@ -516,28 +516,30 @@ class BattleSystem {
     // 턴 종료
     async endTurn() {
         const currentPlayer = this.turnProgress.currentPlayer;
+        const isPlayerTurn = currentPlayer === this.player;
 
         // 디버그: 턴 종료 처리 시작
-        console.log(`[DEBUG] endTurn: ${currentPlayer.name} turn ending (isPlayer: ${currentPlayer === this.player})`);
-        console.log(`[DEBUG] ${currentPlayer.name} status effects:`, currentPlayer.statusEffects);
+        console.log(`[DEBUG] endTurn: ${currentPlayer.name} turn ending (isPlayer: ${isPlayerTurn})`);
+        console.log(`[DEBUG] ${currentPlayer.name} status effects before:`, currentPlayer.statusEffects);
 
-        // 상태이상 해제 (턴 종료 시)
+        // 1. 즉시 해제가 필요한 상태이상 제거
         currentPlayer.removeStatusEffect('taunt');
         currentPlayer.removeStatusEffect('stun'); // 안전장치
 
-        // 상태이상 UI 업데이트
-        const isPlayerTurn = currentPlayer === this.player;
-        this.hpBarSystem.updateStatusEffects(currentPlayer, isPlayerTurn);
-
-        // 턴 종료 처리 (독 상태이상 체크 포함)
+        // 2. 턴 종료 시 데미지 처리 (독 등)
         const poisonDamageApplied = await this.processPoisonDamage(currentPlayer, isPlayerTurn);
 
-        // 독 데미지 적용 후 즉시 전투 종료 체크
+        // 3. 데미지로 인한 전투 종료 체크
         if (poisonDamageApplied && this.checkBattleEnd()) {
             return; // 독 데미지로 전투가 끝났으면 여기서 종료
         }
 
+        // 4. 상태이상 턴수 차감 (0턴인 것 자동 제거)
         currentPlayer.endTurn();
+        console.log(`[DEBUG] ${currentPlayer.name} status effects after endTurn:`, currentPlayer.statusEffects);
+
+        // 5. UI 업데이트 (차감된 상태 반영)
+        this.hpBarSystem.updateStatusEffects(currentPlayer, isPlayerTurn);
 
         // 턴 전환
         this.currentTurn = this.currentTurn === 'player' ? 'enemy' : 'player';
