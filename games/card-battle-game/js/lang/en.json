@@ -246,11 +246,16 @@
         "endless_effort": {
           "name": "Endless Effort",
           "description": "The source of strong power is endless effort. Adds 1 strength to yourself."
+        },
+        "sword_dance": {
+          "name": "Sword Dance",
+          "description": "Increases attack card damage by 50% for one turn."
         }
       },
       "buffs": {
         "strength": "STR",
-        "defense": "DEF"
+        "defense": "DEF",
+        "enhance": "ENH"
       },
       "elements": {
         "fire": "Fire",

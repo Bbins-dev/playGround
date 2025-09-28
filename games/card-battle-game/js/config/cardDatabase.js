@@ -88,7 +88,13 @@ const CardDatabase = {
                 return Math.floor(Math.random() * 3) + 3; // 3-5 랜덤
             },
             effect: function(user, target, battleSystem) {
-                const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
@@ -114,7 +120,13 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.heavy_strike.description',
             effect: function(user, target, battleSystem) {
-                const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
@@ -140,7 +152,13 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.shield_bash.description',
             effect: function(user, target, battleSystem) {
-                const baseDamage = user.defense + (user.getStrength ? user.getStrength() : 0); // 방어력 + 힘 버프
+                let baseDamage = user.defense + (user.getStrength ? user.getStrength() : 0); // 방어력 + 힘 버프
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
@@ -168,7 +186,13 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.concussion.description',
             stunChance: 60,
             effect: function(user, target, battleSystem) {
-                const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
@@ -203,7 +227,13 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.counter_attack.description',
             effect: function(user, target, battleSystem) {
-                const baseDamage = user.lastDamageTaken + (user.getStrength ? user.getStrength() : 0); // 받은 대미지 + 힘 버프
+                let baseDamage = user.lastDamageTaken + (user.getStrength ? user.getStrength() : 0); // 받은 대미지 + 힘 버프
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
@@ -400,7 +430,13 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.flame_throw.description',
             burnChance: 15,
             effect: function(user, target, battleSystem) {
-                const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
@@ -440,7 +476,13 @@ const CardDatabase = {
                 return Math.floor(Math.random() * 4) + 2; // 2-5 랜덤
             },
             effect: function(user, target, battleSystem) {
-                const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
@@ -466,7 +508,13 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.thunder_strike.description',
             effect: function(user, target, battleSystem) {
-                const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
@@ -493,7 +541,13 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.smog.description',
             poisonChance: 70,
             effect: function(user, target, battleSystem) {
-                const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
@@ -643,7 +697,13 @@ const CardDatabase = {
                 if (selfDamageResult) return selfDamageResult; // 사망 시 즉시 반환
 
                 // 생존했으면 상대에게 공격 실행
-                const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
@@ -685,7 +745,13 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.fireball.description',
             burnChance: 60, // 명중 시 60% 확률로 화상
             effect: function(user, target, battleSystem) {
-                const baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
@@ -836,28 +902,41 @@ const CardDatabase = {
                     strengthGain: strengthGain,
                     element: this.element,
                     templateData: {
-                        name: getI18nText('auto_battle_card_game.ui.buffs.strength'),
+                        name: GameConfig.buffs.strength.name,
                         value: strengthGain
                     }
                 };
             }
         });
-    },
 
-    // i18n을 고려한 카드 이름 가져오기
-    getCardName: function(cardData) {
-        if (cardData.nameKey && typeof getI18nText === 'function') {
-            return getI18nText(cardData.nameKey) || cardData.name || cardData.id;
-        }
-        return cardData.name || cardData.id;
-    },
+        // 칼춤 카드 (강화 버프 카드)
+        this.addCard({
+            id: 'sword_dance',
+            nameKey: 'auto_battle_card_game.ui.cards.sword_dance.name',
+            type: 'buff',
+            element: 'normal',
+            power: 0,
+            accuracy: 80,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.sword_dance.description',
+            effect: function(user, target, battleSystem) {
+                const enhanceGain = 1;
+                user.addEnhanceBuff(enhanceGain);
 
-    // i18n을 고려한 카드 설명 가져오기
-    getCardDescription: function(cardData) {
-        if (cardData.descriptionKey && typeof getI18nText === 'function') {
-            return getI18nText(cardData.descriptionKey) || cardData.description || '';
-        }
-        return cardData.description || '';
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
+                    buffType: 'enhance',
+                    enhanceGain: enhanceGain,
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig.buffs.enhance.name,
+                        value: enhanceGain
+                    }
+                };
+            }
+        });
     }
 };
 

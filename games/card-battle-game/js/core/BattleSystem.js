@@ -465,6 +465,11 @@ class BattleSystem {
             await this.effectSystem.showBuffEffect('strength', user, result.strengthGain);
         }
 
+        // 강화 버프 획득 처리 (칼춤 카드 등) - 새로운 통합 메서드 사용
+        if (result.enhanceGain && result.enhanceGain > 0) {
+            await this.effectSystem.showBuffEffect('enhance', user, result.enhanceGain);
+        }
+
         // 기타 버프 효과 - 확장 가능한 구조
         // TODO: 다른 버프 타입들도 동일한 패턴으로 추가 가능
     }

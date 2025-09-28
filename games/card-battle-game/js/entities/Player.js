@@ -27,6 +27,7 @@ class Player {
 
         // 버프 시스템
         this.strength = 0; // 힘 버프
+        this.enhanceTurns = 0; // 강화 버프 남은 턴 수
 
         // 턴 관련
         this.currentCardIndex = 0;
@@ -225,8 +226,19 @@ class Player {
         return this.strength;
     }
 
+    // 강화 버프 관련 메서드
+    hasEnhanceBuff() {
+        return this.enhanceTurns > 0;
+    }
+
+    addEnhanceBuff(turns) {
+        this.enhanceTurns += turns;
+        return turns;
+    }
+
     clearBuffs() {
         this.strength = 0;
+        this.enhanceTurns = 0;
     }
 
     // 턴 관련 메서드
@@ -257,6 +269,10 @@ class Player {
         // 상태이상 지속시간 감소
         this.updateStatusEffects();
 
+        // 강화 버프 턴수 차감
+        if (this.enhanceTurns > 0) {
+            this.enhanceTurns--;
+        }
     }
 
     // 다음 발동할 카드 가져오기

@@ -246,11 +246,16 @@
         "endless_effort": {
           "name": "絶え間ない努力",
           "description": "強い力の源は絶え間ない努力です。自分に力1を追加します。"
+        },
+        "sword_dance": {
+          "name": "剣舞",
+          "description": "一ターンの間、攻撃カードのダメージを50%増加させます。"
         }
       },
       "buffs": {
         "strength": "力",
-        "defense": "防御力"
+        "defense": "防御力",
+        "enhance": "強化"
       },
       "elements": {
         "fire": "火",

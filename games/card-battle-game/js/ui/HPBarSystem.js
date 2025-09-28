@@ -252,24 +252,47 @@ class HPBarSystem {
             const buffElement = document.createElement('div');
             buffElement.className = 'buff-label';
 
-            // 버프 텍스트 생성
-            const buffName = buffConfig.nameKey && typeof I18nHelper !== 'undefined' ?
+            // 다국어 지원 - I18nHelper 사용
+            const buffName = buffConfig.nameKey ?
                 I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
                 buffConfig.name;
-
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} ${strengthValue}`;
+            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} +${strengthValue}`;
 
             // 버프별 색상 적용
             buffElement.style.borderColor = buffConfig.color;
             buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
 
             buffsContainer.appendChild(buffElement);
-        } else {
-            // 버프가 없고 상태이상도 없으면 컨테이너 숨김
-            const statusContainer = isPlayer ? this.playerStatusGrid : this.enemyStatusGrid;
-            if (!statusContainer.children.length) {
-                effectsContainer.classList.remove('active');
-            }
+        }
+
+        // 강화 버프 표시
+        if (player.hasEnhanceBuff && player.hasEnhanceBuff()) {
+            const enhanceTurns = player.enhanceTurns;
+            const buffConfig = GameConfig.buffs.enhance;
+
+            // 버프가 있는 경우 컨테이너 활성화
+            effectsContainer.classList.add('active');
+
+            const buffElement = document.createElement('div');
+            buffElement.className = 'buff-label';
+
+            // 다국어 지원 - I18nHelper 사용
+            const buffName = buffConfig.nameKey ?
+                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
+                buffConfig.name;
+            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} (${enhanceTurns})`;
+
+            // 버프별 색상 적용
+            buffElement.style.borderColor = buffConfig.color;
+            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
+
+            buffsContainer.appendChild(buffElement);
+        }
+
+        // 버프가 없고 상태이상도 없으면 컨테이너 숨김
+        const statusContainer = isPlayer ? this.playerStatusGrid : this.enemyStatusGrid;
+        if (!buffsContainer.children.length && !statusContainer.children.length) {
+            effectsContainer.classList.remove('active');
         }
     }
 

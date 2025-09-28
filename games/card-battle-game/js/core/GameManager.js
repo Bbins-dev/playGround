@@ -1169,7 +1169,16 @@ class GameManager {
             playStyle: 'balanced',
             cardUsageStats: new Map(),
             elementUsageStats: new Map(),
-            deathCause: null
+            deathCause: null,
+            // 대미지 타입별 통계
+            damageByType: {
+                normal: 0,
+                burn: 0,
+                poison: 0,
+                self: 0,
+                reflect: 0,
+                thorns: 0
+            }
         };
     }
 
@@ -1301,7 +1310,17 @@ class GameManager {
             deathCause: '', // 사망 원인
 
             // 최종 손패 (패배 시점)
-            finalHand: []
+            finalHand: [],
+
+            // 대미지 타입별 통계
+            damageByType: {
+                normal: 0,
+                burn: 0,
+                poison: 0,
+                self: 0,
+                reflect: 0,
+                thorns: 0
+            }
         };
     }
 

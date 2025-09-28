@@ -246,11 +246,16 @@
         "endless_effort": {
           "name": "끝없는 노력",
           "description": "강한 힘의 원천은 끝없는 노력입니다. 자신에게 힘 1을 추가합니다."
+        },
+        "sword_dance": {
+          "name": "칼춤",
+          "description": "한 턴간 공격카드의 공격력을 50% 상승시킵니다."
         }
       },
       "buffs": {
         "strength": "힘",
-        "defense": "방어력"
+        "defense": "방어력",
+        "enhance": "강화"
       },
       "elements": {
         "fire": "불",

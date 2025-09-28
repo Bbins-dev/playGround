@@ -194,7 +194,32 @@ const GameConfig = {
 
     // 버프 정의
     buffs: {
-        // TODO: 힘 버프 등 다른 버프 시스템 구현 예정
+        strength: {
+            nameKey: 'auto_battle_card_game.ui.buffs.strength',
+            name: '힘',
+            emoji: '💪',
+            description: '공격력 +{value}',
+            color: '#FF8C00', // 주황색 계열
+            maxStack: 10,     // 최대 중첩 수
+            targetSelf: true, // 자신에게 적용되는 버프
+            display: {
+                showValue: true,
+                format: '+{value}'
+            }
+        },
+        enhance: {
+            nameKey: 'auto_battle_card_game.ui.buffs.enhance',
+            name: '강화',
+            emoji: '🗡️',
+            description: '공격카드 대미지 50% 증가',
+            color: '#FFD700', // 골드색
+            maxStack: 10,     // 최대 중첩 수 (턴수 누적)
+            targetSelf: true, // 자신에게 적용되는 버프
+            display: {
+                showValue: true,
+                format: '({value})'
+            }
+        }
     },
 
     // 카드 타입
@@ -964,33 +989,6 @@ const GameConfig = {
         }
     },
 
-    // 버프 시스템 정의
-    buffs: {
-        strength: {
-            nameKey: 'auto_battle_card_game.ui.buffs.strength',
-            emoji: '💪',
-            description: '공격력 +{value}',
-            color: '#FF8C00', // 주황색 계열
-            maxStack: 10,     // 최대 중첩 수
-            targetSelf: true, // 자신에게 적용되는 버프
-            display: {
-                showValue: true,
-                format: '+{value}'
-            }
-        },
-        defense: {
-            nameKey: 'auto_battle_card_game.ui.buffs.defense',
-            emoji: '🛡️',
-            description: '방어력 +{value}',
-            color: '#4169E1', // 파란색 계열
-            maxStack: 10,     // 최대 중첩 수
-            targetSelf: true, // 자신에게 적용되는 버프
-            display: {
-                showValue: true,
-                format: '+{value}'
-            }
-        }
-    },
 
     // 카드별 개별 설정 (끝없는 노력 카드)
     cardConfigs: {
