@@ -553,7 +553,7 @@ class DOMCardRenderer {
             : 'transparent';
 
         // 이모지 위치 계산 (카드 우상단) - DOMCardRenderer만 조정
-        const emojiX = width * 0.70;  // DOMCardRenderer 전용 위치
+        const emojiX = width * 0.75;  // DOMCardRenderer 전용 위치 (오른쪽으로 이동)
         const emojiY = height * 0.06;  // DOMCardRenderer 전용 Y 위치
 
         const emojiElement = document.createElement('div');
