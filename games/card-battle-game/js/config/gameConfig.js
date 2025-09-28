@@ -311,7 +311,8 @@ const GameConfig = {
             animationStep: 100,           // 애니메이션 스텝 간격
             turnTransition: 1000,         // 턴 전환 시간
             damageDisplay: 1500,          // 대미지 표시 시간
-            statusEffectDisplay: 1000     // 상태이상 표시 시간
+            statusEffectDisplay: 1000,    // 상태이상 표시 시간
+            deathAnimationDelay: 520      // 사망 시 모달 표시 전 대기 시간 (체력바 애니메이션 + 추가 시간)
         },
 
         // 렌더링 관련
@@ -1992,7 +1993,8 @@ GameConfig.utils = {
             pauseDelay: 1000,             // 전투 일시정지 딜레이
             resumeDelay: 500,             // 전투 재개 딜레이
             actionDelay: 300,             // 액션 간 딜레이
-            animationStep: 100            // 애니메이션 스텝 간격
+            animationStep: 100,           // 애니메이션 스텝 간격
+            get deathAnimationDelay() { return GameConfig.masterTiming.battle.deathAnimationDelay; } // 사망 애니메이션 딜레이
         },
 
         // 렌더링 관련
@@ -2058,6 +2060,52 @@ GameConfig.utils = {
         }
     },
 
+    // 카드 효과 시스템 설정 - 확장 가능한 구조
+    cardEffects: {
+        // 자해 데미지 처리 설정
+        selfDamage: {
+            // 타이밍 설정 - masterTiming 참조
+            timing: {
+                get preActivation() { return true; },                                          // 카드 효과 전 적용
+                get animationDelay() { return GameConfig.masterTiming.cards.repeatDelay; },   // 자해 데미지 표시 시간 (300ms)
+                get deathCheckDelay() { return GameConfig.masterTiming.cards.repeatDelay; }   // 사망 체크 대기 시간 (300ms)
+            },
+
+            // 시각적 설정 - masterColors 참조
+            visual: {
+                get showBeforeEffect() { return true; },                               // 효과 전 표시
+                get damageColor() { return GameConfig.masterColors.statusEffects.burn; },    // 자해 데미지 색상 (화상색상)
+                get textKey() { return 'auto_battle_card_game.ui.templates.self_damage'; }   // 다국어 키
+            },
+
+            // 자해 데미지 타입별 설정 (향후 확장용)
+            types: {
+                fixed: {
+                    multiplier: 1.0                                 // 고정 데미지 배율
+                },
+                percent: {
+                    basePercent: 10                                // 퍼센트 기본값 10%
+                },
+                conditional: {
+                    healthThreshold: 0.5                           // 체력 임계값 50%
+                }
+            }
+        },
+
+        // 향후 다른 카드 효과 확장용
+        damage: {
+            timing: {
+                get displayDuration() { return GameConfig.masterTiming.battle.damageDisplay; }
+            }
+        },
+
+        statusEffect: {
+            timing: {
+                get displayDuration() { return GameConfig.masterTiming.battle.statusEffectDisplay; }
+            }
+        }
+    },
+
     // 언어팩 폴백 시스템 - MainMenu.js의 하드코딩 제거
     fallbackTranslations: {
         'start-game': '게임 시작',
@@ -2068,7 +2116,10 @@ GameConfig.utils = {
         'tutorial-line2': '카드는 손패 왼쪽부터 자동으로 발동됩니다!',
         'tutorial-line3': '각 스테이지 클리어 시 랜덤으로 등장하는 세개의 카드 중에 하나를 선택하여 손패 왼쪽에 가져옵니다!',
         'tutorial-line4': '최대 손패 카드는 10장입니다! 스테이지 클리어시 카드를 선택하여 추가, 손패의 카드와 교체, 다음 스테이지로 스킵 중에 선택 가능합니다!',
-        'tutorial-line5': '몇 스테이지까지 갈 수 있을까요! 당신의 운을 시험해보세요!'
+        'tutorial-line5': '몇 스테이지까지 갈 수 있을까요! 당신의 운을 시험해보세요!',
+
+        // 자해 데미지 관련 메시지
+        'auto_battle_card_game.ui.templates.self_damage': '자신에게 {damage} 데미지!'
     },
 
     // CSS 변수 확장 설정

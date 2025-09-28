@@ -304,8 +304,7 @@
         "buff_reduced": "{name} {value}",
         "defense_gained": "🛡️ 防御力 +{value}",
         "heal_effect": "❤️ 体力 +{value}",
-        "self_damage": "-{value}",
-        "self_knockout": "自傷ダメージで倒れました！",
+        "self_damage": "自分に{damage}ダメージ！",
         "karura_strike_effect": "自分に{selfDamage}ダメージ！相手に{damage}ダメージ！"
       },
       "card_selection": {

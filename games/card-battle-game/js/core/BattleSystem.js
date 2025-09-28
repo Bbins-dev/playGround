@@ -122,7 +122,7 @@ class BattleSystem {
         // 화상 데미지 후 즉시 사망 체크
         if (burnDamageApplied && currentPlayer.isDead()) {
             // 화상 데미지로 사망했을 경우 즉시 전투 종료
-            this.checkBattleEnd();
+            await this.checkBattleEnd();
             return;
         }
 
@@ -268,6 +268,14 @@ class BattleSystem {
 
         await this.effectSystem.showCardActivation(card, cardDuration);
 
+        // 자해 데미지 전처리 (Configuration-Driven)
+        const selfDamageResult = await this.preprocessSelfDamage(card, user);
+        if (selfDamageResult && selfDamageResult.terminated) {
+            // 자해로 인한 사망 시 즉시 종료
+            this.activatingCard = null;
+            return;
+        }
+
         // 카드 효과 실행
         const result = card.activate(user, target, this);
 
@@ -352,7 +360,7 @@ class BattleSystem {
         await this.updateHPWithAnimation();
 
         // 전투 종료 체크
-        this.checkBattleEnd();
+        await this.checkBattleEnd();
     }
 
     // 공격 결과 처리
@@ -610,7 +618,7 @@ class BattleSystem {
         const poisonDamageApplied = await this.processPoisonDamage(currentPlayer, isPlayerTurn);
 
         // 3. 데미지로 인한 전투 종료 체크
-        if (poisonDamageApplied && this.checkBattleEnd()) {
+        if (poisonDamageApplied && await this.checkBattleEnd()) {
             return; // 독 데미지로 전투가 끝났으면 여기서 종료
         }
 
@@ -639,7 +647,7 @@ class BattleSystem {
         }
 
         // 전투 종료 체크
-        if (!this.checkBattleEnd()) {
+        if (!await this.checkBattleEnd()) {
             // 다음 턴 시작 (TimerManager 사용)
             const checkAndStartTurn = () => {
                 // 일시정지 중이면 다시 체크
@@ -659,13 +667,17 @@ class BattleSystem {
     }
 
     // 전투 종료 체크
-    checkBattleEnd() {
+    async checkBattleEnd() {
         if (this.player.isDead()) {
+            // HP 애니메이션 완료까지 대기 (체력바가 0이 되는 것을 보고 난 후 게임오버)
+            await this.wait(GameConfig.timing?.battle?.deathAnimationDelay || 520);
             this.endBattle(this.enemy);
             return true;
         }
 
         if (this.enemy.isDead()) {
+            // 적 사망 시에도 동일하게 처리
+            await this.wait(GameConfig.timing?.battle?.deathAnimationDelay || 520);
             this.endBattle(this.player);
             return true;
         }
@@ -969,6 +981,74 @@ class BattleSystem {
     // 전투 통계 가져오기
     getBattleStats() {
         return { ...this.battleStats };
+    }
+
+    // 자해 데미지 전처리 시스템 (Configuration-Driven)
+    async preprocessSelfDamage(card, user) {
+        // 자해 데미지가 없는 카드는 건너뜀
+        if (!card.selfDamage || card.selfDamage <= 0) {
+            return null;
+        }
+
+        const isPlayerCard = user === this.player;
+        const userPosition = isPlayerCard ?
+            this.effectSystem.getPlayerPosition() :
+            this.effectSystem.getEnemyPosition();
+
+        // GameConfig 설정 사용 (안전한 접근 방식)
+        const config = GameConfig?.cardEffects?.selfDamage || {
+            timing: {
+                animationDelay: 300,        // 기본값 (GameConfig.masterTiming.cards.repeatDelay)
+                deathCheckDelay: 300
+            },
+            visual: {
+                damageColor: '#E67E22',     // 기본값 (화상 색상)
+                textKey: 'auto_battle_card_game.ui.templates.self_damage'
+            }
+        };
+        const selfDamage = card.selfDamage;
+
+        // 자해 데미지 시각 효과 표시
+        if (this.effectSystem.showSelfDamageAnimation) {
+            await this.effectSystem.showSelfDamageAnimation(userPosition, selfDamage);
+        } else {
+            // 기본 데미지 넘버 표시
+            this.effectSystem.showDamageNumber(selfDamage, userPosition, 'selfDamage');
+        }
+
+        // 자해 데미지 적용
+        user.takeDamage(selfDamage);
+
+        // GameManager 중앙 통계 시스템 업데이트
+        if (this.gameManager && this.gameManager.recordDamage && isPlayerCard) {
+            this.gameManager.recordDamage('self', 'player', selfDamage, 'self');
+        }
+
+        // 자해 데미지 표시 대기 시간
+        await this.wait(config.timing.animationDelay / this.gameSpeed);
+
+        // 사망 체크
+        if (user.isDead()) {
+            // 사망 체크 대기 시간
+            await this.wait(config.timing.deathCheckDelay / this.gameSpeed);
+
+            // 전투 종료 처리
+            this.checkBattleEnd();
+
+            return {
+                terminated: true,
+                success: false,
+                selfDamage: selfDamage,
+                selfKnockout: true,
+                element: card.element || 'normal'
+            };
+        }
+
+        return {
+            terminated: false,
+            selfDamage: selfDamage,
+            success: true
+        };
     }
 
     // 현재 전투 상태 정보

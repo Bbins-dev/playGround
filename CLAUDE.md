@@ -77,6 +77,7 @@ npx serve                                       # ❌ 루트에서 실행 금지
 - **fonts**: masterFonts 참조하는 getter 함수들
 - **timing**: masterTiming 참조하는 getter 함수들
 - **gameRules**: enemy, combat, randomRanges 로직 상수
+- **cardEffects**: 카드 효과 시스템 설정 (selfDamage, damage, statusEffect)
 - **fallbackTranslations**: 언어팩 실패 시 안전 장치
 - **cssVariables**: spacing, borderRadius, shadows, blur
 
@@ -121,10 +122,19 @@ const coords = CanvasUtils.getCanvasCoordinates(event, canvas);
 
 **⚠️ 순서 변경 시 0턴 상태이상이 화면에 남는 버그 발생**
 
+### 4. 안전한 접근 방식 (Optional Chaining)
+- GameConfig 접근 시 `GameConfig?.section?.property || defaultValue` 사용
+- 초기화 타이밍 불확실, 외부 의존성, 동적 설정값에 필수 적용
+
 ## 🎮 게임 시스템 특성
 
 ### 5속성 상성 체계
 불🔥 → 독☠️ → 전기⚡ → 물💧 → 불🔥 + 노멀👊
+
+### 자해 데미지 처리 시스템
+**카드 실행 순서**: 발동 연출 → 자해 데미지 전처리 → 사망 체크 → 카드 효과
+- `selfDamage` 속성만 추가하면 `preprocessSelfDamage()`가 자동 처리
+- 카드 효과 함수는 본연의 효과만 구현
 
 ### 중요 규칙들
 - **DOM + Canvas 하이브리드**: 게임 로직은 Canvas, UI는 DOM
@@ -152,6 +162,7 @@ cd games/card-battle-game && npx serve -p 3000
 ### 제거된 레거시 시스템들
 - **handOverlap**: 카드 겹침 설정 (중복 제거됨)
 - **defenseUI.bar**: 방어 UI 바 설정 (사용되지 않음)
+- **processSelfDamage**: CardDatabase의 레거시 함수 (preprocessSelfDamage로 대체)
 
 ### 핵심 파일 위치
 - **설정**: `js/config/gameConfig.js` (단일 진실의 원천)

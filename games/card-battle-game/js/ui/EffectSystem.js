@@ -571,6 +571,84 @@ class EffectSystem {
 
         await Promise.all(promises);
     }
+
+    // 자해 데미지 전용 애니메이션 (Configuration-Driven, 다국어 지원)
+    async showSelfDamageAnimation(position, damage) {
+        // GameConfig 안전한 접근 방식
+        const config = GameConfig?.cardEffects?.selfDamage || {
+            timing: {
+                animationDelay: 300     // 기본값
+            },
+            visual: {
+                damageColor: '#E67E22', // 기본값 (화상 색상)
+                textKey: 'auto_battle_card_game.ui.templates.self_damage'
+            }
+        };
+
+        // 다국어 메시지 가져오기 (fallback 지원)
+        let message = null;
+        try {
+            // I18nHelper가 있으면 사용, 없으면 fallback
+            if (typeof I18nHelper !== 'undefined') {
+                message = I18nHelper.getText(config.visual.textKey);
+            }
+            if (!message) {
+                message = GameConfig.fallbackTranslations[config.visual.textKey];
+            }
+            if (!message) {
+                message = '자신에게 {damage} 데미지!'; // 최종 fallback
+            }
+
+            // 템플릿 변수 치환
+            message = message.replace('{damage}', damage);
+        } catch (error) {
+            message = `자신에게 ${damage} 데미지!`; // 에러 시 기본값
+        }
+
+        // 자해 데미지 시각 효과 (Configuration-Driven 색상)
+        await this.showSelfDamageFlash(config.visual.damageColor, config.timing.animationDelay);
+
+        // 자해 데미지 숫자 표시 (특별한 스타일링)
+        this.showDamageNumber(damage, position, 'selfDamage', message);
+
+        // 설정된 지연시간만큼 대기
+        await this.wait(config.timing.animationDelay);
+    }
+
+    // 자해 데미지 플래시 효과 (Configuration-Driven)
+    showSelfDamageFlash(color, animationDelay = 300) {
+        return new Promise((resolve) => {
+            const flash = document.createElement('div');
+            flash.className = 'self-damage-flash';
+            flash.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: ${color};
+                opacity: 0.3;
+                z-index: 9999;
+                pointer-events: none;
+                animation: selfDamageFlash ${animationDelay}ms ease-out;
+            `;
+
+            document.body.appendChild(flash);
+
+            // 애니메이션 완료 후 제거
+            setTimeout(() => {
+                if (flash.parentNode) {
+                    flash.remove();
+                }
+                resolve();
+            }, animationDelay);
+        });
+    }
+
+    // 대기 함수 (유틸리티)
+    wait(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 }
 
 // CSS 애니메이션 추가 (동적으로)
@@ -584,6 +662,12 @@ style.textContent = `
     @keyframes cardZoomOut {
         0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
         100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
+    }
+
+    @keyframes selfDamageFlash {
+        0% { opacity: 0; }
+        50% { opacity: 0.3; }
+        100% { opacity: 0; }
     }
 `;
 document.head.appendChild(style);
