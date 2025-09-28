@@ -633,20 +633,21 @@ class GameManager {
     applyStageHealing() {
         if (!this.player) return;
 
-        // 10의 배수 스테이지 체크
-        const isFullHealStage = this.currentStage % GameConfig.healing.fullHealInterval === 0;
+        // 이전 스테이지 기준으로 체크 (클리어한 스테이지)
+        const previousStage = this.currentStage - 1;
+        const isFullHealStage = previousStage > 0 && previousStage % GameConfig.healing.fullHealInterval === 0;
 
         if (isFullHealStage) {
-            // 완전 회복
+            // 10, 20, 30... 스테이지를 클리어했을 때 회복
             const healAmount = this.player.maxHP - this.player.hp;
             this.player.hp = this.player.maxHP;
             this.stageHealingAmount = healAmount;
-            console.log(`💚 스테이지 ${this.currentStage}: 완전 회복 (+${healAmount})`);
+            console.log(`💚 스테이지 ${previousStage} 클리어: 완전 회복 (+${healAmount})`);
         } else {
             // 일반 회복 (5 HP)
             const healAmount = this.player.heal(GameConfig.healing.stageHealing);
             this.stageHealingAmount = healAmount;
-            console.log(`💚 스테이지 ${this.currentStage}: 일반 회복 (+${healAmount})`);
+            console.log(`💚 스테이지 ${previousStage} 클리어: 일반 회복 (+${healAmount})`);
         }
     }
 
