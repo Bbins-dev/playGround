@@ -528,8 +528,8 @@ class BattleSystem {
         const selfDamage = result.selfDamage || 0;
 
         if (defenseGain > 0) {
-            // 방어력 숫자 연출 표시 - 새로운 통합 메서드 사용
-            await this.effectSystem.showBuffEffect('defense', user, defenseGain);
+            // 방어력 숫자 연출 표시 - 기존 방어력 전용 메서드 사용 (은색 표시)
+            await this.effectSystem.showDefenseGainMessage(userPosition, defenseGain);
 
             // 방어력 관련 통계 업데이트
             this.battleStats.defenseBuilt += defenseGain;
