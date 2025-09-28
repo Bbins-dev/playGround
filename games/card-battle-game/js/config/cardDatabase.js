@@ -813,6 +813,35 @@ const CardDatabase = {
                 };
             }
         });
+
+        // 끝없는 노력 카드 (힘 버프 카드)
+        this.addCard({
+            id: 'endless_effort',
+            nameKey: 'auto_battle_card_game.ui.cards.endless_effort.name',
+            type: 'buff',
+            element: 'normal',
+            power: 1,
+            accuracy: 80,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.endless_effort.description',
+            effect: function(user, target, battleSystem) {
+                const strengthGain = this.power;
+                user.addStrength(strengthGain);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
+                    buffType: 'strength',
+                    strengthGain: strengthGain,
+                    element: this.element,
+                    templateData: {
+                        name: getI18nText('auto_battle_card_game.ui.buffs.strength'),
+                        value: strengthGain
+                    }
+                };
+            }
+        });
     },
 
     // i18n을 고려한 카드 이름 가져오기

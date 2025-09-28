@@ -70,7 +70,7 @@ const GameConfig = {
             name: '특수',
             nameKey: 'auto_battle_card_game.elements.special',
             color: '#90EE90',      // 연두색
-            emoji: '⭐',
+            emoji: '🔮',
             strong: null,          // 강점 없음
             weak: null,           // 약점 없음
             immunity: null        // 면역 없음
@@ -224,8 +224,8 @@ const GameConfig = {
             nameKey: 'auto_battle_card_game.ui.card_types.buff',
             name: '버프',
             color: '#2ECC71',
-            emoji: '⭐',
-            statEmojis: { power: '⬆️', accuracy: '✅' }
+            emoji: '✨',
+            statEmojis: { power: '✨', accuracy: '✅' }
         },
         debuff: {
             nameKey: 'auto_battle_card_game.ui.card_types.debuff',
@@ -238,8 +238,8 @@ const GameConfig = {
             nameKey: 'auto_battle_card_game.ui.card_types.special',
             name: '특수',
             color: '#90EE90',
-            emoji: '⭐',
-            statEmojis: { power: '⭐', accuracy: '✅' }
+            emoji: '🔮',
+            statEmojis: { power: '🔮', accuracy: '✅' }
         }
     },
 
@@ -970,7 +970,57 @@ const GameConfig = {
             nameKey: 'auto_battle_card_game.ui.buffs.strength',
             emoji: '💪',
             description: '공격력 +{value}',
-            color: '#FF8C00' // 주황색 계열
+            color: '#FF8C00', // 주황색 계열
+            maxStack: 10,     // 최대 중첩 수
+            display: {
+                showValue: true,
+                format: '+{value}'
+            }
+        }
+    },
+
+    // 카드별 개별 설정 (끝없는 노력 카드)
+    cardConfigs: {
+        endlessEffort: {
+            // 카드 기본 스탯
+            stats: {
+                power: 1,          // 힘 증가량
+                accuracy: 80,      // 80% 발동률
+                cost: 1,           // 에너지 비용
+                activationCount: 1, // 발동 횟수
+                usageLimit: 1      // 1회 제한
+            },
+
+            // 효과 설정
+            effect: {
+                type: 'buff',
+                buffType: 'strength',
+                value: 1,
+                targetSelf: true
+            },
+
+            // UI 설정
+            ui: {
+                type: 'buff',
+                element: 'normal',
+                showUsageCount: true,
+                usageIndicator: {
+                    color: '#2ECC71',
+                    emoji: '✓'
+                }
+            }
+        }
+    },
+
+    // 카드 사용량 추적 시스템
+    cardUsageTracking: {
+        enabled: true,
+        resetOnBattleStart: true,
+        resetOnStageTransition: false, // 스테이지 간 사용량 유지
+        ui: {
+            showUsageIndicator: true,
+            usedIndicatorColor: '#95A5A6',
+            availableIndicatorColor: '#2ECC71'
         }
     },
 
@@ -1309,11 +1359,11 @@ const GameConfig = {
         // 카드 타입별 스탯 이모지 매핑
         typeStatEmojis: {
             attack: { power: '💪', accuracy: '🎯' },
-            defense: { power: '🛡️', accuracy: '🎯' },
-            status: { power: '⏱️', accuracy: '🎯' },
-            buff: { power: '⬆️', accuracy: '🎯' },
-            debuff: { power: '⬇️', accuracy: '🎯' },
-            special: { power: '⭐', accuracy: '🎯' }
+            defense: { power: '🛡️', accuracy: '✅' },
+            status: { power: '⏱️', accuracy: '✅' },
+            buff: { power: '✨', accuracy: '✅' },
+            debuff: { power: '⬇️', accuracy: '✅' },
+            special: { power: '🔮', accuracy: '✅' }
         }
     },
 
