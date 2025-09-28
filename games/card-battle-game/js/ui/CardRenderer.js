@@ -258,17 +258,63 @@ class CardRenderer {
                 });
             }
         } else {
-            // 기존 방식 (줄임표 사용)
-            let displayName = name;
-            if (ctx.measureText(displayName).width > maxWidth) {
-                while (ctx.measureText(displayName + '...').width > maxWidth && displayName.length > 0) {
-                    displayName = displayName.slice(0, -1);
+            // 더 이상 줄임표 사용하지 않음 - 동적 크기 조정 강제 적용
+            let adjustedFontSize = fontSize;
+            let lines = [];
+
+            // 먼저 기본 폰트 크기로 시도
+            ctx.font = `bold ${adjustedFontSize}px Arial`;
+
+            // 텍스트가 한 줄에 들어가는지 확인
+            if (ctx.measureText(name).width <= maxWidth) {
+                // 한 줄에 들어감
+                lines = [name];
+            } else {
+                // 두 줄로 나누어야 함
+                const words = name.split(' ');
+                if (words.length > 1) {
+                    // 단어별로 나누기 시도
+                    const firstLine = words.slice(0, Math.ceil(words.length / 2)).join(' ');
+                    const secondLine = words.slice(Math.ceil(words.length / 2)).join(' ');
+                    lines = [firstLine, secondLine];
+                } else {
+                    // 긴 단어를 강제로 나누기 (더 스마트한 분할)
+                    if (name.length <= 6) {
+                        lines = [name]; // 6자 이하는 그냥 표시
+                    } else {
+                        const mid = Math.ceil(name.length / 2);
+                        lines = [name.substring(0, mid), name.substring(mid)];
+                    }
                 }
-                displayName += '...';
+
+                // 두 줄 모두 너비에 맞는지 확인하고 폰트 크기 조절
+                const maxLineWidth = Math.max(
+                    ctx.measureText(lines[0]).width,
+                    lines[1] ? ctx.measureText(lines[1]).width : 0
+                );
+
+                if (maxLineWidth > maxWidth) {
+                    // 폰트 크기를 줄여야 함
+                    const minFontSize = width * config.minFontRatio;
+                    const scaleFactor = maxWidth / maxLineWidth;
+                    adjustedFontSize = Math.max(minFontSize, adjustedFontSize * scaleFactor);
+                    ctx.font = `bold ${adjustedFontSize}px Arial`;
+                }
             }
 
-            ctx.font = `bold ${fontSize}px Arial`;
-            this.drawTextWithOutline(ctx, displayName, x, y);
+            // 텍스트 그리기
+            if (lines.length === 1) {
+                this.drawTextWithOutline(ctx, lines[0], x, y);
+            } else {
+                // 두 줄로 그리기
+                const lineHeight = adjustedFontSize * config.lineSpacing;
+                const startY = y - lineHeight / 2;
+
+                lines.forEach((line, index) => {
+                    const lineY = startY + index * lineHeight;
+                    this.drawTextWithOutline(ctx, line, x, lineY);
+                });
+            }
         }
     }
 
@@ -367,37 +413,47 @@ class CardRenderer {
         const maxWidth = width * 0.85;
         const lineHeight = fontSize * 1.2;
 
-        // 카드 크기에 따른 maxLines 동적 조정
-        let maxLines = 3;
+        // 카드 크기에 따른 더 많은 라인 허용 (줄임표 없이 모든 텍스트 표시)
+        let maxLines = 15; // 더 많은 줄 허용
         if (width >= 360) { // victoryDetail 크기
-            maxLines = 8;
+            maxLines = 15; // 매우 많은 줄 허용
         } else if (width >= 240) { // preview/victory 크기
-            maxLines = 5;
+            maxLines = 10; // 많은 줄 허용
         } else if (width >= 150) { // victory 크기
-            maxLines = 4;
+            maxLines = 8; // 적당한 줄 허용
+        } else {
+            maxLines = 6; // 작은 카드도 충분한 줄 허용
         }
 
         const startY = y + height * this.style.layout.description.y;
 
         const lines = this.wrapText(ctx, description, maxWidth);
+
+        // 모든 줄 표시 (줄임표 제거)
         let displayLines = lines.slice(0, maxLines);
 
-        // 텍스트가 잘렸을 때 말줄임표 추가
+        // 텍스트가 여전히 길면 폰트 크기를 줄여서라도 모든 텍스트 표시
         if (lines.length > maxLines) {
-            const lastLine = displayLines[maxLines - 1];
-            const ellipsis = '...';
+            // 폰트 크기를 줄여서 모든 텍스트를 표시
+            let adjustedFontSize = fontSize;
+            const minFontSize = fontSize * 0.7; // 최소 70%까지 줄임
 
-            // 마지막 줄에 말줄임표를 추가할 공간이 있는지 확인
-            const testText = lastLine + ellipsis;
-            if (ctx.measureText(testText).width <= maxWidth) {
-                displayLines[maxLines - 1] = testText;
-            } else {
-                // 공간이 없으면 텍스트를 줄이고 말줄임표 추가
-                let trimmedLine = lastLine;
-                while (ctx.measureText(trimmedLine + ellipsis).width > maxWidth && trimmedLine.length > 0) {
-                    trimmedLine = trimmedLine.slice(0, -1);
+            // 폰트 크기를 점진적으로 줄이면서 텍스트가 맞는지 확인
+            while (lines.length > maxLines && adjustedFontSize > minFontSize) {
+                adjustedFontSize *= 0.9;
+                ctx.font = `${adjustedFontSize}px Arial`;
+
+                // 새로운 폰트 크기로 다시 줄바꿈 계산
+                const newLines = this.wrapText(ctx, description, maxWidth);
+                if (newLines.length <= maxLines) {
+                    displayLines = newLines;
+                    break;
                 }
-                displayLines[maxLines - 1] = trimmedLine + ellipsis;
+            }
+
+            // 만약 여전히 길면 가능한 모든 줄을 표시
+            if (lines.length > maxLines) {
+                displayLines = lines; // 모든 줄 표시
             }
         }
 

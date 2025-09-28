@@ -208,10 +208,38 @@ class DOMCardRenderer {
 
             nameElement.innerHTML = lines.join('<br>');
         } else {
-            // 기존 방식 (줄임표)
-            let displayName = name;
-            if (displayName.length > 8) {
-                displayName = displayName.substring(0, 8) + '...';
+            // 더 이상 줄임표 사용하지 않음 - 동적 크기 조정과 자동 줄바꿈 적용
+            let adjustedFontSize = fontSize;
+            let lines = [];
+
+            // 긴 이름을 두 줄로 나누기 (Canvas 버전과 동일한 로직)
+            const maxLength = Math.ceil(cardWidth / (fontSize * 0.6));
+            if (name.length > maxLength) {
+                const words = name.split(' ');
+                if (words.length > 1) {
+                    // 단어별로 나누기
+                    const mid = Math.ceil(words.length / 2);
+                    lines = [
+                        words.slice(0, mid).join(' '),
+                        words.slice(mid).join(' ')
+                    ];
+                } else {
+                    // 긴 단어를 강제로 나누기 (더 스마트한 분할)
+                    if (name.length <= 6) {
+                        lines = [name]; // 6자 이하는 그냥 표시
+                    } else {
+                        const mid = Math.ceil(name.length / 2);
+                        lines = [name.substring(0, mid), name.substring(mid)];
+                    }
+                }
+
+                // 폰트 크기 조절 (줄바꿈이 필요한 경우)
+                adjustedFontSize = Math.max(
+                    cardHeight * config.minFontRatio,
+                    fontSize * 0.9 // 약간 줄임
+                );
+            } else {
+                lines = [name];
             }
 
             nameElement.style.cssText = `
@@ -219,14 +247,19 @@ class DOMCardRenderer {
                 left: 50%;
                 top: ${y}px;
                 transform: translate(-50%, -50%);
-                font-size: ${fontSize}px;
+                font-size: ${adjustedFontSize}px;
                 font-family: Arial;
                 font-weight: bold;
                 text-align: center;
-                white-space: nowrap;
+                line-height: ${config.lineSpacing};
+                width: ${cardWidth * config.maxWidthRatio}px;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                white-space: normal;
                 ${this.getTextOutlineStyle()}
             `;
-            nameElement.textContent = displayName;
+
+            nameElement.innerHTML = lines.join('<br>');
         }
 
         return nameElement;
@@ -272,10 +305,7 @@ class DOMCardRenderer {
             top: ${y}px;
             right: 0;
             transform: translateY(-50%);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 15px;
+            height: ${fontSize * 1.2}px;
             font-size: ${fontSize}px;
             font-family: Arial;
             font-weight: bold;
@@ -292,7 +322,7 @@ class DOMCardRenderer {
         const statConfig = GameConfig.statDisplay;
         const typeEmojiConfig = statConfig.typeStatEmojis[card.type] || statConfig.typeStatEmojis.attack;
 
-        // 스탯 정의에 따라 동적으로 스탯 표시
+        // 스탯 정의에 따라 동적으로 스탯 표시 (Canvas와 동일한 고정 위치 방식)
         statConfig.definitions.forEach((def, index) => {
             const element = document.createElement('span');
 
@@ -302,7 +332,18 @@ class DOMCardRenderer {
                 ? TextRenderer.getTextOutlineStyle(textOutline.width, textOutline.color)
                 : '';
 
+            // 위치별 스타일 설정 (Canvas 렌더러와 동일한 위치)
+            let positionStyle = '';
+            if (index === 0) {  // 왼쪽 (power)
+                positionStyle = 'position: absolute; left: 15px; top: 50%; transform: translateY(-50%);';
+            } else if (index === 1) {  // 중앙 (activation)
+                positionStyle = 'position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);';
+            } else if (index === 2) {  // 오른쪽 (accuracy)
+                positionStyle = 'position: absolute; right: 15px; top: 50%; transform: translateY(-50%);';
+            }
+
             element.style.cssText = `
+                ${positionStyle}
                 color: #F5F5F5;
                 ${textShadow}
             `;
@@ -317,11 +358,9 @@ class DOMCardRenderer {
                 emoji = typeEmojiConfig.accuracy;
             }
 
-            // 조건부 표시 체크
+            // 조건부 표시 체크 (visibility: hidden으로 공간 유지)
             if (def.showCondition && !def.showCondition(card, context)) {
-                element.style.display = 'none';
-                statsContainer.appendChild(element);
-                return;
+                element.style.visibility = 'hidden';
             }
 
             // 특별 처리 (상태이상 카드 턴 표시)
@@ -339,13 +378,29 @@ class DOMCardRenderer {
         return statsContainer;
     }
 
-    // 카드 설명 (CardRenderer.drawCardDescription과 동일)
+    // 카드 설명 (텍스트 제한 제거 버전)
     createCardDescription(card, width, height, fontSize) {
-        const description = card.getDisplayDescription ? card.getDisplayDescription() : card.description;
+        let description;
+        if (card.getDisplayDescription) {
+            description = card.getDisplayDescription();
+        } else if (card.description) {
+            description = card.description;
+        } else if (card.descriptionKey && typeof getI18nText === 'function') {
+            description = getI18nText(card.descriptionKey);
+        }
         if (!description) return document.createTextNode('');
 
         const descElement = document.createElement('div');
         const y = height * this.style.layout.description.y;
+
+        // 카드 크기에 따른 더 작은 폰트 크기 조정 (긴 텍스트 대응)
+        let adjustedFontSize = fontSize;
+        if (description.length > 50) {
+            adjustedFontSize = fontSize * 0.9; // 긴 설명일 때 90%로 줄임
+        }
+        if (description.length > 100) {
+            adjustedFontSize = fontSize * 0.8; // 매우 긴 설명일 때 80%로 줄임
+        }
 
         descElement.style.cssText = `
             position: absolute;
@@ -353,12 +408,13 @@ class DOMCardRenderer {
             top: ${y}px;
             transform: translateX(-50%);
             width: ${width - 20}px;
-            font-size: ${fontSize}px;
+            font-size: ${adjustedFontSize}px;
             font-family: Arial;
             text-align: center;
-            line-height: ${fontSize * 1.2}px;
-            max-height: ${fontSize * 1.2 * 3}px;
-            overflow: hidden;
+            line-height: ${adjustedFontSize * 1.2}px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
             ${this.getTextOutlineStyle()}
         `;
         descElement.textContent = description;
