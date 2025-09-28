@@ -512,6 +512,39 @@ class EffectSystem {
         };
     }
 
+    // 버프 효과 표시 - 자동으로 올바른 위치 결정 (Configuration-Driven)
+    async showBuffEffect(buffType, target, value) {
+        // target이 player인지 enemy인지 자동 판단하여 올바른 위치에 표시
+        const position = this.getTargetPosition(target);
+        await this.showEffectMessage(buffType, position, 'buff_gained', value);
+    }
+
+    // 타겟 위치 자동 결정 (하드코딩 제거)
+    getTargetPosition(target) {
+        if (!target) {
+            // 기본값: 플레이어 위치
+            return this.getPlayerPosition();
+        }
+
+        // BattleSystem의 player/enemy 참조 확인
+        // window.battleSystem이나 전역 게임 인스턴스 활용
+        if (window.gameManager && window.gameManager.battleSystem) {
+            const battleSystem = window.gameManager.battleSystem;
+            if (target === battleSystem.player) {
+                return this.getPlayerPosition();
+            } else if (target === battleSystem.enemy) {
+                return this.getEnemyPosition();
+            }
+        }
+
+        // Fallback: name 기반 판별 (기존 로직 유지)
+        if (target.isPlayer || (typeof target.name === 'string' && target.name.includes('Player'))) {
+            return this.getPlayerPosition();
+        } else {
+            return this.getEnemyPosition();
+        }
+    }
+
     // 모든 효과 즉시 정리
     clearAllEffects() {
         this.effectsContainer.innerHTML = '';

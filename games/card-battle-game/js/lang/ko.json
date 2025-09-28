@@ -249,7 +249,8 @@
         }
       },
       "buffs": {
-        "strength": "힘"
+        "strength": "힘",
+        "defense": "방어력"
       },
       "elements": {
         "fire": "불",

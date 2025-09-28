@@ -249,7 +249,8 @@
         }
       },
       "buffs": {
-        "strength": "力"
+        "strength": "力",
+        "defense": "防御力"
       },
       "elements": {
         "fire": "火",

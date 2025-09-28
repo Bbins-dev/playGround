@@ -972,6 +972,19 @@ const GameConfig = {
             description: '공격력 +{value}',
             color: '#FF8C00', // 주황색 계열
             maxStack: 10,     // 최대 중첩 수
+            targetSelf: true, // 자신에게 적용되는 버프
+            display: {
+                showValue: true,
+                format: '+{value}'
+            }
+        },
+        defense: {
+            nameKey: 'auto_battle_card_game.ui.buffs.defense',
+            emoji: '🛡️',
+            description: '방어력 +{value}',
+            color: '#4169E1', // 파란색 계열
+            maxStack: 10,     // 최대 중첩 수
+            targetSelf: true, // 자신에게 적용되는 버프
             display: {
                 showValue: true,
                 format: '+{value}'

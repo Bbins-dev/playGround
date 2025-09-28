@@ -249,7 +249,8 @@
         }
       },
       "buffs": {
-        "strength": "STR"
+        "strength": "STR",
+        "defense": "DEF"
       },
       "elements": {
         "fire": "Fire",

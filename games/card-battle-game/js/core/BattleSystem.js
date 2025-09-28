@@ -319,7 +319,7 @@ class BattleSystem {
                 break;
 
             case 'buff':
-                await this.processBuffResult(result, user, targetPosition);
+                await this.processBuffResult(result, user);
                 break;
 
             case 'debuff':
@@ -453,19 +453,20 @@ class BattleSystem {
         }
     }
 
-    // 버프 결과 처리
-    async processBuffResult(result, user, targetPosition) {
-        // 방어력 획득인지 확인
+    // 버프 결과 처리 - Configuration-Driven (위치 자동 결정)
+    async processBuffResult(result, user) {
+        // 방어력 버프 - 새로운 통합 메서드 사용
         if (result.defenseGain) {
-            await this.effectSystem.showDefenseGainMessage(targetPosition, result.defenseGain);
+            await this.effectSystem.showBuffEffect('defense', user, result.defenseGain);
         }
 
-        // 힘 버프 획득 처리 (끝없는 노력 카드 등)
+        // 힘 버프 획득 처리 (끝없는 노력 카드 등) - 새로운 통합 메서드 사용
         if (result.strengthGain && result.strengthGain > 0) {
-            await this.effectSystem.showEffectMessage('strength', targetPosition, 'buff_gained', result.strengthGain);
+            await this.effectSystem.showBuffEffect('strength', user, result.strengthGain);
         }
 
-        // 기타 버프 효과 - 현재 사용되지 않음 (모든 버프는 개별 처리됨)
+        // 기타 버프 효과 - 확장 가능한 구조
+        // TODO: 다른 버프 타입들도 동일한 패턴으로 추가 가능
     }
 
     // 디버프 결과 처리
@@ -514,8 +515,8 @@ class BattleSystem {
         const selfDamage = result.selfDamage || 0;
 
         if (defenseGain > 0) {
-            // 방어력 숫자 연출 표시 (템플릿 기반)
-            await this.effectSystem.showDefenseGainMessage(userPosition, defenseGain);
+            // 방어력 숫자 연출 표시 - 새로운 통합 메서드 사용
+            await this.effectSystem.showBuffEffect('defense', user, defenseGain);
 
             // 방어력 관련 통계 업데이트
             this.battleStats.defenseBuilt += defenseGain;
@@ -526,9 +527,9 @@ class BattleSystem {
             }
         }
 
-        // 힘 버프 획득 처리 (가시갑옷 카드 등)
+        // 힘 버프 획득 처리 (가시갑옷 카드 등) - 새로운 통합 메서드 사용
         if (result.strengthGain && result.strengthGain > 0) {
-            await this.effectSystem.showEffectMessage('strength', userPosition, 'buff_gained', result.strengthGain);
+            await this.effectSystem.showBuffEffect('strength', user, result.strengthGain);
         }
 
         // 자가 대미지가 있는 경우 대미지 이펙트 표시
@@ -796,12 +797,11 @@ class BattleSystem {
         return actualDamage;
     }
 
-    // 특수 카드 결과 처리
+    // 특수 카드 결과 처리 - Configuration-Driven (위치 자동 결정)
     async processSpecialResult(result, user, targetPosition) {
         if (result.effectType === 'heal' && result.templateData) {
-            const userPos = user === this.player ?
-                this.effectSystem.getPlayerPosition() :
-                this.effectSystem.getEnemyPosition();
+            // 자동 위치 결정으로 하드코딩 제거
+            const userPos = this.effectSystem.getTargetPosition(user);
 
             // 템플릿 직접 사용 (heal_effect 템플릿 활용)
             const template = I18nHelper.getText('auto_battle_card_game.ui.templates.heal_effect');
