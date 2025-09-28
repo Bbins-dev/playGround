@@ -331,9 +331,9 @@ class EffectSystem {
                     className = 'damage-number shield-number';
                     numberElement.textContent = `+${amount}`;
                     break;
-                case 'self_damage':
+                case 'selfDamage':
                     className += ' damage-number';  // 빨간색 대미지 스타일
-                    // customText에서 이미 처리되므로 여기서는 설정하지 않음
+                    numberElement.textContent = `-${amount}`;  // 깔끔하게 숫자만 표시
                     break;
                 default:
                     numberElement.textContent = `-${amount}`;

@@ -132,9 +132,12 @@ const coords = CanvasUtils.getCanvasCoordinates(event, canvas);
 불🔥 → 독☠️ → 전기⚡ → 물💧 → 불🔥 + 노멀👊
 
 ### 자해 데미지 처리 시스템
-**카드 실행 순서**: 발동 연출 → 자해 데미지 전처리 → 사망 체크 → 카드 효과
-- `selfDamage` 속성만 추가하면 `preprocessSelfDamage()`가 자동 처리
-- 카드 효과 함수는 본연의 효과만 구현
+**카드 실행 순서**: 발동 연출 → 자해 데미지 적용 (명중 여부 무관) → 명중 체크 → 카드 효과
+- `selfDamage` 속성만 추가하면 자동 처리
+- 자해 데미지는 항상 적용 (Miss여도 HP 차감됨)
+- **HP 즉시 반영**: preprocessSelfDamage에서 `hpBarSystem.updateHP()` 즉시 호출
+- **중복 방지**: `selfDamageProcessed` 플래그로 processCardResult에서 중복 업데이트 방지
+- **표시 방식**: `-10` 형태로만 표시 (텍스트 메시지 없음)
 
 ### 중요 규칙들
 - **DOM + Canvas 하이브리드**: 게임 로직은 Canvas, UI는 DOM
@@ -142,6 +145,7 @@ const coords = CanvasUtils.getCanvasCoordinates(event, canvas);
 - **이중 명중률 체크 금지**: Card.js에서만 처리
 - **퍼센트 계산**: 곱셈 방식만 사용 `value * (1 - percent/100)`
 - **중앙 통계**: 모든 대미지는 `GameManager.recordDamage()`로만 기록
+- **즉시 효과 HP 반영**: 자해/화상/독 등은 효과 발생 즉시 `hpBarSystem.updateHP()` 호출
 
 ## 🚀 Quick Development
 

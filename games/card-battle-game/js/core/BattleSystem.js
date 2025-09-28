@@ -268,15 +268,19 @@ class BattleSystem {
 
         await this.effectSystem.showCardActivation(card, cardDuration);
 
-        // 자해 데미지 전처리 (Configuration-Driven)
-        const selfDamageResult = await this.preprocessSelfDamage(card, user);
-        if (selfDamageResult && selfDamageResult.terminated) {
-            // 자해로 인한 사망 시 즉시 종료
-            this.activatingCard = null;
-            return;
+        // 자해 데미지를 먼저 적용 (명중 여부와 관계없이)
+        let selfDamageProcessed = false;
+        if (card.selfDamage && card.selfDamage > 0) {
+            const selfDamageResult = await this.preprocessSelfDamage(card, user);
+            selfDamageProcessed = true;
+            if (selfDamageResult && selfDamageResult.terminated) {
+                // 자해로 인한 사망 시 즉시 종료
+                this.activatingCard = null;
+                return;
+            }
         }
 
-        // 카드 효과 실행
+        // 카드 효과 실행 (명중 체크 포함)
         const result = card.activate(user, target, this);
 
         // 플레이어 카드 사용 시 통계 수집
@@ -288,7 +292,7 @@ class BattleSystem {
             // 성공 로그
 
             // 효과별 후처리
-            await this.processCardResult(result, card, user, target);
+            await this.processCardResult(result, card, user, target, selfDamageProcessed);
         } else {
             // 실패 (빗나감)
             if (isPlayerCard) {
@@ -313,7 +317,7 @@ class BattleSystem {
     }
 
     // 카드 결과 처리
-    async processCardResult(result, card, user, target) {
+    async processCardResult(result, card, user, target, selfDamageProcessed = false) {
         const isPlayerCard = user === this.player;
         const targetPosition = isPlayerCard ?
             this.effectSystem.getEnemyPosition() :
@@ -357,7 +361,7 @@ class BattleSystem {
         }
 
         // HP 바 업데이트 (애니메이션 완료 대기)
-        await this.updateHPWithAnimation();
+        await this.updateHPWithAnimation(user, selfDamageProcessed);
 
         // 전투 종료 체크
         await this.checkBattleEnd();
@@ -959,12 +963,19 @@ class BattleSystem {
     }
 
     // HP 업데이트 애니메이션 처리 (새 메서드 추가)
-    async updateHPWithAnimation() {
-        // 플레이어와 적의 HP 업데이트를 병렬로 실행
-        await Promise.all([
-            this.hpBarSystem.updateHP(this.player, true),
-            this.hpBarSystem.updateHP(this.enemy, false)
-        ]);
+    async updateHPWithAnimation(cardUser = null, selfDamageProcessed = false) {
+        const updatePromises = [];
+
+        // 자해 데미지 처리된 사용자의 HP는 건너뛰기
+        if (!selfDamageProcessed || cardUser !== this.player) {
+            updatePromises.push(this.hpBarSystem.updateHP(this.player, true));
+        }
+        if (!selfDamageProcessed || cardUser !== this.enemy) {
+            updatePromises.push(this.hpBarSystem.updateHP(this.enemy, false));
+        }
+
+        // HP 업데이트를 병렬로 실행
+        await Promise.all(updatePromises);
 
         // 방어력 업데이트도 애니메이션 완료까지 대기
         await Promise.all([
@@ -1008,13 +1019,8 @@ class BattleSystem {
         };
         const selfDamage = card.selfDamage;
 
-        // 자해 데미지 시각 효과 표시
-        if (this.effectSystem.showSelfDamageAnimation) {
-            await this.effectSystem.showSelfDamageAnimation(userPosition, selfDamage);
-        } else {
-            // 기본 데미지 넘버 표시
-            this.effectSystem.showDamageNumber(selfDamage, userPosition, 'selfDamage');
-        }
+        // 자해 데미지 시각 효과 표시 (숫자만 표시)
+        this.effectSystem.showDamageNumber(selfDamage, userPosition, 'selfDamage');
 
         // 자해 데미지 적용
         user.takeDamage(selfDamage);
@@ -1022,6 +1028,11 @@ class BattleSystem {
         // GameManager 중앙 통계 시스템 업데이트
         if (this.gameManager && this.gameManager.recordDamage && isPlayerCard) {
             this.gameManager.recordDamage('self', 'player', selfDamage, 'self');
+        }
+
+        // HP 바 즉시 업데이트 (processBurnDamage와 동일한 패턴)
+        if (this.hpBarSystem) {
+            await this.hpBarSystem.updateHP(user, isPlayerCard);
         }
 
         // 자해 데미지 표시 대기 시간
