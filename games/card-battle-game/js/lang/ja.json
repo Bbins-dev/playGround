@@ -250,12 +250,17 @@
         "sword_dance": {
           "name": "剣舞",
           "description": "一ターンの間、攻撃カードのダメージを50%増加させます。"
+        },
+        "focus": {
+          "name": "集中",
+          "description": "1ターンの間、ノーマル攻撃カードの命中率を30%増加させます。"
         }
       },
       "buffs": {
         "strength": "力",
         "defense": "防御力",
-        "enhance": "強化"
+        "enhance": "強化",
+        "focus": "集中"
       },
       "elements": {
         "fire": "火",

@@ -28,6 +28,7 @@ class Player {
         // 버프 시스템
         this.strength = 0; // 힘 버프
         this.enhanceTurns = 0; // 강화 버프 남은 턴 수
+        this.focusTurns = 0; // 집중 버프 남은 턴 수
 
         // 턴 관련
         this.currentCardIndex = 0;
@@ -236,9 +237,20 @@ class Player {
         return turns;
     }
 
+    // 집중 버프 관련 메서드
+    hasFocusBuff() {
+        return this.focusTurns > 0;
+    }
+
+    addFocusBuff(turns) {
+        this.focusTurns += turns;
+        return turns;
+    }
+
     clearBuffs() {
         this.strength = 0;
         this.enhanceTurns = 0;
+        this.focusTurns = 0;
     }
 
     // 턴 관련 메서드
@@ -252,6 +264,11 @@ class Player {
             if (card.isRandomBash && card.getRandomActivationCount) {
                 card.activationCount = card.getRandomActivationCount();
                 card.currentActivations = 0;
+
+                // 거품타격 카드 발동 횟수 디버그 로그
+                if (card.id === 'bubble_strike') {
+                    console.log(`거품타격 카드 발동 횟수: ${card.activationCount}회`);
+                }
             } else {
                 // 일반 카드들은 currentActivations만 리셋
                 card.currentActivations = 0;
@@ -272,6 +289,11 @@ class Player {
         // 강화 버프 턴수 차감
         if (this.enhanceTurns > 0) {
             this.enhanceTurns--;
+        }
+
+        // 집중 버프 턴수 차감
+        if (this.focusTurns > 0) {
+            this.focusTurns--;
         }
     }
 

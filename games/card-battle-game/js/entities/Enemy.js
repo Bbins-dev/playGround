@@ -136,16 +136,8 @@ class Enemy extends Player {
         return damage;
     }
 
-    // 적 전용 상태이상 저항력
+    // 적 전용 상태이상 저항력 제거 - 모든 스테이지에서 상태이상 정상 적용
     addStatusEffect(statusType, power = null, duration = null) {
-        // 높은 스테이지 적은 일부 상태이상에 저항력 보유
-        if (this.stage > GameConfig.gameRules.enemy.extraCardStage) {
-            const resistance = Math.min(0.3, (this.stage - 3) * 0.1);
-            if (Math.random() < resistance) {
-                return false;
-            }
-        }
-
         return super.addStatusEffect(statusType, power, duration);
     }
 

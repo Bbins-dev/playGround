@@ -250,12 +250,17 @@
         "sword_dance": {
           "name": "칼춤",
           "description": "한 턴간 공격카드의 공격력을 50% 상승시킵니다."
+        },
+        "focus": {
+          "name": "집중",
+          "description": "한 턴간 노멀 공격카드의 명중률을 30% 상승시킵니다."
         }
       },
       "buffs": {
         "strength": "힘",
         "defense": "방어력",
-        "enhance": "강화"
+        "enhance": "강화",
+        "focus": "집중"
       },
       "elements": {
         "fire": "불",

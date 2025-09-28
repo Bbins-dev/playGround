@@ -86,6 +86,15 @@ class Card {
             }
         }
 
+        // 집중 버프 체크 (노멀 공격 카드만) - 상태이상 적용 후 곱셈 방식으로 증가
+        if (this.type === 'attack' && this.element === 'normal' && user && user.hasFocusBuff && user.hasFocusBuff()) {
+            const focusEffect = GameConfig.buffs.focus.effect.accuracy; // 30%
+            actualAccuracy = actualAccuracy * (1 + focusEffect / 100);
+        }
+
+        // 명중률 상한 100% 제한
+        actualAccuracy = Math.min(100, actualAccuracy);
+
         // Math.random() * 100이 accuracy보다 작으면 성공
         // 예: 80% 명중률이면 0~79.99는 성공, 80~100은 실패
         const roll = Math.random() * 100;

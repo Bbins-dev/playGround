@@ -937,6 +937,35 @@ const CardDatabase = {
                 };
             }
         });
+
+        // 집중 카드 (집중 버프 카드)
+        this.addCard({
+            id: 'focus',
+            nameKey: 'auto_battle_card_game.ui.cards.focus.name',
+            type: 'buff',
+            element: 'normal',
+            power: 0,
+            accuracy: 80,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.focus.description',
+            effect: function(user, target, battleSystem) {
+                const focusGain = 1;
+                user.addFocusBuff(focusGain);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
+                    buffType: 'focus',
+                    focusGain: focusGain,
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig.buffs.focus.name,
+                        value: focusGain
+                    }
+                };
+            }
+        });
     }
 };
 

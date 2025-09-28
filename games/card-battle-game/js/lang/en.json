@@ -250,12 +250,17 @@
         "sword_dance": {
           "name": "Sword Dance",
           "description": "Increases attack card damage by 50% for one turn."
+        },
+        "focus": {
+          "name": "Focus",
+          "description": "Increases normal attack card accuracy by 30% for one turn."
         }
       },
       "buffs": {
         "strength": "STR",
         "defense": "DEF",
-        "enhance": "ENH"
+        "enhance": "ENH",
+        "focus": "FOC"
       },
       "elements": {
         "fire": "Fire",

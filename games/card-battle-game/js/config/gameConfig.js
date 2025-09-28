@@ -135,7 +135,8 @@ const GameConfig = {
         // 버프 색상
         buffs: {
             strength: '#FF8C00',      // 힘 - 주황색 계열
-            enhance: '#FFD700'        // 강화 - 골드색
+            enhance: '#FFD700',       // 강화 - 골드색
+            focus: '#3498db'          // 집중 - 파란색 계열
         },
 
         // 기본 UI 색상
@@ -287,7 +288,8 @@ const GameConfig = {
             activation: 2000,             // 카드 발동 시 표시 시간 (ms)
             interval: 1200,               // 카드 간 발동 간격 (ms)
             repeatDelay: 300,             // BattleSystem의 반복 딜레이
-            activationInterval: 500       // 카드 간 발동 간격
+            activationInterval: 500,      // 카드 간 발동 간격
+            missDelay: 800                // Miss 시 추가 대기 시간 (ms)
         },
 
         // 모달 관련 타이밍
@@ -590,6 +592,22 @@ const GameConfig = {
             display: {
                 showValue: true,
                 format: '({value})'
+            }
+        },
+        focus: {
+            nameKey: 'auto_battle_card_game.ui.buffs.focus',
+            name: '집중',
+            emoji: '🎯',
+            description: '노멀 공격카드 명중률 30% 증가',
+            get color() { return GameConfig.masterColors.buffs.focus; }, // 파란색 계열
+            get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수 (턴수 누적)
+            targetSelf: true, // 자신에게 적용되는 버프
+            display: {
+                showValue: true,
+                format: '({value})'
+            },
+            effect: {
+                accuracy: 30  // 30% 증가
             }
         }
     },
@@ -1645,8 +1663,8 @@ const GameConfig = {
                 emoji: '💪',
                 format: (value) => value,
                 showCondition: (card, context) => {
-                    // 상태이상 카드에서 주 스탯이 없는 경우 숨김
-                    if (card.type === 'status' && card.power === 0) return false;
+                    // 상태이상 카드와 버프 카드에서 주 스탯이 없는 경우 숨김
+                    if ((card.type === 'status' || card.type === 'buff') && card.power === 0) return false;
                     return true;
                 }
             },
@@ -1957,7 +1975,8 @@ GameConfig.utils = {
         // 카드 관련 타이밍
         cards: {
             repeatDelay: 300,             // BattleSystem의 하드코딩된 300ms
-            activationInterval: 500       // 카드 간 발동 간격
+            activationInterval: 500,      // 카드 간 발동 간격
+            missDelay: 800                // Miss 시 추가 대기 시간 (ms)
         },
 
         // 모달 관련 타이밍

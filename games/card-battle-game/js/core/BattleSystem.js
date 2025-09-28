@@ -293,6 +293,9 @@ class BattleSystem {
 
             // 빗나감 표시
             this.effectSystem.showDamageNumber(0, targetPosition, 'miss');
+
+            // Miss 시 추가 대기 (플레이어가 확인할 수 있도록)
+            await this.wait((GameConfig.timing?.cards?.missDelay || 800) / this.gameSpeed);
         }
 
         this.battleStats.cardsActivated++;
@@ -468,6 +471,11 @@ class BattleSystem {
         // 강화 버프 획득 처리 (칼춤 카드 등) - 새로운 통합 메서드 사용
         if (result.enhanceGain && result.enhanceGain > 0) {
             await this.effectSystem.showBuffEffect('enhance', user, result.enhanceGain);
+        }
+
+        // 집중 버프 획득 처리 (집중 카드 등) - 새로운 통합 메서드 사용
+        if (result.focusGain && result.focusGain > 0) {
+            await this.effectSystem.showBuffEffect('focus', user, result.focusGain);
         }
 
         // 기타 버프 효과 - 확장 가능한 구조
