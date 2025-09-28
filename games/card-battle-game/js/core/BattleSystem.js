@@ -613,7 +613,10 @@ class BattleSystem {
         // 5. UI 업데이트 (차감된 상태 반영)
         this.hpBarSystem.updateStatusEffects(currentPlayer, isPlayerTurn);
 
-        // 6. 플레이어의 상태이상 테두리 효과 업데이트 (턴 종료 시)
+        // 6. 버프 UI 업데이트 (강화 버프 턴수 반영)
+        this.hpBarSystem.updateBuffs(currentPlayer, isPlayerTurn);
+
+        // 7. 플레이어의 상태이상 테두리 효과 업데이트 (턴 종료 시)
         if (isPlayerTurn && this.gameManager?.uiManager) {
             this.gameManager.uiManager.updateStatusBorder();
         }

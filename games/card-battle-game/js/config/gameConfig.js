@@ -4,6 +4,378 @@ const GameConfig = {
     // 게임 버전
     version: '1.0.0',
 
+    // 공통 상수 정의 - 매직 넘버 제거
+    constants: {
+        // 스케일 및 비율
+        scales: {
+            min: 0.3,                           // 최소 스케일 배율
+            max: 2.0,                           // 최대 스케일 배율
+            default: 1.0,                       // 기본 스케일
+            cardEnlarged: 3.33,                 // 카드 확대 비율 (400/120)
+            cardPreview: 2.17,                  // 미리보기 비율 (260/120)
+            cardLarge: 4.33,                    // 상세 카드 비율 (520/120)
+            cardVictory: 1.5,                   // 승리 카드 비율 (180/120)
+            cardVictoryDetail: 3.0              // 승리 상세 비율 (360/120)
+        },
+
+        // 투명도 값
+        opacity: {
+            full: 1.0,                          // 완전 불투명
+            high: 0.9,                          // 높은 투명도
+            mediumHigh: 0.85,                   // 중간-높음 투명도
+            medium: 0.5,                        // 중간 투명도
+            low: 0.3,                           // 낮은 투명도
+            subtle: 0.15,                       // 은은한 투명도
+            verySubtle: 0.05                    // 매우 은은한 투명도
+        },
+
+        // 게임 배율
+        multipliers: {
+            advantage: 1.5,                     // 상성 유리 배율
+            normal: 1.0,                        // 기본 배율
+            disadvantage: 0.5,                  // 상성 불리 배율
+            buffMultiplier: 1.5,                // 강화 버프 배율 (50% 증가)
+            criticalHit: 2.0                    // 치명타 배율
+        },
+
+        // 게임 제한값
+        limits: {
+            maxHandSize: 10,                    // 최대 손패 크기
+            maxBuffStacks: 10,                  // 최대 버프 중첩
+            maxStatusEffects: 6,                // 최대 상태이상 표시 수
+            maxNameLength: 12,                  // 최대 이름 길이
+            minDamage: 1,                       // 최소 대미지
+            maxVisibleRows: 4                   // 최대 표시 행 수
+        },
+
+        // 확률값
+        probabilities: {
+            defaultAccuracy: 100,               // 기본 명중률
+            criticalChance: 10,                 // 치명타 확률 10%
+            paralysisChance: 30,                // 마비 확률 30%
+            statusReduction: 30,                // 상태이상 감소율 30%
+            statusPercent: 15                   // 상태이상 대미지 비율 15%
+        },
+
+        // 픽셀 단위 값들
+        pixels: {
+            // 패딩
+            paddingSmall: 4,
+            paddingMedium: 8,
+            paddingLarge: 16,
+            paddingXLarge: 32,
+
+            // 간격
+            spacingTight: 5,
+            spacingNormal: 10,
+            spacingLoose: 20,
+            spacingWide: 40,
+
+            // 테두리
+            borderThin: 1,
+            borderMedium: 2,
+            borderThick: 3,
+            borderThicker: 4,
+
+            // 그림자
+            shadowSmall: 2,
+            shadowMedium: 4,
+            shadowLarge: 8,
+
+            // 모서리 둥글기
+            radiusSmall: 4,
+            radiusMedium: 8,
+            radiusLarge: 16,
+            radiusXLarge: 24,
+            radiusRound: 50,                    // 원형 (%)
+
+            // 아이콘 크기
+            iconSmall: 16,
+            iconMedium: 24,
+            iconLarge: 32,
+            iconXLarge: 36,
+            iconHuge: 72
+        }
+    },
+
+    // 마스터 색상 시스템 - 모든 색상의 단일 진실의 원천
+    masterColors: {
+        // 속성 색상
+        elements: {
+            fire: '#FF6B6B',          // 코랄/주황색
+            water: '#87CEEB',         // 하늘색
+            electric: '#FFD700',      // 노랑색
+            poison: '#9B59B6',        // 보라색
+            normal: '#F8F9FA',        // 밝은 회색/하얀색
+            special: '#90EE90'        // 연두색
+        },
+
+        // 상태이상 색상
+        statusEffects: {
+            taunt: '#E74C3C',         // 도발 - 빨간색
+            stun: '#8E44AD',          // 기절 - 보라색
+            paralysis: '#F39C12',     // 마비 - 주황색
+            burn: '#E67E22',          // 화상 - 주황색
+            poisoned: '#9B59B6',      // 중독 - 보라색
+            sand: '#D4A76A',          // 모래 - 베이지색
+            insult: '#8B4513',        // 모욕 - 갈색
+            slow: '#6C757D'           // 둔화 - 회색
+        },
+
+        // 카드 타입 색상
+        cardTypes: {
+            attack: '#E74C3C',        // 공격 - 빨간색
+            defense: '#3498DB',       // 방어 - 파란색
+            status: '#9B59B6',        // 상태이상 - 보라색
+            buff: '#2ECC71',          // 버프 - 초록색
+            debuff: '#E67E22',        // 디버프 - 주황색
+            special: '#90EE90'        // 특수 - 연두색
+        },
+
+        // 버프 색상
+        buffs: {
+            strength: '#FF8C00',      // 힘 - 주황색 계열
+            enhance: '#FFD700'        // 강화 - 골드색
+        },
+
+        // 기본 UI 색상
+        ui: {
+            primary: '#3498db',           // 기본 파란색
+            primaryHover: '#f39c12',      // 호버 시 주황색
+            secondary: '#2980b9',         // 어두운 파란색
+            background: {
+                gradient: {
+                    start: '#2E4057',     // 어두운 블루
+                    middle: '#48729B',    // 밝은 파란색
+                    end: '#5D8AA8'        // 하늘색
+                }
+            },
+            text: {
+                primary: '#FFFFFF',       // 흰색 텍스트
+                secondary: '#E0E0E0',     // 밝은 회색
+                outline: '#000000',       // 검은색 외곽선
+                disabled: '#888888'       // 비활성화 텍스트
+            },
+            selection: {
+                selected: '#FFD700',      // 금색 선택됨
+                hover: '#CCCCCC',         // 회색 호버
+                border: '#666666'         // 기본 테두리
+            }
+        },
+
+        // 게임 상태 색상
+        status: {
+            victory: '#2ECC71',           // 승리 초록색
+            defeat: '#E74C3C',            // 패배 빨간색
+            warning: '#F39C12',           // 경고 주황색
+            info: '#3498DB',              // 정보 파란색
+            neutral: '#95A5A6'            // 중성 회색
+        },
+
+        // 버프/디버프 색상
+        effects: {
+            buff: '#2ECC71',              // 버프 초록색
+            debuff: '#E74C3C',            // 디버프 빨간색
+            neutral: '#3498DB',           // 중성 효과 파란색
+            poison: '#9B59B6',            // 독 보라색
+            burn: '#FF6B6B',              // 화상 빨간색
+            stun: '#F39C12'               // 기절 주황색
+        },
+
+        // 배경 및 오버레이
+        overlay: {
+            modal: 'rgba(0, 0, 0, 0.6)',  // 모달 배경
+            tooltip: 'rgba(0, 0, 0, 0.8)', // 툴팁 배경
+            glass: 'rgba(255, 255, 255, 0.15)' // 글래스모피즘
+        },
+
+        // 폴백 색상 (ColorUtils용)
+        fallback: {
+            default: '#666666',           // 기본 폴백
+            text: '#FFFFFF',              // 텍스트 폴백
+            outline: '#000000'            // 외곽선 폴백
+        },
+
+        // 대미지 표시 색상
+        damage: {
+            damage: '#FF0000',            // 대미지 - 빨간색
+            heal: '#2ECC71',              // 회복 - 초록색
+            buff: '#2ECC71',              // 버프 - 초록색
+            debuff: '#E74C3C'             // 디버프 - 빨간색
+        }
+    },
+
+    // 마스터 폰트 시스템 - 모든 폰트 설정의 단일 진실의 원천
+    masterFonts: {
+        // 폰트 패밀리
+        families: {
+            main: 'Arial, sans-serif',    // 기본 폰트
+            title: 'Arial, sans-serif',   // 제목 폰트
+            mono: 'monospace'             // 고정폭 폰트
+        },
+
+        // 기본 폰트 크기 (픽셀 단위)
+        baseSizes: {
+            tiny: 10,                     // 매우 작은 텍스트
+            small: 12,                    // 작은 텍스트
+            medium: 16,                   // 기본 텍스트
+            large: 20,                    // 큰 텍스트
+            xlarge: 24,                   // 매우 큰 텍스트
+            title: 28,                    // 제목 크기
+            huge: 32,                     // 거대한 텍스트
+            massive: 40,                  // 매우 거대한 텍스트
+            giant: 56,                    // 초대형 텍스트
+            colossal: 64                  // 최대 텍스트
+        },
+
+        // 폰트 무게
+        weights: {
+            normal: 'normal',
+            bold: 'bold',
+            bolder: '900'
+        },
+
+        // 카드별 폰트 비율 (카드 높이 대비)
+        cardRatios: {
+            emoji: 0.17,                  // 높이의 17%
+            name: 0.074,                  // 높이의 7.4%
+            type: 0.058,                  // 높이의 5.8%
+            stats: 0.058,                 // 높이의 5.8%
+            description: 0.052,           // 높이의 5.2%
+            elementLabel: 0.045           // 속성 라벨 4.5%
+        },
+
+        // UI별 폰트 크기 매핑
+        uiSizes: {
+            // 메인 메뉴
+            mainMenuTitle: 64,            // 메인 제목
+            mainMenuSubtitle: 24,         // 부제목
+            mainMenuNormal: 22,           // 일반 메뉴 텍스트
+            mainMenuSelected: 24,         // 선택된 메뉴 텍스트
+
+            // 언어 선택기
+            languageSelector: 26,
+
+            // 카드 선택
+            cardSelectionTitle: 28,       // 제목
+            cardSelectionProgress: 16,    // 진행상황
+            cardSelectionInstructions: 14, // 안내
+
+            // 대미지 표시
+            damageNumber: 60,             // 대미지 숫자
+
+            // 배틀 HUD
+            hpBarText: 24,                // HP 바 텍스트
+            statusIcon: 14,               // 상태이상 아이콘 텍스트
+
+            // 모달
+            modalTitle: 40,               // 모달 제목
+            modalInstruction: 24,         // 모달 설명
+            modalButton: 20,              // 모달 버튼
+
+            // 스테이지 표시기
+            stageMain: 24,                // 메인 텍스트
+            stageIcon: 24,                // 아이콘 크기
+            stageProgress: 18             // 진행도 점
+        }
+    },
+
+    // 마스터 타이밍 시스템 - 모든 애니메이션 타이밍의 단일 진실의 원천
+    masterTiming: {
+        // 카드 관련 타이밍
+        cards: {
+            activation: 2000,             // 카드 발동 시 표시 시간 (ms)
+            interval: 1200,               // 카드 간 발동 간격 (ms)
+            repeatDelay: 300,             // BattleSystem의 반복 딜레이
+            activationInterval: 500       // 카드 간 발동 간격
+        },
+
+        // 모달 관련 타이밍
+        modal: {
+            fadeIn: 300,                  // 모달 페이드인 시간
+            fadeOut: 300,                 // 모달 페이드아웃 시간
+            display: 2000,                // 자동 전환 대기시간
+            transition: 200,              // 일반 전환 시간
+            battleResultDisplay: 2500,    // 전투 결과 표시 시간
+            battleResultFadeIn: 600,      // 전투 결과 페이드인
+            battleResultFadeOut: 800      // 전투 결과 페이드아웃
+        },
+
+        // 전투 관련 타이밍
+        battle: {
+            pauseDelay: 1000,             // 전투 일시정지 딜레이
+            resumeDelay: 500,             // 전투 재개 딜레이
+            actionDelay: 300,             // 액션 간 딜레이
+            animationStep: 100,           // 애니메이션 스텝 간격
+            turnTransition: 1000,         // 턴 전환 시간
+            damageDisplay: 1500,          // 대미지 표시 시간
+            statusEffectDisplay: 1000     // 상태이상 표시 시간
+        },
+
+        // 렌더링 관련
+        rendering: {
+            throttle: 16,                 // MainMenu 렌더링 체크 16ms
+            frameTime: 16.67,             // 60fps 기준 (1000/60)
+            dirtyCheckInterval: 100       // Dirty checking 간격
+        },
+
+        // UI 애니메이션
+        ui: {
+            fadeIn: 250,                  // 일반 페이드인
+            fadeOut: 200,                 // 일반 페이드아웃
+            transition: 300,              // 일반 전환
+            hover: 150,                   // 호버 애니메이션
+            clickFeedback: 100,           // 클릭 피드백 시간
+            hoverDelay: 200,              // 호버 딜레이
+            tooltipDelay: 500             // 툴팁 표시 딜레이
+        },
+
+        // 전투 효과
+        combat: {
+            damage: 400,                  // 대미지 애니메이션
+            heal: 300,                    // 회복 애니메이션
+            statusChange: 250,            // 상태 변화 애니메이션
+            screenShake: 200,             // 화면 흔들림
+            flash: 500                    // 플래시 효과
+        },
+
+        // 이펙트 효과
+        effects: {
+            shortFlash: 200,              // 짧은 플래시
+            longFlash: 500,               // 긴 플래시
+            fadeOut: 1000,                // 페이드아웃
+            slideIn: 300,                 // 슬라이드인
+            pulse: 2000,                  // 펄스 애니메이션
+            glow: 1500,                   // 글로우 효과
+            particle: 2000                // 파티클 효과
+        },
+
+        // 카드 애니메이션
+        cardAnimations: {
+            click: 200,                   // 클릭 애니메이션
+            expand: 400,                  // 확대 애니메이션
+            contract: 300,                // 축소 애니메이션
+            rotation: 2000,               // 회전 애니메이션
+            shake: 1000                   // 흔들림 애니메이션
+        },
+
+        // 상태이상 애니메이션
+        statusAnimations: {
+            pulse: 2000,                  // 펄스 애니메이션
+            borderFlash: 500,             // 테두리 플래시
+            countdown: 1000,              // 카운트다운 애니메이션
+            shatter: 400                  // 방어력 파괴 애니메이션
+        },
+
+        // 대미지 표시 애니메이션
+        damageNumbers: {
+            duration: 1200,               // 애니메이션 지속 시간
+            readDelay: 500,               // 메시지 읽기 대기시간
+            floatDistance: 60,            // 위로 이동하는 거리
+            fadeOutStart: 800             // 페이드아웃 시작 시점
+        }
+    },
+
     // 화면 설정 - 고정 크기 (반응형 제거)
     canvas: {
         width: 750,
@@ -25,7 +397,7 @@ const GameConfig = {
         fire: {
             name: '불',
             nameKey: 'auto_battle_card_game.elements.fire',
-            color: '#FF6B6B',      // 코랄/주황색
+            get color() { return GameConfig.masterColors.elements.fire; },
             emoji: '🔥',
             strong: 'poison',       // 독에 강함
             weak: 'water',         // 물에 약함
@@ -34,7 +406,7 @@ const GameConfig = {
         water: {
             name: '물',
             nameKey: 'auto_battle_card_game.elements.water',
-            color: '#87CEEB',      // 하늘색
+            get color() { return GameConfig.masterColors.elements.water; },
             emoji: '💧',
             strong: 'fire',        // 불에 강함
             weak: 'electric'       // 전기에 약함
@@ -42,7 +414,7 @@ const GameConfig = {
         electric: {
             name: '전기',
             nameKey: 'auto_battle_card_game.elements.electric',
-            color: '#FFD700',      // 노랑색
+            get color() { return GameConfig.masterColors.elements.electric; },
             emoji: '⚡',
             strong: 'water',       // 물에 강함
             weak: 'poison',        // 독에 약함
@@ -51,7 +423,7 @@ const GameConfig = {
         poison: {
             name: '독',
             nameKey: 'auto_battle_card_game.elements.poison',
-            color: '#9B59B6',      // 보라색
+            get color() { return GameConfig.masterColors.elements.poison; },
             emoji: '☠️',
             strong: 'electric',    // 전기에 강함
             weak: 'fire',          // 불에 약함
@@ -60,7 +432,7 @@ const GameConfig = {
         normal: {
             name: '노멀',
             nameKey: 'auto_battle_card_game.elements.normal',
-            color: '#F8F9FA',      // 밝은 회색/하얀색
+            get color() { return GameConfig.masterColors.elements.normal; },
             emoji: '👊',
             strong: null,          // 강점 없음
             weak: null,           // 약점 없음
@@ -69,7 +441,7 @@ const GameConfig = {
         special: {
             name: '특수',
             nameKey: 'auto_battle_card_game.elements.special',
-            color: '#90EE90',      // 연두색
+            get color() { return GameConfig.masterColors.elements.special; },
             emoji: '🔮',
             strong: null,          // 강점 없음
             weak: null,           // 약점 없음
@@ -79,9 +451,9 @@ const GameConfig = {
 
     // 상성 배율
     typeEffectiveness: {
-        strong: 1.5,    // 강점으로 공격 시 1.5배 대미지
-        normal: 1.0,    // 보통 대미지
-        weak: 0.5       // 약점으로 공격 시 0.5배 대미지
+        get strong() { return GameConfig.constants.multipliers.advantage; },    // 강점으로 공격 시 1.5배 대미지
+        get normal() { return GameConfig.constants.multipliers.normal; },       // 보통 대미지
+        get weak() { return GameConfig.constants.multipliers.disadvantage; }    // 약점으로 공격 시 0.5배 대미지
     },
 
     // 상태이상 정의
@@ -92,7 +464,7 @@ const GameConfig = {
             emoji: '😡',
             description: '다음 턴에 공격 카드만 발동',
             duration: 1,
-            color: '#E74C3C'
+            get color() { return GameConfig.masterColors.statusEffects.taunt; }
         },
         stun: {
             nameKey: 'auto_battle_card_game.ui.status_effects.stun',
@@ -100,59 +472,59 @@ const GameConfig = {
             emoji: '😵',
             description: '다음 턴에 아무 카드도 발동되지 않음',
             duration: 1,
-            color: '#8E44AD'
+            get color() { return GameConfig.masterColors.statusEffects.stun; }
         },
         paralysis: {
             nameKey: 'auto_battle_card_game.ui.status_effects.paralysis',
             name: '마비',
             emoji: '⚡',
             description: '확률적으로 턴을 넘김',
-            defaultChance: 30,
-            color: '#F39C12'
+            get defaultChance() { return GameConfig.constants.probabilities.paralysisChance; },
+            get color() { return GameConfig.masterColors.statusEffects.paralysis; }
         },
         burn: {
             nameKey: 'auto_battle_card_game.ui.status_effects.burn',
             name: '화상',
             emoji: '🔥',
             description: '턴 시작 시 최대 HP의 일정 비율 대미지',
-            defaultPercent: 15,
+            get defaultPercent() { return GameConfig.constants.probabilities.statusPercent; },
             duration: 1,
-            color: '#E67E22'
+            get color() { return GameConfig.masterColors.statusEffects.burn; }
         },
         poisoned: {
             nameKey: 'auto_battle_card_game.ui.status_effects.poisoned',
             name: '중독',
             emoji: '☠️',
             description: '턴 종료 시 최대 HP의 일정 비율 대미지',
-            defaultPercent: 15,
-            color: '#9B59B6'
+            get defaultPercent() { return GameConfig.constants.probabilities.statusPercent; },
+            get color() { return GameConfig.masterColors.statusEffects.poisoned; }
         },
         sand: {
             nameKey: 'auto_battle_card_game.ui.status_effects.sand',
             name: '모래',
             emoji: '💨',
             description: '공격 카드의 명중률 30% 감소',
-            defaultReduction: 30,
+            get defaultReduction() { return GameConfig.constants.probabilities.statusReduction; },
             duration: 2,
-            color: '#D4A76A'
+            get color() { return GameConfig.masterColors.statusEffects.sand; }
         },
         insult: {
             nameKey: 'auto_battle_card_game.ui.status_effects.insult',
             name: '모욕',
             emoji: '😤',
             description: '방어 카드의 발동률 30% 감소',
-            defaultReduction: 30,
+            get defaultReduction() { return GameConfig.constants.probabilities.statusReduction; },
             duration: 2,
-            color: '#8B4513'
+            get color() { return GameConfig.masterColors.statusEffects.insult; }
         },
         slow: {
             nameKey: 'auto_battle_card_game.ui.status_effects.slow',
             name: '둔화',
             emoji: '🐢',
             description: '상태이상 카드의 발동률 30% 감소',
-            defaultReduction: 30,
+            get defaultReduction() { return GameConfig.constants.probabilities.statusReduction; },
             duration: 2,
-            color: '#6C757D'
+            get color() { return GameConfig.masterColors.statusEffects.slow; }
         }
     },
 
@@ -160,27 +532,27 @@ const GameConfig = {
     statusBorderEffects: {
         poisoned: {
             className: 'status-border-poison',
-            color: '#9B59B6',
+            get color() { return GameConfig.masterColors.statusEffects.poisoned; },
             priority: 2
         },
         burn: {
             className: 'status-border-burn',
-            color: '#E67E22',
+            get color() { return GameConfig.masterColors.statusEffects.burn; },
             priority: 1  // 최고 우선순위
         },
         sand: {
             className: 'status-border-sand',
-            color: '#D4A76A',
+            get color() { return GameConfig.masterColors.statusEffects.sand; },
             priority: 3
         },
         insult: {
             className: 'status-border-insult',
-            color: '#8B4513',
+            get color() { return GameConfig.masterColors.statusEffects.insult; },
             priority: 4
         },
         slow: {
             className: 'status-border-slow',
-            color: '#6C757D',
+            get color() { return GameConfig.masterColors.statusEffects.slow; },
             priority: 5
         }
     },
@@ -188,8 +560,8 @@ const GameConfig = {
     // 테두리 애니메이션 설정
     statusBorderAnimation: {
         type: 'pulse',
-        duration: 2000,    // 2초 주기
-        intensity: 0.8     // 투명도 변화 강도
+        get duration() { return GameConfig.masterTiming.effects.pulse; },    // 2초 주기
+        get intensity() { return GameConfig.constants.opacity.mediumHigh; }     // 투명도 변화 강도
     },
 
     // 버프 정의
@@ -199,8 +571,8 @@ const GameConfig = {
             name: '힘',
             emoji: '💪',
             description: '공격력 +{value}',
-            color: '#FF8C00', // 주황색 계열
-            maxStack: 10,     // 최대 중첩 수
+            get color() { return GameConfig.masterColors.buffs.strength; }, // 주황색 계열
+            get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수
             targetSelf: true, // 자신에게 적용되는 버프
             display: {
                 showValue: true,
@@ -212,8 +584,8 @@ const GameConfig = {
             name: '강화',
             emoji: '🗡️',
             description: '공격카드 대미지 50% 증가',
-            color: '#FFD700', // 골드색
-            maxStack: 10,     // 최대 중첩 수 (턴수 누적)
+            get color() { return GameConfig.masterColors.buffs.enhance; }, // 골드색
+            get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수 (턴수 누적)
             targetSelf: true, // 자신에게 적용되는 버프
             display: {
                 showValue: true,
@@ -227,42 +599,42 @@ const GameConfig = {
         attack: {
             nameKey: 'auto_battle_card_game.ui.card_types.attack',
             name: '공격',
-            color: '#E74C3C',
+            get color() { return GameConfig.masterColors.cardTypes.attack; },
             emoji: '⚔️',
             statEmojis: { power: '⚔️', accuracy: '🎯' }
         },
         defense: {
             nameKey: 'auto_battle_card_game.ui.card_types.defense',
             name: '방어',
-            color: '#3498DB',
+            get color() { return GameConfig.masterColors.cardTypes.defense; },
             emoji: '🛡️',
             statEmojis: { power: '🛡️', accuracy: '✅' }
         },
         status: {
             nameKey: 'auto_battle_card_game.ui.card_types.status',
             name: '상태이상',
-            color: '#9B59B6',
+            get color() { return GameConfig.masterColors.cardTypes.status; },
             emoji: '💀',
             statEmojis: { power: '⏱️', accuracy: '✅' }
         },
         buff: {
             nameKey: 'auto_battle_card_game.ui.card_types.buff',
             name: '버프',
-            color: '#2ECC71',
+            get color() { return GameConfig.masterColors.cardTypes.buff; },
             emoji: '✨',
             statEmojis: { power: '✨', accuracy: '✅' }
         },
         debuff: {
             nameKey: 'auto_battle_card_game.ui.card_types.debuff',
             name: '디버프',
-            color: '#E67E22',
+            get color() { return GameConfig.masterColors.cardTypes.debuff; },
             emoji: '💔',
             statEmojis: { power: '⬇️', accuracy: '✅' }
         },
         special: {
             nameKey: 'auto_battle_card_game.ui.card_types.special',
             name: '특수',
-            color: '#90EE90',
+            get color() { return GameConfig.masterColors.cardTypes.special; },
             emoji: '🔮',
             statEmojis: { power: '🔮', accuracy: '✅' }
         }
@@ -270,7 +642,7 @@ const GameConfig = {
 
     // 플레이어 설정
     player: {
-        maxHandSize: 10,
+        get maxHandSize() { return GameConfig.constants.limits.maxHandSize; },
         startingHP: 80,
         defaultDefenseElement: 'normal'
     },
@@ -283,14 +655,14 @@ const GameConfig = {
 
     // 플레이어 이름 설정
     playerName: {
-        maxLength: 12,              // 최대 이름 길이
+        get maxLength() { return GameConfig.constants.limits.maxNameLength; },              // 최대 이름 길이
         allowEmpty: true,           // 빈 이름 허용 (기본값 사용)
         trimWhitespace: true        // 공백 제거
     },
 
     // 적 설정 (플레이어와 동일한 룰 적용)
     enemy: {
-        maxHandSize: 10,
+        get maxHandSize() { return GameConfig.constants.limits.maxHandSize; },
         startingHP: 10,
         defaultDefenseElement: 'normal',
         // 스테이지별 적 설정 (1-10스테이지)
@@ -388,27 +760,14 @@ const GameConfig = {
         cardSpacing: 5                  // 카드 간 간격
     },
 
-    // 손패 겹침 설정 (레거시 - handLayout 우선 사용)
-    handOverlap: {
-        1: 0,      // 1-3장: 겹침 없음
-        2: 0,
-        3: 0,
-        4: 0.5,    // 4-6장: 50% 겹침
-        5: 0.5,
-        6: 0.5,
-        7: 0.3,    // 7-9장: 30% 겹침
-        8: 0.3,
-        9: 0.3,
-        10: 0.2    // 10장: 20% 겹침
-    },
 
-    // 애니메이션 설정
+    // 애니메이션 설정 - 마스터 타이밍 참조
     animations: {
-        cardActivation: 2000,      // 카드 발동 시 표시 시간 (ms)
-        cardInterval: 1200,        // 카드 간 발동 간격 (ms)
-        turnTransition: 1000,      // 턴 전환 시간 (ms)
-        damageDisplay: 1500,       // 대미지 표시 시간 (ms)
-        statusEffectDisplay: 1000  // 상태이상 표시 시간 (ms)
+        get cardActivation() { return GameConfig.masterTiming.cards.activation; },      // 카드 발동 시 표시 시간 (ms)
+        get cardInterval() { return GameConfig.masterTiming.cards.interval; },        // 카드 간 발동 간격 (ms)
+        get turnTransition() { return GameConfig.masterTiming.battle.turnTransition; },      // 턴 전환 시간 (ms)
+        get damageDisplay() { return GameConfig.masterTiming.battle.damageDisplay; },       // 대미지 표시 시간 (ms)
+        get statusEffectDisplay() { return GameConfig.masterTiming.battle.statusEffectDisplay; }  // 상태이상 표시 시간 (ms)
     },
 
 
@@ -574,12 +933,12 @@ const GameConfig = {
     // 메인 메뉴 레이아웃 설정
     mainMenu: {
         title: {
-            size: 64,                            // 제목 폰트 크기 (56 → 64)
+            get size() { return GameConfig.masterFonts.uiSizes.mainMenuTitle; },                            // 제목 폰트 크기 (56 → 64)
             y: 280,                              // 제목 Y 위치 (150 → 280, 중앙으로)
-            shadowOffset: 4                      // 그림자 오프셋
+            get shadowOffset() { return GameConfig.constants.pixels.shadowMedium; }                      // 그림자 오프셋
         },
         subtitle: {
-            size: 24,                            // 부제목 폰트 크기 (20 → 24)
+            get size() { return GameConfig.masterFonts.uiSizes.mainMenuSubtitle; },                            // 부제목 폰트 크기 (20 → 24)
             offsetY: 70                          // 제목으로부터의 Y 오프셋 (60 → 70)
         },
         menuItems: {
@@ -587,10 +946,10 @@ const GameConfig = {
             itemHeight: 80,                      // 메뉴 아이템 간격 (60 → 80)
             width: 380,                          // 메뉴 아이템 너비 (320 → 380)
             height: 65,                          // 메뉴 아이템 높이 (50 → 65)
-            iconSize: 32,                        // 아이콘 크기 (28 → 32)
+            get iconSize() { return GameConfig.constants.pixels.iconLarge; },                        // 아이콘 크기 (28 → 32)
             textSize: {
-                normal: 22,                      // 일반 텍스트 크기 (18 → 22)
-                selected: 24                     // 선택된 텍스트 크기 (20 → 24)
+                get normal() { return GameConfig.masterFonts.uiSizes.mainMenuNormal; },                      // 일반 텍스트 크기 (18 → 22)
+                get selected() { return GameConfig.masterFonts.uiSizes.mainMenuSelected; }                     // 선택된 텍스트 크기 (20 → 24)
             },
             // 위치는 렌더링 시 동적으로 계산 (중앙 정렬)
             centerAligned: true                  // 완전 중앙 정렬 활성화
@@ -606,35 +965,35 @@ const GameConfig = {
         instructions: {
             startY: -80,                         // 화면 하단으로부터의 오프셋
             lineHeight: 20,                      // 줄 간격
-            fontSize: 14                         // 폰트 크기
+            get fontSize() { return GameConfig.masterFonts.baseSizes.small; }                         // 폰트 크기
         }
     },
 
     // 언어 선택기 설정
     languageSelector: {
-        fontSize: 26,                            // 폰트 크기 (22 → 26) - 더 큰 크기
+        get fontSize() { return GameConfig.masterFonts.uiSizes.languageSelector; },                            // 폰트 크기 (22 → 26) - 더 큰 크기
         padding: {
-            vertical: 14,                        // 세로 패딩 (12 → 14)
-            horizontal: 20                       // 가로 패딩 (18 → 20)
+            get vertical() { return GameConfig.constants.pixels.paddingLarge - 2; },                        // 세로 패딩 (12 → 14)
+            get horizontal() { return GameConfig.constants.pixels.spacingLoose; }                       // 가로 패딩 (18 → 20)
         },
-        borderRadius: 8                          // 모서리 둥글기
+        get borderRadius() { return GameConfig.constants.pixels.radiusMedium; }                          // 모서리 둥글기
     },
 
     // 카드 선택 화면 설정
     cardSelection: {
         title: {
             y: 50,              // 제목 Y 위치
-            fontSize: 28,       // 제목 폰트 크기
-            shadowOffset: 2     // 그림자 오프셋
+            get fontSize() { return GameConfig.masterFonts.uiSizes.cardSelectionTitle; },       // 제목 폰트 크기
+            get shadowOffset() { return GameConfig.constants.pixels.shadowSmall; }     // 그림자 오프셋
         },
         progress: {
             y: 75,              // 진행상황 Y 위치
-            fontSize: 16        // 진행상황 폰트 크기
+            get fontSize() { return GameConfig.masterFonts.uiSizes.cardSelectionProgress; }        // 진행상황 폰트 크기
         },
         instructions: {
             startY: 100,        // 안내 메시지 시작 Y 위치
             lineHeight: 18,     // 줄 간격
-            fontSize: 14        // 폰트 크기
+            get fontSize() { return GameConfig.masterFonts.uiSizes.cardSelectionInstructions; }        // 폰트 크기
         },
         cards: {
             startY: 180,        // 카드 그리드 시작 Y 위치
@@ -904,27 +1263,6 @@ const GameConfig = {
                 name: 'defenseShatter',
                 duration: '0.4s',
                 timing: 'ease-out'
-            }
-        },
-        // 레거시 설정 (제거 예정)
-        bar: {
-            height: 8,
-            borderRadius: 4,
-            backgroundColor: '#34495e',
-            fillColor: 'linear-gradient(90deg, #3498db, #2980b9)',
-            maxDisplay: 20  // HP 최대값과 동일하게 설정 (10 기준)
-        },
-        icons: {
-            shield: '🛡️',
-            fontSize: 16,
-            spacing: 4
-        },
-        animation: {
-            duration: 300,
-            breakEffect: {
-                enabled: true,
-                particles: 5,
-                color: '#3498db'
             }
         },
         // 방어속성 배지 설정 (HP바 외부 위치)
@@ -1464,9 +1802,10 @@ GameConfig.utils = {
         return GameConfig.typeEffectiveness.normal;
     },
 
-    // 손패 겹침 비율 계산
+    // 손패 겹침 비율 계산 - handLayout 시스템 사용으로 레거시 함수
     getHandOverlapRatio: function(cardCount) {
-        return GameConfig.handOverlap[Math.min(cardCount, 10)] || 0;
+        // handLayout 시스템을 사용하므로 항상 0 반환 (레거시 호환성)
+        return 0;
     },
 
     // 속성별 방어 타입 계산 (손패에서 가장 많은 속성)

@@ -65,11 +65,17 @@ npx serve                                       # ❌ 루트에서 실행 금지
 
 ## 🏗️ GameConfig 구조 (핵심 섹션들)
 
+### Master Systems (Single Source of Truth)
+- **constants**: 매직넘버 제거 (scales, opacity, multipliers, limits, probabilities)
+- **masterColors**: 모든 색상의 단일 소스 (UI, 상태, 효과, 원소별)
+- **masterFonts**: 모든 폰트 설정의 단일 소스 (families, sizes, weights)
+- **masterTiming**: 모든 타이밍의 단일 소스 (카드, UI, 전투, 렌더링)
+
 ### 필수 섹션들
 - **canvas**: 화면 크기 (750×1200)
-- **colors**: UI, 상태, 효과, 오버레이 색상 통합 관리
-- **fonts**: families, sizes, weights 중앙화
-- **timing**: 카드, 렌더링, UI, 전투 애니메이션 타이밍
+- **colors**: masterColors 참조하는 getter 함수들
+- **fonts**: masterFonts 참조하는 getter 함수들
+- **timing**: masterTiming 참조하는 getter 함수들
 - **gameRules**: enemy, combat, randomRanges 로직 상수
 - **fallbackTranslations**: 언어팩 실패 시 안전 장치
 - **cssVariables**: spacing, borderRadius, shadows, blur
@@ -82,7 +88,22 @@ GameManager.syncCSSVariables()가 모든 GameConfig 값을 CSS 변수로 자동 
 
 ## ⚠️ 핵심 주의사항
 
-### 1. 좌표 변환
+### 1. 순환 참조 방지
+```javascript
+// ❌ 객체 생성 중 자기 참조 금지
+viewport: {
+    minScale: GameConfig.constants.scales.min  // ❌ 초기화 에러
+}
+
+// ✅ Getter 함수로 런타임 참조
+elements: {
+    fire: {
+        get color() { return GameConfig.masterColors.elements.fire; }
+    }
+}
+```
+
+### 2. 좌표 변환
 ```javascript
 // ❌ 직접 계산 금지
 const rect = canvas.getBoundingClientRect();
@@ -92,7 +113,7 @@ const x = (event.clientX - rect.left) / scale;
 const coords = CanvasUtils.getCanvasCoordinates(event, canvas);
 ```
 
-### 2. 상태이상 턴 처리 순서 (BattleSystem.endTurn)
+### 3. 상태이상 턴 처리 순서 (BattleSystem.endTurn)
 1. 즉시 해제 (도발, 기절)
 2. 독/화상 데미지 → 전투종료체크
 3. 상태이상 턴수 차감
@@ -120,10 +141,17 @@ cd games/card-battle-game && npx serve -p 3000
 ```
 
 ### 새 기능 추가 워크플로우
-1. **GameConfig 먼저**: 필요한 설정값들을 gameConfig.js에 정의
-2. **CSS 변수 활용**: syncCSSVariables()가 자동으로 CSS에 반영
-3. **Templates 사용**: 동적 메시지는 fallbackTranslations 또는 언어팩에
-4. **Utils 재사용**: CanvasUtils, TextRenderer, ColorUtils 적극 활용
+1. **Master Systems 확인**: constants, masterColors, masterFonts, masterTiming에서 재사용 가능한 값 찾기
+2. **기존 설정 재사용**: 새 매직넘버 생성 대신 기존 master 값 활용
+3. **필요시만 추가**: master에 없는 경우에만 새 설정값 정의
+4. **Getter 함수 사용**: 다른 섹션 참조 시 getter로 순환참조 방지
+5. **CSS 변수 활용**: syncCSSVariables()가 자동으로 CSS에 반영
+6. **Templates 사용**: 동적 메시지는 fallbackTranslations 또는 언어팩에
+7. **Utils 재사용**: CanvasUtils, TextRenderer, ColorUtils 적극 활용
+
+### 제거된 레거시 시스템들
+- **handOverlap**: 카드 겹침 설정 (중복 제거됨)
+- **defenseUI.bar**: 방어 UI 바 설정 (사용되지 않음)
 
 ### 핵심 파일 위치
 - **설정**: `js/config/gameConfig.js` (단일 진실의 원천)
