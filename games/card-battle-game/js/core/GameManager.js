@@ -1019,7 +1019,119 @@ class GameManager {
             root.style.setProperty('--gallery-button-min-width', `${galleryConfig.size.minWidth}px`);
         }
 
-        console.log('CSS 변수와 GameConfig 동기화 완료 (뷰포트 스케일링 + 모달 크기 포함)');
+        // 새로 추가된 색상 시스템
+        if (GameConfig.colors) {
+            // UI 색상
+            if (GameConfig.colors.ui) {
+                root.style.setProperty('--color-primary', GameConfig.colors.ui.primary);
+                root.style.setProperty('--color-primary-hover', GameConfig.colors.ui.primaryHover);
+                root.style.setProperty('--color-secondary', GameConfig.colors.ui.secondary);
+                root.style.setProperty('--color-text-primary', GameConfig.colors.ui.text.primary);
+                root.style.setProperty('--color-text-secondary', GameConfig.colors.ui.text.secondary);
+                root.style.setProperty('--color-text-outline', GameConfig.colors.ui.text.outline);
+                root.style.setProperty('--color-text-disabled', GameConfig.colors.ui.text.disabled);
+                root.style.setProperty('--color-selected', GameConfig.colors.ui.selection.selected);
+                root.style.setProperty('--color-hover', GameConfig.colors.ui.selection.hover);
+                root.style.setProperty('--color-border', GameConfig.colors.ui.selection.border);
+            }
+
+            // 상태 색상
+            if (GameConfig.colors.status) {
+                root.style.setProperty('--color-victory', GameConfig.colors.status.victory);
+                root.style.setProperty('--color-defeat', GameConfig.colors.status.defeat);
+                root.style.setProperty('--color-warning', GameConfig.colors.status.warning);
+                root.style.setProperty('--color-info', GameConfig.colors.status.info);
+                root.style.setProperty('--color-neutral', GameConfig.colors.status.neutral);
+            }
+
+            // 효과 색상
+            if (GameConfig.colors.effects) {
+                root.style.setProperty('--color-buff', GameConfig.colors.effects.buff);
+                root.style.setProperty('--color-debuff', GameConfig.colors.effects.debuff);
+                root.style.setProperty('--color-poison', GameConfig.colors.effects.poison);
+                root.style.setProperty('--color-burn', GameConfig.colors.effects.burn);
+                root.style.setProperty('--color-stun', GameConfig.colors.effects.stun);
+            }
+
+            // 오버레이 색상
+            if (GameConfig.colors.overlay) {
+                root.style.setProperty('--color-modal-overlay', GameConfig.colors.overlay.modal);
+                root.style.setProperty('--color-tooltip-overlay', GameConfig.colors.overlay.tooltip);
+                root.style.setProperty('--color-glass', GameConfig.colors.overlay.glass);
+            }
+        }
+
+        // 폰트 시스템
+        if (GameConfig.fonts) {
+            if (GameConfig.fonts.families) {
+                root.style.setProperty('--font-family-main', GameConfig.fonts.families.main);
+                root.style.setProperty('--font-family-title', GameConfig.fonts.families.title);
+                root.style.setProperty('--font-family-mono', GameConfig.fonts.families.mono);
+            }
+
+            if (GameConfig.fonts.sizes) {
+                root.style.setProperty('--font-size-small', `${GameConfig.fonts.sizes.small}px`);
+                root.style.setProperty('--font-size-medium', `${GameConfig.fonts.sizes.medium}px`);
+                root.style.setProperty('--font-size-large', `${GameConfig.fonts.sizes.large}px`);
+                root.style.setProperty('--font-size-xlarge', `${GameConfig.fonts.sizes.xlarge}px`);
+                root.style.setProperty('--font-size-title', `${GameConfig.fonts.sizes.title}px`);
+                root.style.setProperty('--font-size-huge', `${GameConfig.fonts.sizes.huge}px`);
+            }
+
+            if (GameConfig.fonts.weights) {
+                root.style.setProperty('--font-weight-normal', GameConfig.fonts.weights.normal);
+                root.style.setProperty('--font-weight-bold', GameConfig.fonts.weights.bold);
+                root.style.setProperty('--font-weight-bolder', GameConfig.fonts.weights.bolder);
+            }
+        }
+
+        // CSS 변수 확장 설정
+        if (GameConfig.cssVariables) {
+            if (GameConfig.cssVariables.spacing) {
+                root.style.setProperty('--spacing-small', `${GameConfig.cssVariables.spacing.small}px`);
+                root.style.setProperty('--spacing-medium', `${GameConfig.cssVariables.spacing.medium}px`);
+                root.style.setProperty('--spacing-large', `${GameConfig.cssVariables.spacing.large}px`);
+                root.style.setProperty('--spacing-xlarge', `${GameConfig.cssVariables.spacing.xlarge}px`);
+            }
+
+            if (GameConfig.cssVariables.borderRadius) {
+                root.style.setProperty('--border-radius-small', `${GameConfig.cssVariables.borderRadius.small}px`);
+                root.style.setProperty('--border-radius-medium', `${GameConfig.cssVariables.borderRadius.medium}px`);
+                root.style.setProperty('--border-radius-large', `${GameConfig.cssVariables.borderRadius.large}px`);
+                root.style.setProperty('--border-radius-xlarge', `${GameConfig.cssVariables.borderRadius.xlarge}px`);
+            }
+
+            if (GameConfig.cssVariables.shadows) {
+                root.style.setProperty('--shadow-small', GameConfig.cssVariables.shadows.small);
+                root.style.setProperty('--shadow-medium', GameConfig.cssVariables.shadows.medium);
+                root.style.setProperty('--shadow-large', GameConfig.cssVariables.shadows.large);
+                root.style.setProperty('--shadow-glow', GameConfig.cssVariables.shadows.glow);
+            }
+
+            if (GameConfig.cssVariables.blur) {
+                root.style.setProperty('--blur-small', `${GameConfig.cssVariables.blur.small}px`);
+                root.style.setProperty('--blur-medium', `${GameConfig.cssVariables.blur.medium}px`);
+                root.style.setProperty('--blur-large', `${GameConfig.cssVariables.blur.large}px`);
+            }
+        }
+
+        // 애니메이션 타이밍 설정
+        if (GameConfig.timing) {
+            if (GameConfig.timing.ui) {
+                root.style.setProperty('--timing-fade-in', `${GameConfig.timing.ui.fadeIn}ms`);
+                root.style.setProperty('--timing-fade-out', `${GameConfig.timing.ui.fadeOut}ms`);
+                root.style.setProperty('--timing-transition', `${GameConfig.timing.ui.transition}ms`);
+                root.style.setProperty('--timing-hover', `${GameConfig.timing.ui.hover}ms`);
+            }
+
+            if (GameConfig.timing.combat) {
+                root.style.setProperty('--timing-damage', `${GameConfig.timing.combat.damage}ms`);
+                root.style.setProperty('--timing-heal', `${GameConfig.timing.combat.heal}ms`);
+                root.style.setProperty('--timing-status-change', `${GameConfig.timing.combat.statusChange}ms`);
+            }
+        }
+
+        console.log('CSS 변수와 GameConfig 동기화 완료 (색상, 폰트, 타이밍 시스템 포함)');
     }
 
     // 뷰포트 스케일링 계산 및 적용

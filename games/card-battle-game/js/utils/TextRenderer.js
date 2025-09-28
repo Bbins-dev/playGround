@@ -1,7 +1,7 @@
 // 텍스트 렌더링 통합 유틸리티
 class TextRenderer {
     // 아웃라인이 있는 텍스트 그리기 (모든 중복 제거)
-    static drawTextWithOutline(ctx, text, x, y, fillColor = '#FFFFFF', outlineColor = '#000000', outlineWidth = 2) {
+    static drawTextWithOutline(ctx, text, x, y, fillColor = GameConfig.colors?.fallback?.text || '#FFFFFF', outlineColor = GameConfig.colors?.fallback?.outline || '#000000', outlineWidth = 2) {
         ctx.save();
 
         // 아웃라인 그리기
@@ -18,7 +18,7 @@ class TextRenderer {
     }
 
     // 텍스트 크기 측정
-    static measureText(ctx, text, fontSize, fontFamily = 'Arial') {
+    static measureText(ctx, text, fontSize, fontFamily = GameConfig.fonts?.families?.main || 'Arial, sans-serif') {
         ctx.save();
         ctx.font = `${fontSize}px ${fontFamily}`;
         const metrics = ctx.measureText(text);
@@ -30,7 +30,7 @@ class TextRenderer {
     }
 
     // 중앙 정렬 텍스트 그리기
-    static drawCenteredText(ctx, text, centerX, y, fontSize, fontFamily = 'Arial', fillColor = '#FFFFFF', outlineColor = '#000000', outlineWidth = 2) {
+    static drawCenteredText(ctx, text, centerX, y, fontSize, fontFamily = GameConfig.fonts?.families?.main || 'Arial, sans-serif', fillColor = GameConfig.colors?.fallback?.text || '#FFFFFF', outlineColor = GameConfig.colors?.fallback?.outline || '#000000', outlineWidth = 2) {
         ctx.save();
         ctx.font = `${fontSize}px ${fontFamily}`;
         ctx.textAlign = 'center';
@@ -42,7 +42,7 @@ class TextRenderer {
     }
 
     // 텍스트 줄바꿈 처리
-    static wrapText(ctx, text, maxWidth, fontSize, fontFamily = 'Arial') {
+    static wrapText(ctx, text, maxWidth, fontSize, fontFamily = GameConfig.fonts?.families?.main || 'Arial, sans-serif') {
         ctx.save();
         ctx.font = `${fontSize}px ${fontFamily}`;
 
@@ -71,7 +71,7 @@ class TextRenderer {
     }
 
     // 다중 라인 텍스트 그리기
-    static drawMultiLineText(ctx, lines, x, y, lineHeight, fontSize, fontFamily = 'Arial', fillColor = '#FFFFFF', outlineColor = '#000000', outlineWidth = 2, alignment = 'left') {
+    static drawMultiLineText(ctx, lines, x, y, lineHeight, fontSize, fontFamily = GameConfig.fonts?.families?.main || 'Arial, sans-serif', fillColor = GameConfig.colors?.fallback?.text || '#FFFFFF', outlineColor = GameConfig.colors?.fallback?.outline || '#000000', outlineWidth = 2, alignment = 'left') {
         ctx.save();
         ctx.font = `${fontSize}px ${fontFamily}`;
         ctx.textAlign = alignment;
@@ -86,7 +86,7 @@ class TextRenderer {
     }
 
     // 텍스트가 영역에 맞도록 크기 조정
-    static fitTextToBox(ctx, text, maxWidth, maxHeight, initialFontSize, fontFamily = 'Arial') {
+    static fitTextToBox(ctx, text, maxWidth, maxHeight, initialFontSize, fontFamily = GameConfig.fonts?.families?.main || 'Arial, sans-serif') {
         let fontSize = initialFontSize;
         let textMetrics;
 
@@ -125,7 +125,7 @@ class TextRenderer {
     }
 
     // 그림자가 있는 텍스트 그리기
-    static drawTextWithShadow(ctx, text, x, y, fontSize, fontFamily = 'Arial', fillColor = '#FFFFFF', shadowColor = '#000000', shadowOffset = 2) {
+    static drawTextWithShadow(ctx, text, x, y, fontSize, fontFamily = GameConfig.fonts?.families?.main || 'Arial, sans-serif', fillColor = GameConfig.colors?.fallback?.text || '#FFFFFF', shadowColor = GameConfig.colors?.fallback?.outline || '#000000', shadowOffset = 2) {
         ctx.save();
         ctx.font = `${fontSize}px ${fontFamily}`;
 
@@ -141,7 +141,7 @@ class TextRenderer {
     }
 
     // CSS 텍스트 아웃라인 스타일 생성 (DOM용)
-    static getTextOutlineStyle(outlineWidth = 1, outlineColor = '#000000') {
+    static getTextOutlineStyle(outlineWidth = 1, outlineColor = GameConfig.colors?.fallback?.outline || '#000000') {
         const offsets = [
             [-outlineWidth, -outlineWidth],
             [0, -outlineWidth],

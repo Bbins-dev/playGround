@@ -231,7 +231,7 @@ class BattleSystem {
 
                 // 같은 카드의 연속 발동 간 짧은 딜레이
                 if (card.canActivate()) {
-                    await this.wait(300 / this.gameSpeed);
+                    await this.wait((GameConfig.timing?.cards?.repeatDelay || 300) / this.gameSpeed);
                 }
             }
 
@@ -643,7 +643,7 @@ class BattleSystem {
                 }
             };
 
-            this.timerManager.setTimeout(checkAndStartTurn, GameConfig.timing.battle.pauseDelay / this.gameSpeed, 'turn-transition');
+            this.timerManager.setTimeout(checkAndStartTurn, (GameConfig.timing?.battle?.pauseDelay || 1000) / this.gameSpeed, 'turn-transition');
         }
     }
 

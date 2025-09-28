@@ -111,11 +111,11 @@ class MainMenu {
         Object.values(this.menuButtons).forEach((button, index) => {
             if (index === this.currentSelection) {
                 button.classList.add('selected');
-                button.style.borderColor = '#f39c12';
-                button.style.background = 'linear-gradient(135deg, rgba(52, 152, 219, 0.4), rgba(52, 152, 219, 0.2))';
+                button.style.borderColor = GameConfig.colors?.ui?.primaryHover || '#f39c12';
+                button.style.background = `linear-gradient(135deg, rgba(52, 152, 219, 0.4), rgba(52, 152, 219, 0.2))`;
             } else {
                 button.classList.remove('selected');
-                button.style.borderColor = '#3498db';
+                button.style.borderColor = GameConfig.colors?.ui?.primary || '#3498db';
                 button.style.background = 'linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6))';
             }
         });
@@ -139,8 +139,8 @@ class MainMenu {
         // 애니메이션 업데이트 (항상 실행)
         this.updateAnimations();
 
-        // 렌더링이 필요하거나 16ms 이상 지났을 때만 렌더링 (60fps 제한)
-        if (!this.needsRedraw && (currentTime - this.lastRenderTime < 16)) {
+        // 렌더링이 필요하거나 설정된 시간 이상 지났을 때만 렌더링 (60fps 제한)
+        if (!this.needsRedraw && (currentTime - this.lastRenderTime < (GameConfig.timing?.rendering?.throttle || 16))) {
             return;
         }
         this.renderBackground(ctx, canvas);
@@ -155,11 +155,11 @@ class MainMenu {
 
     // 배경 렌더링
     renderBackground(ctx, canvas) {
-        // 밝은 그라데이션 배경으로 변경
+        // GameConfig에서 색상 가져오기 (안전성 검사 포함)
         const gradient = ctx.createLinearGradient(0, 0, 0, GameConfig.canvas.height);
-        gradient.addColorStop(0, '#2E4057');  // 더 밝은 블루
-        gradient.addColorStop(0.5, '#48729B'); // 밝은 파란색
-        gradient.addColorStop(1, '#5D8AA8');   // 하늘색
+        gradient.addColorStop(0, GameConfig.colors?.ui?.background?.gradient?.start || '#2E4057');
+        gradient.addColorStop(0.5, GameConfig.colors?.ui?.background?.gradient?.middle || '#48729B');
+        gradient.addColorStop(1, GameConfig.colors?.ui?.background?.gradient?.end || '#5D8AA8');
 
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, GameConfig.canvas.width, GameConfig.canvas.height);
@@ -187,7 +187,7 @@ class MainMenu {
             for (let y = -cardSize.height; y < GameConfig.canvas.height + cardSize.height; y += spacing) {
                 const offsetX = (y / spacing) % 2 === 0 ? 0 : spacing / 2;
 
-                ctx.strokeStyle = '#fff';
+                ctx.strokeStyle = GameConfig.colors?.ui?.text?.primary || '#FFFFFF';
                 ctx.lineWidth = 1;
 
                 // 카드 모양
@@ -195,8 +195,8 @@ class MainMenu {
                 ctx.stroke();
 
                 // 카드 내부 장식
-                ctx.fillStyle = '#fff';
-                ctx.font = '20px Arial';
+                ctx.fillStyle = GameConfig.colors?.ui?.text?.primary || '#FFFFFF';
+                ctx.font = `${GameConfig.fonts?.sizes?.large || 20}px ${GameConfig.fonts?.families?.main || 'Arial'}`;
                 ctx.textAlign = 'center';
                 ctx.fillText('🃏', x + offsetX + cardSize.width/2, y + cardSize.height/2);
             }
@@ -232,8 +232,8 @@ class MainMenu {
         });
 
         // 메인 제목 (더 밝고 크게)
-        ctx.fillStyle = '#FFFFFF';
-        ctx.strokeStyle = '#000000';
+        ctx.fillStyle = GameConfig.colors?.ui?.text?.primary || '#FFFFFF';
+        ctx.strokeStyle = GameConfig.colors?.ui?.text?.outline || '#000000';
         ctx.lineWidth = 2;
         titleLines.forEach((line, index) => {
             const lineY = titleY + (index - (titleLines.length - 1) / 2) * lineHeight;
@@ -243,11 +243,11 @@ class MainMenu {
 
 
         // 부제목 (더 밝게)
-        ctx.fillStyle = '#E0E0E0';
-        ctx.font = `bold ${subtitleConfig.size}px Arial`;
+        ctx.fillStyle = GameConfig.colors?.ui?.text?.secondary || '#E0E0E0';
+        ctx.font = `${GameConfig.fonts?.weights?.bold || 'bold'} ${subtitleConfig.size}px ${GameConfig.fonts?.families?.main || 'Arial'}`;
         const gameDescription = (typeof getI18nText === 'function') ?
             getI18nText('auto_battle_card_game.subtitle') || '턴 기반 자동 전투 카드 게임!' : '턴 기반 자동 전투 카드 게임!';
-        ctx.strokeStyle = '#000000';
+        ctx.strokeStyle = GameConfig.colors?.ui?.text?.outline || '#000000';
         ctx.lineWidth = 1;
         const subtitleY = titleY + subtitleConfig.offsetY;
         ctx.strokeText(gameDescription, centerX, subtitleY);
@@ -281,16 +281,16 @@ class MainMenu {
         if (!isDisabled) {
             if (isSelected) {
                 ctx.fillStyle = 'rgba(255, 215, 0, 0.4)';  // 더 진하게
-                ctx.strokeStyle = '#FFD700';
+                ctx.strokeStyle = GameConfig.colors?.ui?.selection?.selected || '#FFD700';
                 ctx.lineWidth = 3;  // 더 두껍게
             } else {
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';  // 더 진하게
-                ctx.strokeStyle = '#CCCCCC';
+                ctx.strokeStyle = GameConfig.colors?.ui?.selection?.hover || '#CCCCCC';
                 ctx.lineWidth = 2;
             }
         } else {
             ctx.fillStyle = 'rgba(100, 100, 100, 0.2)';
-            ctx.strokeStyle = '#666';
+            ctx.strokeStyle = GameConfig.colors?.ui?.selection?.border || '#666666';
             ctx.lineWidth = 1;
         }
 
@@ -323,28 +323,28 @@ class MainMenu {
         const textX = contentStartX + config.iconSize + iconTextGap + textWidth / 2;
 
         // 아이콘 렌더링
-        ctx.font = `${config.iconSize}px Arial`;
+        ctx.font = `${config.iconSize}px ${GameConfig.fonts?.families?.main || 'Arial'}`;
         ctx.textAlign = 'center';
-        ctx.fillStyle = isDisabled ? '#888' : (isSelected ? '#FFD700' : '#FFFFFF');
-        ctx.strokeStyle = '#000000';
+        ctx.fillStyle = isDisabled ? (GameConfig.colors?.ui?.text?.disabled || '#888888') : (isSelected ? (GameConfig.colors?.ui?.selection?.selected || '#FFD700') : (GameConfig.colors?.ui?.text?.primary || '#FFFFFF'));
+        ctx.strokeStyle = GameConfig.colors?.ui?.text?.outline || '#000000';
         ctx.lineWidth = 1;
         ctx.strokeText(item.icon, iconX, y + 8);
         ctx.fillText(item.icon, iconX, y + 8);
 
         // 텍스트 렌더링
-        ctx.font = `bold ${fontSize}px Arial`;
+        ctx.font = `${GameConfig.fonts?.weights?.bold || 'bold'} ${fontSize}px ${GameConfig.fonts?.families?.main || 'Arial'}`;
         ctx.textAlign = 'center';
-        ctx.fillStyle = isDisabled ? '#888' : (isSelected ? '#FFD700' : '#FFFFFF');
-        ctx.strokeStyle = '#000000';
+        ctx.fillStyle = isDisabled ? (GameConfig.colors?.ui?.text?.disabled || '#888888') : (isSelected ? (GameConfig.colors?.ui?.selection?.selected || '#FFD700') : (GameConfig.colors?.ui?.text?.primary || '#FFFFFF'));
+        ctx.strokeStyle = GameConfig.colors?.ui?.text?.outline || '#000000';
         ctx.lineWidth = 1;
         ctx.strokeText(text, textX, y + 5);
         ctx.fillText(text, textX, y + 5);
 
         // 선택 표시기 (왼쪽 끝에 배치)
         if (isSelected && !isDisabled) {
-            ctx.fillStyle = '#FFD700';
-            ctx.font = 'bold 24px Arial';
-            ctx.strokeStyle = '#000000';
+            ctx.fillStyle = GameConfig.colors?.ui?.selection?.selected || '#FFD700';
+            ctx.font = `${GameConfig.fonts?.weights?.bold || 'bold'} ${GameConfig.fonts?.sizes?.xlarge || 24}px ${GameConfig.fonts?.families?.main || 'Arial'}`;
+            ctx.strokeStyle = GameConfig.colors?.ui?.text?.outline || '#000000';
             ctx.lineWidth = 1;
             const selectorX = x - config.width/2 + 20; // 메뉴 아이템 박스 왼쪽 가장자리에서 20px 안쪽
             ctx.strokeText('▶', selectorX, y + 5);
@@ -549,25 +549,12 @@ class MainMenu {
             'tutorial-line5': 'auto_battle_card_game.tutorial.line5'
         };
 
-        // 백업 번역
-        const fallbackTranslations = {
-            'start-game': '게임 시작',
-            'game-tutorial': '게임 설명',
-            'card-gallery': '카드 갤러리',
-            'back-to-main': '메인으로',
-            'tutorial-line1': '공격카드 중 하나를 선택하여 게임을 시작하세요!',
-            'tutorial-line2': '카드는 손패 왼쪽부터 자동으로 발동됩니다!',
-            'tutorial-line3': '각 스테이지 클리어 시 랜덤으로 등장하는 세개의 카드 중에 하나를 선택하여 손패 왼쪽에 가져옵니다!',
-            'tutorial-line4': '최대 손패 카드는 10장입니다! 스테이지 클리어시 카드를 선택하여 추가, 손패의 카드와 교체, 다음 스테이지로 스킵 중에 선택 가능합니다!',
-            'tutorial-line5': '몇 스테이지까지 갈 수 있을까요! 당신의 운을 시험해보세요!'
-        };
-
         const i18nKey = i18nKeys[key];
         if (i18nKey && typeof getI18nText === 'function') {
-            return getI18nText(i18nKey) || fallbackTranslations[key] || key;
+            return getI18nText(i18nKey) || GameConfig.fallbackTranslations?.[key] || key;
         }
 
-        return fallbackTranslations[key] || key;
+        return GameConfig.fallbackTranslations?.[key] || key;
     }
 
     // 사운드 재생

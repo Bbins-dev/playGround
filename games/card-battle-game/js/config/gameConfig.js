@@ -411,32 +411,6 @@ const GameConfig = {
         statusEffectDisplay: 1000  // 상태이상 표시 시간 (ms)
     },
 
-    // 타이밍 설정 - Magic Number 정리
-    timing: {
-        modal: {
-            fadeIn: 300,           // 모달 페이드인 시간
-            fadeOut: 300,          // 모달 페이드아웃 시간
-            display: 2000,         // 자동 전환 대기시간
-            transition: 200        // 일반 전환 시간
-        },
-        battle: {
-            pauseDelay: 1000,      // 전투 일시정지 딜레이
-            resumeDelay: 500,      // 전투 재개 딜레이
-            actionDelay: 300,      // 액션 간 딜레이
-            animationStep: 100     // 애니메이션 스텝 간격
-        },
-        ui: {
-            clickFeedback: 100,    // 클릭 피드백 시간
-            hoverDelay: 200,       // 호버 딜레이
-            tooltipDelay: 500      // 툴팁 표시 딜레이
-        },
-        effects: {
-            shortFlash: 200,       // 짧은 플래시
-            longFlash: 500,        // 긴 플래시
-            fadeOut: 1000,         // 페이드아웃
-            slideIn: 300           // 슬라이드인
-        }
-    },
 
     // 렌더링 최적화 설정
     rendering: {
@@ -842,18 +816,6 @@ const GameConfig = {
         }
     },
 
-    // 색상 테마
-    colors: {
-        background: '#2C3E50',
-        text: '#FFFFFF',
-        textShadow: '#000000',
-        uiBackground: 'rgba(0, 0, 0, 0.7)',
-        buttonPrimary: '#3498DB',
-        buttonSecondary: '#95A5A6',
-        danger: '#E74C3C',
-        success: '#2ECC71',
-        warning: '#F39C12'
-    },
 
     // 턴별 배경색 설정
     turnBackgrounds: {
@@ -1566,6 +1528,216 @@ GameConfig.utils = {
         }
 
         return defenseElement;
+    },
+
+    // 색상 시스템 - 모든 하드코딩된 색상을 중앙 관리
+    colors: {
+        // 기본 UI 색상
+        ui: {
+            primary: '#3498db',           // 기본 파란색
+            primaryHover: '#f39c12',      // 호버 시 주황색
+            secondary: '#2980b9',         // 어두운 파란색
+            background: {
+                gradient: {
+                    start: '#2E4057',     // 어두운 블루
+                    middle: '#48729B',    // 밝은 파란색
+                    end: '#5D8AA8'        // 하늘색
+                }
+            },
+            text: {
+                primary: '#FFFFFF',       // 흰색 텍스트
+                secondary: '#E0E0E0',     // 밝은 회색
+                outline: '#000000',       // 검은색 외곽선
+                disabled: '#888888'       // 비활성화 텍스트
+            },
+            selection: {
+                selected: '#FFD700',      // 금색 선택됨
+                hover: '#CCCCCC',         // 회색 호버
+                border: '#666666'         // 기본 테두리
+            }
+        },
+
+        // 게임 상태 색상
+        status: {
+            victory: '#2ECC71',           // 승리 초록색
+            defeat: '#E74C3C',            // 패배 빨간색
+            warning: '#F39C12',           // 경고 주황색
+            info: '#3498DB',              // 정보 파란색
+            neutral: '#95A5A6'            // 중성 회색
+        },
+
+        // 버프/디버프 색상
+        effects: {
+            buff: '#2ECC71',              // 버프 초록색
+            debuff: '#E74C3C',            // 디버프 빨간색
+            neutral: '#3498DB',           // 중성 효과 파란색
+            poison: '#9B59B6',            // 독 보라색
+            burn: '#FF6B6B',              // 화상 빨간색
+            stun: '#F39C12'               // 기절 주황색
+        },
+
+        // 배경 및 오버레이
+        overlay: {
+            modal: 'rgba(0, 0, 0, 0.6)',  // 모달 배경
+            tooltip: 'rgba(0, 0, 0, 0.8)', // 툴팁 배경
+            glass: 'rgba(255, 255, 255, 0.15)' // 글래스모피즘
+        },
+
+        // 폴백 색상 (ColorUtils용)
+        fallback: {
+            default: '#666666',           // 기본 폴백
+            text: '#FFFFFF',              // 텍스트 폴백
+            outline: '#000000'            // 외곽선 폴백
+        }
+    },
+
+    // 폰트 시스템 - 하드코딩된 폰트 설정 중앙 관리
+    fonts: {
+        families: {
+            main: 'Arial, sans-serif',    // 기본 폰트
+            title: 'Arial, sans-serif',   // 제목 폰트
+            mono: 'monospace'             // 고정폭 폰트
+        },
+        sizes: {
+            small: 12,                    // 작은 텍스트
+            medium: 16,                   // 기본 텍스트
+            large: 20,                    // 큰 텍스트
+            xlarge: 24,                   // 매우 큰 텍스트
+            title: 28,                    // 제목 크기
+            huge: 32                      // 거대한 텍스트
+        },
+        weights: {
+            normal: 'normal',
+            bold: 'bold',
+            bolder: '900'
+        }
+    },
+
+    // 애니메이션 타이밍 시스템
+    timing: {
+        // 카드 관련 타이밍
+        cards: {
+            repeatDelay: 300,             // BattleSystem의 하드코딩된 300ms
+            activationInterval: 500       // 카드 간 발동 간격
+        },
+
+        // 모달 관련 타이밍
+        modal: {
+            fadeIn: 300,                  // 모달 페이드인 시간
+            fadeOut: 300,                 // 모달 페이드아웃 시간
+            display: 2000,                // 자동 전환 대기시간
+            transition: 200               // 일반 전환 시간
+        },
+
+        // 전투 관련 타이밍
+        battle: {
+            pauseDelay: 1000,             // 전투 일시정지 딜레이
+            resumeDelay: 500,             // 전투 재개 딜레이
+            actionDelay: 300,             // 액션 간 딜레이
+            animationStep: 100            // 애니메이션 스텝 간격
+        },
+
+        // 렌더링 관련
+        rendering: {
+            throttle: 16,                 // MainMenu 렌더링 체크 16ms
+            frameTime: 1000 / 60          // 60fps 기준
+        },
+
+        // UI 애니메이션
+        ui: {
+            fadeIn: 250,
+            fadeOut: 200,
+            transition: 300,
+            hover: 150,
+            clickFeedback: 100,           // 클릭 피드백 시간
+            hoverDelay: 200,              // 호버 딜레이
+            tooltipDelay: 500             // 툴팁 표시 딜레이
+        },
+
+        // 전투 효과
+        combat: {
+            damage: 400,
+            heal: 300,
+            statusChange: 250
+        },
+
+        // 이펙트 효과
+        effects: {
+            shortFlash: 200,              // 짧은 플래시
+            longFlash: 500,               // 긴 플래시
+            fadeOut: 1000,                // 페이드아웃
+            slideIn: 300                  // 슬라이드인
+        }
+    },
+
+    // 게임 로직 상수 - 하드코딩 제거
+    gameRules: {
+        enemy: {
+            buffStartStage: 5,            // Enemy.js의 하드코딩된 5
+            extraCardStage: 3,            // Enemy.js의 하드코딩된 3
+            maxBuffStacks: 10             // 최대 버프 중첩
+        },
+
+        combat: {
+            maxHandSize: 10,              // 최대 손패 크기
+            defaultAccuracy: 100,         // 기본 명중률
+            criticalChance: 0.1,          // 치명타 확률 10%
+            elementAdvantage: 1.5,        // 상성 유리 배율
+            elementDisadvantage: 0.5      // 상성 불리 배율
+        },
+
+        // 랜덤 범위 설정
+        randomRanges: {
+            // cardDatabase의 하드코딩된 랜덤 범위들
+            basicDamage: { min: 3, max: 5 },      // Math.random() * 3 + 3
+            enhancedDamage: { min: 2, max: 5 },   // Math.random() * 4 + 2
+            statusChance: { base: 100 },          // Math.random() * 100
+
+            // 새로운 확장 가능한 범위들
+            heal: { min: 2, max: 4 },
+            shield: { min: 1, max: 3 },
+            buffDuration: { min: 2, max: 4 }
+        }
+    },
+
+    // 언어팩 폴백 시스템 - MainMenu.js의 하드코딩 제거
+    fallbackTranslations: {
+        'start-game': '게임 시작',
+        'game-tutorial': '게임 설명',
+        'card-gallery': '카드 갤러리',
+        'back-to-main': '메인으로',
+        'tutorial-line1': '공격카드 중 하나를 선택하여 게임을 시작하세요!',
+        'tutorial-line2': '카드는 손패 왼쪽부터 자동으로 발동됩니다!',
+        'tutorial-line3': '각 스테이지 클리어 시 랜덤으로 등장하는 세개의 카드 중에 하나를 선택하여 손패 왼쪽에 가져옵니다!',
+        'tutorial-line4': '최대 손패 카드는 10장입니다! 스테이지 클리어시 카드를 선택하여 추가, 손패의 카드와 교체, 다음 스테이지로 스킵 중에 선택 가능합니다!',
+        'tutorial-line5': '몇 스테이지까지 갈 수 있을까요! 당신의 운을 시험해보세요!'
+    },
+
+    // CSS 변수 확장 설정
+    cssVariables: {
+        spacing: {
+            small: 8,
+            medium: 16,
+            large: 24,
+            xlarge: 32
+        },
+        borderRadius: {
+            small: 4,
+            medium: 8,
+            large: 16,
+            xlarge: 24
+        },
+        shadows: {
+            small: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            medium: '0 4px 8px rgba(0, 0, 0, 0.15)',
+            large: '0 8px 16px rgba(0, 0, 0, 0.2)',
+            glow: '0 0 10px rgba(255, 255, 255, 0.3)'
+        },
+        blur: {
+            small: 5,
+            medium: 10,
+            large: 15
+        }
     },
 
     // 게임 속도 적용

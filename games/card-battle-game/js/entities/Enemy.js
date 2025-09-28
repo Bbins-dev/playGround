@@ -130,7 +130,7 @@ class Enemy extends Player {
     // 적이 받을 추가 보너스 (스테이지별 난이도 조정)
     applyStageBonus(damage) {
         // 높은 스테이지에서는 공격력 보너스
-        if (this.stage > 5) {
+        if (this.stage > GameConfig.gameRules.enemy.buffStartStage) {
             return Math.floor(damage * 1.2);
         }
         return damage;
@@ -139,7 +139,7 @@ class Enemy extends Player {
     // 적 전용 상태이상 저항력
     addStatusEffect(statusType, power = null, duration = null) {
         // 높은 스테이지 적은 일부 상태이상에 저항력 보유
-        if (this.stage > 3) {
+        if (this.stage > GameConfig.gameRules.enemy.extraCardStage) {
             const resistance = Math.min(0.3, (this.stage - 3) * 0.1);
             if (Math.random() < resistance) {
                 return false;
