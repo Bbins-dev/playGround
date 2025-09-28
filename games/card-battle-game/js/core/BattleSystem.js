@@ -460,6 +460,11 @@ class BattleSystem {
             await this.effectSystem.showDefenseGainMessage(targetPosition, result.defenseGain);
         }
 
+        // 힘 버프 획득 처리 (끝없는 노력 카드 등)
+        if (result.strengthGain && result.strengthGain > 0) {
+            await this.effectSystem.showEffectMessage('strength', targetPosition, 'buff_gained', result.strengthGain);
+        }
+
         // 기타 버프 효과 - 현재 사용되지 않음 (모든 버프는 개별 처리됨)
     }
 

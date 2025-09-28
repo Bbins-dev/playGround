@@ -1752,11 +1752,9 @@ body {
 @keyframes status-border-pulse {
     0%, 100% {
         box-shadow: 0 0 10px var(--status-border-color, #9B59B6);
-        opacity: 0.6;
     }
     50% {
         box-shadow: 0 0 30px var(--status-border-color, #9B59B6);
-        opacity: 1;
     }
 }
 
