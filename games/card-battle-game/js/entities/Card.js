@@ -95,6 +95,11 @@ class Card {
         // 명중률 상한 100% 제한
         actualAccuracy = Math.min(100, actualAccuracy);
 
+        // 100% 이상이면 무조건 명중 (부동소수점 정밀도 문제 해결)
+        if (actualAccuracy >= 100) {
+            return true;  // Focus 버프로 100% 달성 시 절대 보장
+        }
+
         // Math.random() * 100이 accuracy보다 작으면 성공
         // 예: 80% 명중률이면 0~79.99는 성공, 80~100은 실패
         const roll = Math.random() * 100;

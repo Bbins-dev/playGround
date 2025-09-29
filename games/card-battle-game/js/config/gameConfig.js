@@ -2020,7 +2020,7 @@ GameConfig.utils = {
             // 데미지 처리 시 방어력 → HP 순차 업데이트 설정
             damageSequence: {
                 defenseFirst: true,       // 방어력 먼저 업데이트 (true), 동시 업데이트 (false)
-                delayBetween: 200         // 방어력과 HP 업데이트 사이 딜레이 (ms)
+                delayBetween: 50          // 방어력과 HP 업데이트 사이 딜레이 (ms) - 빠른 진행
             },
 
             // 기타 UI 애니메이션 타이밍
