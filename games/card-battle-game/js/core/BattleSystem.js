@@ -879,8 +879,8 @@ class BattleSystem {
                 this.gameManager.recordDamage('status', 'player', damage, 'poison');
             }
 
-            // HP 바 업데이트
-            await this.hpBarSystem.updateHP(player, isPlayerTurn);
+            // HP/방어력 바 순차 업데이트 (방어력 → HP 순서 보장)
+            await this.hpBarSystem.updateAfterDamage(player, isPlayerTurn);
 
             return actualDamage > 0;
         }
@@ -913,9 +913,9 @@ class BattleSystem {
                 this.gameManager.recordDamage('status', 'player', damage, 'burn');
             }
 
-            // HP 바 업데이트
+            // HP/방어력 바 순차 업데이트 (방어력 → HP 순서 보장)
             if (this.hpBarSystem) {
-                await this.hpBarSystem.updatePlayerInfo(this.player, this.enemy);
+                await this.hpBarSystem.updateAfterDamage(player, isPlayerTurn);
             }
 
             console.log(`[DEBUG] Burn damage applied: ${actualDamage} to ${player.name} (HP: ${player.hp}/${player.maxHP})`);
@@ -969,30 +969,22 @@ class BattleSystem {
         });
     }
 
-    // HP 업데이트 애니메이션 처리 (새 메서드 추가)
+    // HP 업데이트 애니메이션 처리 (순차 업데이트 적용)
     async updateHPWithAnimation(cardUser = null, selfDamageProcessed = false) {
         const updatePromises = [];
 
-        // 자해 데미지 처리된 사용자의 HP는 건너뛰기
+        // 자해 데미지 처리된 사용자는 이미 순차 업데이트 완료됨 - 건너뛰기
         if (!selfDamageProcessed || cardUser !== this.player) {
-            updatePromises.push(this.hpBarSystem.updateHP(this.player, true));
+            updatePromises.push(this.hpBarSystem.updateAfterDamage(this.player, true));
         }
         if (!selfDamageProcessed || cardUser !== this.enemy) {
-            updatePromises.push(this.hpBarSystem.updateHP(this.enemy, false));
+            updatePromises.push(this.hpBarSystem.updateAfterDamage(this.enemy, false));
         }
 
-        // HP 업데이트를 병렬로 실행
+        // 플레이어와 적의 순차 업데이트를 병렬로 실행 (각각 내부적으로는 방어력→HP 순서)
         await Promise.all(updatePromises);
 
-        // 방어력 업데이트도 애니메이션 완료까지 대기
-        await Promise.all([
-            this.hpBarSystem.updateDefense(this.player, true),
-            this.hpBarSystem.updateDefense(this.enemy, false)
-        ]);
-
-        // 상태이상과 이름은 즉시 업데이트
-        this.hpBarSystem.updateStatusEffects(this.player, true);
-        this.hpBarSystem.updateStatusEffects(this.enemy, false);
+        // 이름 업데이트 (시각적 우선순위 낮음)
         this.hpBarSystem.updateNames(this.player, this.enemy);
     }
 
@@ -1026,8 +1018,8 @@ class BattleSystem {
         };
         const selfDamage = card.selfDamage;
 
-        // 자해 데미지 시각 효과 표시 (숫자만 표시)
-        this.effectSystem.showDamageNumber(selfDamage, userPosition, 'selfDamage');
+        // 자해 데미지 시각 효과 표시 (숫자만 표시) - 통합 읽기 시간 적용
+        await this.effectSystem.showDamageNumber(selfDamage, userPosition, 'selfDamage');
 
         // 자해 데미지 적용
         user.takeDamage(selfDamage);
@@ -1037,9 +1029,9 @@ class BattleSystem {
             this.gameManager.recordDamage('self', 'player', selfDamage, 'self');
         }
 
-        // HP 바 즉시 업데이트 (processBurnDamage와 동일한 패턴)
+        // HP/방어력 바 순차 업데이트 (방어력 → HP 순서 보장)
         if (this.hpBarSystem) {
-            await this.hpBarSystem.updateHP(user, isPlayerCard);
+            await this.hpBarSystem.updateAfterDamage(user, isPlayerCard);
         }
 
         // 자해 데미지 표시 대기 시간

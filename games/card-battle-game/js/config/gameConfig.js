@@ -2015,6 +2015,20 @@ GameConfig.utils = {
             get deathAnimationDelay() { return GameConfig.masterTiming.battle.deathAnimationDelay; } // 사망 애니메이션 딜레이
         },
 
+        // UI 업데이트 관련 타이밍
+        ui: {
+            // 데미지 처리 시 방어력 → HP 순차 업데이트 설정
+            damageSequence: {
+                defenseFirst: true,       // 방어력 먼저 업데이트 (true), 동시 업데이트 (false)
+                delayBetween: 200         // 방어력과 HP 업데이트 사이 딜레이 (ms)
+            },
+
+            // 기타 UI 애니메이션 타이밍
+            fadeIn: 300,                  // UI 요소 페이드인
+            fadeOut: 300,                 // UI 요소 페이드아웃
+            statusUpdate: 100             // 상태이상 업데이트 딜레이
+        },
+
         // 렌더링 관련
         rendering: {
             throttle: 16,                 // MainMenu 렌더링 체크 16ms

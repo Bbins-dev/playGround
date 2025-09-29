@@ -569,6 +569,41 @@ class HPBarSystem {
         this.updateDefenseElementBadge(enemy, false);
     }
 
+    // 데미지 적용 후 순차 업데이트 (방어력 → HP 순서 보장)
+    async updateAfterDamage(player, isPlayer = true) {
+        // Configuration-Driven: 타이밍 설정 사용
+        const timing = GameConfig?.timing?.ui?.damageSequence || {
+            defenseFirst: true,
+            delayBetween: 200
+        };
+
+        if (timing.defenseFirst) {
+            // 1. 방어력 먼저 업데이트 (애니메이션 완료까지 대기)
+            await this.updateDefense(player, isPlayer);
+
+            // 2. 짧은 딜레이 (시각적 구분)
+            if (timing.delayBetween > 0) {
+                await new Promise(resolve => setTimeout(resolve, timing.delayBetween));
+            }
+
+            // 3. HP 업데이트 (애니메이션 완료까지 대기)
+            await this.updateHP(player, isPlayer);
+        } else {
+            // fallback: 기존 동시 업데이트
+            await Promise.all([
+                this.updateDefense(player, isPlayer),
+                this.updateHP(player, isPlayer)
+            ]);
+        }
+
+        // 4. 상태이상과 이름은 즉시 업데이트 (시각적 우선순위 낮음)
+        this.updateStatusEffects(player, isPlayer);
+        this.updateBuffs(player, isPlayer);
+
+        // 5. 방어속성 배지 업데이트
+        this.updateDefenseElementBadge(player, isPlayer);
+    }
+
     // 이름 업데이트
     updateNames(player, enemy) {
         if (this.playerName && player.name) {
