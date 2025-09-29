@@ -141,6 +141,11 @@ const GameConfig = {
             speed: '#FFD700'          // 고속 - 전기색 계열 (금색)
         },
 
+        // 스탯 표시 색상
+        stats: {
+            negativePower: '#FF6B6B'  // 음수 power - 빨간색 (fire 색상 재사용)
+        },
+
         // 기본 UI 색상
         ui: {
             primary: '#3498db',           // 기본 파란색

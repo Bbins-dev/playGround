@@ -332,7 +332,7 @@ const CardDatabase = {
             nameKey: 'auto_battle_card_game.ui.cards.thorn_armor.name',
             type: 'defense',
             element: 'normal',
-            power: 1,
+            power: -1,
             accuracy: 80,
             cost: 1,
             activationCount: 1,
@@ -341,7 +341,11 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 // 자해 데미지는 BattleSystem.preprocessSelfDamage()에서 이미 처리됨
                 // 여기서는 카드의 본연의 효과만 처리 (힘 버프 추가)
-                const strengthGain = GameConfig.cardEffects.thornArmor.strengthGain;
+
+                // 안전한 접근 방식 (Optional Chaining + 기본값)
+                const strengthGain = GameConfig?.cardEffects?.thornArmor?.strengthGain || 3;
+                console.log(`[DEBUG] 가시갑옷 strengthGain: ${strengthGain}`);
+
                 user.addStrength(strengthGain);
 
                 return {

@@ -382,6 +382,13 @@ class CardRenderer {
 
             ctx.textAlign = alignments[index];
 
+            // 음수 power일 때 색상 변경 (Configuration-Driven)
+            if (def.key === 'power' && value < 0) {
+                ctx.fillStyle = GameConfig?.masterColors?.stats?.negativePower || '#FF6B6B';
+            } else {
+                ctx.fillStyle = this.getOptimalTextColor(card);
+            }
+
             // 특별 처리 (상태이상 카드 턴 표시)
             if (def.key === 'power' && card.type === 'status' && card.activationCount > 1) {
                 this.drawTextWithOutline(ctx, `${emoji}${card.activationCount}턴`, positions[index], statsY);

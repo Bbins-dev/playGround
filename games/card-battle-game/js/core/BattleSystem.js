@@ -562,6 +562,10 @@ class BattleSystem {
         // 힘 버프 획득 처리 (가시갑옷 카드 등) - 새로운 통합 메서드 사용
         if (result.strengthGain && result.strengthGain > 0) {
             await this.effectSystem.showBuffEffect('strength', user, result.strengthGain);
+
+            // 버프 라벨 즉시 업데이트
+            const isPlayer = (user === this.player);
+            this.hpBarSystem.updateBuffs(user, isPlayer);
         }
 
         // 자가 대미지가 있는 경우 대미지 이펙트 표시

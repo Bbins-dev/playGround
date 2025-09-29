@@ -358,6 +358,12 @@ class DOMCardRenderer {
                 emoji = typeEmojiConfig.accuracy;
             }
 
+            // 음수 power일 때 색상 변경 (Configuration-Driven)
+            if (def.key === 'power' && value < 0) {
+                const negativeColor = GameConfig?.masterColors?.stats?.negativePower || '#FF6B6B';
+                element.style.color = negativeColor;
+            }
+
             // 조건부 표시 체크 (visibility: hidden으로 공간 유지)
             if (def.showCondition && !def.showCondition(card, context)) {
                 element.style.visibility = 'hidden';

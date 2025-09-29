@@ -122,9 +122,11 @@ const coords = CanvasUtils.getCanvasCoordinates(event, canvas);
 
 **⚠️ 순서 변경 시 0턴 상태이상이 화면에 남는 버그 발생**
 
-### 4. 안전한 접근 방식 (Optional Chaining)
-- GameConfig 접근 시 `GameConfig?.section?.property || defaultValue` 사용
-- 초기화 타이밍 불확실, 외부 의존성, 동적 설정값에 필수 적용
+### 4. 안전한 접근 방식 (Optional Chaining) ⚠️
+- **필수**: GameConfig 접근 시 항상 `GameConfig?.section?.property || defaultValue` 사용
+- **카드 effect 함수**: 설정값 접근 시 반드시 기본값 제공
+- **에러 방지**: try-catch 블록에서 에러 로깅 추가
+- **초기화 타이밍 문제 해결**: 동적으로 추가된 설정값도 안전하게 접근
 
 ## 🎮 게임 시스템 특성
 
@@ -146,6 +148,17 @@ const coords = CanvasUtils.getCanvasCoordinates(event, canvas);
 - **퍼센트 계산**: 곱셈 방식만 사용 `value * (1 - percent/100)`
 - **중앙 통계**: 모든 대미지는 `GameManager.recordDamage()`로만 기록
 - **즉시 효과 HP 반영**: 자해/화상/독 등은 효과 발생 즉시 `hpBarSystem.updateHP()` 호출
+
+### GameConfig 접근 규칙
+- **안전한 접근 필수**: `GameConfig?.section?.subsection?.property || defaultValue` 사용
+- **하드코딩 대신 설정 추가**: 새 기능 추가 시 먼저 GameConfig에 설정값 정의
+- **카드 효과 설정**: `cardEffects` 섹션에 카드별 설정 추가 (예: thornArmor.strengthGain)
+
+### 버프/UI 즉시 반영 규칙 ⚠️
+- **버프 획득 시 라벨 즉시 업데이트**: `hpBarSystem.updateBuffs(user, isPlayer)` 필수 호출
+- **방어 카드 버프**: processDefenseResult에서 버프 처리 후 updateBuffs 호출
+- **버프 카드**: processBuffResult에서도 동일하게 처리
+- **상태 변경 즉시 반영**: 버프, 디버프, 상태이상 적용 시 관련 UI 즉시 업데이트
 
 ### 카드 타입별 메시지 처리
 - **defense 타입 카드**: processDefenseResult() → showDefenseGainMessage() (🛡️ 방어력 +N)
