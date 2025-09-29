@@ -341,7 +341,7 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 // 자해 데미지는 BattleSystem.preprocessSelfDamage()에서 이미 처리됨
                 // 여기서는 카드의 본연의 효과만 처리 (힘 버프 추가)
-                const strengthGain = 1;
+                const strengthGain = GameConfig.cardEffects.thornArmor.strengthGain;
                 user.addStrength(strengthGain);
 
                 return {

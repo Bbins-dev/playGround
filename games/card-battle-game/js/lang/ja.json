@@ -189,7 +189,7 @@
         },
         "thorn_armor": {
           "name": "棘の鎧",
-          "description": "自分にダメージ１を与えて力１を得ます。"
+          "description": "自分にダメージ１を与えて力３を得ます。"
         },
         "taunt": {
           "name": "挑発",

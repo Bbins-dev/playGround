@@ -189,7 +189,7 @@
         },
         "thorn_armor": {
           "name": "Thorn Armor",
-          "description": "Deal 1 damage to yourself and gain 1 strength."
+          "description": "Deal 1 damage to yourself and gain 3 strength."
         },
         "taunt": {
           "name": "Taunt",

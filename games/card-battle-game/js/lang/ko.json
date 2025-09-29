@@ -189,7 +189,7 @@
         },
         "thorn_armor": {
           "name": "가시갑옷",
-          "description": "자신에게 대미지 1을 가하고 힘 1을 얻습니다."
+          "description": "자신에게 대미지 1을 가하고 힘 3을 얻습니다."
         },
         "taunt": {
           "name": "도발",

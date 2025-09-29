@@ -2135,6 +2135,11 @@ GameConfig.utils = {
             timing: {
                 get displayDuration() { return GameConfig.masterTiming.battle.statusEffectDisplay; }
             }
+        },
+
+        // 가시갑옷 카드 설정
+        thornArmor: {
+            strengthGain: 3    // 힘 증가량
         }
     },
 
