@@ -344,7 +344,6 @@ const CardDatabase = {
 
                 // 안전한 접근 방식 (Optional Chaining + 기본값)
                 const strengthGain = GameConfig?.cardEffects?.thornArmor?.strengthGain || 3;
-                console.log(`[DEBUG] 가시갑옷 strengthGain: ${strengthGain}`);
 
                 user.addStrength(strengthGain);
 
@@ -528,18 +527,13 @@ const CardDatabase = {
                 // 중독 확률 체크 (명중한 경우에만)
                 let poisoned = false;
                 const poisonRoll = Math.random() * 100;
-                console.log(`[DEBUG] Smog poison roll: ${poisonRoll.toFixed(1)} vs ${this.poisonChance}% on ${target.name}`);
 
                 if (poisonRoll < this.poisonChance) {
                     const result = target.addStatusEffect('poisoned', null, 3); // 3턴 지속
                     poisoned = result.success;
-                    console.log(`[DEBUG] Poison application result on ${target.name}:`, result);
-                    if (poisoned) {
-                        console.log(`[DEBUG] ${target.name} is now poisoned for 3 turns`);
-                        console.log(`[DEBUG] ${target.name} status effects after poison:`, target.statusEffects);
+                    if (poisoned && GameConfig?.debugMode?.showStatusEffects) {
+                        console.log(`[STATUS] 독 적용: ${target.name} (3턴)`);
                     }
-                } else {
-                    console.log(`[DEBUG] Poison roll failed for ${target.name}`);
                 }
 
                 return {

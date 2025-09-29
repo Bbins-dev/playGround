@@ -621,9 +621,6 @@ class BattleSystem {
         const currentPlayer = this.turnProgress.currentPlayer;
         const isPlayerTurn = currentPlayer === this.player;
 
-        // 디버그: 턴 종료 처리 시작
-        console.log(`[DEBUG] endTurn: ${currentPlayer.name} turn ending (isPlayer: ${isPlayerTurn})`);
-        console.log(`[DEBUG] ${currentPlayer.name} status effects before:`, currentPlayer.statusEffects);
 
         // 1. 즉시 해제가 필요한 상태이상 제거
         currentPlayer.removeStatusEffect('taunt');
@@ -639,7 +636,6 @@ class BattleSystem {
 
         // 4. 상태이상 턴수 차감 (0턴인 것 자동 제거)
         currentPlayer.endTurn();
-        console.log(`[DEBUG] ${currentPlayer.name} status effects after endTurn:`, currentPlayer.statusEffects);
 
         // 5. UI 업데이트 (차감된 상태 반영)
         this.hpBarSystem.updateStatusEffects(currentPlayer, isPlayerTurn);
@@ -855,17 +851,16 @@ class BattleSystem {
 
     // 독 상태이상 대미지 처리
     async processPoisonDamage(player, isPlayerTurn) {
-        console.log(`[DEBUG] processPoisonDamage: ${player.name} (isPlayerTurn: ${isPlayerTurn})`);
         const poisonEffect = player.statusEffects.find(e => e.type === 'poisoned');
 
         if (!poisonEffect) {
-            console.log(`[DEBUG] No poison effect found on ${player.name}`);
             return false;
         }
 
-        console.log(`[DEBUG] Poison effect found on ${player.name}:`, poisonEffect);
         const damage = Math.floor(player.maxHP * poisonEffect.power / 100);
-        console.log(`[DEBUG] Calculated poison damage: ${damage} (${poisonEffect.power}% of ${player.maxHP})`);
+        if (GameConfig?.debugMode?.showDamageCalculation) {
+            console.log(`[DOT] 독: -${damage} HP (${player.name})`);
+        }
 
         if (damage > 0) {
             const position = isPlayerTurn ?
@@ -922,7 +917,9 @@ class BattleSystem {
                 await this.hpBarSystem.updateAfterDamage(player, isPlayerTurn);
             }
 
-            console.log(`[DEBUG] Burn damage applied: ${actualDamage} to ${player.name} (HP: ${player.hp}/${player.maxHP})`);
+            if (GameConfig?.debugMode?.showDamageCalculation) {
+                console.log(`[DOT] 화상: -${actualDamage} HP (${player.name})`);
+            }
             return actualDamage > 0;
         }
         return false;

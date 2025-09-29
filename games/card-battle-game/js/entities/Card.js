@@ -63,10 +63,6 @@ class Card {
     checkAccuracy(user) {
         let actualAccuracy = this.accuracy;
 
-        // 디버깅: 가시갑옷 카드 명중률 체크
-        if (this.id === 'thorn_armor') {
-            console.log(`[DEBUG] 가시갑옷 초기 명중률: ${actualAccuracy}%`);
-        }
 
         // 모래 상태이상 체크 (공격 카드만) - 곱셈 방식으로 감소
         if (this.type === 'attack' && user && user.hasStatusEffect('sand')) {
@@ -81,9 +77,6 @@ class Card {
             const insultEffect = user.statusEffects.find(e => e.type === 'insult');
             if (insultEffect) {
                 actualAccuracy = Math.max(0, actualAccuracy * (1 - insultEffect.power / 100));
-                if (this.id === 'thorn_armor') {
-                    console.log(`[DEBUG] 가시갑옷 모욕 효과 적용 후: ${actualAccuracy}%`);
-                }
             }
         }
 
@@ -114,9 +107,9 @@ class Card {
         const roll = Math.random() * 100;
         const hit = roll < actualAccuracy;
 
-        // 디버깅: 가시갑옷 카드 결과
-        if (this.id === 'thorn_armor') {
-            console.log(`[DEBUG] 가시갑옷 최종 명중률: ${actualAccuracy}%, 주사위: ${roll.toFixed(2)}, 결과: ${hit ? 'HIT' : 'MISS'}`);
+        // 명중률 체크 로그 (디버그 모드에서만)
+        if (GameConfig?.debugMode?.showAccuracyRolls) {
+            console.log(`[${hit ? 'HIT' : 'MISS'}] ${this.name || this.id}: ${actualAccuracy.toFixed(1)}% (roll: ${roll.toFixed(1)})`);
         }
 
         return hit;

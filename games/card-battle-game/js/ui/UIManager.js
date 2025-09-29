@@ -451,7 +451,6 @@ class UIManager {
     // 홈페이지로 돌아가기 (게임 허브로)
     backToHomepage() {
         const confirmMessage = this.getI18nText('auto_battle_card_game.ui.confirm_back_to_homepage');
-        console.log('🏠 홈페이지로 돌아가기 요청:', confirmMessage);
         // 임시로 confirm 비활성화 - 다이얼로그 폭탄 방지
         // if (confirm(confirmMessage)) {
             // 게임 상태 정리
@@ -465,7 +464,6 @@ class UIManager {
     // 메뉴화면으로 돌아가기 (게임 내 메인 메뉴로)
     backToMenu() {
         const confirmMessage = this.getI18nText('auto_battle_card_game.ui.confirm_back_to_menu');
-        console.log('🔙 메뉴로 돌아가기 요청:', confirmMessage);
 
         if (confirm(confirmMessage)) {
             // 게임 상태 정리
@@ -676,26 +674,20 @@ class UIManager {
 
         // DOM 기반 승리 모달 표시 (카드 보상 포함)
         this.victoryDefeatModal.showVictory(stage || 1, () => {
-            console.log('💡 UIManager: 승리 모달 콜백 실행됨');
 
             // 모든 UI 요소 다시 표시
             this.updateUIVisibility();
-            console.log('💡 UIManager: updateUIVisibility 완료');
 
             // 전투 상호작용 재활성화
             this.isInteractive = true;
-            console.log('💡 UIManager: isInteractive = true 설정');
 
             // 전투 화면 강제 재초기화 (다음 스테이지 시작 보장)
             if (this.currentScreen === 'battle') {
                 this.initializeBattle();
-                console.log('💡 UIManager: initializeBattle 완료');
             }
 
             if (callback && typeof callback === 'function') {
-                console.log('💡 UIManager: GameManager 콜백 실행 중...');
                 callback();
-                console.log('💡 UIManager: GameManager 콜백 실행 완료');
             } else {
                 console.error('❌ UIManager: GameManager 콜백이 없거나 함수가 아님');
             }

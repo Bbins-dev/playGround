@@ -340,7 +340,6 @@ class GameManager {
 
     // 새 게임 시작 (메인 메뉴에서 호출)
     startNewGame() {
-        console.log('GameManager: 새 게임 시작');
 
         // 게임 통계 초기화
         this.initializeGameStats();
@@ -360,7 +359,6 @@ class GameManager {
 
     // 플레이어 이름 확정 후 처리
     onPlayerNameConfirmed(playerName) {
-        console.log('GameManager: 플레이어 이름 확정:', playerName);
 
         // 플레이어 생성
         this.player = new Player(playerName, true);
@@ -390,11 +388,9 @@ class GameManager {
 
     // 초기 카드 설정
     async setInitialCards(cardIds) {
-        console.log('GameManager: 초기 카드 설정', cardIds);
 
         // 플레이어가 없으면 생성 (기본 이름 사용)
         if (!this.player) {
-            console.log('플레이어가 없어서 생성합니다');
             const defaultName = I18nHelper.getText('auto_battle_card_game.ui.default_player_name') || '플레이어';
             this.player = new Player(defaultName, true);
         }
@@ -404,7 +400,6 @@ class GameManager {
             cardIds.forEach(cardId => {
                 this.cardManager.addCardToPlayer(this.player, cardId);
             });
-            console.log('카드 추가 완료. 현재 손패:', this.player.hand);
         }
 
         await this.startStage(1);
@@ -603,22 +598,18 @@ class GameManager {
      */
     async proceedToNextStage() {
         try {
-            console.log('🚀 GameManager: proceedToNextStage 호출됨 - 현재 스테이지:', this.currentStage);
 
             // 스테이지 증가
             this.currentStage++;
-            console.log('🚀 GameManager: 다음 스테이지로 증가 ->', this.currentStage);
 
             // 플레이어 체력 회복 처리
             this.applyStageHealing();
 
             // 다음 적 생성
             this.setupNextBattle();
-            console.log('🚀 GameManager: setupNextBattle 완료');
 
             // startBattle이 모든 초기화를 처리 (DRY)
             await this.startBattle();
-            console.log('🚀 GameManager: startBattle 호출 완료');
 
         } catch (error) {
             console.error('❌ 다음 스테이지 진행 에러:', error);
@@ -642,12 +633,10 @@ class GameManager {
             const healAmount = this.player.maxHP - this.player.hp;
             this.player.hp = this.player.maxHP;
             this.stageHealingAmount = healAmount;
-            console.log(`💚 스테이지 ${previousStage} 클리어: 완전 회복 (+${healAmount})`);
         } else {
             // 일반 회복 (5 HP)
             const healAmount = this.player.heal(GameConfig.healing.stageHealing);
             this.stageHealingAmount = healAmount;
-            console.log(`💚 스테이지 ${previousStage} 클리어: 일반 회복 (+${healAmount})`);
         }
     }
 
@@ -883,7 +872,6 @@ class GameManager {
             y: 1
         };
 
-        console.log(`Canvas 크기 설정 완료: ${GameConfig.canvas.width}x${GameConfig.canvas.height}`);
     }
 
     // CSS 변수와 GameConfig 동기화 - Configuration-Driven Development
@@ -1131,7 +1119,6 @@ class GameManager {
             }
         }
 
-        console.log('CSS 변수와 GameConfig 동기화 완료 (색상, 폰트, 타이밍 시스템 포함)');
     }
 
     // 뷰포트 스케일링 계산 및 적용
@@ -1158,7 +1145,6 @@ class GameManager {
         // CSS 변수로 설정
         root.style.setProperty('--viewport-scale', optimalScale);
 
-        console.log(`뷰포트 스케일링 업데이트: ${optimalScale.toFixed(3)}x (뷰포트: ${viewportWidth}x${viewportHeight})`);
     }
 
     // 윈도우 리사이즈 핸들러

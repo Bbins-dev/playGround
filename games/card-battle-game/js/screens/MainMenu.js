@@ -71,7 +71,6 @@ class MainMenu {
 
                 // 클릭 이벤트 리스너 추가
                 button._mainMenuClickHandler = () => {
-                    console.log('🎮 메뉴 버튼 클릭:', item.text); // 디버깅
                     this.currentSelection = index;
                     this.selectCurrent();
                 };
@@ -96,7 +95,6 @@ class MainMenu {
         }
         // 렌더링 강제 요청
         this.needsRedraw = true;
-        console.log('🎨 MainMenu show() - needsRedraw 설정됨'); // 디버깅용
     }
 
     // 메뉴 숨기기
@@ -433,7 +431,6 @@ class MainMenu {
 
     // 새 게임 시작
     startNewGame() {
-        console.log('MainMenu: 새 게임 시작 요청');
 
         // 저장된 속도 설정 적용
         const savedSpeed = parseInt(localStorage.getItem('cardBattle_gameSpeed') || '1');

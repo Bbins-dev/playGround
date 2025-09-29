@@ -149,7 +149,6 @@ class VictoryDefeatModal {
      * @param {Array} rewardCards - 보상 카드 배열 (선택사항)
      */
     showVictory(stage, callback, rewardCards = null) {
-        console.log('🎬 VictoryDefeatModal: showVictory 호출됨, callback:', callback);
 
         // 상태이상 효과 제거
         this.clearStatusEffects();
@@ -159,7 +158,6 @@ class VictoryDefeatModal {
 
         // 콜백 설정 (resetVictoryState 이후에!)
         this.onVictoryContinue = callback;
-        console.log('🎬 VictoryDefeatModal: 콜백 설정 완료:', this.onVictoryContinue);
 
         // 스테이지 번호 표시
         if (this.victoryStageSpan) {
@@ -328,8 +326,6 @@ class VictoryDefeatModal {
      * 승리 계속하기 버튼 처리
      */
     handleVictoryContinue() {
-        console.log('🎯 VictoryDefeatModal: handleVictoryContinue 호출됨');
-        console.log('🎯 onVictoryContinue 콜백:', this.onVictoryContinue);
 
         // 콜백을 임시 저장 (hideVictory에서 null이 되기 전에)
         const callback = this.onVictoryContinue;
@@ -337,9 +333,7 @@ class VictoryDefeatModal {
         this.hideVictory();
 
         if (callback && typeof callback === 'function') {
-            console.log('🎯 콜백 실행 중...');
             callback();
-            console.log('🎯 콜백 실행 완료');
         } else {
             console.error('❌ onVictoryContinue 콜백이 없거나 함수가 아님');
         }

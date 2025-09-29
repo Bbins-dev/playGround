@@ -99,6 +99,16 @@ const GameConfig = {
         }
     },
 
+    // 디버깅 모드 설정
+    debugMode: {
+        enabled: false,                         // 프로덕션에서는 false
+        showAccuracyRolls: true,               // 명중률 체크 표시
+        showStatusEffects: true,               // 상태이상 적용 표시
+        showDamageCalculation: false,          // 데미지 계산 숨김
+        showUIEvents: false,                   // UI 이벤트 숨김
+        showSystemInitialization: false       // 시스템 초기화 숨김
+    },
+
     // 마스터 색상 시스템 - 모든 색상의 단일 진실의 원천
     masterColors: {
         // 속성 색상

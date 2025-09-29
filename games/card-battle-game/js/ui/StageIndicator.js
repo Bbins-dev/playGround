@@ -189,19 +189,6 @@ class StageIndicator {
         this.updateProgress();
     }
 
-    // 디버그 정보 출력
-    debug() {
-        const currentInGroup = ((this.currentStage - 1) % this.fullHealInterval) + 1;
-        console.log('StageIndicator Debug:', {
-            currentStage: this.currentStage,
-            currentInGroup: currentInGroup,
-            fullHealInterval: this.fullHealInterval,
-            isVisible: !this.indicator.classList.contains('hidden'),
-            isAnimating: this.isAnimating,
-            displayText: this.stageText.textContent,
-            progressText: this.stageProgress.textContent
-        });
-    }
 }
 
 // 전역 객체로 등록
