@@ -258,6 +258,10 @@
         "fast_attack": {
           "name": "高速攻撃",
           "description": "1ターンの間、ノーマル攻撃カードの発動回数を1回増やします。"
+        },
+        "barricade": {
+          "name": "バリケード",
+          "description": "現在の防御力を2倍にします。"
         }
       },
       "buffs": {

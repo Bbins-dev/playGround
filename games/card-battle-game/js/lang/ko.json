@@ -258,6 +258,10 @@
         "fast_attack": {
           "name": "고속공격",
           "description": "한 턴 간 노멀 공격카드의 발동횟수를 1회 증가시킵니다."
+        },
+        "barricade": {
+          "name": "바리케이트",
+          "description": "현재 방어력을 두 배로 높입니다."
         }
       },
       "buffs": {

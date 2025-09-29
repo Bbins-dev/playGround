@@ -959,6 +959,35 @@ const CardDatabase = {
                 };
             }
         });
+
+        // 바리케이트 카드 (현재 방어력 2배 증가)
+        this.addCard({
+            id: 'barricade',
+            nameKey: 'auto_battle_card_game.ui.cards.barricade.name',
+            type: 'buff',
+            element: 'normal',
+            power: 0,
+            accuracy: 70,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.barricade.description',
+            effect: function(user, target, battleSystem) {
+                const currentDefense = user.defense;
+                const multiplier = GameConfig.constants.multipliers.barricadeDefense;
+                const newDefense = currentDefense * multiplier;
+                const defenseGain = newDefense - currentDefense;
+
+                // 방어력 설정 (현재 방어력 × 배수)
+                user.defense = newDefense;
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.defense_gained',
+                    defenseGain: defenseGain,
+                    element: this.element
+                };
+            }
+        });
     }
 };
 

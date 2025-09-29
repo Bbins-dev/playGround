@@ -258,6 +258,10 @@
         "fast_attack": {
           "name": "Fast Attack",
           "description": "Increases normal attack card activation count by 1 for one turn."
+        },
+        "barricade": {
+          "name": "Barricade",
+          "description": "Doubles your current defense."
         }
       },
       "buffs": {

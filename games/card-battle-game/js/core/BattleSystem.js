@@ -470,9 +470,12 @@ class BattleSystem {
 
     // 버프 결과 처리 - Configuration-Driven (위치 자동 결정)
     async processBuffResult(result, user) {
-        // 방어력 버프 - 새로운 통합 메서드 사용
-        if (result.defenseGain) {
-            await this.effectSystem.showBuffEffect('defense', user, result.defenseGain);
+        // 방어력 버프 - 방어력 획득 메시지 표시 (0도 표시)
+        if (result.defenseGain !== undefined) {
+            const userPosition = user.isPlayer ?
+                this.effectSystem.getPlayerPosition() :
+                this.effectSystem.getEnemyPosition();
+            await this.effectSystem.showDefenseGainMessage(userPosition, result.defenseGain);
         }
 
         // 힘 버프 획득 처리 (끝없는 노력 카드 등) - 새로운 통합 메서드 사용

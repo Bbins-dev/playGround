@@ -147,6 +147,11 @@ const coords = CanvasUtils.getCanvasCoordinates(event, canvas);
 - **중앙 통계**: 모든 대미지는 `GameManager.recordDamage()`로만 기록
 - **즉시 효과 HP 반영**: 자해/화상/독 등은 효과 발생 즉시 `hpBarSystem.updateHP()` 호출
 
+### 카드 타입별 메시지 처리
+- **defense 타입 카드**: processDefenseResult() → showDefenseGainMessage() (🛡️ 방어력 +N)
+- **buff 타입 방어력 증가**: processBuffResult()에서 defenseGain 체크 → showDefenseGainMessage() 직접 호출
+- **버프 라벨 vs 즉시 효과**: 지속 버프는 showBuffEffect(), 즉시 방어력 증가는 showDefenseGainMessage()
+
 ## 🚀 Quick Development
 
 ### 개발 시작

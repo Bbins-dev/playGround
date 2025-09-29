@@ -35,7 +35,8 @@ const GameConfig = {
             normal: 1.0,                        // 기본 배율
             disadvantage: 0.5,                  // 상성 불리 배율
             buffMultiplier: 1.5,                // 강화 버프 배율 (50% 증가)
-            criticalHit: 2.0                    // 치명타 배율
+            criticalHit: 2.0,                   // 치명타 배율
+            barricadeDefense: 2.0               // 바리케이트 방어력 배수
         },
 
         // 게임 제한값
@@ -135,7 +136,7 @@ const GameConfig = {
         // 버프 색상
         buffs: {
             strength: '#FF8C00',      // 힘 - 주황색 계열
-            enhance: '#FFD700',       // 강화 - 골드색
+            enhance: '#C0C0C0',       // 강화 - 은색
             focus: '#3498db',         // 집중 - 파란색 계열
             speed: '#FFD700'          // 고속 - 전기색 계열 (금색)
         },
