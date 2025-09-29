@@ -254,13 +254,18 @@
         "focus": {
           "name": "Focus",
           "description": "Increases normal attack card accuracy by 30% for one turn."
+        },
+        "fast_attack": {
+          "name": "Fast Attack",
+          "description": "Increases normal attack card activation count by 1 for one turn."
         }
       },
       "buffs": {
         "strength": "STR",
         "defense": "DEF",
         "enhance": "ENH",
-        "focus": "FOC"
+        "focus": "FOC",
+        "speed": "SPD"
       },
       "elements": {
         "fire": "Fire",

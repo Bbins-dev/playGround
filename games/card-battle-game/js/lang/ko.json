@@ -254,13 +254,18 @@
         "focus": {
           "name": "집중",
           "description": "한 턴간 노멀 공격카드의 명중률을 30% 상승시킵니다."
+        },
+        "fast_attack": {
+          "name": "고속공격",
+          "description": "한 턴 간 노멀 공격카드의 발동횟수를 1회 증가시킵니다."
         }
       },
       "buffs": {
         "strength": "힘",
         "defense": "방어력",
         "enhance": "강화",
-        "focus": "집중"
+        "focus": "집중",
+        "speed": "고속"
       },
       "elements": {
         "fire": "불",

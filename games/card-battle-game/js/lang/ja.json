@@ -254,13 +254,18 @@
         "focus": {
           "name": "集中",
           "description": "1ターンの間、ノーマル攻撃カードの命中率を30%増加させます。"
+        },
+        "fast_attack": {
+          "name": "高速攻撃",
+          "description": "1ターンの間、ノーマル攻撃カードの発動回数を1回増やします。"
         }
       },
       "buffs": {
         "strength": "力",
         "defense": "防御力",
         "enhance": "強化",
-        "focus": "集中"
+        "focus": "集中",
+        "speed": "高速"
       },
       "elements": {
         "fire": "火",

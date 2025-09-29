@@ -136,7 +136,8 @@ const GameConfig = {
         buffs: {
             strength: '#FF8C00',      // 힘 - 주황색 계열
             enhance: '#FFD700',       // 강화 - 골드색
-            focus: '#3498db'          // 집중 - 파란색 계열
+            focus: '#3498db',         // 집중 - 파란색 계열
+            speed: '#FFD700'          // 고속 - 전기색 계열 (금색)
         },
 
         // 기본 UI 색상
@@ -609,6 +610,22 @@ const GameConfig = {
             },
             effect: {
                 accuracy: 30  // 30% 증가
+            }
+        },
+        speed: {
+            nameKey: 'auto_battle_card_game.ui.buffs.speed',
+            name: '고속',
+            emoji: '⚡',
+            description: '노멀 공격카드 발동횟수 +{value}',
+            get color() { return GameConfig.masterColors.buffs.speed; }, // 전기색 계열
+            get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수
+            targetSelf: true, // 자신에게 적용되는 버프
+            display: {
+                showValue: true,
+                format: '+{value}({turns})'  // 예: +3(1)
+            },
+            effect: {
+                activationBonus: 1  // 카드당 추가 횟수
             }
         }
     },

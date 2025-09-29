@@ -490,6 +490,10 @@ class BattleSystem {
             await this.effectSystem.showBuffEffect('focus', user, result.focusGain);
         }
 
+        // 고속 버프 획득 처리 (고속공격 카드) - 새로운 통합 메서드 사용
+        if (result.speedGain && result.speedGain > 0) {
+            await this.effectSystem.showBuffEffect('speed', user, result.speedGain);
+        }
         // 기타 버프 효과 - 확장 가능한 구조
         // TODO: 다른 버프 타입들도 동일한 패턴으로 추가 가능
     }

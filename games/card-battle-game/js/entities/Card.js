@@ -154,7 +154,10 @@ class Card {
 
     // 카드가 발동 가능한지 체크
     canActivate() {
-        return this.isActive && this.currentActivations < this.activationCount;
+        // 고속 버프가 적용된 경우 modifiedActivationCount 사용
+        const effectiveCount = this.modifiedActivationCount !== undefined ?
+            this.modifiedActivationCount : this.activationCount;
+        return this.isActive && this.currentActivations < effectiveCount;
     }
 
     // 표시용 스탯 가져오기 (context에 따라 다른 값 반환)

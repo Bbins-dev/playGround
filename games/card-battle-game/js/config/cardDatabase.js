@@ -929,6 +929,36 @@ const CardDatabase = {
                 };
             }
         });
+
+        // 고속공격 카드 (고속 버프 카드)
+        this.addCard({
+            id: 'fast_attack',
+            nameKey: 'auto_battle_card_game.ui.cards.fast_attack.name',
+            type: 'buff',
+            element: 'normal',
+            power: 0,
+            accuracy: 70,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.fast_attack.description',
+            effect: function(user, target, battleSystem) {
+                const speedGain = 1;
+                user.addSpeedBuff(speedGain);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
+                    buffType: 'speed',
+                    speedGain: speedGain,
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig.buffs.speed.name,
+                        value: user.speedBonus,
+                        turns: user.speedTurns
+                    }
+                };
+            }
+        });
     }
 };
 

@@ -29,6 +29,8 @@ class Player {
         this.strength = 0; // 힘 버프
         this.enhanceTurns = 0; // 강화 버프 남은 턴 수
         this.focusTurns = 0; // 집중 버프 남은 턴 수
+        this.speedBonus = 0; // 고속 추가 발동횟수
+        this.speedTurns = 0; // 고속 버프 남은 턴 수
 
         // 턴 관련
         this.currentCardIndex = 0;
@@ -247,10 +249,31 @@ class Player {
         return turns;
     }
 
+    // 고속 버프 관련 메서드
+    hasSpeedBuff() {
+        return this.speedTurns > 0;
+    }
+
+    addSpeedBuff(bonus) {
+        this.speedBonus += bonus;
+        this.speedTurns = 1; // 항상 1턴
+
+        // 즉시 현재 손패의 노멀 공격카드들에 적용
+        this.hand.forEach(card => {
+            if (card.type === 'attack' && card.element === 'normal') {
+                card.modifiedActivationCount = card.activationCount + this.speedBonus;
+            }
+        });
+
+        return bonus;
+    }
+
     clearBuffs() {
         this.strength = 0;
         this.enhanceTurns = 0;
         this.focusTurns = 0;
+        this.speedBonus = 0;
+        this.speedTurns = 0;
     }
 
     // 턴 관련 메서드
@@ -273,6 +296,14 @@ class Player {
                 // 일반 카드들은 currentActivations만 리셋
                 card.currentActivations = 0;
             }
+
+            // 고속 버프 적용 (노멀 공격카드만)
+            if (this.hasSpeedBuff() && card.type === 'attack' && card.element === 'normal') {
+                card.modifiedActivationCount = card.activationCount + this.speedBonus;
+            } else {
+                // 고속 버프가 없거나 적용 대상이 아닌 경우 초기화
+                card.modifiedActivationCount = undefined;
+            }
         });
 
 
@@ -294,6 +325,20 @@ class Player {
         // 집중 버프 턴수 차감
         if (this.focusTurns > 0) {
             this.focusTurns--;
+        }
+
+        // 고속 버프 턴수 차감
+        if (this.speedTurns > 0) {
+            this.speedTurns--;
+            if (this.speedTurns === 0) {
+                this.speedBonus = 0;
+                // 버프 해제 시 모든 카드의 modifiedActivationCount 초기화
+                this.hand.forEach(card => {
+                    if (card.type === 'attack' && card.element === 'normal') {
+                        card.modifiedActivationCount = undefined;
+                    }
+                });
+            }
         }
     }
 
