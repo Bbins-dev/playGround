@@ -346,10 +346,10 @@ class CardRenderer {
 
         const statsY = y + height * this.style.layout.stats.y;
 
-        // 모든 카드에 동일한 스탯 위치 적용
-        const leftX = x + statConfig.statPositions.leftOffset;
+        // 모든 카드에 동일한 스탯 위치 적용 (비율 기반)
+        const leftX = x + width * statConfig.statPositions.leftRatio;
         const centerX = x + width * statConfig.statPositions.centerRatio;
-        const rightX = x + width - statConfig.statPositions.rightOffset;
+        const rightX = x + width * statConfig.statPositions.rightRatio;
 
         // 카드의 현재 스탯 가져오기 (context에 따라 다름)
         const stats = card.getDisplayStats ? card.getDisplayStats(context) : {

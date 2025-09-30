@@ -282,6 +282,10 @@
         "barricade": {
           "name": "바리케이트",
           "description": "현재 방어력을 두 배로 높입니다."
+        },
+        "red_pendant": {
+          "name": "붉은 펜던트",
+          "description": "자신에게 방어력 3과 힘 1을 추가합니다."
         }
       },
       "buffs": {
@@ -334,7 +338,8 @@
         "defense_gained": "🛡️ 방어력 +{value}",
         "heal_effect": "❤️ 체력 +{value}",
         "self_damage": "자신에게 {damage} 데미지!",
-        "karura_strike_effect": "자신에게 {selfDamage} 피해! 상대에게 {damage} 피해!"
+        "karura_strike_effect": "자신에게 {selfDamage} 피해! 상대에게 {damage} 피해!",
+        "red_pendant_effect": "🛡️ 방어력 +{defense}, 💪 힘 +{strength}"
       },
       "card_selection": {
         "initial_title": "시작 카드 선택",

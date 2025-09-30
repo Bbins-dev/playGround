@@ -1695,9 +1695,9 @@ const GameConfig = {
         emojiSpacing: '', // 이모지와 수치 사이 간격 제거 (모든 카드 통일)
         // 모든 카드에 동일 적용되는 스탯 위치 설정
         statPositions: {
-            leftOffset: 20,     // 왼쪽 스탯을 20px에서 시작 (8px → 20px, 더 오른쪽으로 이동)
+            leftRatio: 0.05,    // 왼쪽 스탯을 카드 폭의 5% 위치에 배치 (더 왼쪽 가장자리에 가깝게)
             centerRatio: 0.47,  // 중앙 스탯을 47% 위치에 배치
-            rightOffset: 8      // 오른쪽 스탯을 8px 안쪽에서 시작
+            rightRatio: 0.95    // 오른쪽 스탯을 카드 폭의 95% 위치에 배치 (오른쪽 끝 근처)
         },
         definitions: [
             {

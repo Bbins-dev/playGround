@@ -282,6 +282,10 @@
         "barricade": {
           "name": "バリケード",
           "description": "現在の防御力を2倍にします。"
+        },
+        "red_pendant": {
+          "name": "赤いペンダント",
+          "description": "自分に防御力3と力1を追加します。"
         }
       },
       "buffs": {
@@ -334,7 +338,8 @@
         "defense_gained": "🛡️ 防御力 +{value}",
         "heal_effect": "❤️ 体力 +{value}",
         "self_damage": "自分に{damage}ダメージ！",
-        "karura_strike_effect": "自分に{selfDamage}ダメージ！相手に{damage}ダメージ！"
+        "karura_strike_effect": "自分に{selfDamage}ダメージ！相手に{damage}ダメージ！",
+        "red_pendant_effect": "🛡️ 防御力 +{defense}、💪 力 +{strength}"
       },
       "card_selection": {
         "initial_title": "スタートカード選択",

@@ -335,14 +335,14 @@ class DOMCardRenderer {
             let positionStyle = '';
 
             if (index === 0) {  // 왼쪽 (power)
-                const leftPos = statConfig.statPositions.leftOffset;
-                positionStyle = `position: absolute; left: ${leftPos}px; top: 50%; transform: translateY(-50%);`;
+                const leftPercent = (statConfig.statPositions.leftRatio * 100);
+                positionStyle = `position: absolute; left: ${leftPercent}%; top: 50%; transform: translateY(-50%);`;
             } else if (index === 1) {  // 중앙 (activation)
                 const centerPercent = (statConfig.statPositions.centerRatio * 100);
                 positionStyle = `position: absolute; left: ${centerPercent}%; top: 50%; transform: translate(-50%, -50%);`;
             } else if (index === 2) {  // 오른쪽 (accuracy)
-                const rightPos = statConfig.statPositions.rightOffset;
-                positionStyle = `position: absolute; right: ${rightPos}px; top: 50%; transform: translateY(-50%);`;
+                const rightFromEdge = ((1 - statConfig.statPositions.rightRatio) * 100);
+                positionStyle = `position: absolute; right: ${rightFromEdge}%; top: 50%; transform: translateY(-50%);`;
             }
 
             element.style.cssText = `

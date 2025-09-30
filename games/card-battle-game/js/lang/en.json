@@ -282,6 +282,10 @@
         "barricade": {
           "name": "Barricade",
           "description": "Doubles your current defense."
+        },
+        "red_pendant": {
+          "name": "Red Pendant",
+          "description": "Adds 3 defense and 1 strength to yourself."
         }
       },
       "buffs": {
@@ -334,7 +338,8 @@
         "defense_gained": "🛡️ DEF +{value}",
         "heal_effect": "❤️ HP +{value}",
         "self_damage": "{damage} self-damage!",
-        "karura_strike_effect": "{selfDamage} self-damage! {damage} damage to opponent!"
+        "karura_strike_effect": "{selfDamage} self-damage! {damage} damage to opponent!",
+        "red_pendant_effect": "🛡️ Defense +{defense}, 💪 Strength +{strength}"
       },
       "card_selection": {
         "initial_title": "Start Card Selection",

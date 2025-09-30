@@ -1154,6 +1154,46 @@ const CardDatabase = {
                 };
             }
         });
+
+        // 붉은 펜던트 카드 (불속성 방어력 3 + 힘 1 버프)
+        this.addCard({
+            id: 'red_pendant',
+            nameKey: 'auto_battle_card_game.ui.cards.red_pendant.name',
+            type: 'defense',
+            element: 'fire',
+            power: 3,
+            accuracy: 80,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.red_pendant.description',
+            effect: function(user, target, battleSystem) {
+                const defenseValue = this.power;
+                const strengthGain = GameConfig?.cardEffects?.redPendant?.strengthGain || 1;
+
+                // 방어력 추가
+                user.addDefense(defenseValue);
+
+                // 힘 버프 추가
+                user.addStrength(strengthGain);
+
+                // 버프 UI 즉시 업데이트
+                if (battleSystem && battleSystem.hpBarSystem) {
+                    battleSystem.hpBarSystem.updateBuffs(user, true);
+                }
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.red_pendant_effect',
+                    defenseGain: defenseValue,
+                    strengthGain: strengthGain,
+                    element: this.element,
+                    templateData: {
+                        defense: defenseValue,
+                        strength: strengthGain
+                    }
+                };
+            }
+        });
     }
 };
 
