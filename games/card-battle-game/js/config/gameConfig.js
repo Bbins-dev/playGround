@@ -1695,7 +1695,7 @@ const GameConfig = {
         emojiSpacing: '', // 이모지와 수치 사이 간격 제거 (모든 카드 통일)
         // 모든 카드에 동일 적용되는 스탯 위치 설정
         statPositions: {
-            leftOffset: 8,      // 왼쪽 스탯을 8px에서 시작
+            leftOffset: 20,     // 왼쪽 스탯을 20px에서 시작 (8px → 20px, 더 오른쪽으로 이동)
             centerRatio: 0.47,  // 중앙 스탯을 47% 위치에 배치
             rightOffset: 8      // 오른쪽 스탯을 8px 안쪽에서 시작
         },
@@ -2173,6 +2173,11 @@ GameConfig.utils = {
         // 웅크리기 카드 설정
         crouch: {
             defenseGain: 30    // 방어력 증가량
+        },
+        // 작열방패 카드 설정
+        scorchedShield: {
+            selfDamage: 3,     // 자해 데미지 3
+            defenseGain: 13    // 방어력 13 획득
         }
     },
 
