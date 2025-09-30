@@ -412,7 +412,7 @@ class CardRenderer {
         }
         if (!description) return;
 
-        ctx.font = `${fontSize}px Arial`;
+        ctx.font = `bold ${fontSize}px Arial`;
         ctx.fillStyle = this.getOptimalTextColor(card);
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
@@ -490,7 +490,7 @@ class CardRenderer {
 
     // 모든 카드에 약간 회색빛 텍스트 사용 (가독성 개선)
     getOptimalTextColor(card) {
-        return '#F5F5F5';  // 순백색보다 아주 약간 회색 (96% 밝기)
+        return '#FFFFFF';  // 순백색 (100% 밝기) - 최대 가독성
     }
 
     // 외곽선이 있는 텍스트 그리기 - TextRenderer 사용

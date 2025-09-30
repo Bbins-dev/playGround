@@ -1275,8 +1275,8 @@ body {
 }
 
 .defense-element-badge.normal {
-    background: linear-gradient(135deg, rgba(248, 249, 250, 0.85), rgba(233, 236, 239, 0.85));
-    border-color: #DEE2E6;
+    background: linear-gradient(135deg, rgba(240, 230, 216, 0.85), rgba(230, 220, 206, 0.85));
+    border-color: #E0D0C0;
 }
 
 /* 방어속성 배지 래퍼 스타일 */

@@ -344,7 +344,7 @@ class DOMCardRenderer {
 
             element.style.cssText = `
                 ${positionStyle}
-                color: #F5F5F5;
+                color: #FFFFFF;
                 ${textShadow}
             `;
 
@@ -416,6 +416,7 @@ class DOMCardRenderer {
             width: ${width - 20}px;
             font-size: ${adjustedFontSize}px;
             font-family: Arial;
+            font-weight: bold;
             text-align: center;
             line-height: ${adjustedFontSize * 1.2}px;
             word-wrap: break-word;
@@ -462,14 +463,14 @@ class DOMCardRenderer {
         const textOutline = GameConfig.cardStyle.textOutline;
 
         if (!textOutline.enabled) {
-            return 'color: #F5F5F5;';  // 미세한 회색만
+            return 'color: #FFFFFF;';  // 순백색 - 최대 가독성
         }
 
         // 외곽선이 활성화된 경우 TextRenderer를 통해 CSS text-shadow 생성
         const textShadow = TextRenderer.getTextOutlineStyle(textOutline.width, textOutline.color);
 
         return `
-            color: #F5F5F5;
+            color: #FFFFFF;
             ${textShadow}
         `;
     }

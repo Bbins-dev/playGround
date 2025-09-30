@@ -117,7 +117,7 @@ const GameConfig = {
             water: '#87CEEB',         // 하늘색
             electric: '#FFD700',      // 노랑색
             poison: '#9B59B6',        // 보라색
-            normal: '#F8F9FA',        // 밝은 회색/하얀색
+            normal: '#F0E6D8',        // 밝은 베이지 (따뜻한 중립색, 흰색 텍스트 가독성 유지)
             special: '#90EE90'        // 연두색
         },
 
