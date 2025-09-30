@@ -1692,7 +1692,13 @@ const GameConfig = {
 
     // 카드 스탯 표시 시스템
     statDisplay: {
-        emojiSpacing: ' ', // 이모지와 수치 사이 간격 (Configuration-Driven)
+        emojiSpacing: '', // 이모지와 수치 사이 간격 제거 (모든 카드 통일)
+        // 모든 카드에 동일 적용되는 스탯 위치 설정
+        statPositions: {
+            leftOffset: 8,      // 왼쪽 스탯을 8px에서 시작
+            centerRatio: 0.47,  // 중앙 스탯을 47% 위치에 배치
+            rightOffset: 8      // 오른쪽 스탯을 8px 안쪽에서 시작
+        },
         definitions: [
             {
                 key: 'power',

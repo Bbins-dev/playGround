@@ -298,6 +298,7 @@ class DOMCardRenderer {
     createCardStats(card, width, height, fontSize, context = 'default') {
         const statsContainer = document.createElement('div');
         const y = height * this.style.layout.stats.y;
+        const statConfig = GameConfig.statDisplay;
 
         statsContainer.style.cssText = `
             position: absolute;
@@ -318,11 +319,9 @@ class DOMCardRenderer {
             activation: card.activationCount
         };
 
-        // GameConfig에서 스탯 표시 설정 가져오기
-        const statConfig = GameConfig.statDisplay;
         const typeEmojiConfig = statConfig.typeStatEmojis[card.type] || statConfig.typeStatEmojis.attack;
 
-        // 스탯 정의에 따라 동적으로 스탯 표시 (Canvas와 동일한 고정 위치 방식)
+        // 스탯 정의에 따라 동적으로 스탯 표시
         statConfig.definitions.forEach((def, index) => {
             const element = document.createElement('span');
 
@@ -332,14 +331,18 @@ class DOMCardRenderer {
                 ? TextRenderer.getTextOutlineStyle(textOutline.width, textOutline.color)
                 : '';
 
-            // 위치별 스타일 설정 (Canvas 렌더러와 동일한 위치)
+            // 모든 카드에 동일한 위치 설정 적용
             let positionStyle = '';
+
             if (index === 0) {  // 왼쪽 (power)
-                positionStyle = 'position: absolute; left: 15px; top: 50%; transform: translateY(-50%);';
+                const leftPos = statConfig.statPositions.leftOffset;
+                positionStyle = `position: absolute; left: ${leftPos}px; top: 50%; transform: translateY(-50%);`;
             } else if (index === 1) {  // 중앙 (activation)
-                positionStyle = 'position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);';
+                const centerPercent = (statConfig.statPositions.centerRatio * 100);
+                positionStyle = `position: absolute; left: ${centerPercent}%; top: 50%; transform: translate(-50%, -50%);`;
             } else if (index === 2) {  // 오른쪽 (accuracy)
-                positionStyle = 'position: absolute; right: 15px; top: 50%; transform: translateY(-50%);';
+                const rightPos = statConfig.statPositions.rightOffset;
+                positionStyle = `position: absolute; right: ${rightPos}px; top: 50%; transform: translateY(-50%);`;
             }
 
             element.style.cssText = `
@@ -369,14 +372,15 @@ class DOMCardRenderer {
                 element.style.visibility = 'hidden';
             }
 
+            // 통일된 이모지 간격 적용
+            const spacing = statConfig.emojiSpacing;
+
             // 특별 처리 (상태이상 카드 턴 표시)
             if (def.key === 'power' && card.type === 'status' && card.activationCount > 1) {
-                const spacing = GameConfig.statDisplay?.emojiSpacing || '';
                 element.textContent = `${emoji}${spacing}${card.activationCount}턴`;
             } else {
                 // 포맷팅 적용
                 const formattedValue = def.format ? def.format(value, card) : value;
-                const spacing = GameConfig.statDisplay?.emojiSpacing || '';
                 element.textContent = `${emoji}${spacing}${formattedValue}`;
             }
 

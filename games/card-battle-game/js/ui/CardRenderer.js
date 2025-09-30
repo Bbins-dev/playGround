@@ -338,14 +338,18 @@ class CardRenderer {
 
     // 스탯 정보 그리기 (context 기반 동적 표시)
     drawCardStats(ctx, card, x, y, width, height, fontSize, context = 'default') {
+        const statConfig = GameConfig.statDisplay;
+
         ctx.font = `bold ${fontSize}px Arial`;
         ctx.textBaseline = 'middle';
         ctx.fillStyle = this.getOptimalTextColor(card);
 
         const statsY = y + height * this.style.layout.stats.y;
-        const leftX = x + 15;
-        const centerX = x + width / 2;
-        const rightX = x + width - 15;
+
+        // 모든 카드에 동일한 스탯 위치 적용
+        const leftX = x + statConfig.statPositions.leftOffset;
+        const centerX = x + width * statConfig.statPositions.centerRatio;
+        const rightX = x + width - statConfig.statPositions.rightOffset;
 
         // 카드의 현재 스탯 가져오기 (context에 따라 다름)
         const stats = card.getDisplayStats ? card.getDisplayStats(context) : {
@@ -354,8 +358,6 @@ class CardRenderer {
             activation: card.activationCount
         };
 
-        // GameConfig에서 스탯 표시 설정 가져오기
-        const statConfig = GameConfig.statDisplay;
         const typeEmojiConfig = statConfig.typeStatEmojis[card.type] || statConfig.typeStatEmojis.attack;
 
         // 스탯 정의에 따라 동적으로 스탯 표시
@@ -389,14 +391,15 @@ class CardRenderer {
                 ctx.fillStyle = this.getOptimalTextColor(card);
             }
 
+            // 통일된 이모지 간격 적용
+            const spacing = statConfig.emojiSpacing;
+
             // 특별 처리 (상태이상 카드 턴 표시)
             if (def.key === 'power' && card.type === 'status' && card.activationCount > 1) {
-                const spacing = GameConfig.statDisplay?.emojiSpacing || '';
                 this.drawTextWithOutline(ctx, `${emoji}${spacing}${card.activationCount}턴`, positions[index], statsY);
             } else {
                 // 포맷팅 적용
                 const formattedValue = def.format ? def.format(value, card) : value;
-                const spacing = GameConfig.statDisplay?.emojiSpacing || '';
                 this.drawTextWithOutline(ctx, `${emoji}${spacing}${formattedValue}`, positions[index], statsY);
             }
         });
