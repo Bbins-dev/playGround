@@ -159,7 +159,7 @@ const CardDatabase = {
             cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.concussion.description',
-            stunChance: 60,
+            stunChance: GameConfig?.cardEffects?.concussion?.stunChance || 40,
             effect: function(user, target, battleSystem) {
                 let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
 
@@ -277,7 +277,7 @@ const CardDatabase = {
             nameKey: 'auto_battle_card_game.ui.cards.crouch.name',
             type: 'defense',
             element: 'normal',
-            power: 15,
+            power: GameConfig?.cardEffects?.crouch?.defenseGain || 30,
             accuracy: 100,
             cost: 1,
             activationCount: 1,

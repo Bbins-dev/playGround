@@ -1103,6 +1103,12 @@ class GameManager {
                 root.style.setProperty('--blur-medium', `${GameConfig.cssVariables.blur.medium}px`);
                 root.style.setProperty('--blur-large', `${GameConfig.cssVariables.blur.large}px`);
             }
+
+            if (GameConfig.cssVariables.cardGrid) {
+                root.style.setProperty('--card-grid-gap', `${GameConfig.cssVariables.cardGrid.gap}px`);
+                root.style.setProperty('--card-grid-columns', GameConfig.cssVariables.cardGrid.columns);
+                root.style.setProperty('--card-grid-padding', GameConfig.cssVariables.cardGrid.padding);
+            }
         }
 
         // 애니메이션 타이밍 설정

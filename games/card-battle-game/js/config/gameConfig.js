@@ -2156,6 +2156,16 @@ GameConfig.utils = {
         // 가시갑옷 카드 설정
         thornArmor: {
             strengthGain: 3    // 힘 증가량
+        },
+
+        // 뇌진탕 카드 설정
+        concussion: {
+            stunChance: 40     // 기절 확률 (40%)
+        },
+
+        // 웅크리기 카드 설정
+        crouch: {
+            defenseGain: 30    // 방어력 증가량
         }
     },
 
@@ -2199,6 +2209,11 @@ GameConfig.utils = {
             small: 5,
             medium: 10,
             large: 15
+        },
+        cardGrid: {
+            gap: 20,              // 카드 간 간격 (40px → 20px로 감소)
+            columns: 2,           // 그리드 열 개수
+            padding: '20px 15px'  // 그리드 패딩
         }
     },
 

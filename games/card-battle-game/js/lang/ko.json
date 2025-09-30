@@ -181,7 +181,7 @@
         },
         "crouch": {
           "name": "웅크리기",
-          "description": "자신에게 방어력 15를 추가하고 턴을 넘깁니다."
+          "description": "자신에게 방어력 30을 추가하고 턴을 넘깁니다."
         },
         "large_shield": {
           "name": "거대방패",

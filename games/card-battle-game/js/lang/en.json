@@ -181,7 +181,7 @@
         },
         "crouch": {
           "name": "Crouch",
-          "description": "Add 15 defense to yourself and skip your turn."
+          "description": "Add 30 defense to yourself and skip your turn."
         },
         "large_shield": {
           "name": "Large Shield",
