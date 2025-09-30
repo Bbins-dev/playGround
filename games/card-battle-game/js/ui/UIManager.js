@@ -702,10 +702,18 @@ class UIManager {
             gameWrapper.classList.remove(effect.className);
         });
 
+        // 명시적으로 border 스타일 초기화 (잔여 border 제거)
+        gameWrapper.style.border = 'none';
+        gameWrapper.style.animation = 'none';
+
         // 플레이어의 현재 상태이상 확인
         const playerStatusEffects = this.gameManager.player.statusEffects || [];
 
-        if (playerStatusEffects.length === 0) return;
+        if (playerStatusEffects.length === 0) {
+            // 상태이상이 없으면 완전히 초기화하고 종료
+            gameWrapper.offsetHeight; // 강제 리플로우로 스타일 적용 보장
+            return;
+        }
 
         // 우선순위가 가장 높은 상태이상 찾기 (낮은 숫자가 높은 우선순위)
         let highestPriorityEffect = null;
@@ -721,7 +729,11 @@ class UIManager {
 
         // 가장 우선순위가 높은 상태이상의 테두리 효과 적용
         if (highestPriorityEffect) {
+            // inline 스타일 제거 후 CSS 클래스 적용
+            gameWrapper.style.border = '';
+            gameWrapper.style.animation = '';
             gameWrapper.classList.add(highestPriorityEffect.className);
+            gameWrapper.offsetHeight; // 강제 리플로우로 스타일 적용 보장
         }
     }
 

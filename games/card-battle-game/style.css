@@ -123,6 +123,8 @@ body {
     position: relative;
     width: var(--canvas-width);
     height: var(--canvas-height);
+    border: none;  /* 기본 테두리 명시적 제거 */
+    box-sizing: border-box;  /* 테두리 추가 시 레이아웃 시프트 방지 */
 }
 
 /* 캔버스 설정 기반 크기 */
