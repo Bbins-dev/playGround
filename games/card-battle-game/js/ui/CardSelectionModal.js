@@ -178,7 +178,7 @@ class CardSelectionModal {
         // 확대 카드 생성
         const enlargedCard = this.domCardRenderer.createCard(card, cardSize.width, cardSize.height, {
             isSelected: false,
-            isHighlighted: true,
+            isHighlighted: false,
             isNextActive: false,
             opacity: 1,
             context: 'default' // 카드 선택 모달은 기본값

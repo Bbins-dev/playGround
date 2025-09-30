@@ -646,7 +646,7 @@ body {
     width: var(--card-gallery-width);
     height: var(--card-gallery-height);
     border-radius: 8px;
-    background: linear-gradient(135deg, rgba(52, 73, 94, 0.9), rgba(44, 62, 80, 0.9));
+    /* background: linear-gradient(135deg, rgba(52, 73, 94, 0.9), rgba(44, 62, 80, 0.9)); */
     border: 2px solid #3498db;
     display: flex;
     flex-direction: column;
