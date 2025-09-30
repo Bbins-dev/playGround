@@ -307,7 +307,7 @@ class VictoryDefeatModal {
         // CardRenderer로 카드 렌더링
         this.cardRenderer.renderCard(ctx, cardData, 0, 0, cardSize.width, cardSize.height, {
             isSelected: true,
-            isHighlighted: true,
+            isHighlighted: false,
             opacity: 1
         });
 
@@ -514,7 +514,7 @@ class VictoryDefeatModal {
         // CardRenderer로 카드 렌더링
         this.cardRenderer.renderCard(ctx, card, 0, 0, cardSize.width, cardSize.height, {
             isSelected: true,
-            isHighlighted: true,
+            isHighlighted: false,
             opacity: 1
         });
 
@@ -800,7 +800,7 @@ class VictoryDefeatModal {
         // CardRenderer로 카드 렌더링
         this.cardRenderer.renderCard(ctx, card, 0, 0, cardSize.width, cardSize.height, {
             isSelected: true,
-            isHighlighted: true,
+            isHighlighted: false,
             opacity: 1
         });
 
