@@ -693,6 +693,53 @@ const CardDatabase = {
             }
         });
 
+        // 화염방사 카드 (불 속성, 1-3회 연속 공격 + 화상 확률)
+        this.addCard({
+            id: 'flame_burst',
+            nameKey: 'auto_battle_card_game.ui.cards.flame_burst.name',
+            type: 'attack',
+            element: 'fire',
+            power: 2,
+            accuracy: 90,
+            cost: 1,
+            activationCount: 1, // 기본값, 턴 시작 시 동적으로 1-3으로 설정됨
+            descriptionKey: 'auto_battle_card_game.ui.cards.flame_burst.description',
+            isRandomBash: true, // 랜덤 연속 공격 카드임을 표시
+            burnChance: 10, // 각 타격마다 10% 확률로 화상
+            getRandomActivationCount: function() {
+                return Math.floor(Math.random() * 3) + 1; // 1-3 랜덤
+            },
+            effect: function(user, target, battleSystem) {
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                // 화상 확률 체크 (명중 성공 시에만)
+                let burned = false;
+                const burnRoll = Math.random() * 100;
+                if (burnRoll < this.burnChance) {
+                    const result = target.addStatusEffect('burn', GameConfig.statusEffects.burn.defaultPercent, 1);
+                    burned = result.success;
+                }
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    burned: burned,
+                    statusType: burned ? 'burn' : null,
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
         // 화염구 카드 (불 속성, 중간 대미지 + 화상 확률)
         this.addCard({
             id: 'fireball',
