@@ -42,7 +42,7 @@
     --modal-card-selection-padding: 15px;
 
     /* 카드 그리드 설정 - GameConfig.cssVariables.cardGrid에서 동기화 */
-    --card-grid-gap: 20px;
+    --card-grid-gap: 10px;
     --card-grid-columns: 2;
     --card-grid-padding: 20px 15px;
 
@@ -763,41 +763,6 @@ body {
     font-weight: bold;
 }
 
-/* 카드 선택 그리드 - Configuration-Driven */
-.card-selection-grid {
-    display: grid;
-    grid-template-columns: repeat(var(--card-grid-columns), 1fr);
-    gap: var(--card-grid-gap);
-    padding: var(--card-grid-padding);
-    overflow-y: auto;
-    overflow-x: hidden;
-    flex: 1;
-    justify-content: center;
-    /* 스크롤바 스타일 */
-    scrollbar-width: thin;
-    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-bg);
-}
-
-/* 웹킷 기반 브라우저 스크롤바 스타일 */
-.card-selection-grid::-webkit-scrollbar {
-    width: 8px;
-    background: var(--scrollbar-bg);
-}
-
-.card-selection-grid::-webkit-scrollbar-track {
-    background: var(--scrollbar-track);
-    border-radius: 4px;
-}
-
-.card-selection-grid::-webkit-scrollbar-thumb {
-    background: var(--scrollbar-thumb);
-    border-radius: 4px;
-    transition: background 0.3s ease;
-}
-
-.card-selection-grid::-webkit-scrollbar-thumb:hover {
-    background: var(--scrollbar-thumb-hover);
-}
 
 /* 카드 선택 아이템 - Configuration-Driven */
 .card-selection-item {

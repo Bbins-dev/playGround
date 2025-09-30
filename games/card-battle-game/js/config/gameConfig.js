@@ -2211,7 +2211,7 @@ GameConfig.utils = {
             large: 15
         },
         cardGrid: {
-            gap: 20,              // 카드 간 간격 (40px → 20px로 감소)
+            gap: 10,              // 카드 간 간격 (최적화된 10px)
             columns: 2,           // 그리드 열 개수
             padding: '20px 15px'  // 그리드 패딩
         }
