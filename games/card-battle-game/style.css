@@ -569,6 +569,36 @@ body {
     padding: var(--modal-card-detail-padding);
 }
 
+/* 갤러리 카드 상세 모달 전용 스타일 - Configuration-Driven */
+#gallery-card-detail-modal .modal-content {
+    width: var(--modal-card-detail-width);
+    height: var(--modal-card-detail-height);
+    padding: var(--modal-card-detail-padding);
+    max-width: var(--modal-card-detail-max-width);
+    max-height: var(--modal-card-detail-max-height);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* 갤러리 카드 상세 컨텐츠 컨테이너 */
+.card-detail-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+/* 갤러리 카드 상세 모달 버튼 */
+#gallery-card-detail-modal .modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
 /* 승리 모달 전용 스타일 - Configuration-Driven (반응형 제거) */
 #victory-modal .modal-content {
     width: var(--modal-victory-width);

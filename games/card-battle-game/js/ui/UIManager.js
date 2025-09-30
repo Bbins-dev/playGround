@@ -30,7 +30,8 @@ class UIManager {
 
         // 모달 시스템
         this.modals = {
-            cardGallery: document.getElementById('card-gallery-modal')
+            cardGallery: document.getElementById('card-gallery-modal'),
+            galleryCardDetail: document.getElementById('gallery-card-detail-modal')
             // cardSelection은 CardSelectionModal 클래스에서 직접 관리
         };
 
@@ -130,6 +131,12 @@ class UIManager {
         const closeGallery = document.getElementById('close-gallery');
         if (closeGallery) {
             closeGallery.addEventListener('click', () => this.hideCardGallery());
+        }
+
+        // 갤러리 카드 상세 모달 닫기
+        const closeGalleryCardDetail = document.getElementById('gallery-card-detail-close');
+        if (closeGalleryCardDetail) {
+            closeGalleryCardDetail.addEventListener('click', () => this.hideGalleryCardDetail());
         }
 
     }
@@ -559,6 +566,11 @@ class UIManager {
         // 갤러리 스타일 클래스 추가
         cardElement.className += ' gallery-card';
 
+        // 클릭 이벤트 추가 (카드 상세 모달 표시)
+        cardElement.addEventListener('click', () => {
+            this.showGalleryCardDetail(card);
+        });
+
         return cardElement;
     }
 
@@ -570,6 +582,49 @@ class UIManager {
         if (this.battleWasPaused && this.gameManager.gameState === 'battle' && this.gameManager.battleSystem) {
             this.gameManager.battleSystem.resume();
             this.battleWasPaused = false;
+        }
+    }
+
+    // 갤러리 카드 상세 모달 표시
+    showGalleryCardDetail(card) {
+        const modal = this.modals.galleryCardDetail;
+        const cardDetailContent = document.getElementById('gallery-card-detail-content');
+
+        if (!modal || !cardDetailContent) return;
+
+        // DOMCardRenderer로 확대 카드 생성
+        const domCardRenderer = new DOMCardRenderer();
+        const cardSize = GameConfig.cardSizes.large || { width: 520, height: 728 };
+
+        // 확대 카드 생성
+        const enlargedCard = domCardRenderer.createCard(card, cardSize.width, cardSize.height, {
+            isSelected: false,
+            isHighlighted: false,
+            isNextActive: false,
+            opacity: 1,
+            context: 'default'
+        });
+
+        // 카드 상세 내용 업데이트
+        cardDetailContent.innerHTML = '';
+        cardDetailContent.appendChild(enlargedCard);
+
+        // 모달 표시
+        this.showModal(modal);
+    }
+
+    // 갤러리 카드 상세 모달 숨기기
+    hideGalleryCardDetail() {
+        const modal = this.modals.galleryCardDetail;
+        const cardDetailContent = document.getElementById('gallery-card-detail-content');
+
+        if (modal) {
+            this.hideModal(modal);
+        }
+
+        // 내용 클리어
+        if (cardDetailContent) {
+            cardDetailContent.innerHTML = '';
         }
     }
 
