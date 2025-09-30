@@ -326,6 +326,54 @@ const CardDatabase = {
             }
         });
 
+        // 불의 방패 카드 (불속성 방어력 5 추가)
+        this.addCard({
+            id: 'fire_shield',
+            nameKey: 'auto_battle_card_game.ui.cards.fire_shield.name',
+            type: 'defense',
+            element: 'fire',
+            power: 5,
+            accuracy: 100,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.fire_shield.description',
+            effect: function(user, target, battleSystem) {
+                const defenseValue = this.power;
+                user.addDefense(defenseValue);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.defense_gained',
+                    defenseGain: defenseValue,
+                    element: this.element
+                };
+            }
+        });
+
+        // 화염벽 카드 (불속성 방어력 10 추가)
+        this.addCard({
+            id: 'flame_wall',
+            nameKey: 'auto_battle_card_game.ui.cards.flame_wall.name',
+            type: 'defense',
+            element: 'fire',
+            power: 10,
+            accuracy: 75,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.flame_wall.description',
+            effect: function(user, target, battleSystem) {
+                const defenseValue = this.power;
+                user.addDefense(defenseValue);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.defense_gained',
+                    defenseGain: defenseValue,
+                    element: this.element
+                };
+            }
+        });
+
         // 가시갑옷 카드 (자신에게 대미지 1을 가하고 힘 1을 얻습니다)
         this.addCard({
             id: 'thorn_armor',

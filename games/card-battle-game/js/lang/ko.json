@@ -191,6 +191,14 @@
           "name": "가시갑옷",
           "description": "자신에게 대미지 1을 가하고 힘 3을 얻습니다."
         },
+        "fire_shield": {
+          "name": "불의 방패",
+          "description": "자신에게 방어력을 5 추가합니다."
+        },
+        "flame_wall": {
+          "name": "화염벽",
+          "description": "자신에게 방어력을 10 추가합니다."
+        },
         "taunt": {
           "name": "도발",
           "description": "상대방을 도발한다. 도발에 걸리면 공격 카드만 사용할 수 있다."

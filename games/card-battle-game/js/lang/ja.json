@@ -191,6 +191,14 @@
           "name": "棘の鎧",
           "description": "自分にダメージ１を与えて力３を得ます。"
         },
+        "fire_shield": {
+          "name": "火の盾",
+          "description": "自分に防御力を5追加します。"
+        },
+        "flame_wall": {
+          "name": "炎の壁",
+          "description": "自分に防御力を10追加します。"
+        },
         "taunt": {
           "name": "挑発",
           "description": "相手を挑発する。挑発状態では攻撃カードのみ使用できる。"

@@ -191,6 +191,14 @@
           "name": "Thorn Armor",
           "description": "Deal 1 damage to yourself and gain 3 strength."
         },
+        "fire_shield": {
+          "name": "Fire Shield",
+          "description": "Adds 5 defense to yourself."
+        },
+        "flame_wall": {
+          "name": "Flame Wall",
+          "description": "Adds 10 defense to yourself."
+        },
         "taunt": {
           "name": "Taunt",
           "description": "Taunt the opponent. When taunted, only attack cards can be used."
