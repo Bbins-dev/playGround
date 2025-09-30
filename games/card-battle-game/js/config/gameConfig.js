@@ -806,7 +806,7 @@ const GameConfig = {
         enlarged: { width: 400, height: 560 },   // 발동 시 확대 크기 (33% 증가)
         preview: { width: 290, height: 406 },    // 시작 카드 선택 크기 (적당한 크기)
         gallery: { width: 320, height: 448 },    // 카드 갤러리 전용 크기 (preview보다 약간 더 큼)
-        large: { width: 520, height: 728 },      // 카드 디테일 모달 크기 (더욱 확대)
+        large: { width: 580, height: 812 },      // 카드 디테일 모달 크기 (적당한 확대)
         victory: { width: 180, height: 252 },    // 승리 모달 보상 카드 크기 (50% 확대)
         victoryDetail: { width: 360, height: 504 } // 승리 모달 확대 카드 크기 (260% 확대)
     },
@@ -926,9 +926,9 @@ const GameConfig = {
         layout: {
             emoji: { y: 0.13 },      // 상단에서 13%
             name: { y: 0.30 },       // 상단에서 30% (위로 이동)
-            type: { y: 0.38 },       // 상단에서 38% (위로 이동)
+            type: { y: 0.41 },       // 상단에서 41% (약간 아래로)
             stats: { y: 0.90 },      // 하단에서 10% (설명과 겹치지 않도록 더 아래로)
-            description: { y: 0.46 } // 상단에서 46% (카드 중앙에 더 가깝게 위치)
+            description: { y: 0.50 } // 상단에서 50% (카드 중앙, 타입과 간격 확보)
         },
         // 활성 카드 글로우 설정
         activeCardGlow: {
@@ -2185,6 +2185,11 @@ GameConfig.utils = {
         scorchedShield: {
             selfDamage: 3,     // 자해 데미지 3
             defenseGain: 13    // 방어력 13 획득
+        },
+        // 불굴의 장갑 카드 설정
+        indomitableGauntlet: {
+            selfDamage: 3,     // 자해 데미지 3
+            strengthGain: 5    // 힘 증가량 5
         }
     },
 

@@ -1741,7 +1741,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 40px 0 20px 0; /* 상단 40px, 하단 20px (50px → 20px로 단축) */
+    margin: 15px 0 0 0; /* 상단 15px (최소 여백), 하단 0 (gap으로 처리) */
     min-height: 680px;
     flex: 1; /* flex 계열 체에서 남은 공간 채우기 */
 }
