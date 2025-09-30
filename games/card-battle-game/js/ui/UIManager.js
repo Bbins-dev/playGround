@@ -507,6 +507,9 @@ class UIManager {
         const grid = document.getElementById('card-gallery-grid');
 
         if (modal && grid) {
+            // 최신 GameConfig 설정을 CSS 변수에 동기화
+            this.gameManager.syncCSSVariables();
+
             // 전투 중이면 게임 일시정지
             if (this.gameManager.gameState === 'battle' && this.gameManager.battleSystem) {
                 this.gameManager.battleSystem.pause();
@@ -541,8 +544,8 @@ class UIManager {
         // DOMCardRenderer 인스턴스를 매번 새로 생성 (최신 설정 반영)
         const domCardRenderer = new DOMCardRenderer();
 
-        // 갤러리 카드 크기 (gameConfig에서 가져오기)
-        const cardSize = GameConfig.cardSizes.preview;
+        // 갤러리 카드 크기 (갤러리 전용 크기 사용)
+        const cardSize = GameConfig.cardSizes.gallery;
 
         // 통일된 카드 렌더러로 카드 생성
         const cardElement = domCardRenderer.createCard(card, cardSize.width, cardSize.height, {

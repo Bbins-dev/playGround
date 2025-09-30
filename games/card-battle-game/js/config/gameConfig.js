@@ -797,7 +797,8 @@ const GameConfig = {
     cardSizes: {
         hand: { width: 120, height: 168 },       // 손패 카드 크기 (20% 확대)
         enlarged: { width: 400, height: 560 },   // 발동 시 확대 크기 (33% 증가)
-        preview: { width: 260, height: 364 },    // 갤러리 미리보기 크기 (확대됨)
+        preview: { width: 290, height: 406 },    // 시작 카드 선택 크기 (적당한 크기)
+        gallery: { width: 320, height: 448 },    // 카드 갤러리 전용 크기 (preview보다 약간 더 큼)
         large: { width: 520, height: 728 },      // 카드 디테일 모달 크기 (더욱 확대)
         victory: { width: 180, height: 252 },    // 승리 모달 보상 카드 크기 (50% 확대)
         victoryDetail: { width: 360, height: 504 } // 승리 모달 확대 카드 크기 (260% 확대)

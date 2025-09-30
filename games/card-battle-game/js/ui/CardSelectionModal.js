@@ -242,10 +242,10 @@ class CardSelectionModal {
         this.hide();
 
         // 게임 매니저를 통해 메인 메뉴로 돌아가기
-        if (this.gameManager && this.gameManager.returnToMainMenu) {
-            this.gameManager.returnToMainMenu();
+        if (this.gameManager && this.gameManager.showMainMenu) {
+            this.gameManager.showMainMenu();
         } else {
-            console.warn('[CardSelectionModal] gameManager.returnToMainMenu가 없습니다');
+            console.warn('[CardSelectionModal] gameManager.showMainMenu가 없습니다');
         }
     }
 
