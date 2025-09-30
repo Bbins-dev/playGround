@@ -1692,6 +1692,7 @@ const GameConfig = {
 
     // 카드 스탯 표시 시스템
     statDisplay: {
+        emojiSpacing: ' ', // 이모지와 수치 사이 간격 (Configuration-Driven)
         definitions: [
             {
                 key: 'power',

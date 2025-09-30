@@ -700,7 +700,7 @@ const CardDatabase = {
             type: 'attack',
             element: 'fire',
             power: 2,
-            accuracy: 90,
+            accuracy: 100,
             cost: 1,
             activationCount: 1, // 기본값, 턴 시작 시 동적으로 1-3으로 설정됨
             descriptionKey: 'auto_battle_card_game.ui.cards.flame_burst.description',

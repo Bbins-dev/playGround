@@ -371,11 +371,13 @@ class DOMCardRenderer {
 
             // 특별 처리 (상태이상 카드 턴 표시)
             if (def.key === 'power' && card.type === 'status' && card.activationCount > 1) {
-                element.textContent = `${emoji}${card.activationCount}턴`;
+                const spacing = GameConfig.statDisplay?.emojiSpacing || '';
+                element.textContent = `${emoji}${spacing}${card.activationCount}턴`;
             } else {
                 // 포맷팅 적용
                 const formattedValue = def.format ? def.format(value, card) : value;
-                element.textContent = `${emoji}${formattedValue}`;
+                const spacing = GameConfig.statDisplay?.emojiSpacing || '';
+                element.textContent = `${emoji}${spacing}${formattedValue}`;
             }
 
             statsContainer.appendChild(element);
