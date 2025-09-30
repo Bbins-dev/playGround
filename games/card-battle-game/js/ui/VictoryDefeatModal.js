@@ -523,6 +523,13 @@ class VictoryDefeatModal {
 
         // 컨테이너 표시
         detailContainer.classList.remove('hidden');
+
+        // 스크롤 위치 리셋 및 비활성화
+        const contentArea = document.querySelector('#victory-modal .victory-content-area');
+        if (contentArea) {
+            contentArea.scrollTop = 0;
+            contentArea.classList.add('card-enlarged');
+        }
     }
 
     /**
@@ -573,6 +580,12 @@ class VictoryDefeatModal {
             detailContainer.innerHTML = '';
         }
         this.selectedCardCanvas = null;
+
+        // 스크롤 재활성화
+        const contentArea = document.querySelector('#victory-modal .victory-content-area');
+        if (contentArea) {
+            contentArea.classList.remove('card-enlarged');
+        }
     }
 
     /**
@@ -808,6 +821,13 @@ class VictoryDefeatModal {
 
         // 컨테이너 표시
         detailContainer.classList.remove('hidden');
+
+        // 스크롤 위치 리셋 및 비활성화
+        const contentArea = document.querySelector('#victory-modal .victory-content-area');
+        if (contentArea) {
+            contentArea.scrollTop = 0;
+            contentArea.classList.add('card-enlarged');
+        }
     }
 
     /**
@@ -818,6 +838,12 @@ class VictoryDefeatModal {
         if (detailContainer) {
             detailContainer.classList.add('hidden');
             detailContainer.innerHTML = '';
+        }
+
+        // 스크롤 재활성화
+        const contentArea = document.querySelector('#victory-modal .victory-content-area');
+        if (contentArea) {
+            contentArea.classList.remove('card-enlarged');
         }
     }
 

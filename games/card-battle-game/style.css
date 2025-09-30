@@ -74,13 +74,11 @@
     --modal-game-tutorial-padding: 30px;
 
     --modal-victory-width: 720px;
-    --modal-victory-height: 1150px;
+    --modal-victory-height: 1230px;
     --modal-victory-padding: 25px;
 
     --modal-defeat-width: 720px;
-    --modal-defeat-height: 1150px;
-    --modal-defeat-max-width: 98vw;
-    --modal-defeat-max-height: 98vh;
+    --modal-defeat-height: 1230px;
     --modal-defeat-padding: 25px;
 }
 
@@ -619,6 +617,20 @@ body {
     width: var(--modal-victory-width);
     height: var(--modal-victory-height);
     padding: var(--modal-victory-padding);
+    overflow: hidden;
+}
+
+/* 승리 모달 헤더 - 여백 최소화 */
+#victory-modal .victory-header {
+    flex-shrink: 0;
+    margin-bottom: 10px;
+}
+
+/* 승리 모달 버튼 영역 - 여백 최소화 */
+#victory-modal .modal-buttons {
+    flex-shrink: 0;
+    margin-top: 10px;
+    padding-bottom: 0;
 }
 
 /* 패배 모달 전용 스타일 - Configuration-Driven */
@@ -1931,6 +1943,9 @@ body {
 
 /* 승리 모달 스크롤바 배경 은은하게 */
 #victory-modal .victory-content-area {
+    flex: 1;
+    min-height: 0;
+    max-height: none !important;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.05);
@@ -1954,6 +1969,20 @@ body {
 
 #victory-modal .victory-content-area::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.5);
+}
+
+/* 승리 모달 확대 카드 표시 영역 - 중앙 고정 */
+#victory-modal .selected-card-detail {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 600px;
+    padding: 20px;
+}
+
+/* 카드 확대 시 스크롤 제거 */
+#victory-modal .victory-content-area.card-enlarged {
+    overflow: hidden;
 }
 
 /* 패배 모달 스크롤바 스타일 */
