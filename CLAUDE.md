@@ -130,6 +130,23 @@ const coords = CanvasUtils.getCanvasCoordinates(event, canvas);
 
 ## 🎮 게임 시스템 특성
 
+### 🎨 카드 이미지 통합 관리 시스템
+**모든 카드 시각적 요소는 GameConfig.cardStyle에서 중앙 관리**
+
+- **통합 렌더링 시스템**: CardRenderer (Canvas) / DOMCardRenderer (DOM) 모두 동일한 설정 참조
+- **실시간 스타일 동기화**: getter 패턴으로 캐시 없이 실시간 GameConfig 참조
+- **카드 구성 요소 설정**:
+  - `fontRatio`: 카드 높이 대비 각 요소 크기 비율
+  - `layout`: 각 요소의 위치 비율
+  - `elementLabel/elementEmoji`: 속성 표시 설정
+  - `activeCardGlow`: 활성 카드 효과
+  - `cardColors`: 상태별 색상 변경 규칙
+
+**카드 렌더링 수정 시 필수 확인**:
+1. GameConfig.cardStyle에서 설정값 정의
+2. CardRenderer와 DOMCardRenderer 둘 다 수정
+3. CSS 변수로 자동 동기화되는지 확인
+
 ### 5속성 상성 체계
 불🔥 → 독☠️ → 전기⚡ → 물💧 → 불🔥 + 노멀👊
 
@@ -142,7 +159,6 @@ const coords = CanvasUtils.getCanvasCoordinates(event, canvas);
 - **표시 방식**: `-10` 형태로만 표시 (텍스트 메시지 없음)
 
 ### 중요 규칙들
-- **DOM + Canvas 하이브리드**: 게임 로직은 Canvas, UI는 DOM
 - **3개 언어 필수 지원**: 한국어(ko.json), 영어(en.json), 일본어(ja.json) 모두 업데이트
 - **이중 명중률 체크 금지**: Card.js에서만 처리
 - **퍼센트 계산**: 곱셈 방식만 사용 `value * (1 - percent/100)`
