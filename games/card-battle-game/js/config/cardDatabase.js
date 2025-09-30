@@ -740,6 +740,52 @@ const CardDatabase = {
             }
         });
 
+        // 화염승천 카드 (불 속성, 자해 + 강력한 공격 + 화상 확률)
+        this.addCard({
+            id: 'flame_ascension',
+            nameKey: 'auto_battle_card_game.ui.cards.flame_ascension.name',
+            type: 'attack',
+            element: 'fire',
+            power: 8,
+            accuracy: 70,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.flame_ascension.description',
+            selfDamage: 5,
+            burnChance: 40, // 명중 시 40% 확률로 화상
+            effect: function(user, target, battleSystem) {
+                // 자해 데미지는 BattleSystem.preprocessSelfDamage()에서 이미 처리됨
+                // 여기서는 카드의 본연의 효과만 처리 (상대에게 공격)
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                // 화상 확률 체크 (명중 성공 시에만)
+                let burned = false;
+                const burnRoll = Math.random() * 100;
+                if (burnRoll < this.burnChance) {
+                    const result = target.addStatusEffect('burn', GameConfig.statusEffects.burn.defaultPercent, 1);
+                    burned = result.success;
+                }
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    burned: burned,
+                    statusType: burned ? 'burn' : null,
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
         // 화염구 카드 (불 속성, 중간 대미지 + 화상 확률)
         this.addCard({
             id: 'fireball',

@@ -203,6 +203,10 @@
           "name": "Flame Burst",
           "description": "Shoots flames at the opponent 1-3 times for 2 damage each, with a low chance to inflict burn."
         },
+        "flame_ascension": {
+          "name": "Flame Ascension",
+          "description": "Deal 5 damage to yourself, then deal 8 damage to the opponent. Has a chance to inflict burn."
+        },
         "bubble_strike": {
           "name": "Bubble Strike",
           "description": "Send bubbles to burst for 1 damage 2-5 times."
