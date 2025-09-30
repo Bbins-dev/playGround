@@ -332,6 +332,13 @@ const GameConfig = {
             deathAnimationDelay: 520      // 사망 시 모달 표시 전 대기 시간 (체력바 애니메이션 + 추가 시간)
         },
 
+        // UI 애니메이션 타이밍
+        ui: {
+            hpAnimation: 300,             // HP 바 애니메이션 시간 (ms) - 500ms에서 단축
+            defenseAnimation: 300,        // 방어력 바 애니메이션 시간 (ms) - 500ms에서 단축
+            defenseShatter: 300           // 방어력 파괴 애니메이션 시간 (ms) - 500ms에서 단축
+        },
+
         // 렌더링 관련
         rendering: {
             throttle: 16,                 // MainMenu 렌더링 체크 16ms
@@ -2043,7 +2050,7 @@ GameConfig.utils = {
             // 데미지 처리 시 방어력 → HP 순차 업데이트 설정
             damageSequence: {
                 defenseFirst: true,       // 방어력 먼저 업데이트 (true), 동시 업데이트 (false)
-                delayBetween: 50          // 방어력과 HP 업데이트 사이 딜레이 (ms) - 빠른 진행
+                delayBetween: 0           // 방어력과 HP 업데이트 사이 딜레이 (ms) - 즉시 연속 처리
             },
 
             // 기타 UI 애니메이션 타이밍

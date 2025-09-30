@@ -1176,10 +1176,7 @@ const CardDatabase = {
                 // 힘 버프 추가
                 user.addStrength(strengthGain);
 
-                // 버프 UI 즉시 업데이트
-                if (battleSystem && battleSystem.hpBarSystem) {
-                    battleSystem.hpBarSystem.updateBuffs(user, true);
-                }
+                // UI 업데이트는 processDefenseResult에서 메시지 연출 후 처리
 
                 return {
                     success: true,

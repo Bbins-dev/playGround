@@ -126,7 +126,7 @@ class HPBarSystem {
         }
 
         return new Promise((resolve) => {
-            const duration = 500; // 0.5초
+            const duration = GameConfig?.masterTiming?.ui?.hpAnimation || 300; // GameConfig 참조, 기본값 300ms
             const steps = 20;
             const stepDuration = duration / steps;
             const hpDiff = targetHP - currentHP;
@@ -158,7 +158,7 @@ class HPBarSystem {
         }
 
         return new Promise((resolve) => {
-            const duration = 500; // 0.5초
+            const duration = GameConfig?.masterTiming?.ui?.defenseAnimation || 300; // GameConfig 참조, 기본값 300ms
             const steps = 20;
             const stepDuration = duration / steps;
             const defenseDiff = targetDefense - currentDefense;
@@ -445,7 +445,7 @@ class HPBarSystem {
         }
 
         return new Promise((resolve) => {
-            const duration = 500; // 0.5초
+            const duration = GameConfig?.masterTiming?.ui?.defenseShatter || 300; // GameConfig 참조, 기본값 300ms
             const steps = 20;
             const stepDuration = duration / steps;
             const defenseStep = initialDefense / steps;

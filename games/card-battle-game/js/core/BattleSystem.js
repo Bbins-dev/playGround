@@ -550,6 +550,12 @@ class BattleSystem {
             // 방어력 숫자 연출 표시 - 기존 방어력 전용 메서드 사용 (은색 표시)
             await this.effectSystem.showDefenseGainMessage(userPosition, defenseGain);
 
+            // 방어력 UI 즉시 업데이트 (방어력 메시지 표시 직후)
+            const isPlayer = (user === this.player);
+            if (this.hpBarSystem) {
+                await this.hpBarSystem.updateAfterDamage(user, isPlayer);
+            }
+
             // 방어력 관련 통계 업데이트
             this.battleStats.defenseBuilt += defenseGain;
 
@@ -563,7 +569,7 @@ class BattleSystem {
         if (result.strengthGain && result.strengthGain > 0) {
             await this.effectSystem.showBuffEffect('strength', user, result.strengthGain);
 
-            // 버프 라벨 즉시 업데이트
+            // 힘 버프 라벨 즉시 업데이트 (힘 버프 메시지 표시 직후)
             const isPlayer = (user === this.player);
             this.hpBarSystem.updateBuffs(user, isPlayer);
         }

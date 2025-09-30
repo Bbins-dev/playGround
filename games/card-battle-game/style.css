@@ -861,7 +861,7 @@ body {
     top: 0;
     height: 100%;
     background: linear-gradient(90deg, #ff3333, #ff6666);
-    transition: width 0.5s ease-out;
+    transition: width 0.3s ease-out;
     border-radius: inherit;
 }
 
@@ -1015,7 +1015,7 @@ body {
     background: linear-gradient(90deg, #c0c7d1, #f5f7fa, #e8eaf0); /* 은색 메탈릭 그라데이션 */
     border-radius: inherit;
     z-index: 2; /* HP 바 위에 표시 */
-    transition: width 0.4s ease-out;
+    transition: width 0.3s ease-out;
     opacity: 0.9;
     border: 1px solid rgba(169, 169, 169, 0.6);
     box-shadow:
