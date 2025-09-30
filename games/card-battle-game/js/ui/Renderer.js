@@ -129,8 +129,8 @@ class Renderer {
         this.ctx.fillStyle = gradient;
         this.ctx.fillRect(0, 0, this.width, this.height);
 
-        // 영역 구분선
-        this.drawAreaBorders();
+        // 영역 구분선 (비활성화 - 테두리 점선 제거)
+        // this.drawAreaBorders();
     }
 
     // 영역 경계선 그리기

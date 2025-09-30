@@ -185,7 +185,7 @@ if (window.location.pathname.includes('/games/')) {
         document.body.classList.add(`lang-${savedLang}`);
 
         // For games, use relative path for language files
-        const basePath = '../../js/lang/';
+        const basePath = 'js/lang/';
         await window.i18n.init(savedLang, basePath);
         // Update language selectors to match saved language
         window.i18n.updateLanguageSelectors(savedLang);

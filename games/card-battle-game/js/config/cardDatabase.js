@@ -55,7 +55,6 @@ const CardDatabase = {
             element: 'normal',
             power: 1,
             accuracy: 100,
-            cost: 1,
             activationCount: 3, // 기본값, 턴 시작 시 동적으로 3-5로 설정됨
             descriptionKey: 'auto_battle_card_game.ui.cards.random_bash.description',
             isRandomBash: true, // 마구때리기 카드임을 표시
@@ -91,7 +90,6 @@ const CardDatabase = {
             element: 'normal',
             power: 5,
             accuracy: 80,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.heavy_strike.description',
             effect: function(user, target, battleSystem) {
@@ -123,7 +121,6 @@ const CardDatabase = {
             element: 'normal',
             power: 0, // 실제 파워는 현재 방어력
             accuracy: 80,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.shield_bash.description',
             effect: function(user, target, battleSystem) {
@@ -156,7 +153,6 @@ const CardDatabase = {
             element: 'normal',
             power: 2,
             accuracy: 80,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.concussion.description',
             stunChance: GameConfig?.cardEffects?.concussion?.stunChance || 40,
@@ -198,7 +194,6 @@ const CardDatabase = {
             element: 'normal',
             power: 0, // 실제 파워는 마지막 받은 대미지
             accuracy: 80,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.counter_attack.description',
             effect: function(user, target, battleSystem) {
@@ -231,7 +226,6 @@ const CardDatabase = {
             element: 'normal',
             power: 3,
             accuracy: 100,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.raise_shield.description',
             effect: function(user, target, battleSystem) {
@@ -255,7 +249,6 @@ const CardDatabase = {
             element: 'normal',
             power: 5,
             accuracy: 100,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.wear_armor.description',
             effect: function(user, target, battleSystem) {
@@ -279,7 +272,6 @@ const CardDatabase = {
             element: 'normal',
             power: GameConfig?.cardEffects?.crouch?.defenseGain || 30,
             accuracy: 100,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.crouch.description',
             skipTurn: true,
@@ -310,7 +302,6 @@ const CardDatabase = {
             element: 'normal',
             power: 8,
             accuracy: 80,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.large_shield.description',
             effect: function(user, target, battleSystem) {
@@ -334,7 +325,6 @@ const CardDatabase = {
             element: 'fire',
             power: 5,
             accuracy: 100,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.fire_shield.description',
             effect: function(user, target, battleSystem) {
@@ -358,7 +348,6 @@ const CardDatabase = {
             element: 'fire',
             power: 10,
             accuracy: 75,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.flame_wall.description',
             effect: function(user, target, battleSystem) {
@@ -382,7 +371,6 @@ const CardDatabase = {
             element: 'fire',
             power: GameConfig?.cardEffects?.scorchedShield?.defenseGain || 13,
             accuracy: 80,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.scorched_shield.description',
             selfDamage: GameConfig?.cardEffects?.scorchedShield?.selfDamage || 3,
@@ -409,7 +397,6 @@ const CardDatabase = {
             element: 'normal',
             power: -1,
             accuracy: 80,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.thorn_armor.description',
             selfDamage: 1,  // 자해 데미지 1
@@ -431,6 +418,39 @@ const CardDatabase = {
             }
         });
 
+        // 불굴의 장갑 카드 (자해 데미지 + 힘 증가)
+        this.addCard({
+            id: 'indomitable_gauntlet',
+            nameKey: 'auto_battle_card_game.ui.cards.indomitable_gauntlet.name',
+            type: 'defense',
+            element: 'fire',
+            power: -3,
+            accuracy: 100,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.indomitable_gauntlet.description',
+            selfDamage: GameConfig?.cardEffects?.indomitableGauntlet?.selfDamage || 3,
+            effect: function(user, target, battleSystem) {
+                // 자해 데미지는 BattleSystem.preprocessSelfDamage()에서 이미 처리됨
+                // 여기서는 카드의 본연의 효과만 처리 (힘 버프 추가)
+
+                // 안전한 접근 방식 (Optional Chaining + 기본값)
+                const strengthGain = GameConfig?.cardEffects?.indomitableGauntlet?.strengthGain || 5;
+
+                user.addStrength(strengthGain);
+
+                // 버프 라벨 즉시 업데이트
+                const isPlayer = (user === battleSystem.player);
+                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.indomitable_gauntlet_effect',
+                    strengthGain: strengthGain,
+                    element: this.element
+                };
+            }
+        });
+
         // 도발 카드 (상대를 도발 상태로)
         this.addCard({
             id: 'taunt',
@@ -439,7 +459,6 @@ const CardDatabase = {
             element: 'normal',
             power: 0,
             accuracy: 70,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.taunt.description',
             effect: function(user, target, battleSystem) {
@@ -473,7 +492,6 @@ const CardDatabase = {
             element: 'fire',
             power: 3,
             accuracy: 80,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.flame_throw.description',
             burnChance: 15,
@@ -516,7 +534,6 @@ const CardDatabase = {
             element: 'water',
             power: 1,
             accuracy: 100,
-            cost: 1,
             activationCount: 2, // 기본값, 턴 시작 시 동적으로 2-5로 설정됨
             descriptionKey: 'auto_battle_card_game.ui.cards.bubble_strike.description',
             isRandomBash: true, // 마구때리기 타입 카드
@@ -552,7 +569,6 @@ const CardDatabase = {
             element: 'electric',
             power: 5,
             accuracy: 50,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.thunder_strike.description',
             effect: function(user, target, battleSystem) {
@@ -584,7 +600,6 @@ const CardDatabase = {
             element: 'poison',
             power: 2,
             accuracy: 80,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.smog.description',
             poisonChance: 70,
@@ -631,7 +646,6 @@ const CardDatabase = {
             element: 'special', // 속성 없음을 표현
             power: 3, // 회복량
             accuracy: 100,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.bandage.description',
             effect: function(user, target, battleSystem) {
@@ -657,7 +671,6 @@ const CardDatabase = {
             element: 'normal',
             power: 0,
             accuracy: 40,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.push_back.description',
             effect: function(user, target, battleSystem) {
@@ -692,7 +705,6 @@ const CardDatabase = {
             element: 'normal',
             power: 0,
             accuracy: 70,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.sand_throw.description',
             effect: function(user, target, battleSystem) {
@@ -727,7 +739,6 @@ const CardDatabase = {
             element: 'fire',
             power: 12,
             accuracy: 90,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.karura_strike.description',
             selfDamage: 10,
@@ -776,7 +787,6 @@ const CardDatabase = {
             element: 'fire',
             power: 2,
             accuracy: 100,
-            cost: 1,
             activationCount: 1, // 기본값, 턴 시작 시 동적으로 1-3으로 설정됨
             descriptionKey: 'auto_battle_card_game.ui.cards.flame_burst.description',
             isRandomBash: true, // 랜덤 연속 공격 카드임을 표시
@@ -823,7 +833,6 @@ const CardDatabase = {
             element: 'fire',
             power: 8,
             accuracy: 70,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.flame_ascension.description',
             selfDamage: 5,
@@ -869,7 +878,6 @@ const CardDatabase = {
             element: 'fire',
             power: 4,
             accuracy: 70,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.fireball.description',
             burnChance: 60, // 명중 시 60% 확률로 화상
@@ -912,7 +920,6 @@ const CardDatabase = {
             element: 'fire',
             power: 0,
             accuracy: 70,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.hot_breath.description',
             effect: function(user, target, battleSystem) {
@@ -947,7 +954,6 @@ const CardDatabase = {
             element: 'normal',
             power: 0,
             accuracy: 70,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.insult.description',
             effect: function(user, target, battleSystem) {
@@ -982,7 +988,6 @@ const CardDatabase = {
             element: 'normal',
             power: 0,
             accuracy: 70,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.net_throw.description',
             effect: function(user, target, battleSystem) {
@@ -1017,7 +1022,6 @@ const CardDatabase = {
             element: 'normal',
             power: 1,
             accuracy: 80,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.endless_effort.description',
             effect: function(user, target, battleSystem) {
@@ -1046,7 +1050,6 @@ const CardDatabase = {
             element: 'normal',
             power: 0,
             accuracy: 80,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.sword_dance.description',
             effect: function(user, target, battleSystem) {
@@ -1075,7 +1078,6 @@ const CardDatabase = {
             element: 'normal',
             power: 0,
             accuracy: 80,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.focus.description',
             effect: function(user, target, battleSystem) {
@@ -1104,7 +1106,6 @@ const CardDatabase = {
             element: 'normal',
             power: 0,
             accuracy: 70,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.fast_attack.description',
             effect: function(user, target, battleSystem) {
@@ -1134,7 +1135,6 @@ const CardDatabase = {
             element: 'normal',
             power: 0,
             accuracy: 70,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.barricade.description',
             effect: function(user, target, battleSystem) {
@@ -1163,7 +1163,6 @@ const CardDatabase = {
             element: 'fire',
             power: 3,
             accuracy: 80,
-            cost: 1,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.red_pendant.description',
             effect: function(user, target, battleSystem) {

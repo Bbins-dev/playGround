@@ -191,6 +191,10 @@
           "name": "가시갑옷",
           "description": "자신에게 대미지 1을 가하고 힘 3을 얻습니다."
         },
+        "indomitable_gauntlet": {
+          "name": "불굴의 장갑",
+          "description": "자신에게 데미지를 3 입히고 힘 5를 얻습니다. 성공률 100%입니다."
+        },
         "fire_shield": {
           "name": "불의 방패",
           "description": "자신에게 방어력을 5 추가합니다."
@@ -319,6 +323,8 @@
       "shield_failed": "방패 사용 실패",
       "thorn_armor_effect": "가시갑옷으로 자신에게 대미지를 가했습니다",
       "thorn_armor_failed": "가시갑옷 사용 실패",
+      "indomitable_gauntlet_effect": "불굴의 장갑으로 힘을 얻었습니다",
+      "indomitable_gauntlet_failed": "불굴의 장갑 사용 실패",
       "heal_effect": "체력을 회복했습니다",
       "taunt_success": "도발 성공",
       "taunt_failed": "도발 실패",

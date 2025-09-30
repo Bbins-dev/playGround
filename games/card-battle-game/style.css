@@ -1304,14 +1304,14 @@ body {
     display: none; /* 기본적으로 숨김 - HPBarSystem에서 show/hide 제어 */
 }
 
-/* 플레이어 배지 - 손패 영역 아래쪽에 가깝게 (10px 더 올림) */
+/* 플레이어 배지 - 손패 영역 아래쪽 바깥에 붙임 */
 .defense-badge-wrapper.badge-above {
-    bottom: 210px;  /* 5px 더 올림 */
+    bottom: 187px;  /* bottom 값 감소 = 아래로 이동 */
 }
 
-/* 적 배지 - 손패 영역 위쪽에 가깝게 (5px 더 내림) */
+/* 적 배지 - 손패 영역 위쪽 바깥에 붙임 */
 .defense-badge-wrapper.badge-below {
-    top: 205px;     /* 5px 더 내림 */
+    top: 187px;     /* 손패 시작(242.6px) - 배지높이(50px) - 여백(5px) */
 }
 
 /* 배지 크기 확대 (GameConfig와 동기화) */

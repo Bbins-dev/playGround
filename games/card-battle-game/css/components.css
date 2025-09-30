@@ -576,6 +576,18 @@
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
 }
 
+/* Card Detail 모달 내부 카드는 호버 효과 없음 (버튼 가림 방지) */
+#card-detail-modal .dom-card,
+#gallery-card-detail-modal .dom-card {
+    cursor: default; /* pointer → default로 변경 (클릭 불가 암시) */
+}
+
+#card-detail-modal .dom-card:hover,
+#gallery-card-detail-modal .dom-card:hover {
+    transform: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
 /* 카드 활성화 오버레이 */
 .card-activation-overlay {
     pointer-events: none;
@@ -804,8 +816,8 @@
 .tutorial-modal {
     width: var(--modal-game-tutorial-width, 700px);
     max-width: var(--modal-game-tutorial-max-width, 95vw);
-    height: var(--modal-game-tutorial-height, 80vh);
-    max-height: var(--modal-game-tutorial-max-height, 95vh);
+    height: 1150px;
+    max-height: 1150px;
     overflow-y: auto;
     padding: var(--modal-game-tutorial-padding, 30px);
     padding-bottom: 40px;

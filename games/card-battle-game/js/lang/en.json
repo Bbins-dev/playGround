@@ -191,6 +191,10 @@
           "name": "Thorn Armor",
           "description": "Deal 1 damage to yourself and gain 3 strength."
         },
+        "indomitable_gauntlet": {
+          "name": "Indomitable Gauntlet",
+          "description": "Deal 3 damage to yourself and gain 5 Strength. 100% success rate."
+        },
         "fire_shield": {
           "name": "Fire Shield",
           "description": "Adds 5 defense to yourself."
@@ -319,6 +323,8 @@
       "shield_failed": "Shield failed",
       "thorn_armor_effect": "Thorn armor dealt damage to self",
       "thorn_armor_failed": "Thorn armor failed",
+      "indomitable_gauntlet_effect": "Gained strength from Indomitable Gauntlet",
+      "indomitable_gauntlet_failed": "Indomitable Gauntlet failed",
       "heal_effect": "HP restored",
       "taunt_success": "Taunt successful",
       "taunt_failed": "Taunt failed",

@@ -191,6 +191,10 @@
           "name": "棘の鎧",
           "description": "自分にダメージ１を与えて力３を得ます。"
         },
+        "indomitable_gauntlet": {
+          "name": "不屈の篭手",
+          "description": "自分に3ダメージを与え、力5を得る。成功率100%。"
+        },
         "fire_shield": {
           "name": "火の盾",
           "description": "自分に防御力を5追加します。"
@@ -319,6 +323,8 @@
       "shield_failed": "シールド使用失敗",
       "thorn_armor_effect": "棘の鎧で自分にダメージを与えました",
       "thorn_armor_failed": "棘の鎧使用失敗",
+      "indomitable_gauntlet_effect": "不屈の篭手で力を得ました",
+      "indomitable_gauntlet_failed": "不屈の篭手使用失敗",
       "heal_effect": "体力を回復しました",
       "taunt_success": "挑発成功",
       "taunt_failed": "挑発失敗",
