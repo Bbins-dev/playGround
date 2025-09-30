@@ -972,15 +972,12 @@ class BattleSystem {
 
     // HP 업데이트 애니메이션 처리 (순차 업데이트 적용)
     async updateHPWithAnimation(cardUser = null, selfDamageProcessed = false) {
-        const updatePromises = [];
-
-        // 자해 데미지 처리된 사용자는 이미 순차 업데이트 완료됨 - 건너뛰기
-        if (!selfDamageProcessed || cardUser !== this.player) {
-            updatePromises.push(this.hpBarSystem.updateAfterDamage(this.player, true));
-        }
-        if (!selfDamageProcessed || cardUser !== this.enemy) {
-            updatePromises.push(this.hpBarSystem.updateAfterDamage(this.enemy, false));
-        }
+        // 모든 플레이어의 UI를 항상 업데이트 (KISS 원칙)
+        // updateAfterDamage 내부에서 실제 변경된 값만 업데이트하므로 성능 영향 없음
+        const updatePromises = [
+            this.hpBarSystem.updateAfterDamage(this.player, true),
+            this.hpBarSystem.updateAfterDamage(this.enemy, false)
+        ];
 
         // 플레이어와 적의 순차 업데이트를 병렬로 실행 (각각 내부적으로는 방어력→HP 순서)
         await Promise.all(updatePromises);

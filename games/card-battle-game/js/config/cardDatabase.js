@@ -374,6 +374,33 @@ const CardDatabase = {
             }
         });
 
+        // 작열방패 카드 (자신에게 대미지 3을 가하고 방어력 13을 얻습니다)
+        this.addCard({
+            id: 'scorched_shield',
+            nameKey: 'auto_battle_card_game.ui.cards.scorched_shield.name',
+            type: 'defense',
+            element: 'fire',
+            power: GameConfig?.cardEffects?.scorchedShield?.defenseGain || 13,
+            accuracy: 80,
+            cost: 1,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.scorched_shield.description',
+            selfDamage: GameConfig?.cardEffects?.scorchedShield?.selfDamage || 3,
+            effect: function(user, target, battleSystem) {
+                // 자해 데미지는 BattleSystem.preprocessSelfDamage()에서 이미 처리됨
+                // 여기서는 카드의 본연의 효과만 처리 (방어력 추가)
+                const defenseValue = this.power;
+                user.addDefense(defenseValue);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.defense_gained',
+                    defenseGain: defenseValue,
+                    element: this.element
+                };
+            }
+        });
+
         // 가시갑옷 카드 (자신에게 대미지 1을 가하고 힘 1을 얻습니다)
         this.addCard({
             id: 'thorn_armor',

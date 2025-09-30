@@ -199,6 +199,10 @@
           "name": "Flame Wall",
           "description": "Adds 10 defense to yourself."
         },
+        "scorched_shield": {
+          "name": "Scorched Shield",
+          "description": "Deal 3 damage to yourself and gain 13 defense."
+        },
         "taunt": {
           "name": "Taunt",
           "description": "Taunt the opponent. When taunted, only attack cards can be used."

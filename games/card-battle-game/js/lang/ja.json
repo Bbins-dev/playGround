@@ -199,6 +199,10 @@
           "name": "炎の壁",
           "description": "自分に防御力を10追加します。"
         },
+        "scorched_shield": {
+          "name": "灼熱の盾",
+          "description": "自分に3ダメージを与え、防御力を13獲得します。"
+        },
         "taunt": {
           "name": "挑発",
           "description": "相手を挑発する。挑発状態では攻撃カードのみ使用できる。"
