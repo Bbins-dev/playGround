@@ -193,7 +193,7 @@
         },
         "indomitable_gauntlet": {
           "name": "不屈の篭手",
-          "description": "自分に3ダメージを与え、力5を得る。成功率100%。"
+          "description": "自分に3ダメージを与え、力4を得る。"
         },
         "fire_shield": {
           "name": "火の盾",

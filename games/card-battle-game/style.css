@@ -74,7 +74,7 @@
     --modal-game-tutorial-padding: 30px;
 
     --modal-victory-width: 720px;
-    --modal-victory-height: 1230px;
+    --modal-victory-height: 1500px;
     --modal-victory-padding: 25px;
 
     --modal-defeat-width: 720px;
@@ -616,6 +616,7 @@ body {
 #victory-modal .modal-content {
     width: var(--modal-victory-width);
     height: var(--modal-victory-height);
+    max-height: none !important;
     padding: var(--modal-victory-padding);
     overflow: hidden;
 }
@@ -631,6 +632,17 @@ body {
     flex-shrink: 0;
     margin-top: 10px;
     padding-bottom: 0;
+}
+
+/* 승리 모달 카드 영역 하단 여백 - 버튼 간격 최소화 */
+#victory-modal .card-rewards-container,
+#victory-modal .hand-replace-container {
+    padding-bottom: 20px;
+}
+
+#victory-modal .selected-card-detail {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
 }
 
 /* 패배 모달 전용 스타일 - Configuration-Driven */
@@ -1943,8 +1955,7 @@ body {
 
 /* 승리 모달 스크롤바 배경 은은하게 */
 #victory-modal .victory-content-area {
-    flex: 1;
-    min-height: 0;
+    flex-shrink: 0;
     max-height: none !important;
     overflow-y: auto;
     scrollbar-width: thin;

@@ -598,7 +598,7 @@
 .victory-content {
     max-width: 600px;
     width: 90%;
-    max-height: 80vh;
+    /* max-height: 80vh; - Removed: conflicts with style.css modal height */
     overflow-y: auto;
 }
 

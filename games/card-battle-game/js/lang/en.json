@@ -193,7 +193,7 @@
         },
         "indomitable_gauntlet": {
           "name": "Indomitable Gauntlet",
-          "description": "Deal 3 damage to yourself and gain 5 Strength. 100% success rate."
+          "description": "Deal 3 damage to yourself and gain 4 Strength."
         },
         "fire_shield": {
           "name": "Fire Shield",

@@ -2189,7 +2189,7 @@ GameConfig.utils = {
         // 불굴의 장갑 카드 설정
         indomitableGauntlet: {
             selfDamage: 3,     // 자해 데미지 3
-            strengthGain: 5    // 힘 증가량 5
+            strengthGain: 4    // 힘 증가량 4
         }
     },
 
