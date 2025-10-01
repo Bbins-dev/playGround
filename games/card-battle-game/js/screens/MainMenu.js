@@ -145,7 +145,7 @@ class MainMenu {
         this.renderTitle(ctx, canvas);
         // Canvas 메뉴 렌더링 비활성화 - DOM 버튼 사용
         // this.renderMenuItems(ctx, canvas);
-        this.renderInstructions(ctx, canvas);
+        // this.renderInstructions(ctx, canvas); // 조작 안내 메시지 비활성화
 
         this.needsRedraw = false;
         this.lastRenderTime = currentTime;
