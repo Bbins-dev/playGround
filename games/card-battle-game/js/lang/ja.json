@@ -106,7 +106,8 @@
         "poisoned": "毒",
         "sand": "砂",
         "insult": "侮辱",
-        "slow": "鈍化"
+        "slow": "鈍化",
+        "chains": "鎖"
       },
       "buffs": {
       },
@@ -271,6 +272,10 @@
           "name": "油を注ぐ",
           "description": "相手が火傷状態の場合、火傷を2ターン延長します。"
         },
+        "chains_of_fire": {
+          "name": "炎の鎖",
+          "description": "相手を炎の鎖で縛り、1ターンの間力バフを無効化します。"
+        },
         "endless_effort": {
           "name": "絶え間ない努力",
           "description": "強い力の源は絶え間ない努力です。自分に力1を追加します。"
@@ -340,6 +345,7 @@
       "insult_failed": "侮辱失敗",
       "net_throw_failed": "網投げ失敗",
       "oil_pour_failed": "失敗！",
+      "chains_of_fire_failed": "失敗！",
       "condition_failed": "失敗！",
       "templates": {
         "status_applied": "{name}!!",
@@ -384,9 +390,11 @@
       "reward_options": "手札の左に追加、手札のカード1枚と交換、または報酬をスキップ",
       "card_selection_hint": "カードをクリックすると拡大されます",
       "choose_card_to_replace": "交換する手札カードを選んでください",
+      "hand_replace_title": "手札カード交換",
       "skip_reward": "報酬をスキップ",
       "add_to_deck": "デッキに追加",
       "replace_hand_card": "手札と交換",
+      "replace_card_button": "交換する",
       "continue": "続ける",
       "defeat_title": "ゲームオーバー",
       "player_name": "プレイヤー",

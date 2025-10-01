@@ -225,6 +225,10 @@ class Player {
     }
 
     getStrength() {
+        // 불의 사슬 상태이상이 있으면 힘 버프 무효화
+        if (this.hasStatusEffect('chains')) {
+            return 0;
+        }
         return this.strength;
     }
 

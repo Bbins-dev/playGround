@@ -1273,6 +1273,19 @@
     text-align: center;
 }
 
+.hand-replace-container h3 {
+    color: var(--color-text-white);
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-shadow:
+        0 0 10px rgba(231, 76, 60, 0.8),
+        0 0 20px rgba(231, 76, 60, 0.6),
+        0 0 30px rgba(231, 76, 60, 0.4),
+        0 2px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 1px;
+}
+
 .hand-replace-container p {
     color: var(--color-text-white);
     margin-bottom: 15px;

@@ -130,7 +130,8 @@ const GameConfig = {
             poisoned: '#9B59B6',      // 중독 - 보라색
             sand: '#D4A76A',          // 모래 - 베이지색
             insult: '#8B4513',        // 모욕 - 갈색
-            slow: '#6C757D'           // 둔화 - 회색
+            slow: '#6C757D',          // 둔화 - 회색
+            chains: '#FF4500'         // 사슬 - 오렌지-레드
         },
 
         // 카드 타입 색상
@@ -552,6 +553,14 @@ const GameConfig = {
             get defaultReduction() { return GameConfig.constants.probabilities.statusReduction; },
             duration: 2,
             get color() { return GameConfig.masterColors.statusEffects.slow; }
+        },
+        chains: {
+            nameKey: 'auto_battle_card_game.ui.status_effects.chains',
+            name: '사슬',
+            emoji: '⛓️',
+            description: '1턴 간 힘 버프가 적용되지 않음',
+            duration: 1,
+            get color() { return GameConfig.masterColors.statusEffects.chains; }
         }
     },
 
@@ -581,6 +590,11 @@ const GameConfig = {
             className: 'status-border-slow',
             get color() { return GameConfig.masterColors.statusEffects.slow; },
             priority: 5
+        },
+        chains: {
+            className: 'status-border-chains',
+            get color() { return GameConfig.masterColors.statusEffects.chains; },
+            priority: 6
         }
     },
 

@@ -1053,6 +1053,40 @@ const CardDatabase = {
             }
         });
 
+        // 불의 사슬 카드 (불 속성, 힘 버프 무효화)
+        this.addCard({
+            id: 'chains_of_fire',
+            nameKey: 'auto_battle_card_game.ui.cards.chains_of_fire.name',
+            type: 'status',
+            element: 'fire',
+            power: 0,
+            accuracy: 70,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.chains_of_fire.description',
+            effect: function(user, target, battleSystem) {
+                // 사슬 상태 적용 (1턴)
+                const result = target.addStatusEffect('chains', null, 1);
+
+                let messageKey;
+                if (result.success) {
+                    messageKey = 'auto_battle_card_game.ui.templates.status_applied';
+                } else if (result.duplicate) {
+                    messageKey = 'auto_battle_card_game.ui.templates.already_status';
+                } else {
+                    messageKey = 'auto_battle_card_game.ui.chains_of_fire_failed';
+                }
+
+                return {
+                    success: result.success,
+                    messageKey: messageKey,
+                    element: this.element,
+                    duplicate: result.duplicate,
+                    statusType: result.success ? 'chains' : null,
+                    templateData: { name: GameConfig.statusEffects.chains.name }
+                };
+            }
+        });
+
         // 끝없는 노력 카드 (힘 버프 카드)
         this.addCard({
             id: 'endless_effort',

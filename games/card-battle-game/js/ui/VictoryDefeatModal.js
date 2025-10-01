@@ -935,15 +935,12 @@ class VictoryDefeatModal {
     handleCancelReplace() {
         this.selectedHandCardIndex = null;
 
-        // 손패 교체 영역 숨기고 카드 보상 영역 다시 표시
+        // 손패 교체 영역 숨기기
         if (this.victoryHandReplace) {
             this.victoryHandReplace.classList.add('hidden');
         }
-        if (this.victoryCardRewards) {
-            this.victoryCardRewards.classList.remove('hidden');
-        }
 
-        // 이전 선택 상태 복구
+        // 이전 선택 상태 복구 (확대 카드만 다시 표시)
         if (this.tempSelectedCard) {
             // 카드 선택 상태 복구
             const cardIndex = this.rewardCards.indexOf(this.tempSelectedCard);

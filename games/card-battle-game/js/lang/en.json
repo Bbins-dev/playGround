@@ -106,7 +106,8 @@
         "poisoned": "Poison",
         "sand": "Sand",
         "insult": "Insult",
-        "slow": "Slow"
+        "slow": "Slow",
+        "chains": "Chains"
       },
       "buffs": {
       },
@@ -271,6 +272,10 @@
           "name": "Pour Oil",
           "description": "If the target is burned, extends burn by 2 turns."
         },
+        "chains_of_fire": {
+          "name": "Chains of Fire",
+          "description": "Bind the opponent with chains of fire, preventing strength buffs from applying for one turn."
+        },
         "endless_effort": {
           "name": "Endless Effort",
           "description": "The source of strong power is endless effort. Adds 1 strength to yourself."
@@ -340,6 +345,7 @@
       "insult_failed": "Insult failed",
       "net_throw_failed": "Net Throw failed",
       "oil_pour_failed": "Failed!",
+      "chains_of_fire_failed": "Failed!",
       "condition_failed": "Failed!",
       "templates": {
         "status_applied": "{name}!!",
@@ -385,9 +391,11 @@
       "reward_options": "Add to the left of your hand, replace one of your hand cards, or skip the reward",
       "card_selection_hint": "Click a card to enlarge",
       "choose_card_to_replace": "Choose a hand card to replace",
+      "hand_replace_title": "Replace Hand Card",
       "skip_reward": "Skip Reward",
       "add_to_deck": "Add to Deck",
       "replace_hand_card": "Replace Hand Card",
+      "replace_card_button": "Replace",
       "continue": "Continue",
       "defeat_title": "Game Over",
       "player_name": "Player",
