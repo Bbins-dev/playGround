@@ -61,6 +61,9 @@ class UIManager {
         this.setupSpeedControls();
         this.setupModals();
         this.updateLanguage();
+
+        // 초기 화면 상태에 맞게 UI 가시성 업데이트
+        this.updateUIVisibility();
     }
 
     // GameConfig 기반 CSS 변수 적용
