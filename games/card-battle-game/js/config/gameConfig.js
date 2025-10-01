@@ -751,7 +751,7 @@ const GameConfig = {
     // 플레이어 설정
     player: {
         get maxHandSize() { return GameConfig.constants.limits.maxHandSize; },
-        startingHP: 80,
+        startingHP: 10000,
         defaultDefenseElement: 'normal'
     },
 
@@ -776,8 +776,17 @@ const GameConfig = {
         // 스테이지별 적 설정 (1-10스테이지)
         stageConfigs: {
             1: {
-                hp: 10,
-                cards: [{ id: 'random_bash', count: 1 }]
+                hp: 10000,
+                cards: [
+                    { id: 'karura_strike', count: 1 },
+                    { id: 'oil_pour', count: 1 },
+                    { id: 'chains_of_fire', count: 1 },
+                    { id: 'powder_keg', count: 1 },
+                    { id: 'opportunity_scent', count: 3 },
+                    { id: 'fireball', count: 1 },
+                    { id: 'flame_burst', count: 1 },
+                    { id: 'flame_ascension', count: 1 }
+                ]
             },
             2: {
                 hp: 15,
