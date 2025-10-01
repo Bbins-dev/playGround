@@ -228,7 +228,7 @@ const GameConfig = {
         messageTypes: {
             damage: '#FF0000',            // 대미지 - 빨간색
             heal: '#2ECC71',              // 회복 - 초록색
-            shield: '#C0C0C0',            // 방어력 - 은색
+            shield: '#E8E8E8',            // 방어력 - 밝은 은색
             buff: '#FFD700',              // 버프 - 금색
             status: '#FFFFFF',            // 상태이상 일반 - 흰색
             poison: '#9B59B6',            // 독 - 보라색
