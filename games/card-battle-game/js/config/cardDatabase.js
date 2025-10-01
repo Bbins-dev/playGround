@@ -1263,6 +1263,53 @@ const CardDatabase = {
                 };
             }
         });
+
+        // 용암 감옥 카드 (불 속성, 화상 상태일 경우 기절)
+        this.addCard({
+            id: 'lava_prison',
+            nameKey: 'auto_battle_card_game.ui.cards.lava_prison.name',
+            type: 'status',
+            element: 'fire',
+            power: 0,
+            accuracy: 60,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.lava_prison.description',
+            effect: function(user, target, battleSystem) {
+                // 상대가 화상 상태인지 확인
+                const hasBurn = target.hasStatusEffect('burn');
+
+                if (!hasBurn) {
+                    // 명중했지만 조건 실패 (화상 상태 아님)
+                    return {
+                        success: true,           // 명중은 성공
+                        conditionFailed: true,   // 조건 실패
+                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        element: this.element
+                    };
+                }
+
+                // 화상 상태일 경우 기절 부여
+                const result = target.addStatusEffect('stun', null, 1);
+
+                let messageKey;
+                if (result.success) {
+                    messageKey = 'auto_battle_card_game.ui.templates.status_applied';
+                } else if (result.duplicate) {
+                    messageKey = 'auto_battle_card_game.ui.templates.already_status';
+                } else {
+                    messageKey = 'auto_battle_card_game.ui.condition_failed';
+                }
+
+                return {
+                    success: result.success,
+                    messageKey: messageKey,
+                    element: this.element,
+                    duplicate: result.duplicate,
+                    statusType: result.success ? 'stun' : null,
+                    templateData: { name: GameConfig.statusEffects.stun.name }
+                };
+            }
+        });
     }
 };
 

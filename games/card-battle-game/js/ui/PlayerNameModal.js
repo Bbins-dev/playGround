@@ -6,7 +6,6 @@ class PlayerNameModal {
         this.modal = document.getElementById('player-name-modal');
         this.nameInput = document.getElementById('player-name-input');
         this.confirmBtn = document.getElementById('confirm-name');
-        this.skipBtn = document.getElementById('skip-name');
 
         this.onNameConfirmed = null; // 콜백 함수
 
@@ -17,11 +16,6 @@ class PlayerNameModal {
         // 확인 버튼 클릭
         this.confirmBtn.addEventListener('click', () => {
             this.handleConfirm();
-        });
-
-        // 건너뛰기 버튼 클릭
-        this.skipBtn.addEventListener('click', () => {
-            this.handleSkip();
         });
 
         // Enter 키로 확인
@@ -78,17 +72,6 @@ class PlayerNameModal {
         this.hide();
         if (this.onNameConfirmed) {
             this.onNameConfirmed(playerName);
-        }
-    }
-
-    /**
-     * 건너뛰기 버튼 처리
-     */
-    handleSkip() {
-        const defaultName = this.getDefaultPlayerName();
-        this.hide();
-        if (this.onNameConfirmed) {
-            this.onNameConfirmed(defaultName);
         }
     }
 

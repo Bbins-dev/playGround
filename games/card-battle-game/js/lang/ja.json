@@ -82,7 +82,7 @@
       "cancel": "キャンセル",
       "close": "閉じる",
       "enter_player_name": "プレイヤー名入力",
-      "name_placeholder": "名前を入力してください",
+      "name_placeholder": "プレイヤー",
       "confirm": "確認",
       "stage": "ステージ",
       "stage_display_template": "ステージ {stage}",
@@ -299,6 +299,10 @@
         "red_pendant": {
           "name": "赤いペンダント",
           "description": "自分に防御力3と力1を追加します。"
+        },
+        "lava_prison": {
+          "name": "溶岩の牢獄",
+          "description": "発動時、相手が火傷状態の場合、溶岩の牢獄に閉じ込めて何もできなくします。"
         }
       },
       "buffs": {

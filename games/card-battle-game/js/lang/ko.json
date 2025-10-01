@@ -82,7 +82,7 @@
       "cancel": "취소",
       "close": "닫기",
       "enter_player_name": "플레이어 이름 입력",
-      "name_placeholder": "이름을 입력하세요",
+      "name_placeholder": "플레이어",
       "confirm": "확인",
       "stage": "스테이지",
       "stage_display_template": "스테이지 {stage}",
@@ -299,6 +299,10 @@
         "red_pendant": {
           "name": "붉은 펜던트",
           "description": "자신에게 방어력 3과 힘 1을 추가합니다."
+        },
+        "lava_prison": {
+          "name": "용암 감옥",
+          "description": "발동 시 상대가 화상 상태일 경우 용암 감옥에 가둬 아무런 행동도 할 수 없게 만듭니다."
         }
       },
       "buffs": {

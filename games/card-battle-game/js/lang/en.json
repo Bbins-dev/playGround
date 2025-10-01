@@ -82,7 +82,7 @@
       "cancel": "Cancel",
       "close": "Close",
       "enter_player_name": "Enter Player Name",
-      "name_placeholder": "Enter your name",
+      "name_placeholder": "Player",
       "confirm": "Confirm",
       "stage": "Stage",
       "stage_display_template": "Stage {stage}",
@@ -299,6 +299,10 @@
         "red_pendant": {
           "name": "Red Pendant",
           "description": "Adds 3 defense and 1 strength to yourself."
+        },
+        "lava_prison": {
+          "name": "Lava Prison",
+          "description": "If the opponent is burned, trap them in a lava prison, preventing any actions."
         }
       },
       "buffs": {
