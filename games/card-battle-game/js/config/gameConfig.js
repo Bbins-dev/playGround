@@ -237,8 +237,8 @@ const GameConfig = {
             zero: '#888888',              // 0 대미지 - 어두운 회색
             strong: '#FF4500',            // 강한 대미지 - 오렌지-레드
             weak: '#FFA500',              // 약한 대미지 - 주황색
-            selfDamage: '#E67E22',        // 자해 데미지 - 주황색
-            conditionFailed: '#FFA500',   // 조건 실패 - 주황색
+            selfDamage: '#FFEB3B',        // 자해 데미지 - 노란색
+            conditionFailed: '#CCCCCC',   // 조건 실패 - 회색
             debuff: '#E74C3C'             // 디버프 - 빨간색
         }
     },
