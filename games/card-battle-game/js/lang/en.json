@@ -303,6 +303,10 @@
         "lava_prison": {
           "name": "Lava Prison",
           "description": "If the opponent is burned, trap them in a lava prison, preventing any actions."
+        },
+        "powder_keg": {
+          "name": "Powder Keg Throw",
+          "description": "If the opponent is burned, explode to deal 10 damage and extend burn by 1 turn."
         }
       },
       "buffs": {
@@ -354,7 +358,7 @@
       "templates": {
         "status_applied": "{name}!!",
         "already_status": "Already {name}!",
-        "burn_extended": "🔥 Burn duration extended!",
+        "burn_extended": "🔥 Burn+{value}T!",
         "burn_damage": "🔥 {value} burn damage!",
         "buff_gained": "{name} +{value}",
         "buff_reduced": "{name} {value}",
@@ -362,7 +366,8 @@
         "heal_effect": "❤️ HP +{value}",
         "self_damage": "{damage} self-damage!",
         "karura_strike_effect": "{selfDamage} self-damage! {damage} damage to opponent!",
-        "red_pendant_effect": "🛡️ Defense +{defense}, 💪 Strength +{strength}"
+        "red_pendant_effect": "🛡️ Defense +{defense}, 💪 Strength +{strength}",
+        "powder_keg_effect": "💥 Boom! {damage} damage!"
       },
       "card_selection": {
         "initial_title": "Start Card Selection",

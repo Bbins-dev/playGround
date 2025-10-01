@@ -303,6 +303,10 @@
         "lava_prison": {
           "name": "溶岩の牢獄",
           "description": "発動時、相手が火傷状態の場合、溶岩の牢獄に閉じ込めて何もできなくします。"
+        },
+        "powder_keg": {
+          "name": "火薬樽投擲",
+          "description": "相手が火傷状態の場合、発動時に爆発して10ダメージを与え、火傷を1ターン延長します。"
         }
       },
       "buffs": {
@@ -354,7 +358,7 @@
       "templates": {
         "status_applied": "{name}!!",
         "already_status": "すでに{name}!",
-        "burn_extended": "🔥 火傷の持続時間が延長されました！",
+        "burn_extended": "🔥 火傷+{value}ターン!",
         "burn_damage": "🔥 火傷で{value}ダメージ！",
         "buff_gained": "{name} +{value}",
         "buff_reduced": "{name} {value}",
@@ -362,7 +366,8 @@
         "heal_effect": "❤️ 体力 +{value}",
         "self_damage": "自分に{damage}ダメージ！",
         "karura_strike_effect": "自分に{selfDamage}ダメージ！相手に{damage}ダメージ！",
-        "red_pendant_effect": "🛡️ 防御力 +{defense}、💪 力 +{strength}"
+        "red_pendant_effect": "🛡️ 防御力 +{defense}、💪 力 +{strength}",
+        "powder_keg_effect": "💥 ドカン！ {damage}ダメージ！"
       },
       "card_selection": {
         "initial_title": "スタートカード選択",

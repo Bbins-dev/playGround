@@ -342,7 +342,7 @@ class BattleSystem {
                 break;
 
             case 'status':
-                await this.processStatusResult(result, target, targetPosition);
+                await this.processStatusResult(result, target, targetPosition, card);
                 break;
 
             case 'defense':
@@ -507,7 +507,7 @@ class BattleSystem {
     }
 
     // 상태이상 결과 처리
-    async processStatusResult(result, target, targetPosition) {
+    async processStatusResult(result, target, targetPosition, card) {
         // 조건 실패 체크 (명중했지만 조건 미달)
         if (result.conditionFailed) {
             // "실패!" 메시지 표시
@@ -527,11 +527,47 @@ class BattleSystem {
             return; // 중복 상태면 추가 처리 중단
         }
 
+        // 데미지가 있는 상태이상 카드 처리 (예: 화약통 투척)
+        const damage = result.damage || 0;
+        if (damage > 0) {
+            // 실제 대미지 적용
+            const actualDamage = target.takeDamage(damage);
+
+            // 피격 효과 (속성 상성 정보 포함) - 불 공격 연출 활용
+            const effectiveness = result.effectiveness || 1.0;
+            const element = result.element || (card ? card.element : 'normal');
+            await this.effectSystem.showHitEffect(targetPosition, element, damage, effectiveness);
+
+            // 통계 업데이트 (기존 BattleSystem 통계)
+            if (target === this.enemy) {
+                this.battleStats.totalDamageDealt += actualDamage;
+            } else {
+                this.battleStats.totalDamageReceived += actualDamage;
+            }
+
+            // GameManager 중앙 통계 시스템 업데이트
+            if (this.gameManager && this.gameManager.recordDamage) {
+                const source = target === this.enemy ? 'player' : 'enemy';
+                const targetType = target === this.enemy ? 'enemy' : 'player';
+                this.gameManager.recordDamage(source, targetType, damage, 'normal');
+            }
+        }
+
         // 상태이상별 효과 표시
         const statusType = result.statusType;
         if (statusType) {
+            // 템플릿 선택: 화상 연장 카드는 burn_extended 사용
+            let templateType = 'status_applied';
+            let turnsValue = 0;
+
+            // 화상 연장 카드 체크 (기름붓기, 화약통)
+            if (result.turnsExtended && statusType === 'burn') {
+                templateType = 'burn_extended';
+                turnsValue = result.turnsExtended;
+            }
+
             // 템플릿 기반으로 상태이상 적용 메시지 표시
-            await this.effectSystem.showEffectMessage(statusType, targetPosition, 'status_applied');
+            await this.effectSystem.showEffectMessage(statusType, targetPosition, templateType, turnsValue);
 
             // 상태이상 UI 즉시 업데이트
             const isTargetPlayer = target === this.player;

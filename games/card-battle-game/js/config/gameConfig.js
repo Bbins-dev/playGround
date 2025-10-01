@@ -2208,6 +2208,11 @@ GameConfig.utils = {
         // 기름붓기 카드 설정
         oilPour: {
             turnsExtended: 2   // 화상 연장 턴 수
+        },
+        // 화약통 투척 카드 설정
+        powderKeg: {
+            damage: 10,        // 폭발 데미지
+            burnTurnsExtended: 1  // 화상 연장 턴 수
         }
     },
 

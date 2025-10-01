@@ -1048,7 +1048,8 @@ const CardDatabase = {
                         'auto_battle_card_game.ui.templates.burn_extended' :
                         'auto_battle_card_game.ui.oil_pour_failed',
                     element: this.element,
-                    statusType: result.success ? 'burn' : null
+                    statusType: result.success ? 'burn' : null,
+                    turnsExtended: turnsToExtend  // 연장 턴 수 정보 추가
                 };
             }
         });
@@ -1307,6 +1308,61 @@ const CardDatabase = {
                     duplicate: result.duplicate,
                     statusType: result.success ? 'stun' : null,
                     templateData: { name: GameConfig.statusEffects.stun.name }
+                };
+            }
+        });
+
+        // 화약통 투척 카드 (불 속성, 화상 상태일 경우 폭발 데미지 + 화상 연장)
+        this.addCard({
+            id: 'powder_keg',
+            nameKey: 'auto_battle_card_game.ui.cards.powder_keg.name',
+            type: 'status',
+            element: 'fire',
+            power: 0,  // 상태이상 카드이므로 power 스탯 표시 안함
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.powder_keg.description',
+            effect: function(user, target, battleSystem) {
+                // 상대가 화상 상태인지 확인
+                const hasBurn = target.hasStatusEffect('burn');
+
+                if (!hasBurn) {
+                    // 명중했지만 조건 실패 (화상 상태 아님)
+                    return {
+                        success: true,           // 명중은 성공
+                        conditionFailed: true,   // 조건 실패
+                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        element: this.element
+                    };
+                }
+
+                // 화상 상태일 경우 폭발: 데미지 + 화상 연장
+                const cardDamage = GameConfig?.cardEffects?.powderKeg?.damage || 10;
+                let baseDamage = cardDamage + (user.getStrength ? user.getStrength() : 0);
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                // 화상 턴수 연장
+                const turnsToExtend = GameConfig?.cardEffects?.powderKeg?.burnTurnsExtended || 1;
+                target.addStatusEffect('burn', GameConfig.statusEffects.burn.defaultPercent, turnsToExtend);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.powder_keg_effect',
+                    damage: finalDamage,
+                    statusType: 'burn',
+                    element: this.element,
+                    effectiveness: effectiveness,
+                    turnsExtended: turnsToExtend,  // 연장 턴 수 정보 추가
+                    templateData: {
+                        damage: finalDamage
+                    }
                 };
             }
         });

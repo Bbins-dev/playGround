@@ -283,6 +283,10 @@ class EffectSystem {
             if (type === 'self_damage') {
                 className = 'damage-number'; // 빨간색 대미지 색상
             }
+            // 상태이상 이모지 체크 우선 (화상 연장 메시지 등)
+            else if (customText.match(/[🔥☠️⚡💨❄️🌪️]/)) {
+                className = 'damage-number effect-number'; // 흰색
+            }
             // 메시지 내용에 따라 적절한 색상 클래스 결정
             else if (customText.includes('🛡️') || customText.includes('Defense') || customText.includes('방어력') || customText.includes('防御力')) {
                 className = 'damage-number shield-number';

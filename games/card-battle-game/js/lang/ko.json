@@ -303,6 +303,10 @@
         "lava_prison": {
           "name": "용암 감옥",
           "description": "발동 시 상대가 화상 상태일 경우 용암 감옥에 가둬 아무런 행동도 할 수 없게 만듭니다."
+        },
+        "powder_keg": {
+          "name": "화약통 투척",
+          "description": "상대가 화상 상태일 경우 발동 시 폭발하여 10 데미지를 주고 화상 1턴을 추가합니다."
         }
       },
       "buffs": {
@@ -354,7 +358,7 @@
       "templates": {
         "status_applied": "{name}!!",
         "already_status": "이미 {name}!",
-        "burn_extended": "🔥 화상 지속시간이 연장되었습니다!",
+        "burn_extended": "🔥 화상+{value}턴!",
         "burn_damage": "🔥 화상으로 {value} 데미지!",
         "buff_gained": "{name} +{value}",
         "buff_reduced": "{name} {value}",
@@ -362,7 +366,8 @@
         "heal_effect": "❤️ 체력 +{value}",
         "self_damage": "자신에게 {damage} 데미지!",
         "karura_strike_effect": "자신에게 {selfDamage} 피해! 상대에게 {damage} 피해!",
-        "red_pendant_effect": "🛡️ 방어력 +{defense}, 💪 힘 +{strength}"
+        "red_pendant_effect": "🛡️ 방어력 +{defense}, 💪 힘 +{strength}",
+        "powder_keg_effect": "💥 펑! {damage} 데미지!"
       },
       "card_selection": {
         "initial_title": "시작 카드 선택",
