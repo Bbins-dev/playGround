@@ -1056,7 +1056,7 @@ class BattleSystem {
             await this.wait(config.timing.deathCheckDelay / this.gameSpeed);
 
             // 전투 종료 처리
-            this.checkBattleEnd();
+            await this.checkBattleEnd();
 
             return {
                 terminated: true,
