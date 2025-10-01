@@ -2190,6 +2190,10 @@ GameConfig.utils = {
         indomitableGauntlet: {
             selfDamage: 3,     // 자해 데미지 3
             strengthGain: 4    // 힘 증가량 4
+        },
+        // 기름붓기 카드 설정
+        oilPour: {
+            turnsExtended: 2   // 화상 연장 턴 수
         }
     },
 

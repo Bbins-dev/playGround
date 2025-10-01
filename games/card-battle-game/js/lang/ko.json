@@ -267,6 +267,10 @@
           "name": "그물투척",
           "description": "상대를 둔화시켜 2턴간 상태이상카드의 발동률을 30% 감소시킵니다."
         },
+        "oil_pour": {
+          "name": "기름붓기",
+          "description": "상대가 화상 상태일 경우 화상 2턴을 추가합니다."
+        },
         "endless_effort": {
           "name": "끝없는 노력",
           "description": "강한 힘의 원천은 끝없는 노력입니다. 자신에게 힘 1을 추가합니다."
@@ -334,6 +338,9 @@
       "sand_throw_failed": "모래뿌리기 실패",
       "hot_breath_failed": "뜨거운 입김 실패",
       "insult_failed": "모욕 실패",
+      "net_throw_failed": "그물투척 실패",
+      "oil_pour_failed": "실패!",
+      "condition_failed": "실패!",
       "templates": {
         "status_applied": "{name}!!",
         "already_status": "이미 {name}!",

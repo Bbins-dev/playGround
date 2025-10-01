@@ -508,6 +508,15 @@ class BattleSystem {
 
     // 상태이상 결과 처리
     async processStatusResult(result, target, targetPosition) {
+        // 조건 실패 체크 (명중했지만 조건 미달)
+        if (result.conditionFailed) {
+            // "실패!" 메시지 표시
+            await this.effectSystem.showDamageNumber(0, targetPosition, 'condition_failed');
+            // 조건 실패 시 추가 대기 (플레이어가 확인할 수 있도록)
+            await this.wait((GameConfig.timing?.cards?.missDelay || 800) / this.gameSpeed);
+            return; // 조건 실패면 추가 처리 중단
+        }
+
         // 중복 상태이상 체크 (이미 걸린 상태)
         if (result.duplicate) {
             // 어떤 상태이상 타입이든 템플릿 기반으로 처리

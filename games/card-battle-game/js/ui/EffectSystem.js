@@ -302,6 +302,11 @@ class EffectSystem {
                     // I18nHelper 사용하여 빗나감 텍스트 설정
                     numberElement.textContent = I18nHelper.getText('auto_battle_card_game.ui.miss');
                     break;
+                case 'condition_failed':
+                    className += ' miss-number';  // miss와 동일한 스타일
+                    // I18nHelper 사용하여 조건 실패 텍스트 설정
+                    numberElement.textContent = I18nHelper.getText('auto_battle_card_game.ui.condition_failed');
+                    break;
                 case 'zero':
                     className += ' zero-number';
                     numberElement.textContent = '0';

@@ -1014,6 +1014,45 @@ const CardDatabase = {
             }
         });
 
+        // 기름붓기 카드 (불 속성, 화상 연장)
+        this.addCard({
+            id: 'oil_pour',
+            nameKey: 'auto_battle_card_game.ui.cards.oil_pour.name',
+            type: 'status',
+            element: 'fire',
+            power: 0,
+            accuracy: 70,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.oil_pour.description',
+            effect: function(user, target, battleSystem) {
+                // 상대가 화상 상태인지 확인
+                const hasBurn = target.hasStatusEffect('burn');
+
+                if (!hasBurn) {
+                    // 명중했지만 조건 실패 (화상 상태 아님)
+                    return {
+                        success: true,           // 명중은 성공
+                        conditionFailed: true,   // 조건 실패
+                        messageKey: 'auto_battle_card_game.ui.oil_pour_failed',
+                        element: this.element
+                    };
+                }
+
+                // 화상 턴 수 연장
+                const turnsToExtend = GameConfig?.cardEffects?.oilPour?.turnsExtended || 2;
+                const result = target.addStatusEffect('burn', GameConfig.statusEffects.burn.defaultPercent, turnsToExtend);
+
+                return {
+                    success: result.success,
+                    messageKey: result.success ?
+                        'auto_battle_card_game.ui.templates.burn_extended' :
+                        'auto_battle_card_game.ui.oil_pour_failed',
+                    element: this.element,
+                    statusType: result.success ? 'burn' : null
+                };
+            }
+        });
+
         // 끝없는 노력 카드 (힘 버프 카드)
         this.addCard({
             id: 'endless_effort',

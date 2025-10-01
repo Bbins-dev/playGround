@@ -267,6 +267,10 @@
           "name": "Net Throw",
           "description": "Slows the opponent, reducing status card activation rate by 30% for 2 turns."
         },
+        "oil_pour": {
+          "name": "Pour Oil",
+          "description": "If the target is burned, extends burn by 2 turns."
+        },
         "endless_effort": {
           "name": "Endless Effort",
           "description": "The source of strong power is endless effort. Adds 1 strength to yourself."
@@ -334,6 +338,9 @@
       "sand_throw_failed": "Sand Throw failed",
       "hot_breath_failed": "Hot Breath failed",
       "insult_failed": "Insult failed",
+      "net_throw_failed": "Net Throw failed",
+      "oil_pour_failed": "Failed!",
+      "condition_failed": "Failed!",
       "templates": {
         "status_applied": "{name}!!",
         "already_status": "Already {name}!",

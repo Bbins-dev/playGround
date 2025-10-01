@@ -267,6 +267,10 @@
           "name": "網投げ",
           "description": "相手を鈍化させ、2ターンの間状態異常カードの発動率を30%減少させます。"
         },
+        "oil_pour": {
+          "name": "油を注ぐ",
+          "description": "相手が火傷状態の場合、火傷を2ターン延長します。"
+        },
         "endless_effort": {
           "name": "絶え間ない努力",
           "description": "強い力の源は絶え間ない努力です。自分に力1を追加します。"
@@ -334,6 +338,9 @@
       "sand_throw_failed": "砂投げ失敗",
       "hot_breath_failed": "熱い息失敗",
       "insult_failed": "侮辱失敗",
+      "net_throw_failed": "網投げ失敗",
+      "oil_pour_failed": "失敗！",
+      "condition_failed": "失敗！",
       "templates": {
         "status_applied": "{name}!!",
         "already_status": "すでに{name}!",
