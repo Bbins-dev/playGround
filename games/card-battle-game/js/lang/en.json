@@ -372,7 +372,7 @@
         "self_damage": "{damage} self-damage!",
         "karura_strike_effect": "{selfDamage} self-damage! {damage} damage to opponent!",
         "red_pendant_effect": "🛡️ Defense +{defense}, 💪 Strength +{strength}",
-        "powder_keg_effect": "💥 Boom! {damage} damage!",
+        "powder_keg_effect": "💥 Boom!-{damage}",
         "scent_buff_gained": "🔥 Scent +{value}({turns})!"
       },
       "card_selection": {

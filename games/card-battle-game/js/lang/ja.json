@@ -372,7 +372,7 @@
         "self_damage": "自分に{damage}ダメージ！",
         "karura_strike_effect": "自分に{selfDamage}ダメージ！相手に{damage}ダメージ！",
         "red_pendant_effect": "🛡️ 防御力 +{defense}、💪 力 +{strength}",
-        "powder_keg_effect": "💥 ドカン！ {damage}ダメージ！",
+        "powder_keg_effect": "💥 ドカン！-{damage}",
         "scent_buff_gained": "🔥 匂い +{value}({turns})!"
       },
       "card_selection": {
