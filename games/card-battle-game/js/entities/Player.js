@@ -162,10 +162,10 @@ class Player {
             return { success: false, reason: 'immune' };
         }
 
-        // 화상의 경우 중복 적용 시 턴 수 누적
+        // 화상과 중독의 경우 중복 적용 시 턴 수 누적
         const existingEffect = this.statusEffects.find(effect => effect.type === statusType);
-        if (existingEffect && statusType === 'burn') {
-            // 화상은 중복 적용 시 턴 수 누적
+        if (existingEffect && (statusType === 'burn' || statusType === 'poisoned')) {
+            // 화상과 중독은 중복 적용 시 턴 수 누적
             const additionalTurns = duration || statusConfig.duration || 1;
             existingEffect.turnsLeft += additionalTurns;
             if (GameConfig?.debugMode?.showStatusEffects) {
