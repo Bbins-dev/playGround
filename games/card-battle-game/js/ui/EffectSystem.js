@@ -201,7 +201,7 @@ class EffectSystem {
     // 메시지 타입 자동 판별
     getMessageType(customText, type) {
         // MISS와 조건 실패 메시지는 항상 중앙 영역에 표시
-        if (type === 'miss' || type === 'condition_failed') {
+        if (type === 'miss' || type === 'conditionFailed') {
             return 'damage';
         }
 
@@ -290,7 +290,7 @@ class EffectSystem {
                 case 'miss':
                     numberElement.textContent = I18nHelper.getText('auto_battle_card_game.ui.miss');
                     break;
-                case 'condition_failed':
+                case 'conditionFailed':
                     numberElement.textContent = I18nHelper.getText('auto_battle_card_game.ui.condition_failed');
                     break;
                 case 'zero':
@@ -335,7 +335,7 @@ class EffectSystem {
         let targetY;
 
         // MISS와 조건 실패 메시지는 화면 Y축 중앙에 표시
-        if (type === 'miss' || type === 'condition_failed') {
+        if (type === 'miss' || type === 'conditionFailed') {
             targetY = GameConfig.canvas.height / 2;
         } else {
             targetY = isPlayerDamage ?
@@ -386,7 +386,7 @@ class EffectSystem {
         let zIndex = zIndexPriority.default;
 
         // 실제 대미지 숫자는 최상위에 표시
-        if (type === 'damage' || type === 'strong' || type === 'weak' || type === 'self_damage') {
+        if (type === 'damage' || type === 'strong' || type === 'weak' || type === 'selfDamage') {
             zIndex = zIndexPriority.damage;
         } else if (type === 'heal') {
             zIndex = zIndexPriority.heal;

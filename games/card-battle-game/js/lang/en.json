@@ -307,6 +307,10 @@
         "powder_keg": {
           "name": "Powder Keg Throw",
           "description": "If the opponent is burned, explode to deal 10 damage and extend burn by 1 turn."
+        },
+        "opportunity_scent": {
+          "name": "Opportunity's Scent",
+          "description": "When opponent is burned, gain +10 damage to fire attack cards for 1 turn. Scent stacks."
         }
       },
       "buffs": {
@@ -314,7 +318,8 @@
         "defense": "DEF",
         "enhance": "ENH",
         "focus": "FOC",
-        "speed": "SPD"
+        "speed": "SPD",
+        "scent": "SCN"
       },
       "elements": {
         "fire": "Fire",
@@ -367,7 +372,8 @@
         "self_damage": "{damage} self-damage!",
         "karura_strike_effect": "{selfDamage} self-damage! {damage} damage to opponent!",
         "red_pendant_effect": "🛡️ Defense +{defense}, 💪 Strength +{strength}",
-        "powder_keg_effect": "💥 Boom! {damage} damage!"
+        "powder_keg_effect": "💥 Boom! {damage} damage!",
+        "scent_buff_gained": "🔥 Scent +{value}({turns})!"
       },
       "card_selection": {
         "initial_title": "Start Card Selection",

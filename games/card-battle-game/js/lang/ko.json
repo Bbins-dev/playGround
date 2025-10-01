@@ -307,6 +307,10 @@
         "powder_keg": {
           "name": "화약통 투척",
           "description": "상대가 화상 상태일 경우 발동 시 폭발하여 10 데미지를 주고 화상 1턴을 추가합니다."
+        },
+        "opportunity_scent": {
+          "name": "기회의 냄새",
+          "description": "상대가 화상 상태일 때 발동 시 한 턴 간 불 속성 공격카드에 대미지 10 추가. 냄새는 중첩 가능하다."
         }
       },
       "buffs": {
@@ -314,7 +318,8 @@
         "defense": "방어력",
         "enhance": "강화",
         "focus": "집중",
-        "speed": "고속"
+        "speed": "고속",
+        "scent": "냄새"
       },
       "elements": {
         "fire": "불",
@@ -367,7 +372,8 @@
         "self_damage": "자신에게 {damage} 데미지!",
         "karura_strike_effect": "자신에게 {selfDamage} 피해! 상대에게 {damage} 피해!",
         "red_pendant_effect": "🛡️ 방어력 +{defense}, 💪 힘 +{strength}",
-        "powder_keg_effect": "💥 펑! {damage} 데미지!"
+        "powder_keg_effect": "💥 펑! {damage} 데미지!",
+        "scent_buff_gained": "🔥 냄새 +{value}({turns})!"
       },
       "card_selection": {
         "initial_title": "시작 카드 선택",

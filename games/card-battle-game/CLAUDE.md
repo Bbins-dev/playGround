@@ -128,6 +128,13 @@ const coords = CanvasUtils.getCanvasCoordinates(event, canvas);
 - **에러 방지**: try-catch 블록에서 에러 로깅 추가
 - **초기화 타이밍 문제 해결**: 동적으로 추가된 설정값도 안전하게 접근
 
+### 5. JavaScript 네이밍 규칙
+- **타입 이름**: camelCase 필수 (`conditionFailed`, `selfDamage`)
+- **i18n 키**: snake_case 유지 (`auto_battle_card_game.ui.condition_failed`)
+- **GameConfig 속성**: camelCase (`messageTypes.conditionFailed`)
+- **타입 vs i18n 키**: 별개의 개념 - 타입은 코드 레벨, i18n은 텍스트 레벨
+- **신규 타입 추가 시**: 하드코딩 추가 대신 코드의 타입 이름을 camelCase로 통일
+
 ## 🎮 게임 시스템 특성
 
 ### 🎨 카드 이미지 통합 관리 시스템
