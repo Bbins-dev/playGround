@@ -167,19 +167,17 @@ const CardDatabase = {
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
-                // 기절 확률 체크
-                let stunned = false;
-                const stunRoll = Math.random() * 100;
-                if (stunRoll < this.stunChance) {
-                    const result = target.addStatusEffect('stun', null, 1);
-                    stunned = result.success;
-                }
-
+                // 기절 적용 (통합 시스템 - 면역 메시지 지원)
                 return {
                     success: true,
-                    messageKey: stunned ? 'auto_battle_card_game.ui.concussion_stun' : 'auto_battle_card_game.ui.damage',
+                    messageKey: 'auto_battle_card_game.ui.damage',
                     damage: finalDamage,
-                    stunned: stunned,
+                    statusEffect: {
+                        type: 'stun',
+                        chance: this.stunChance,
+                        power: null,
+                        duration: 1
+                    },
                     element: this.element,
                     effectiveness: effectiveness
                 };
@@ -461,25 +459,18 @@ const CardDatabase = {
             accuracy: 70,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.taunt.description',
+            tauntChance: 100,
             effect: function(user, target, battleSystem) {
-                // 도발 상태 적용 (1턴)
-                const result = target.addStatusEffect('taunt', null, 1);
-
-                let messageKey;
-                if (result.success) {
-                    messageKey = 'auto_battle_card_game.ui.taunt_success';
-                } else if (result.duplicate) {
-                    messageKey = 'auto_battle_card_game.ui.already_taunted';
-                } else {
-                    messageKey = 'auto_battle_card_game.ui.taunt_failed';
-                }
-
+                // 도발 적용 (통합 시스템 - 면역 메시지 지원)
                 return {
-                    success: result.success,
-                    messageKey: messageKey,
-                    element: this.element,
-                    duplicate: result.duplicate,
-                    statusType: result.success ? 'taunt' : null
+                    success: true,
+                    statusEffect: {
+                        type: 'taunt',
+                        chance: this.tauntChance,
+                        power: null,
+                        duration: 1
+                    },
+                    element: this.element
                 };
             }
         });
@@ -506,20 +497,17 @@ const CardDatabase = {
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
-                // 화상 확률 체크 (명중 성공 시에만)
-                let burned = false;
-                const burnRoll = Math.random() * 100;
-                if (burnRoll < this.burnChance) {
-                    const result = target.addStatusEffect('burn', 15, 1);
-                    burned = result.success;
-                }
-
+                // 화상 적용 (통합 시스템 - 면역 메시지 지원)
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.damage',
                     damage: finalDamage,
-                    burned: burned,
-                    statusType: burned ? 'burn' : null,
+                    statusEffect: {
+                        type: 'burn',
+                        chance: this.burnChance,
+                        power: GameConfig.statusEffects.burn.defaultPercent,
+                        duration: 1
+                    },
                     element: this.element,
                     effectiveness: effectiveness
                 };
@@ -614,24 +602,17 @@ const CardDatabase = {
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
-                // 중독 확률 체크 (명중한 경우에만)
-                let poisoned = false;
-                const poisonRoll = Math.random() * 100;
-
-                if (poisonRoll < this.poisonChance) {
-                    const result = target.addStatusEffect('poisoned', null, 3); // 3턴 지속
-                    poisoned = result.success;
-                    if (poisoned && GameConfig?.debugMode?.showStatusEffects) {
-                        console.log(`[STATUS] 독 적용: ${target.name} (3턴)`);
-                    }
-                }
-
+                // 중독 적용 (통합 시스템 - 면역 메시지 지원)
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.damage',
                     damage: finalDamage,
-                    poisoned: poisoned,
-                    statusType: poisoned ? 'poisoned' : null,
+                    statusEffect: {
+                        type: 'poisoned',
+                        chance: this.poisonChance,
+                        power: null,
+                        duration: 3
+                    },
                     element: this.element,
                     effectiveness: effectiveness
                 };
@@ -673,26 +654,18 @@ const CardDatabase = {
             accuracy: 40,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.push_back.description',
+            stunChance: 100,
             effect: function(user, target, battleSystem) {
-                // 기절 상태 적용 (1턴)
-                const result = target.addStatusEffect('stun', null, 1);
-
-                let messageKey;
-                if (result.success) {
-                    messageKey = 'auto_battle_card_game.ui.templates.status_applied';
-                } else if (result.duplicate) {
-                    messageKey = 'auto_battle_card_game.ui.templates.already_status';
-                } else {
-                    messageKey = 'auto_battle_card_game.ui.push_back_failed';
-                }
-
+                // 기절 적용 (통합 시스템 - 면역 메시지 지원)
                 return {
-                    success: result.success,
-                    messageKey: messageKey,
-                    element: this.element,
-                    duplicate: result.duplicate,
-                    statusType: result.success ? 'stun' : null,
-                    templateData: { name: GameConfig.statusEffects.stun.name }
+                    success: true,
+                    statusEffect: {
+                        type: 'stun',
+                        chance: this.stunChance,
+                        power: null,
+                        duration: 1
+                    },
+                    element: this.element
                 };
             }
         });
@@ -707,26 +680,18 @@ const CardDatabase = {
             accuracy: 70,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.sand_throw.description',
+            sandChance: 100,
             effect: function(user, target, battleSystem) {
-                // 모래 상태 적용 (2턴, 30% 명중률 감소)
-                const result = target.addStatusEffect('sand', 30, 2);
-
-                let messageKey;
-                if (result.success) {
-                    messageKey = 'auto_battle_card_game.ui.templates.status_applied';
-                } else if (result.duplicate) {
-                    messageKey = 'auto_battle_card_game.ui.templates.already_status';
-                } else {
-                    messageKey = 'auto_battle_card_game.ui.sand_throw_failed';
-                }
-
+                // 모래 적용 (통합 시스템 - 면역 메시지 지원)
                 return {
-                    success: result.success,
-                    messageKey: messageKey,
-                    element: this.element,
-                    duplicate: result.duplicate,
-                    statusType: result.success ? 'sand' : null,
-                    templateData: { name: GameConfig.statusEffects.sand.name }
+                    success: true,
+                    statusEffect: {
+                        type: 'sand',
+                        chance: this.sandChance,
+                        power: GameConfig.statusEffects.sand.defaultReduction,
+                        duration: 2
+                    },
+                    element: this.element
                 };
             }
         });
@@ -756,20 +721,17 @@ const CardDatabase = {
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
-                // 화상 확률 체크 (명중 성공 시에만)
-                let burned = false;
-                const burnRoll = Math.random() * 100;
-                if (burnRoll < this.burnChance) {
-                    const result = target.addStatusEffect('burn', GameConfig.statusEffects.burn.defaultPercent, 1);
-                    burned = result.success;
-                }
-
+                // 화상 적용 (통합 시스템 - 면역 메시지 지원)
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.templates.karura_strike_effect',
                     damage: finalDamage,
-                    burned: burned,
-                    statusType: burned ? 'burn' : null,
+                    statusEffect: {
+                        type: 'burn',
+                        chance: this.burnChance,
+                        power: GameConfig.statusEffects.burn.defaultPercent,
+                        duration: 1
+                    },
                     element: this.element,
                     effectiveness: effectiveness,
                     templateData: {
@@ -805,20 +767,17 @@ const CardDatabase = {
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
-                // 화상 확률 체크 (명중 성공 시에만)
-                let burned = false;
-                const burnRoll = Math.random() * 100;
-                if (burnRoll < this.burnChance) {
-                    const result = target.addStatusEffect('burn', GameConfig.statusEffects.burn.defaultPercent, 1);
-                    burned = result.success;
-                }
-
+                // 화상 적용 (통합 시스템 - 면역 메시지 지원)
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.damage',
                     damage: finalDamage,
-                    burned: burned,
-                    statusType: burned ? 'burn' : null,
+                    statusEffect: {
+                        type: 'burn',
+                        chance: this.burnChance,
+                        power: GameConfig.statusEffects.burn.defaultPercent,
+                        duration: 1
+                    },
                     element: this.element,
                     effectiveness: effectiveness
                 };
@@ -854,21 +813,18 @@ const CardDatabase = {
                 const strengthGain = 1;
                 user.addStrength(strengthGain);
 
-                // 화상 확률 체크 (명중 성공 시에만)
-                let burned = false;
-                const burnRoll = Math.random() * 100;
-                if (burnRoll < this.burnChance) {
-                    const result = target.addStatusEffect('burn', GameConfig.statusEffects.burn.defaultPercent, 1);
-                    burned = result.success;
-                }
-
+                // 화상 적용 (통합 시스템 - 면역 메시지 지원)
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.damage',
                     damage: finalDamage,
-                    burned: burned,
                     strengthGain: strengthGain,
-                    statusType: burned ? 'burn' : null,
+                    statusEffect: {
+                        type: 'burn',
+                        chance: this.burnChance,
+                        power: GameConfig.statusEffects.burn.defaultPercent,
+                        duration: 1
+                    },
                     element: this.element,
                     effectiveness: effectiveness
                 };
@@ -897,20 +853,17 @@ const CardDatabase = {
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
-                // 화상 확률 체크 (명중 성공 시에만)
-                let burned = false;
-                const burnRoll = Math.random() * 100;
-                if (burnRoll < this.burnChance) {
-                    const result = target.addStatusEffect('burn', GameConfig.statusEffects.burn.defaultPercent, 1);
-                    burned = result.success;
-                }
-
+                // 화상 적용 (통합 시스템 - 면역 메시지 지원)
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.damage',
                     damage: finalDamage,
-                    burned: burned,
-                    statusType: burned ? 'burn' : null,
+                    statusEffect: {
+                        type: 'burn',
+                        chance: this.burnChance,
+                        power: GameConfig.statusEffects.burn.defaultPercent,
+                        duration: 1
+                    },
                     element: this.element,
                     effectiveness: effectiveness
                 };
@@ -927,26 +880,18 @@ const CardDatabase = {
             accuracy: 70,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.hot_breath.description',
+            burnChance: 100,
             effect: function(user, target, battleSystem) {
-                // 화상 상태 적용 (1턴 지속)
-                const result = target.addStatusEffect('burn', GameConfig.statusEffects.burn.defaultPercent, 1);
-
-                let messageKey;
-                if (result.success) {
-                    messageKey = 'auto_battle_card_game.ui.templates.status_applied';
-                } else if (result.duplicate) {
-                    messageKey = 'auto_battle_card_game.ui.templates.already_status';
-                } else {
-                    messageKey = 'auto_battle_card_game.ui.hot_breath_failed';
-                }
-
+                // 화상 적용 (통합 시스템 - 면역 메시지 지원)
                 return {
-                    success: result.success,
-                    messageKey: messageKey,
-                    element: this.element,
-                    duplicate: result.duplicate,
-                    statusType: result.success ? 'burn' : null,
-                    templateData: { name: GameConfig.statusEffects.burn.name }
+                    success: true,
+                    statusEffect: {
+                        type: 'burn',
+                        chance: this.burnChance,
+                        power: GameConfig.statusEffects.burn.defaultPercent,
+                        duration: 1
+                    },
+                    element: this.element
                 };
             }
         });
@@ -961,26 +906,18 @@ const CardDatabase = {
             accuracy: 70,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.insult.description',
+            insultChance: 100,
             effect: function(user, target, battleSystem) {
-                // 모욕 상태 적용 (2턴, 방어카드 발동률 30% 감소)
-                const result = target.addStatusEffect('insult', GameConfig.statusEffects.insult.defaultReduction, 2);
-
-                let messageKey;
-                if (result.success) {
-                    messageKey = 'auto_battle_card_game.ui.templates.status_applied';
-                } else if (result.duplicate) {
-                    messageKey = 'auto_battle_card_game.ui.templates.already_status';
-                } else {
-                    messageKey = 'auto_battle_card_game.ui.insult_failed';
-                }
-
+                // 모욕 적용 (통합 시스템 - 면역 메시지 지원)
                 return {
-                    success: result.success,
-                    messageKey: messageKey,
-                    element: this.element,
-                    duplicate: result.duplicate,
-                    statusType: result.success ? 'insult' : null,
-                    templateData: { name: GameConfig.statusEffects.insult.name }
+                    success: true,
+                    statusEffect: {
+                        type: 'insult',
+                        chance: this.insultChance,
+                        power: GameConfig.statusEffects.insult.defaultReduction,
+                        duration: 2
+                    },
+                    element: this.element
                 };
             }
         });
@@ -995,26 +932,18 @@ const CardDatabase = {
             accuracy: 70,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.net_throw.description',
+            slowChance: 100,
             effect: function(user, target, battleSystem) {
-                // 둔화 상태 적용 (2턴, 상태이상카드 발동률 30% 감소)
-                const result = target.addStatusEffect('slow', GameConfig.statusEffects.slow.defaultReduction, 2);
-
-                let messageKey;
-                if (result.success) {
-                    messageKey = 'auto_battle_card_game.ui.templates.status_applied';
-                } else if (result.duplicate) {
-                    messageKey = 'auto_battle_card_game.ui.templates.already_status';
-                } else {
-                    messageKey = 'auto_battle_card_game.ui.net_throw_failed';
-                }
-
+                // 둔화 적용 (통합 시스템 - 면역 메시지 지원)
                 return {
-                    success: result.success,
-                    messageKey: messageKey,
-                    element: this.element,
-                    duplicate: result.duplicate,
-                    statusType: result.success ? 'slow' : null,
-                    templateData: { name: GameConfig.statusEffects.slow.name }
+                    success: true,
+                    statusEffect: {
+                        type: 'slow',
+                        chance: this.slowChance,
+                        power: GameConfig.statusEffects.slow.defaultReduction,
+                        duration: 2
+                    },
+                    element: this.element
                 };
             }
         });
@@ -1029,6 +958,7 @@ const CardDatabase = {
             accuracy: 70,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.oil_pour.description',
+            burnChance: 100,
             effect: function(user, target, battleSystem) {
                 // 상대가 화상 상태인지 확인
                 const hasBurn = target.hasStatusEffect('burn');
@@ -1043,18 +973,17 @@ const CardDatabase = {
                     };
                 }
 
-                // 화상 턴 수 연장
+                // 화상 연장 적용 (통합 시스템 - 면역 메시지 지원)
                 const turnsToExtend = GameConfig?.cardEffects?.oilPour?.turnsExtended || 2;
-                const result = target.addStatusEffect('burn', GameConfig.statusEffects.burn.defaultPercent, turnsToExtend);
-
                 return {
-                    success: result.success,
-                    messageKey: result.success ?
-                        'auto_battle_card_game.ui.templates.burn_extended' :
-                        'auto_battle_card_game.ui.oil_pour_failed',
-                    element: this.element,
-                    statusType: result.success ? 'burn' : null,
-                    turnsExtended: turnsToExtend  // 연장 턴 수 정보 추가
+                    success: true,
+                    statusEffect: {
+                        type: 'burn',
+                        chance: this.burnChance,
+                        power: GameConfig.statusEffects.burn.defaultPercent,
+                        duration: turnsToExtend
+                    },
+                    element: this.element
                 };
             }
         });
@@ -1069,26 +998,18 @@ const CardDatabase = {
             accuracy: 70,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.chains_of_fire.description',
+            chainsChance: 100,
             effect: function(user, target, battleSystem) {
-                // 사슬 상태 적용 (1턴)
-                const result = target.addStatusEffect('chains', null, 1);
-
-                let messageKey;
-                if (result.success) {
-                    messageKey = 'auto_battle_card_game.ui.templates.status_applied';
-                } else if (result.duplicate) {
-                    messageKey = 'auto_battle_card_game.ui.templates.already_status';
-                } else {
-                    messageKey = 'auto_battle_card_game.ui.chains_of_fire_failed';
-                }
-
+                // 사슬 적용 (통합 시스템 - 면역 메시지 지원)
                 return {
-                    success: result.success,
-                    messageKey: messageKey,
-                    element: this.element,
-                    duplicate: result.duplicate,
-                    statusType: result.success ? 'chains' : null,
-                    templateData: { name: GameConfig.statusEffects.chains.name }
+                    success: true,
+                    statusEffect: {
+                        type: 'chains',
+                        chance: this.chainsChance,
+                        power: null,
+                        duration: 1
+                    },
+                    element: this.element
                 };
             }
         });
@@ -1280,6 +1201,7 @@ const CardDatabase = {
             accuracy: 60,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.lava_prison.description',
+            stunChance: 100,
             effect: function(user, target, battleSystem) {
                 // 상대가 화상 상태인지 확인
                 const hasBurn = target.hasStatusEffect('burn');
@@ -1294,25 +1216,16 @@ const CardDatabase = {
                     };
                 }
 
-                // 화상 상태일 경우 기절 부여
-                const result = target.addStatusEffect('stun', null, 1);
-
-                let messageKey;
-                if (result.success) {
-                    messageKey = 'auto_battle_card_game.ui.templates.status_applied';
-                } else if (result.duplicate) {
-                    messageKey = 'auto_battle_card_game.ui.templates.already_status';
-                } else {
-                    messageKey = 'auto_battle_card_game.ui.condition_failed';
-                }
-
+                // 기절 적용 (통합 시스템 - 면역 메시지 지원)
                 return {
-                    success: result.success,
-                    messageKey: messageKey,
-                    element: this.element,
-                    duplicate: result.duplicate,
-                    statusType: result.success ? 'stun' : null,
-                    templateData: { name: GameConfig.statusEffects.stun.name }
+                    success: true,
+                    statusEffect: {
+                        type: 'stun',
+                        chance: this.stunChance,
+                        power: null,
+                        duration: 1
+                    },
+                    element: this.element
                 };
             }
         });
@@ -1327,6 +1240,7 @@ const CardDatabase = {
             accuracy: 80,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.powder_keg.description',
+            burnChance: 100,
             effect: function(user, target, battleSystem) {
                 // 상대가 화상 상태인지 확인
                 const hasBurn = target.hasStatusEffect('burn');
@@ -1353,18 +1267,21 @@ const CardDatabase = {
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
-                // 화상 턴수 연장
+                // 화상 연장 적용 (통합 시스템 - 면역 메시지 지원)
                 const turnsToExtend = GameConfig?.cardEffects?.powderKeg?.burnTurnsExtended || 1;
-                target.addStatusEffect('burn', GameConfig.statusEffects.burn.defaultPercent, turnsToExtend);
 
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.templates.powder_keg_effect',
                     damage: finalDamage,
-                    statusType: 'burn',
+                    statusEffect: {
+                        type: 'burn',
+                        chance: this.burnChance,
+                        power: GameConfig.statusEffects.burn.defaultPercent,
+                        duration: turnsToExtend
+                    },
                     element: this.element,
                     effectiveness: effectiveness,
-                    turnsExtended: turnsToExtend,  // 연장 턴 수 정보 추가
                     templateData: {
                         damage: finalDamage
                     }

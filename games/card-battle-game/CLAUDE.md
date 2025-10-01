@@ -172,6 +172,54 @@ const coords = CanvasUtils.getCanvasCoordinates(event, canvas);
 - **중앙 통계**: 모든 대미지는 `GameManager.recordDamage()`로만 기록
 - **즉시 효과 HP 반영**: 자해/화상/독 등은 효과 발생 즉시 `hpBarSystem.updateHP()` 호출
 
+### 🔄 통합 상태이상 시스템 (Configuration-Driven)
+**모든 상태이상 카드는 통합 시스템 사용 - 하드코딩 금지!**
+
+#### ❌ 레거시 방식 (금지)
+```javascript
+// 9줄 하드코딩 - 면역 메시지 없음
+let burned = false;
+const burnRoll = Math.random() * 100;
+if (burnRoll < this.burnChance) {
+    const result = target.addStatusEffect('burn', 15, 1);
+    burned = result.success;
+}
+return { burned, statusType: burned ? 'burn' : null };
+```
+
+#### ✅ 통합 방식 (필수)
+```javascript
+// 5줄 설정 기반 - 면역/중복/성공 자동 메시지
+return {
+    statusEffect: {
+        type: 'burn',
+        chance: this.burnChance,  // ⚠️ this.xxxChance 사용 (하드코딩 금지)
+        power: GameConfig.statusEffects.burn.defaultPercent,
+        duration: 1
+    }
+};
+```
+
+#### 핵심 원칙
+1. **`chance`는 항상 `this.xxxChance` 사용**: 하드코딩(100, 50 등) 금지
+2. **카드 정의에 xxxChance 속성 추가**: `burnChance: 100`, `stunChance: 40`
+3. **BattleSystem.tryApplyStatusEffect()가 자동 처리**: 확률체크 + 면역체크 + 메시지 표시
+4. **면역 시 자동 메시지**: `"🔥 화상 면역!"` (사용자 피드백 보장)
+
+#### statusEffect 구조
+```javascript
+{
+    type: 'burn' | 'stun' | 'poisoned' | 'paralysis' | 'taunt' | 'sand' | 'insult' | 'slow' | 'chains',
+    chance: this.xxxChance,  // 카드 속성 참조 (필수!)
+    power: GameConfig.statusEffects.xxx.defaultPercent || null,
+    duration: 1  // 턴 수
+}
+```
+
+#### 적용 카드 목록 (14개)
+- **공격 카드**: concussion, flame_throw, smog, fireball, karura_strike, flame_burst, flame_ascension
+- **상태이상 카드**: taunt, push_back, sand_throw, hot_breath, insult, net_throw, oil_pour, chains_of_fire, lava_prison, powder_keg
+
 ### GameConfig 접근 규칙
 - **안전한 접근 필수**: `GameConfig?.section?.subsection?.property || defaultValue` 사용
 - **하드코딩 대신 설정 추가**: 새 기능 추가 시 먼저 GameConfig에 설정값 정의

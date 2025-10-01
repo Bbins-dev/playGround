@@ -446,6 +446,11 @@ class BattleSystem {
             }
         }
 
+        // 통합 상태이상 처리 (신규 방식 - 면역 메시지 지원)
+        if (result.statusEffect) {
+            await this.tryApplyStatusEffect(result.statusEffect, target, targetPosition);
+        }
+
         // 자해 대미지 처리 (공격 카드의 경우)
         const selfDamage = result.selfDamage || 0;
         if (selfDamage > 0) {
@@ -675,6 +680,55 @@ class BattleSystem {
 
         const message = template.replace('{value}', selfDamage);
         this.effectSystem.showDamageNumber(0, position, 'selfDamage', message);
+    }
+
+    // 상태이상 적용 시도 (통합 시스템 - Configuration-Driven)
+    async tryApplyStatusEffect(statusInfo, target, targetPosition) {
+        // statusInfo: { type, chance, power, duration }
+
+        // 1. 확률 체크
+        if (statusInfo.chance < 100) {
+            const roll = Math.random() * 100;
+            if (roll >= statusInfo.chance) {
+                // 확률 실패 - 메시지 없음
+                return { success: false, reason: 'missed_chance' };
+            }
+        }
+
+        // 2. 상태이상 적용 시도
+        const result = target.addStatusEffect(
+            statusInfo.type,
+            statusInfo.power || null,
+            statusInfo.duration || null
+        );
+
+        // 3. 결과에 따른 메시지 표시
+        if (result.success) {
+            // 성공 - 상태이상 적용됨
+            await this.effectSystem.showEffectMessage(statusInfo.type, targetPosition, 'status_applied');
+
+            // UI 즉시 업데이트
+            const isTargetPlayer = target === this.player;
+            this.hpBarSystem.updateStatusEffects(target, isTargetPlayer);
+
+            // 플레이어의 상태이상 테두리 효과 업데이트
+            if (isTargetPlayer && this.gameManager?.uiManager) {
+                this.gameManager.uiManager.updateStatusBorder();
+            }
+
+            return { success: true, statusType: statusInfo.type };
+        } else if (result.duplicate) {
+            // 중복 - 이미 상태이상 걸림
+            await this.effectSystem.showEffectMessage(statusInfo.type, targetPosition, 'already_status');
+            return { success: false, duplicate: true, statusType: statusInfo.type };
+        } else if (result.reason === 'immune') {
+            // 면역 - 방어속성으로 인한 면역
+            await this.effectSystem.showEffectMessage(statusInfo.type, targetPosition, 'status_immune');
+            return { success: false, immune: true, statusType: statusInfo.type };
+        }
+
+        // 기타 실패 (invalid_input, invalid_status 등)
+        return { success: false, reason: result.reason };
     }
 
     // 대미지 계산 및 적용 (첫 번째 버전 - 간단한 형태)
