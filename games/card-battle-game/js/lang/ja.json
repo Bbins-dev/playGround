@@ -365,6 +365,7 @@
         "already_status": "すでに{name}!",
         "status_immune": "{name} 無効!",
         "burn_extended": "🔥 火傷+{value}ターン!",
+        "poisoned_extended": "☠️ 毒+{value}ターン!",
         "burn_damage": "🔥 火傷で{value}ダメージ！",
         "buff_gained": "{name} +{value}",
         "buff_reduced": "{name} {value}",

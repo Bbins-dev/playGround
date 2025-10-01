@@ -365,6 +365,7 @@
         "already_status": "이미 {name}!",
         "status_immune": "{name} 면역!",
         "burn_extended": "🔥 화상+{value}턴!",
+        "poisoned_extended": "☠️ 중독+{value}턴!",
         "burn_damage": "🔥 화상으로 {value} 데미지!",
         "buff_gained": "{name} +{value}",
         "buff_reduced": "{name} {value}",

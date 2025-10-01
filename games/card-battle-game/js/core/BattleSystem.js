@@ -711,9 +711,10 @@ class BattleSystem {
         // 3. 결과에 따른 메시지 표시
         if (result.success) {
             // 성공 - 상태이상 적용됨
-            if (result.extended && statusInfo.type === 'burn') {
-                // 화상 연장 - burn_extended 템플릿 사용
-                await this.effectSystem.showEffectMessage(statusInfo.type, targetPosition, 'burn_extended', statusInfo.duration);
+            if (result.extended) {
+                // 연장 가능한 상태이상(화상, 중독) - xxx_extended 템플릿 사용
+                const templateKey = `${statusInfo.type}_extended`;
+                await this.effectSystem.showEffectMessage(statusInfo.type, targetPosition, templateKey, statusInfo.duration);
             } else {
                 // 일반 적용 - status_applied 템플릿 사용
                 await this.effectSystem.showEffectMessage(statusInfo.type, targetPosition, 'status_applied');

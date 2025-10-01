@@ -365,6 +365,7 @@
         "already_status": "Already {name}!",
         "status_immune": "{name} Immune!",
         "burn_extended": "🔥 Burn+{value}T!",
+        "poisoned_extended": "☠️ Poison+{value}T!",
         "burn_damage": "🔥 {value} burn damage!",
         "buff_gained": "{name} +{value}",
         "buff_reduced": "{name} {value}",
