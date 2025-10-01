@@ -221,6 +221,23 @@ const GameConfig = {
             heal: '#2ECC71',              // 회복 - 초록색
             buff: '#2ECC71',              // 버프 - 초록색
             debuff: '#E74C3C'             // 디버프 - 빨간색
+        },
+
+        // 메시지 타입별 색상 (플로팅 숫자용)
+        messageTypes: {
+            damage: '#FF0000',            // 대미지 - 빨간색
+            heal: '#2ECC71',              // 회복 - 초록색
+            shield: '#C0C0C0',            // 방어력 - 은색
+            buff: '#FFD700',              // 버프 - 금색
+            status: '#FFFFFF',            // 상태이상 일반 - 흰색
+            poison: '#9B59B6',            // 독 - 보라색
+            burn: '#FF7F50',              // 화상 및 화상 연장 - 코랄색
+            miss: '#CCCCCC',              // 빗나감 - 회색
+            zero: '#888888',              // 0 대미지 - 어두운 회색
+            strong: '#FF4500',            // 강한 대미지 - 오렌지-레드
+            weak: '#FFA500',              // 약한 대미지 - 주황색
+            selfDamage: '#E67E22',        // 자해 데미지 - 주황색
+            debuff: '#E74C3C'             // 디버프 - 빨간색
         }
     },
 

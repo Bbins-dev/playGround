@@ -1513,18 +1513,18 @@ body {
     animation: turnChange 2s ease-out forwards;
 }
 
-/* 대미지/회복 숫자 - 획기적 개선 */
+/* 대미지/회복 숫자 - Configuration-Driven (CSS 변수 사용) */
 .damage-number {
     position: absolute;
     font-size: 60px;  /* GameConfig와 일치 */
     font-weight: 900; /* bold → 900으로 더 굵게 */
-    color: #FF0000;   /* 더 진한 빨간색 */
+    color: var(--color-message-damage, #FF0000);   /* GameConfig 기반 동적 색상 */
     text-shadow:
         3px 3px 0 #000,
         -3px 3px 0 #000,
         3px -3px 0 #000,
         -3px -3px 0 #000,
-        0 0 10px rgba(255, 0, 0, 0.5); /* 굵은 검은 테두리 + 빨간 글로우 */
+        0 0 10px rgba(255, 0, 0, 0.5); /* 굵은 검은 테두리 + 글로우 */
     animation: damagePopup 1.2s ease-out forwards;
     pointer-events: none;
     z-index: 500;
@@ -1532,81 +1532,50 @@ body {
     white-space: nowrap; /* 줄바꿈 방지 */
 }
 
+/* 레거시 CSS 클래스 유지 (하위 호환성) - 색상은 CSS 변수로 동적 적용됨 */
 .heal-number {
-    color: #2ECC71;
-    text-shadow:
-        3px 3px 0 #000,
-        -3px 3px 0 #000,
-        3px -3px 0 #000,
-        -3px -3px 0 #000,
-        0 0 10px rgba(46, 204, 113, 0.5); /* 초록 글로우 */
+    /* color는 JavaScript에서 동적으로 설정됨 */
 }
 
 .buff-number {
-    color: #2ECC71;
-    text-shadow:
-        3px 3px 0 #000,
-        -3px 3px 0 #000,
-        3px -3px 0 #000,
-        -3px -3px 0 #000,
-        0 0 10px rgba(46, 204, 113, 0.5); /* 초록 글로우 */
+    /* color는 JavaScript에서 동적으로 설정됨 */
 }
 
 .poison-number {
-    color: #9B59B6;
-    text-shadow:
-        3px 3px 0 #000,
-        -3px 3px 0 #000,
-        3px -3px 0 #000,
-        -3px -3px 0 #000,
-        0 0 10px rgba(155, 89, 182, 0.5); /* 보라 글로우 */
+    /* color는 JavaScript에서 동적으로 설정됨 */
 }
 
 .burn-number {
-    color: #FF7F50; /* 코랄색 */
-    text-shadow:
-        3px 3px 0 #000,
-        -3px 3px 0 #000,
-        3px -3px 0 #000,
-        -3px -3px 0 #000,
-        0 0 10px rgba(255, 127, 80, 0.5); /* 코랄 글로우 */
+    /* color는 JavaScript에서 동적으로 설정됨 */
 }
 
 .debuff-number {
-    color: #E74C3C;
-    text-shadow:
-        3px 3px 0 #000,
-        -3px 3px 0 #000,
-        3px -3px 0 #000,
-        -3px -3px 0 #000,
-        0 0 10px rgba(231, 76, 60, 0.5); /* 빨간 글로우 */
+    /* color는 JavaScript에서 동적으로 설정됨 */
 }
 
 .defense-number {
-    color: #C0C0C0;
-    text-shadow:
-        3px 3px 0 #000,
-        -3px 3px 0 #000,
-        3px -3px 0 #000,
-        -3px -3px 0 #000,
-        0 0 10px rgba(192, 192, 192, 0.5); /* 은색 글로우 */
+    /* color는 JavaScript에서 동적으로 설정됨 */
+}
+
+.shield-number {
+    /* color는 JavaScript에서 동적으로 설정됨 */
 }
 
 .miss-number {
-    color: #95a5a6 !important;
-    font-size: 48px !important;
+    /* color는 JavaScript에서 동적으로 설정됨 - !important 제거 */
+    font-size: 48px;
     text-shadow:
         2px 2px 0 #000,
         -2px 2px 0 #000,
         2px -2px 0 #000,
         -2px -2px 0 #000,
-        0 0 8px rgba(149, 165, 166, 0.5) !important; /* 회색 글로우 */
+        0 0 8px rgba(149, 165, 166, 0.5); /* 회색 글로우 */
 }
 
 .zero-number {
-    color: #FFA500 !important;
-    font-size: 56px !important;
-    font-weight: bold !important;
+    /* color는 JavaScript에서 동적으로 설정됨 - !important 제거 */
+    font-size: 56px;
+    font-weight: bold;
     text-shadow:
         3px 3px 0 #000,
         -3px 3px 0 #000,
@@ -1617,8 +1586,8 @@ body {
 
 /* 약점 데미지 (0.5배) */
 .weak-number {
-    color: #95A5A6 !important;
-    font-size: 48px !important;
+    /* color는 JavaScript에서 동적으로 설정됨 - !important 제거 */
+    font-size: 48px;
     opacity: 0.8;
     text-shadow:
         2px 2px 0 #000,
@@ -1630,8 +1599,8 @@ body {
 
 /* 강점 데미지 (1.5배) */
 .strong-number {
-    font-size: 96px !important;
-    color: #FF4444 !important;
+    font-size: 96px;
+    /* color는 JavaScript에서 동적으로 설정됨 - !important 제거 */
     text-shadow:
         0 0 10px #FF0000,
         0 0 20px #FF0000,

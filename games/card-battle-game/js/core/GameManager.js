@@ -1127,6 +1127,15 @@ class GameManager {
             }
         }
 
+        // 메시지 타입별 색상 동기화 (플로팅 숫자용) - Configuration-Driven
+        if (GameConfig.masterColors && GameConfig.masterColors.messageTypes) {
+            const messageTypes = GameConfig.masterColors.messageTypes;
+            Object.keys(messageTypes).forEach(type => {
+                const color = messageTypes[type];
+                root.style.setProperty(`--color-message-${type}`, color);
+            });
+        }
+
     }
 
     // 뷰포트 스케일링 계산 및 적용

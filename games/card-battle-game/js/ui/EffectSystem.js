@@ -277,79 +277,54 @@ class EffectSystem {
         // 메시지 타입 결정
         const messageType = this.getMessageType(customText, type);
 
+        // Configuration-Driven 색상 시스템 - 하드코딩 제거
+        // GameConfig.masterColors.messageTypes에서 색상 가져오기
+        const messageColor = GameConfig?.masterColors?.messageTypes?.[type] || GameConfig?.masterColors?.messageTypes?.damage;
+
         // 커스텀 텍스트가 있으면 우선 사용
         if (customText) {
-            // 타입 우선 확인 (자해 대미지)
-            if (type === 'self_damage') {
-                className = 'damage-number'; // 빨간색 대미지 색상
-            }
-            // 상태이상 이모지 체크 우선 (화상 연장 메시지 등)
-            else if (customText.match(/[🔥☠️⚡💨❄️🌪️]/)) {
-                className = 'damage-number effect-number'; // 흰색
-            }
-            // 메시지 내용에 따라 적절한 색상 클래스 결정
-            else if (customText.includes('🛡️') || customText.includes('Defense') || customText.includes('방어력') || customText.includes('防御力')) {
-                className = 'damage-number shield-number';
-            } else if (customText.includes('♥') || customText.includes('Heal') || customText.includes('회복') || customText.includes('回復')) {
-                className = 'damage-number heal-number';
-            } else if (customText.includes('+')) {
-                // 버프나 증가 효과는 초록색으로
-                className = 'damage-number heal-number';
-            } else {
-                className = 'damage-number effect-number';
-            }
             numberElement.textContent = customText;
         } else {
+            // 타입별 텍스트 설정
             switch (type) {
                 case 'miss':
-                    className += ' miss-number';
-                    // I18nHelper 사용하여 빗나감 텍스트 설정
                     numberElement.textContent = I18nHelper.getText('auto_battle_card_game.ui.miss');
                     break;
                 case 'condition_failed':
-                    className += ' miss-number';  // miss와 동일한 스타일
-                    // I18nHelper 사용하여 조건 실패 텍스트 설정
                     numberElement.textContent = I18nHelper.getText('auto_battle_card_game.ui.condition_failed');
                     break;
                 case 'zero':
-                    className += ' zero-number';
                     numberElement.textContent = '0';
                     break;
                 case 'strong':
-                    className += ' strong-number';
-                    numberElement.textContent = `-${amount}`;
-                    break;
                 case 'weak':
-                    className += ' weak-number';
+                case 'selfDamage':
                     numberElement.textContent = `-${amount}`;
                     break;
                 case 'heal':
-                    className = 'damage-number heal-number';
                     numberElement.textContent = `+${amount}`;
                     break;
                 case 'poison':
-                    className += ' poison-number';
                     numberElement.textContent = `☠️-${amount}`;
                     break;
                 case 'burn':
-                    className += ' burn-number';
                     numberElement.textContent = `🔥-${amount}`;
                     break;
                 case 'shield':
                 case 'defense':
-                    className = 'damage-number shield-number';
                     numberElement.textContent = `+${amount}`;
-                    break;
-                case 'selfDamage':
-                    className += ' damage-number';  // 빨간색 대미지 스타일
-                    numberElement.textContent = `-${amount}`;  // 깔끔하게 숫자만 표시
                     break;
                 default:
                     numberElement.textContent = `-${amount}`;
             }
         }
 
+        // 기본 클래스만 설정 (색상은 CSS 변수로 동적 적용)
         numberElement.className = className;
+
+        // Configuration-Driven 색상 적용 - CSS 변수 사용
+        const cssVarName = `--color-message-${type}`;
+        numberElement.style.color = `var(${cssVarName}, ${messageColor})`;
 
         // 존 기반 위치 계산 시스템
         const config = GameConfig.cardSelection.damageNumber;
