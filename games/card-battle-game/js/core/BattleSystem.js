@@ -590,7 +590,13 @@ class BattleSystem {
             }
         }
 
-        // 상태이상별 효과 표시
+        // 통합 상태이상 처리 (신규 방식 - 면역 메시지 지원)
+        if (result.statusEffect) {
+            await this.tryApplyStatusEffect(result.statusEffect, target, targetPosition);
+            return; // 통합 시스템으로 처리했으면 레거시 처리 건너뛰기
+        }
+
+        // 상태이상별 효과 표시 (레거시 방식 - 하위 호환)
         const statusType = result.statusType;
         if (statusType) {
             // 템플릿 선택: 화상 연장 카드는 burn_extended 사용
@@ -705,7 +711,13 @@ class BattleSystem {
         // 3. 결과에 따른 메시지 표시
         if (result.success) {
             // 성공 - 상태이상 적용됨
-            await this.effectSystem.showEffectMessage(statusInfo.type, targetPosition, 'status_applied');
+            if (result.extended && statusInfo.type === 'burn') {
+                // 화상 연장 - burn_extended 템플릿 사용
+                await this.effectSystem.showEffectMessage(statusInfo.type, targetPosition, 'burn_extended', statusInfo.duration);
+            } else {
+                // 일반 적용 - status_applied 템플릿 사용
+                await this.effectSystem.showEffectMessage(statusInfo.type, targetPosition, 'status_applied');
+            }
 
             // UI 즉시 업데이트
             const isTargetPlayer = target === this.player;
@@ -716,7 +728,7 @@ class BattleSystem {
                 this.gameManager.uiManager.updateStatusBorder();
             }
 
-            return { success: true, statusType: statusInfo.type };
+            return { success: true, statusType: statusInfo.type, extended: result.extended };
         } else if (result.duplicate) {
             // 중복 - 이미 상태이상 걸림
             await this.effectSystem.showEffectMessage(statusInfo.type, targetPosition, 'already_status');
