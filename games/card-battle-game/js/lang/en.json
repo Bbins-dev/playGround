@@ -222,7 +222,7 @@
         },
         "flame_ascension": {
           "name": "Flame Ascension",
-          "description": "Deal 5 damage to yourself, then deal 8 damage to the opponent. Has a chance to inflict burn."
+          "description": "Deal 5 damage to yourself, then deal 7 damage to the opponent and gain 1 strength on hit. Has a chance to inflict burn."
         },
         "bubble_strike": {
           "name": "Bubble Strike",

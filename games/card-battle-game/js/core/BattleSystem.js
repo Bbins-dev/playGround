@@ -397,6 +397,18 @@ class BattleSystem {
             this.effectSystem.showDamageNumber(0, targetPosition, 'zero');
         }
 
+        // 힘 버프 획득 처리 (attack 타입 카드에서 힘 버프를 얻는 경우 - 화염승천 등)
+        // 데미지 처리 직후에 표시 (동시 연출)
+        if (result.strengthGain && result.strengthGain > 0) {
+            // 공격자 확인 (target의 반대)
+            const attacker = target === this.player ? this.enemy : this.player;
+            await this.effectSystem.showBuffEffect('strength', attacker, result.strengthGain);
+
+            // 버프 라벨 즉시 업데이트 (메시지와 동시에)
+            const isAttackerPlayer = (attacker === this.player);
+            this.hpBarSystem.updateBuffs(attacker, isAttackerPlayer);
+        }
+
         // 기절 처리
         if (result.stunned) {
             await this.effectSystem.showEffectMessage('stun', targetPosition, 'status_applied');

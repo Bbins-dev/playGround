@@ -825,14 +825,14 @@ const CardDatabase = {
             }
         });
 
-        // 화염승천 카드 (불 속성, 자해 + 강력한 공격 + 화상 확률)
+        // 화염승천 카드 (불 속성, 자해 + 강력한 공격 + 화상 확률 + 힘 버프)
         this.addCard({
             id: 'flame_ascension',
             nameKey: 'auto_battle_card_game.ui.cards.flame_ascension.name',
             type: 'attack',
             element: 'fire',
-            power: 8,
-            accuracy: 70,
+            power: 7,
+            accuracy: 80,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.flame_ascension.description',
             selfDamage: 5,
@@ -850,6 +850,10 @@ const CardDatabase = {
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
+                // 힘 버프 추가 (라벨 업데이트는 BattleSystem에서 메시지와 함께)
+                const strengthGain = 1;
+                user.addStrength(strengthGain);
+
                 // 화상 확률 체크 (명중 성공 시에만)
                 let burned = false;
                 const burnRoll = Math.random() * 100;
@@ -863,6 +867,7 @@ const CardDatabase = {
                     messageKey: 'auto_battle_card_game.ui.damage',
                     damage: finalDamage,
                     burned: burned,
+                    strengthGain: strengthGain,
                     statusType: burned ? 'burn' : null,
                     element: this.element,
                     effectiveness: effectiveness
