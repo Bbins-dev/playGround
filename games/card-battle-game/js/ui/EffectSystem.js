@@ -200,8 +200,8 @@ class EffectSystem {
 
     // 메시지 타입 자동 판별
     getMessageType(customText, type) {
-        // MISS 메시지는 항상 중앙 영역에 표시
-        if (type === 'miss') {
+        // MISS와 조건 실패 메시지는 항상 중앙 영역에 표시
+        if (type === 'miss' || type === 'condition_failed') {
             return 'damage';
         }
 
@@ -355,8 +355,8 @@ class EffectSystem {
         const centerX = GameConfig.canvas.width / 2;
         let targetY;
 
-        // MISS 메시지는 화면 Y축 중앙에 표시
-        if (type === 'miss') {
+        // MISS와 조건 실패 메시지는 화면 Y축 중앙에 표시
+        if (type === 'miss' || type === 'condition_failed') {
             targetY = GameConfig.canvas.height / 2;
         } else {
             targetY = isPlayerDamage ?
