@@ -31,6 +31,8 @@ class Player {
         this.focusTurns = 0; // 집중 버프 남은 턴 수
         this.speedBonus = 0; // 고속 추가 발동횟수
         this.speedTurns = 0; // 고속 버프 남은 턴 수
+        this.scentBonus = 0; // 냄새 추가 대미지 (스택 수)
+        this.scentTurns = 0; // 냄새 버프 남은 턴 수
 
         // 턴 관련
         this.currentCardIndex = 0;
@@ -271,12 +273,34 @@ class Player {
         return bonus;
     }
 
+    // 냄새 버프 관련 메서드
+    hasScentBuff() {
+        return this.scentTurns > 0;
+    }
+
+    addScentBuff(bonus) {
+        this.scentBonus += bonus;
+        this.scentTurns = 1; // 항상 1턴
+        return bonus;
+    }
+
+    getScentBonus(element) {
+        // 불 속성 공격카드일 때만 추가 대미지 반환
+        if (element === 'fire' && this.hasScentBuff()) {
+            const damagePerStack = GameConfig?.cardEffects?.opportunityScent?.damagePerStack || 10;
+            return this.scentBonus * damagePerStack;
+        }
+        return 0;
+    }
+
     clearBuffs() {
         this.strength = 0;
         this.enhanceTurns = 0;
         this.focusTurns = 0;
         this.speedBonus = 0;
         this.speedTurns = 0;
+        this.scentBonus = 0;
+        this.scentTurns = 0;
     }
 
     // 턴 관련 메서드
@@ -341,6 +365,14 @@ class Player {
                         card.modifiedActivationCount = undefined;
                     }
                 });
+            }
+        }
+
+        // 냄새 버프 턴수 차감
+        if (this.scentTurns > 0) {
+            this.scentTurns--;
+            if (this.scentTurns === 0) {
+                this.scentBonus = 0;
             }
         }
     }

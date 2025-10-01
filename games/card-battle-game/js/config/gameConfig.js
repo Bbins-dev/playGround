@@ -149,7 +149,8 @@ const GameConfig = {
             strength: '#FF8C00',      // 힘 - 주황색 계열
             enhance: '#C0C0C0',       // 강화 - 은색
             focus: '#3498db',         // 집중 - 파란색 계열
-            speed: '#FFD700'          // 고속 - 전기색 계열 (금색)
+            speed: '#FFD700',         // 고속 - 전기색 계열 (금색)
+            scent: '#FF6347'          // 냄새 - 토마토 레드 (불 속성 관련)
         },
 
         // 스탯 표시 색상
@@ -237,6 +238,7 @@ const GameConfig = {
             strong: '#FF4500',            // 강한 대미지 - 오렌지-레드
             weak: '#FFA500',              // 약한 대미지 - 주황색
             selfDamage: '#E67E22',        // 자해 데미지 - 주황색
+            conditionFailed: '#FFA500',   // 조건 실패 - 주황색
             debuff: '#E74C3C'             // 디버프 - 빨간색
         }
     },
@@ -681,6 +683,22 @@ const GameConfig = {
             effect: {
                 activationBonus: 1  // 카드당 추가 횟수
             }
+        },
+        scent: {
+            nameKey: 'auto_battle_card_game.ui.buffs.scent',
+            name: '냄새',
+            emoji: '🔥',
+            description: '불 속성 공격카드 대미지 +{value}',
+            get color() { return GameConfig.masterColors.buffs.scent; }, // 토마토 레드
+            get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수
+            targetSelf: true, // 자신에게 적용되는 버프
+            display: {
+                showValue: true,
+                format: '+{value}({turns})'  // 예: +4(1)
+            },
+            effect: {
+                damagePerStack: 10  // 냄새 1당 불 속성 공격 대미지 +10
+            }
         }
     },
 
@@ -816,6 +834,8 @@ const GameConfig = {
             9: {
                 hp: 60,
                 cards: [
+                    { id: 'sword_dance', count: 1 },
+                    { id: 'fast_attack', count: 1 },
                     { id: 'heavy_strike', count: 3 },
                     { id: 'crouch', count: 1 }
                 ]
@@ -2230,6 +2250,10 @@ GameConfig.utils = {
         powderKeg: {
             damage: 10,        // 폭발 데미지
             burnTurnsExtended: 1  // 화상 연장 턴 수
+        },
+        // 기회의 냄새 카드 설정
+        opportunityScent: {
+            damagePerStack: 10    // 냄새 1당 불 속성 공격 대미지 +10
         }
     },
 

@@ -470,6 +470,20 @@ class BattleSystem {
 
     // 버프 결과 처리 - Configuration-Driven (위치 자동 결정)
     async processBuffResult(result, user) {
+        // 조건 실패 체크 (명중했지만 조건 미달)
+        if (result.conditionFailed) {
+            // targetPosition 계산 (버프는 user에게 적용되지만, 조건 체크는 상대에 대한 것)
+            const targetPosition = user.isPlayer ?
+                this.effectSystem.getEnemyPosition() :
+                this.effectSystem.getPlayerPosition();
+
+            // "실패!" 메시지 표시
+            await this.effectSystem.showDamageNumber(0, targetPosition, 'conditionFailed');
+            // 조건 실패 시 추가 대기 (플레이어가 확인할 수 있도록)
+            await this.wait((GameConfig.timing?.cards?.missDelay || 800) / this.gameSpeed);
+            return; // 조건 실패면 추가 처리 중단
+        }
+
         // 방어력 버프 - 방어력 획득 메시지 표시 (0도 표시)
         if (result.defenseGain !== undefined) {
             const userPosition = user.isPlayer ?
@@ -497,6 +511,12 @@ class BattleSystem {
         if (result.speedGain && result.speedGain > 0) {
             await this.effectSystem.showBuffEffect('speed', user, result.speedGain);
         }
+
+        // 냄새 버프 획득 처리 (기회의 냄새 카드) - 새로운 통합 메서드 사용
+        if (result.scentGain && result.scentGain > 0) {
+            await this.effectSystem.showBuffEffect('scent', user, result.scentGain);
+        }
+
         // 기타 버프 효과 - 확장 가능한 구조
         // TODO: 다른 버프 타입들도 동일한 패턴으로 추가 가능
     }
@@ -511,7 +531,7 @@ class BattleSystem {
         // 조건 실패 체크 (명중했지만 조건 미달)
         if (result.conditionFailed) {
             // "실패!" 메시지 표시
-            await this.effectSystem.showDamageNumber(0, targetPosition, 'condition_failed');
+            await this.effectSystem.showDamageNumber(0, targetPosition, 'conditionFailed');
             // 조건 실패 시 추가 대기 (플레이어가 확인할 수 있도록)
             await this.wait((GameConfig.timing?.cards?.missDelay || 800) / this.gameSpeed);
             return; // 조건 실패면 추가 처리 중단
@@ -642,7 +662,7 @@ class BattleSystem {
         }
 
         const message = template.replace('{value}', selfDamage);
-        this.effectSystem.showDamageNumber(0, position, 'self_damage', message);
+        this.effectSystem.showDamageNumber(0, position, 'selfDamage', message);
     }
 
     // 대미지 계산 및 적용 (첫 번째 버전 - 간단한 형태)
@@ -896,7 +916,7 @@ class BattleSystem {
             // 템플릿 직접 사용 (heal_effect 템플릿 활용)
             const template = I18nHelper.getText('auto_battle_card_game.ui.templates.heal_effect');
             const message = template.replace('{value}', result.templateData.value);
-            this.effectSystem.showDamageNumber(0, userPos, 'effect', message);
+            this.effectSystem.showDamageNumber(0, userPos, 'heal', message);
         }
     }
 

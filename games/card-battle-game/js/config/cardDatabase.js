@@ -496,7 +496,7 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.flame_throw.description',
             burnChance: 15,
             effect: function(user, target, battleSystem) {
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
@@ -746,7 +746,7 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 // 자해 데미지는 BattleSystem.preprocessSelfDamage()에서 이미 처리됨
                 // 여기서는 카드의 본연의 효과만 처리 (상대에게 공격)
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
@@ -795,7 +795,7 @@ const CardDatabase = {
                 return Math.floor(Math.random() * 3) + 1; // 1-3 랜덤
             },
             effect: function(user, target, battleSystem) {
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
@@ -840,7 +840,7 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 // 자해 데미지는 BattleSystem.preprocessSelfDamage()에서 이미 처리됨
                 // 여기서는 카드의 본연의 효과만 처리 (상대에게 공격)
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
@@ -882,7 +882,7 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.fireball.description',
             burnChance: 60, // 명중 시 60% 확률로 화상
             effect: function(user, target, battleSystem) {
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
@@ -1362,6 +1362,53 @@ const CardDatabase = {
                     turnsExtended: turnsToExtend,  // 연장 턴 수 정보 추가
                     templateData: {
                         damage: finalDamage
+                    }
+                };
+            }
+        });
+
+        // 기회의 냄새 카드 (불 속성, 화상 상태일 때 냄새 버프 획득)
+        this.addCard({
+            id: 'opportunity_scent',
+            nameKey: 'auto_battle_card_game.ui.cards.opportunity_scent.name',
+            type: 'buff',
+            element: 'fire',
+            power: 10,  // 냄새 버프의 추가 대미지를 암시
+            accuracy: 70,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.opportunity_scent.description',
+            effect: function(user, target, battleSystem) {
+                // 상대가 화상 상태인지 확인
+                const hasBurn = target.hasStatusEffect('burn');
+
+                if (!hasBurn) {
+                    // 명중했지만 조건 실패 (화상 상태 아님)
+                    return {
+                        success: true,           // 명중은 성공
+                        conditionFailed: true,   // 조건 실패
+                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        element: this.element
+                    };
+                }
+
+                // 화상 상태일 경우 냄새 버프 획득
+                const scentGain = 1;
+                user.addScentBuff(scentGain);
+
+                // 버프 라벨 즉시 업데이트
+                const isPlayer = (user === battleSystem.player);
+                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.scent_buff_gained',
+                    buffType: 'scent',
+                    scentGain: scentGain,
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig.buffs.scent.name,
+                        value: user.scentBonus,
+                        turns: user.scentTurns
                     }
                 };
             }
