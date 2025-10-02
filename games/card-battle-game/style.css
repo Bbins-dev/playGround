@@ -1991,3 +1991,438 @@ body {
 #defeat-modal .defeat-content::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.5);
 }
+
+/* ====================================
+   로딩 화면 (Loading Screen)
+   ==================================== */
+
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg,
+        var(--color-primary, #1a1a2e) 0%,
+        var(--color-secondary, #0f3460) 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+}
+
+/* 로딩 화면 페이드 아웃 */
+.loading-screen.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* 로딩 화면 숨김 */
+.loading-screen.hidden {
+    display: none;
+}
+
+/* 로딩 콘텐츠 컨테이너 */
+.loading-content {
+    text-align: center;
+    color: var(--color-text-primary, #ffffff);
+    max-width: 500px;
+    padding: 40px;
+}
+
+/* 로딩 타이틀 */
+.loading-title {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* 로딩 메시지 */
+.loading-message {
+    font-size: 24px;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+/* 로딩 바 컨테이너 */
+.loading-bar-container {
+    width: 100%;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-medium, 8px);
+    overflow: hidden;
+    margin-bottom: 15px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 로딩 바 채우기 */
+.loading-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg,
+        var(--color-success, #4CAF50) 0%,
+        var(--color-info, #2196F3) 100%);
+    transition: width 0.3s ease-out;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+    animation: shimmer 1.5s infinite;
+}
+
+/* 로딩 진행률 텍스트 */
+.loading-progress-text {
+    font-size: 16px;
+    opacity: 0.7;
+    font-family: monospace;
+}
+
+/* 로딩 시작 버튼 */
+.loading-start-button {
+    margin-top: 30px;
+    padding: 15px 40px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    animation: pulse-button 2s ease-in-out infinite;
+}
+
+.loading-start-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.loading-start-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes pulse-button {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* 펄스 애니메이션 */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+/* 반짝임 애니메이션 */
+@keyframes shimmer {
+    0% {
+        background-position: -500px 0;
+    }
+    100% {
+        background-position: 500px 0;
+    }
+}
+
+/* ====================================
+   볼륨 조절 UI (Volume Control)
+   ==================================== */
+
+/* 인게임 볼륨 버튼 (← 버튼 아래) */
+.volume-btn {
+    position: fixed;
+    top: calc(20px + 50px + 20px); /* <- 버튼 아래 (간격 20px) */
+    left: 20px;
+    width: 64px;
+    height: 64px;
+    font-size: 32px;
+
+    /* 중앙 정렬 */
+    display: none; /* 기본 숨김, 전투 중에만 표시 */
+    align-items: center;
+    justify-content: center;
+
+    /* 세련된 배경 */
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.95), rgba(15, 52, 96, 0.95));
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 14px;
+
+    /* 그림자 효과 */
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+    color: white;
+    cursor: pointer;
+    z-index: 900;
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.volume-btn:hover {
+    background: linear-gradient(135deg, rgba(26, 26, 46, 1), rgba(15, 52, 96, 1));
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.volume-btn.active {
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.95), rgba(25, 118, 210, 0.95));
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow:
+        0 6px 20px rgba(33, 150, 243, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* 인게임 볼륨 팝업 패널 */
+.volume-popup-panel {
+    position: fixed;
+    top: calc(20px + 50px + 20px + 64px + 10px); /* 볼륨 버튼 아래 (간격 10px) */
+    left: 20px;
+    width: 260px;
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.97), rgba(15, 52, 96, 0.97));
+    backdrop-filter: blur(15px);
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    border-radius: 16px;
+    padding: 20px;
+    z-index: 950;
+    box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    display: none; /* 기본 숨김 */
+}
+
+.volume-popup-panel.hidden {
+    display: none;
+}
+
+.volume-popup-panel:not(.hidden) {
+    display: block;
+    animation: popupSlideIn 0.3s ease-out;
+}
+
+@keyframes popupSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 볼륨 슬라이더 그룹 (인게임 팝업) */
+.volume-slider-group {
+    margin-bottom: 20px;
+}
+
+.volume-slider-group:last-child {
+    margin-bottom: 0;
+}
+
+.volume-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.volume-icon {
+    font-size: 20px;
+    margin-right: 8px;
+}
+
+.volume-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    flex: 1;
+}
+
+.volume-value {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: monospace;
+    min-width: 45px;
+    text-align: right;
+}
+
+/* 볼륨 슬라이더 (공통) */
+.volume-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.volume-slider:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* 슬라이더 썸 (크롬, 사파리) */
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #4CAF50, #2196F3);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.5);
+}
+
+/* 슬라이더 썸 (파이어폭스) */
+.volume-slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #4CAF50, #2196F3);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+.volume-slider::-moz-range-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.5);
+}
+
+/* 설정 모달 전용 스타일 */
+.settings-modal-content {
+    max-width: 450px;
+    padding: 30px;
+}
+
+.settings-body {
+    margin: 30px 0;
+}
+
+.volume-setting-group {
+    margin-bottom: 30px;
+}
+
+.volume-setting-group:last-child {
+    margin-bottom: 0;
+}
+
+.volume-setting-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.volume-setting-icon {
+    font-size: 28px;
+    margin-right: 12px;
+}
+
+.volume-setting-label {
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+    flex: 1;
+}
+
+.volume-setting-value {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: monospace;
+    min-width: 55px;
+    text-align: right;
+}
+
+/* 설정 모달 슬라이더 (더 큰 크기) */
+.volume-setting-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.volume-setting-slider:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* 설정 모달 슬라이더 썸 (크롬, 사파리) */
+.volume-setting-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #4CAF50, #2196F3);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+    transition: all 0.2s ease;
+}
+
+.volume-setting-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.6);
+}
+
+/* 설정 모달 슬라이더 썸 (파이어폭스) */
+.volume-setting-slider::-moz-range-thumb {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #4CAF50, #2196F3);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+    transition: all 0.2s ease;
+}
+
+.volume-setting-slider::-moz-range-thumb:hover {
+    transform: scale(1.15);
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.6);
+}
+
+/* 터치 영역 확대 (모바일 지원) */
+@media (hover: none) and (pointer: coarse) {
+    .volume-slider::-webkit-slider-thumb,
+    .volume-setting-slider::-webkit-slider-thumb {
+        width: 44px;
+        height: 44px;
+    }
+
+    .volume-slider::-moz-range-thumb,
+    .volume-setting-slider::-moz-range-thumb {
+        width: 44px;
+        height: 44px;
+    }
+}

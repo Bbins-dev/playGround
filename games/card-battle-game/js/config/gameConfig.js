@@ -1908,11 +1908,10 @@ const GameConfig = {
             height: 1150,    // 96% of canvas height
             padding: 25
         }
-    }
-};
+    },
 
-// 유틸리티 함수들
-GameConfig.utils = {
+    // 유틸리티 함수들
+    utils: {
     // 속성 상성 계산
     getTypeEffectiveness: function(attackElement, defenseElement) {
         if (!attackElement || !defenseElement) return GameConfig.typeEffectiveness.normal;
@@ -1996,6 +1995,20 @@ GameConfig.utils = {
         return defenseElement;
     },
 
+    // 게임 속도 적용
+    applyGameSpeed: function(baseTime, speedMultiplier = 1) {
+        return Math.max(100, baseTime / speedMultiplier); // 최소 100ms
+    },
+
+    // 상태이상 면역 체크
+    isImmuneToStatus: function(defenseElement, statusType) {
+        const element = GameConfig.elements[defenseElement];
+        if (!element || !element.immunity) return false;
+
+        return element.immunity === statusType;
+    }
+    },
+
     // 색상 시스템 - 모든 하드코딩된 색상을 중앙 관리
     colors: {
         // 기본 UI 색상
@@ -2076,79 +2089,6 @@ GameConfig.utils = {
             normal: 'normal',
             bold: 'bold',
             bolder: '900'
-        }
-    },
-
-    // 애니메이션 타이밍 시스템
-    timing: {
-        // 카드 관련 타이밍
-        cards: {
-            repeatDelay: 300,             // BattleSystem의 하드코딩된 300ms
-            activationInterval: 500,      // 카드 간 발동 간격
-            missDelay: 800                // Miss 시 추가 대기 시간 (ms)
-        },
-
-        // 모달 관련 타이밍
-        modal: {
-            fadeIn: 300,                  // 모달 페이드인 시간
-            fadeOut: 300,                 // 모달 페이드아웃 시간
-            display: 2000,                // 자동 전환 대기시간
-            transition: 200               // 일반 전환 시간
-        },
-
-        // 전투 관련 타이밍
-        battle: {
-            pauseDelay: 1000,             // 전투 일시정지 딜레이
-            resumeDelay: 500,             // 전투 재개 딜레이
-            actionDelay: 300,             // 액션 간 딜레이
-            animationStep: 100,           // 애니메이션 스텝 간격
-            get deathAnimationDelay() { return GameConfig.masterTiming.battle.deathAnimationDelay; } // 사망 애니메이션 딜레이
-        },
-
-        // UI 업데이트 관련 타이밍
-        ui: {
-            // 데미지 처리 시 방어력 → HP 순차 업데이트 설정
-            damageSequence: {
-                defenseFirst: true,       // 방어력 먼저 업데이트 (true), 동시 업데이트 (false)
-                delayBetween: 0           // 방어력과 HP 업데이트 사이 딜레이 (ms) - 즉시 연속 처리
-            },
-
-            // 기타 UI 애니메이션 타이밍
-            fadeIn: 300,                  // UI 요소 페이드인
-            fadeOut: 300,                 // UI 요소 페이드아웃
-            statusUpdate: 100             // 상태이상 업데이트 딜레이
-        },
-
-        // 렌더링 관련
-        rendering: {
-            throttle: 16,                 // MainMenu 렌더링 체크 16ms
-            frameTime: 1000 / 60          // 60fps 기준
-        },
-
-        // UI 애니메이션
-        ui: {
-            fadeIn: 250,
-            fadeOut: 200,
-            transition: 300,
-            hover: 150,
-            clickFeedback: 100,           // 클릭 피드백 시간
-            hoverDelay: 200,              // 호버 딜레이
-            tooltipDelay: 500             // 툴팁 표시 딜레이
-        },
-
-        // 전투 효과
-        combat: {
-            damage: 400,
-            heal: 300,
-            statusChange: 250
-        },
-
-        // 이펙트 효과
-        effects: {
-            shortFlash: 200,              // 짧은 플래시
-            longFlash: 500,               // 긴 플래시
-            fadeOut: 1000,                // 페이드아웃
-            slideIn: 300                  // 슬라이드인
         }
     },
 
@@ -2314,19 +2254,90 @@ GameConfig.utils = {
         }
     },
 
-    // 게임 속도 적용
-    applyGameSpeed: function(baseTime, speedMultiplier = 1) {
-        return Math.max(100, baseTime / speedMultiplier); // 최소 100ms
-    },
+    // 오디오 시스템 설정 (Configuration-Driven)
+    audio: {
+        // 기본 경로
+        basePath: 'assets/audio/',
 
-    // 상태이상 면역 체크
-    isImmuneToStatus: function(defenseElement, statusType) {
-        const element = GameConfig.elements[defenseElement];
-        if (!element || !element.immunity) return false;
+        // BGM 파일 경로 (하드코딩 금지 - 단일 진실의 원천)
+        bgm: {
+            mainMenu: 'bgm/bgm_main_menu.mp3',
+            cardGallery: 'bgm/bgm_card_gallery.mp3',
+            normalBattle: 'bgm/bgm_normal_battle.mp3',
+            victoryModal: 'bgm/bgm_victory_modal.mp3',
+            gameOver: 'bgm/bgm_game_over.mp3',
+            bossBattle: 'bgm/bgm_boss_battle.mp3'
+        },
 
-        return element.immunity === statusType;
+        // SFX 파일 경로 (Configuration-Driven)
+        sfx: {
+            // 공격 사운드
+            attackCritical: 'sfx/snd_attack_critical.mp3',
+            attackHit: 'sfx/snd_attack_hit.mp3',
+            attackWeak: 'sfx/snd_attack_weak.mp3',
+            miss: 'sfx/snd_miss.mp3',
+
+            // 속성별 공격 효과음
+            attackElectric: 'sfx/snd_attack_effect_electric.mp3',
+            attackFire: 'sfx/snd_attack_effect_fire.mp3',
+            attackPoison: 'sfx/snd_attack_effect_poison.mp3',
+            attackWater: 'sfx/snd_attack_effect_water.mp3',
+
+            // 방어/버프/상태이상
+            defenseGain: 'sfx/snd_deffence_gain.mp3',
+            buffGain: 'sfx/snd_buff_gain.mp3',
+            statusGain: 'sfx/snd_status_gain.mp3',
+            heal: 'sfx/snd_heal.mp3',
+
+            // 카드 획득 (랜덤 재생용)
+            cardGet1: 'sfx/snd_card_get_1.mp3',
+            cardGet2: 'sfx/snd_card_get_2.mp3',
+            cardGet3: 'sfx/snd_card_get_3.mp3',
+            cardGet4: 'sfx/snd_card_get_4.mp3',
+
+            // UI 사운드
+            click: 'sfx/snd_click.mp3',
+            failed: 'sfx/snd_failed.mp3',
+            nameModal: 'sfx/snd_name_modal.mp3',
+            victoryModal: 'sfx/snd_victory_modal.mp3',
+            gameOver: 'sfx/snd_game_over.mp3'
+        },
+
+        // 볼륨 설정 (0.0 ~ 1.0)
+        volume: {
+            master: 1.0,   // 마스터 볼륨
+            bgm: 0.6,      // BGM 볼륨
+            sfx: 0.8       // SFX 볼륨
+        },
+
+        // 페이드 효과 타이밍 (ms)
+        fade: {
+            duration: 1000,      // 일반 페이드 인/아웃 시간
+            crossfade: 1500      // BGM 크로스 페이드 시간
+        },
+
+        // 보스 스테이지 판정 규칙
+        bossStage: {
+            interval: 10  // 10의 배수마다 보스 스테이지
+        },
+
+        // 로딩 설정
+        loading: {
+            showProgress: true,     // 로딩 진행률 표시 여부
+            minimumLoadTime: 500    // 최소 로딩 화면 표시 시간 (ms) - 너무 빠르게 사라지지 않도록
+        }
     }
 };
 
 // 전역 객체로 등록
 window.GameConfig = GameConfig;
+
+// GameConfig 로드 검증 로그
+console.log('[GameConfig] Loaded successfully');
+console.log('[GameConfig] Audio section:', GameConfig.audio ? '✅ Exists' : '❌ Missing');
+if (GameConfig.audio) {
+    const bgmCount = Object.keys(GameConfig.audio.bgm || {}).length;
+    const sfxCount = Object.keys(GameConfig.audio.sfx || {}).length;
+    console.log(`[GameConfig] Audio files configured: ${bgmCount} BGM + ${sfxCount} SFX = ${bgmCount + sfxCount} total`);
+    console.log('[GameConfig] BGM keys:', Object.keys(GameConfig.audio.bgm || {}));
+}

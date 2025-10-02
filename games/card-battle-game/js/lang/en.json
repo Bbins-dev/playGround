@@ -62,6 +62,7 @@
     "genre": "Strategy",
     "ui": {
       "start_game": "Start Game",
+      "click_to_start": "Click to Start",
       "game_tutorial": "Game Guide",
       "card_gallery": "Card Gallery",
       "settings": "Settings",

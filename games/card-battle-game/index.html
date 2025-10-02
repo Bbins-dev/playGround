@@ -9,6 +9,19 @@
     <link rel="stylesheet" href="css/components.css">
 </head>
 <body>
+    <!-- 로딩 화면 -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <h1 class="loading-title">⚔️ Card Battle Game</h1>
+            <div class="loading-message">Loading Assets...</div>
+            <div class="loading-bar-container">
+                <div class="loading-bar-fill" id="loading-bar-fill"></div>
+            </div>
+            <div class="loading-progress-text" id="loading-progress-text">0/0 files loaded</div>
+            <button id="loading-start-button" class="loading-start-button hidden" data-i18n="auto_battle_card_game.ui.click_to_start">클릭하여 시작</button>
+        </div>
+    </div>
+
     <div class="game-container">
         <!-- 언어 선택기 -->
         <div class="language-selector">
@@ -98,6 +111,10 @@
                     <span class="menu-icon">🃏</span>
                     <span class="menu-text" data-i18n="auto_battle_card_game.ui.card_gallery">카드 갤러리</span>
                 </button>
+                <button class="menu-button" id="settings-menu-btn">
+                    <span class="menu-icon">⚙️</span>
+                    <span class="menu-text" data-i18n="auto_battle_card_game.ui.settings">설정</span>
+                </button>
                 <button class="menu-button" id="back-to-main-menu-btn">
                     <span class="menu-icon">🏠</span>
                     <span class="menu-text" data-i18n="auto_battle_card_game.ui.back_to_homepage">홈페이지로</span>
@@ -110,6 +127,29 @@
 
             <!-- 메뉴화면으로 돌아가기 버튼 -->
             <button id="back-to-menu" class="ui-button back-btn menu-btn" data-i18n="auto_battle_card_game.ui.back_to_menu">←</button>
+
+            <!-- 인게임 볼륨 조절 버튼 -->
+            <button id="volume-control-btn" class="ui-button volume-btn" title="Volume">🔊</button>
+
+            <!-- 인게임 볼륨 팝업 패널 -->
+            <div id="volume-popup-panel" class="volume-popup-panel hidden">
+                <div class="volume-slider-group">
+                    <div class="volume-label-row">
+                        <span class="volume-icon">🎵</span>
+                        <span class="volume-label">BGM</span>
+                        <span class="volume-value" id="ingame-bgm-value">60%</span>
+                    </div>
+                    <input type="range" id="ingame-bgm-slider" class="volume-slider" min="0" max="100" value="60">
+                </div>
+                <div class="volume-slider-group">
+                    <div class="volume-label-row">
+                        <span class="volume-icon">🔊</span>
+                        <span class="volume-label">SFX</span>
+                        <span class="volume-value" id="ingame-sfx-value">80%</span>
+                    </div>
+                    <input type="range" id="ingame-sfx-slider" class="volume-slider" min="0" max="100" value="80">
+                </div>
+            </div>
 
             <!-- 스테이지 인디케이터 -->
             <div id="stage-indicator" class="stage-indicator hidden">
@@ -134,6 +174,35 @@
                 <h2 data-i18n="auto_battle_card_game.ui.card_gallery_title">카드 갤러리</h2>
                 <div id="card-gallery-grid" class="card-gallery-grid"></div>
                 <button id="close-gallery" class="ui-button" data-i18n="auto_battle_card_game.ui.close">닫기</button>
+            </div>
+        </div>
+
+        <!-- 설정 모달 -->
+        <div id="settings-modal" class="modal hidden">
+            <div class="modal-content glass-morphism settings-modal-content">
+                <h2>⚙️ <span data-i18n="auto_battle_card_game.ui.settings">설정</span></h2>
+                <div class="settings-body">
+                    <!-- BGM 볼륨 -->
+                    <div class="volume-setting-group">
+                        <div class="volume-setting-label-row">
+                            <span class="volume-setting-icon">🎵</span>
+                            <span class="volume-setting-label">BGM</span>
+                            <span class="volume-setting-value" id="settings-bgm-value">60%</span>
+                        </div>
+                        <input type="range" id="settings-bgm-slider" class="volume-setting-slider" min="0" max="100" value="60">
+                    </div>
+
+                    <!-- SFX 볼륨 -->
+                    <div class="volume-setting-group">
+                        <div class="volume-setting-label-row">
+                            <span class="volume-setting-icon">🔊</span>
+                            <span class="volume-setting-label">SFX</span>
+                            <span class="volume-setting-value" id="settings-sfx-value">80%</span>
+                        </div>
+                        <input type="range" id="settings-sfx-slider" class="volume-setting-slider" min="0" max="100" value="80">
+                    </div>
+                </div>
+                <button id="close-settings" class="ui-button primary" data-i18n="auto_battle_card_game.ui.close">닫기</button>
             </div>
         </div>
 
@@ -423,7 +492,7 @@
 
     <!-- 스크립트 로드 -->
     <!-- 설정 파일들 먼저 로드 -->
-    <script src="js/config/gameConfig.js"></script>
+    <script src="js/config/gameConfig.js?v=4"></script>
     <!-- i18n 시스템 -->
     <script src="js/i18n.js"></script>
     <!-- 유틸리티 클래스들 -->
@@ -437,9 +506,13 @@
     <script src="js/entities/Card.js"></script>
     <script src="js/entities/Player.js"></script>
     <script src="js/entities/Enemy.js"></script>
+    <!-- 오디오 시스템 -->
+    <script src="js/systems/AudioSystem.js"></script>
     <script src="js/ui/HPBarSystem.js"></script>
     <script src="js/ui/EffectSystem.js"></script>
     <!-- UI 기본 컴포넌트 먼저 로드 -->
+    <script src="js/ui/LoadingScreen.js"></script>
+    <script src="js/ui/VolumeControl.js"></script>
     <script src="js/ui/CardRenderer.js"></script>
     <script src="js/ui/DOMCardRenderer.js"></script>
     <script src="js/ui/Renderer.js"></script>
