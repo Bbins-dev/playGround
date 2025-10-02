@@ -61,6 +61,8 @@
     "description": "Turn-based auto battle card game! Strategically arrange your card order and use the synergy of 5 different elements to achieve victory!",
     "genre": "Strategy",
     "ui": {
+      "loading_title": "⚔️ Auto Battle Card Dual",
+      "loading_message": "Loading Assets...",
       "start_game": "Start Game",
       "click_to_start": "Click to Start",
       "game_tutorial": "Game Guide",

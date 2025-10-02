@@ -61,6 +61,8 @@
     "description": "ターン制自動戦闘カードゲーム！カードの順序を戦略的に配置し、5つの属性の相性を活用して勝利を目指そう！",
     "genre": "戦略",
     "ui": {
+      "loading_title": "⚔️ オートバトルカード対戦",
+      "loading_message": "読み込み中...",
       "start_game": "ゲーム開始",
       "click_to_start": "クリックしてスタート",
       "game_tutorial": "ゲーム説明",
