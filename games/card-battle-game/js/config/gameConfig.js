@@ -863,7 +863,7 @@ const GameConfig = {
     // 카드 크기 설정
     cardSizes: {
         hand: { width: 120, height: 168 },       // 손패 카드 크기 (20% 확대)
-        enlarged: { width: 400, height: 560 },   // 발동 시 확대 크기 (33% 증가)
+        enlarged: { width: 550, height: 770 },   // 발동 시 확대 크기 (37.5% 증가)
         preview: { width: 290, height: 406 },    // 시작 카드 선택 크기 (적당한 크기)
         gallery: { width: 320, height: 448 },    // 카드 갤러리 전용 크기 (preview보다 약간 더 큼)
         large: { width: 580, height: 812 },      // 카드 디테일 모달 크기 (적당한 확대)

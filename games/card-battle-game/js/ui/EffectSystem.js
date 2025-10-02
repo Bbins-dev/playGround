@@ -451,7 +451,7 @@ class EffectSystem {
             const cardOverlay = document.createElement('div');
             cardOverlay.className = 'card-activation-overlay';
             cardOverlay.style.cssText = `
-                position: fixed;
+                position: absolute;
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
@@ -462,7 +462,8 @@ class EffectSystem {
 
             // 통일된 카드를 오버레이에 추가
             cardOverlay.appendChild(cardElement);
-            document.body.appendChild(cardOverlay);
+            const gameContainer = document.querySelector('.game-container');
+            gameContainer.appendChild(cardOverlay);
 
             // 지속 시간 후 제거
             setTimeout(() => {
