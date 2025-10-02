@@ -62,6 +62,7 @@
     "genre": "戦略",
     "ui": {
       "start_game": "ゲーム開始",
+      "click_to_start": "クリックしてスタート",
       "game_tutorial": "ゲーム説明",
       "card_gallery": "カードギャラリー",
       "settings": "設定",

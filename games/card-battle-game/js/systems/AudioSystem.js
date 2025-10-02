@@ -1,0 +1,590 @@
+/**
+ * AudioSystem.js
+ * Configuration-Driven 오디오 시스템
+ *
+ * 핵심 기능:
+ * - BGM 스택 관리 (이전 BGM 자동 복원)
+ * - 페이드 인/아웃 효과
+ * - 오디오 프리로딩
+ * - 볼륨 조절
+ * - 스테이지별 BGM 자동 선택
+ *
+ * 설계 원칙:
+ * - 모든 경로는 GameConfig.audio에서 관리 (하드코딩 금지)
+ * - Optional Chaining으로 안전한 접근
+ * - 에러 처리 및 폴백
+ */
+
+class AudioSystem {
+    constructor() {
+        // 현재 재생 중인 BGM
+        this.currentBGM = null;
+        this.currentBGMKey = null;
+
+        // BGM 스택 (카드 갤러리 등에서 이전 BGM 복원용)
+        this.bgmStack = [];
+
+        // 오디오 객체 캐시
+        this.audioCache = {};
+
+        // 페이드 애니메이션 타이머
+        this.fadeTimer = null;
+
+        // 볼륨 설정 (GameConfig에서 초기화)
+        this.volumes = {
+            master: GameConfig?.audio?.volume?.master || 1.0,
+            bgm: GameConfig?.audio?.volume?.bgm || 0.6,
+            sfx: GameConfig?.audio?.volume?.sfx || 0.8
+        };
+
+        // 로딩 상태
+        this.isLoading = false;
+        this.loadedCount = 0;
+        this.totalCount = 0;
+
+        console.log('[AudioSystem] Initialized');
+    }
+
+    /**
+     * 오디오 파일 전체 경로 생성
+     * @param {string} relativePath - 상대 경로 (예: 'bgm/bgm_main_menu.mp3')
+     * @returns {string} 전체 경로
+     */
+    getFullPath(relativePath) {
+        const basePath = GameConfig?.audio?.basePath || 'assets/audio/';
+        return `${basePath}${relativePath}`;
+    }
+
+    /**
+     * BGM 키로부터 오디오 객체 생성 또는 캐시에서 가져오기
+     * @param {string} bgmKey - BGM 키 (예: 'mainMenu', 'normalBattle')
+     * @returns {HTMLAudioElement|null} 오디오 객체
+     */
+    getBGMAudio(bgmKey) {
+        try {
+            // 캐시에 있으면 반환
+            if (this.audioCache[bgmKey]) {
+                return this.audioCache[bgmKey];
+            }
+
+            // GameConfig에서 경로 가져오기
+            const relativePath = GameConfig?.audio?.bgm?.[bgmKey];
+            if (!relativePath) {
+                console.warn(`[AudioSystem] BGM key '${bgmKey}' not found in GameConfig`);
+                return null;
+            }
+
+            // 전체 경로 생성
+            const fullPath = this.getFullPath(relativePath);
+
+            // 오디오 객체 생성
+            const audio = new Audio(fullPath);
+            audio.volume = this.getEffectiveVolume('bgm');
+
+            // 에러 핸들러 추가 (파일 누락/경로 오류 감지)
+            audio.addEventListener('error', (e) => {
+                console.error(`[AudioSystem] Failed to load audio file for '${bgmKey}':`, fullPath);
+                console.error('Error details:', e);
+            }, { once: true });
+
+            // 캐시에 저장
+            this.audioCache[bgmKey] = audio;
+
+            console.log(`[AudioSystem] Created audio for '${bgmKey}': ${fullPath}`);
+
+            return audio;
+        } catch (error) {
+            console.error(`[AudioSystem] Error creating audio for '${bgmKey}':`, error);
+            return null;
+        }
+    }
+
+    /**
+     * 실제 적용되는 볼륨 계산 (마스터 * BGM/SFX)
+     * @param {string} type - 'bgm' 또는 'sfx'
+     * @returns {number} 0.0 ~ 1.0
+     */
+    getEffectiveVolume(type) {
+        const master = this.volumes.master || 1.0;
+        const typeVolume = this.volumes[type] || 1.0;
+        return Math.max(0, Math.min(1, master * typeVolume));
+    }
+
+    /**
+     * BGM 재생 (페이드 인 옵션)
+     * @param {string} bgmKey - BGM 키
+     * @param {boolean} loop - 반복 재생 여부 (기본: true)
+     * @param {boolean} fade - 페이드 인 여부 (기본: true)
+     * @returns {Promise<boolean>} 성공 여부
+     */
+    async playBGM(bgmKey, loop = true, fade = true) {
+        try {
+            // 이미 같은 BGM이 재생 중이면 무시
+            if (this.currentBGMKey === bgmKey && this.currentBGM && !this.currentBGM.paused) {
+                console.log(`[AudioSystem] BGM '${bgmKey}' is already playing`);
+                return true;
+            }
+
+            // 현재 BGM 정지 (페이드 아웃)
+            if (this.currentBGM) {
+                await this.stopBGM(fade);
+            }
+
+            // 새 BGM 오디오 객체 가져오기
+            const audio = this.getBGMAudio(bgmKey);
+            if (!audio) {
+                console.warn(`[AudioSystem] Cannot play BGM '${bgmKey}'`);
+                return false;
+            }
+
+            // 설정 적용
+            audio.loop = loop;
+            audio.currentTime = 0;
+
+            // 페이드 인
+            if (fade) {
+                audio.volume = 0;
+                try {
+                    await audio.play();
+                    await this.fadeIn(audio, 'bgm');
+                } catch (e) {
+                    console.warn('[AudioSystem] Autoplay blocked:', e);
+                    return false;
+                }
+            } else {
+                audio.volume = this.getEffectiveVolume('bgm');
+                try {
+                    await audio.play();
+                } catch (e) {
+                    console.warn('[AudioSystem] Autoplay blocked:', e);
+                    return false;
+                }
+            }
+
+            // 현재 BGM 설정
+            this.currentBGM = audio;
+            this.currentBGMKey = bgmKey;
+
+            console.log(`[AudioSystem] Playing BGM: ${bgmKey} (loop: ${loop}, fade: ${fade})`);
+            return true;
+
+        } catch (error) {
+            console.error(`[AudioSystem] Error playing BGM '${bgmKey}':`, error);
+            return false;
+        }
+    }
+
+    /**
+     * BGM 정지 (페이드 아웃 옵션)
+     * @param {boolean} fade - 페이드 아웃 여부 (기본: true)
+     * @returns {Promise<void>}
+     */
+    async stopBGM(fade = true) {
+        if (!this.currentBGM) {
+            return;
+        }
+
+        try {
+            const audio = this.currentBGM;
+
+            if (fade) {
+                await this.fadeOut(audio);
+            }
+
+            audio.pause();
+            audio.currentTime = 0;
+
+            console.log(`[AudioSystem] Stopped BGM: ${this.currentBGMKey}`);
+
+            this.currentBGM = null;
+            this.currentBGMKey = null;
+
+        } catch (error) {
+            console.error('[AudioSystem] Error stopping BGM:', error);
+        }
+    }
+
+    /**
+     * 현재 BGM 일시정지 및 스택에 저장
+     * (카드 갤러리 열 때 사용)
+     * @returns {boolean} 성공 여부
+     */
+    pauseAndSaveBGM() {
+        if (!this.currentBGM || !this.currentBGMKey) {
+            console.log('[AudioSystem] No BGM to pause');
+            return false;
+        }
+
+        try {
+            // 현재 재생 위치 저장
+            const savedState = {
+                key: this.currentBGMKey,
+                currentTime: this.currentBGM.currentTime,
+                loop: this.currentBGM.loop
+            };
+
+            this.bgmStack.push(savedState);
+
+            // 일시정지
+            this.currentBGM.pause();
+
+            console.log(`[AudioSystem] Paused and saved BGM: ${this.currentBGMKey} (time: ${savedState.currentTime})`);
+
+            // 현재 BGM 초기화 (새 BGM 재생 가능하도록)
+            this.currentBGM = null;
+            this.currentBGMKey = null;
+
+            return true;
+
+        } catch (error) {
+            console.error('[AudioSystem] Error pausing BGM:', error);
+            return false;
+        }
+    }
+
+    /**
+     * 이전 BGM 복원 및 재생
+     * (카드 갤러리 닫을 때 사용)
+     * @returns {Promise<boolean>} 성공 여부
+     */
+    async restorePreviousBGM() {
+        if (this.bgmStack.length === 0) {
+            console.log('[AudioSystem] No previous BGM to restore');
+            return false;
+        }
+
+        try {
+            // 스택에서 이전 상태 꺼내기
+            const savedState = this.bgmStack.pop();
+
+            // 현재 BGM 정지 (페이드 아웃)
+            if (this.currentBGM) {
+                await this.stopBGM(true);
+            }
+
+            // 오디오 객체 가져오기
+            const audio = this.getBGMAudio(savedState.key);
+            if (!audio) {
+                console.warn(`[AudioSystem] Cannot restore BGM '${savedState.key}'`);
+                return false;
+            }
+
+            // 이전 재생 위치로 복원
+            audio.currentTime = savedState.currentTime;
+            audio.loop = savedState.loop;
+            audio.volume = 0;
+
+            // 재생 (페이드 인)
+            try {
+                await audio.play();
+                await this.fadeIn(audio, 'bgm');
+            } catch (e) {
+                console.warn('[AudioSystem] Autoplay blocked on restore:', e);
+                // Autoplay 차단 시 실패 처리하지만 에러는 던지지 않음
+            }
+
+            // 현재 BGM 설정
+            this.currentBGM = audio;
+            this.currentBGMKey = savedState.key;
+
+            console.log(`[AudioSystem] Restored BGM: ${savedState.key} (time: ${savedState.currentTime})`);
+            return true;
+
+        } catch (error) {
+            console.error('[AudioSystem] Error restoring BGM:', error);
+            return false;
+        }
+    }
+
+    /**
+     * 스테이지 번호로 전투 BGM 결정
+     * @param {number} stage - 스테이지 번호
+     * @returns {string} BGM 키 ('normalBattle' 또는 'bossBattle')
+     */
+    getBattleBGM(stage) {
+        const bossInterval = GameConfig?.audio?.bossStage?.interval || 10;
+        const isBossStage = stage % bossInterval === 0;
+
+        return isBossStage ? 'bossBattle' : 'normalBattle';
+    }
+
+    /**
+     * 볼륨 설정
+     * @param {string} type - 'master', 'bgm', 'sfx'
+     * @param {number} value - 0.0 ~ 1.0
+     */
+    setVolume(type, value) {
+        const clampedValue = Math.max(0, Math.min(1, value));
+        this.volumes[type] = clampedValue;
+
+        // 현재 재생 중인 BGM 볼륨 즉시 업데이트
+        if (type === 'master' || type === 'bgm') {
+            if (this.currentBGM) {
+                this.currentBGM.volume = this.getEffectiveVolume('bgm');
+            }
+        }
+
+        console.log(`[AudioSystem] Volume ${type} set to ${clampedValue.toFixed(2)}`);
+    }
+
+    /**
+     * 페이드 인 효과
+     * @param {HTMLAudioElement} audio - 오디오 객체
+     * @param {string} type - 'bgm' 또는 'sfx'
+     * @returns {Promise<void>}
+     */
+    fadeIn(audio, type) {
+        return new Promise((resolve) => {
+            const targetVolume = this.getEffectiveVolume(type);
+            const duration = GameConfig?.audio?.fade?.duration || 1000;
+            const steps = 20;
+            const stepTime = duration / steps;
+            const volumeStep = targetVolume / steps;
+
+            let currentStep = 0;
+            audio.volume = 0;
+
+            const fadeInterval = setInterval(() => {
+                currentStep++;
+                audio.volume = Math.min(volumeStep * currentStep, targetVolume);
+
+                if (currentStep >= steps) {
+                    clearInterval(fadeInterval);
+                    audio.volume = targetVolume;
+                    resolve();
+                }
+            }, stepTime);
+        });
+    }
+
+    /**
+     * 페이드 아웃 효과
+     * @param {HTMLAudioElement} audio - 오디오 객체
+     * @returns {Promise<void>}
+     */
+    fadeOut(audio) {
+        return new Promise((resolve) => {
+            const duration = GameConfig?.audio?.fade?.duration || 1000;
+            const steps = 20;
+            const stepTime = duration / steps;
+            const startVolume = audio.volume;
+            const volumeStep = startVolume / steps;
+
+            let currentStep = 0;
+
+            const fadeInterval = setInterval(() => {
+                currentStep++;
+                audio.volume = Math.max(startVolume - volumeStep * currentStep, 0);
+
+                if (currentStep >= steps) {
+                    clearInterval(fadeInterval);
+                    audio.volume = 0;
+                    resolve();
+                }
+            }, stepTime);
+        });
+    }
+
+    /**
+     * 모든 오디오 파일 프리로드 (BGM + SFX)
+     * @param {Function} onProgress - 진행률 콜백 (loaded, total)
+     * @param {Function} onComplete - 완료 콜백
+     */
+    async preloadAll(onProgress, onComplete) {
+        if (this.isLoading) {
+            console.warn('[AudioSystem] Already loading');
+            return;
+        }
+
+        this.isLoading = true;
+        this.loadedCount = 0;
+
+        try {
+            // GameConfig.audio 존재 확인
+            if (!GameConfig || !GameConfig.audio) {
+                console.error('[AudioSystem] ❌ CRITICAL: GameConfig.audio is undefined!');
+                console.error('[AudioSystem] This usually means gameConfig.js failed to load or is cached.');
+                console.error('[AudioSystem] Please hard refresh (Cmd+Shift+R or Ctrl+Shift+R)');
+                if (onComplete) onComplete();
+                this.isLoading = false;
+                return;
+            }
+
+            // BGM + SFX 파일 목록 가져오기
+            const bgmKeys = Object.keys(GameConfig?.audio?.bgm || {});
+            const sfxKeys = Object.keys(GameConfig?.audio?.sfx || {});
+            this.totalCount = bgmKeys.length + sfxKeys.length;
+
+            console.log(`[AudioSystem] Preloading ${bgmKeys.length} BGM + ${sfxKeys.length} SFX files (${this.totalCount} total)...`);
+
+            // 초기 진행률 표시 (0/total)
+            if (onProgress) {
+                onProgress(0, this.totalCount);
+            }
+
+            // 모든 오디오 파일 로드 (BGM + SFX)
+            const allKeys = [
+                ...bgmKeys.map(key => ({ type: 'bgm', key })),
+                ...sfxKeys.map(key => ({ type: 'sfx', key }))
+            ];
+
+            const loadPromises = allKeys.map(async ({ type, key }) => {
+                try {
+                    const audio = type === 'bgm' ? this.getBGMAudio(key) : this.getSFXAudio(key);
+                    if (!audio) {
+                        throw new Error(`Failed to create audio for ${key}`);
+                    }
+
+                    // canplaythrough 이벤트로 로드 완료 대기
+                    await new Promise((resolve, reject) => {
+                        const timeout = setTimeout(() => {
+                            reject(new Error(`Timeout loading ${key}`));
+                        }, 10000); // 10초 타임아웃
+
+                        audio.addEventListener('canplaythrough', () => {
+                            clearTimeout(timeout);
+                            resolve();
+                        }, { once: true });
+
+                        audio.addEventListener('error', (e) => {
+                            clearTimeout(timeout);
+                            reject(new Error(`Error loading ${key}: ${e.message}`));
+                        }, { once: true });
+
+                        // 로드 시작
+                        audio.load();
+                    });
+
+                    this.loadedCount++;
+
+                    // 진행률 콜백 호출
+                    if (onProgress) {
+                        onProgress(this.loadedCount, this.totalCount);
+                    }
+
+                    console.log(`[AudioSystem] Loaded ${type.toUpperCase()}: ${key} (${this.loadedCount}/${this.totalCount})`);
+
+                } catch (error) {
+                    console.error(`[AudioSystem] Failed to load ${type} '${key}':`, error);
+                    // 실패해도 계속 진행
+                    this.loadedCount++;
+                    if (onProgress) {
+                        onProgress(this.loadedCount, this.totalCount);
+                    }
+                }
+            });
+
+            // 모든 로드 대기
+            await Promise.all(loadPromises);
+
+            console.log('[AudioSystem] All audio files loaded');
+
+            // 완료 콜백 호출
+            if (onComplete) {
+                onComplete();
+            }
+
+        } catch (error) {
+            console.error('[AudioSystem] Error during preload:', error);
+        } finally {
+            this.isLoading = false;
+        }
+    }
+
+    /**
+     * SFX 키로부터 오디오 객체 생성 또는 캐시에서 가져오기
+     * @param {string} sfxKey - SFX 키 (예: 'attackHit', 'click')
+     * @returns {HTMLAudioElement|null} 오디오 객체
+     */
+    getSFXAudio(sfxKey) {
+        try {
+            // 캐시에 있으면 반환
+            const cacheKey = `sfx_${sfxKey}`;
+            if (this.audioCache[cacheKey]) {
+                return this.audioCache[cacheKey];
+            }
+
+            // GameConfig에서 경로 가져오기
+            const relativePath = GameConfig?.audio?.sfx?.[sfxKey];
+            if (!relativePath) {
+                console.warn(`[AudioSystem] SFX key '${sfxKey}' not found in GameConfig`);
+                return null;
+            }
+
+            // 전체 경로 생성
+            const fullPath = this.getFullPath(relativePath);
+
+            // 오디오 객체 생성
+            const audio = new Audio(fullPath);
+            audio.volume = this.getEffectiveVolume('sfx');
+
+            // 에러 핸들러 추가
+            audio.addEventListener('error', (e) => {
+                console.error(`[AudioSystem] Failed to load SFX file for '${sfxKey}':`, fullPath);
+                console.error('Error details:', e);
+            }, { once: true });
+
+            // 캐시에 저장
+            this.audioCache[cacheKey] = audio;
+
+            console.log(`[AudioSystem] Created SFX for '${sfxKey}': ${fullPath}`);
+
+            return audio;
+        } catch (error) {
+            console.error(`[AudioSystem] Error creating SFX for '${sfxKey}':`, error);
+            return null;
+        }
+    }
+
+    /**
+     * SFX 재생
+     * @param {string} sfxKey - SFX 키
+     * @param {number} volume - 볼륨 배율 (0.0 ~ 1.0, 기본값: 1.0)
+     * @returns {boolean} 성공 여부
+     */
+    playSFX(sfxKey, volume = 1.0) {
+        try {
+            const audio = this.getSFXAudio(sfxKey);
+            if (!audio) {
+                console.warn(`[AudioSystem] Cannot play SFX '${sfxKey}'`);
+                return false;
+            }
+
+            // 볼륨 설정 (SFX 볼륨 * 배율)
+            audio.volume = this.getEffectiveVolume('sfx') * Math.max(0, Math.min(1, volume));
+
+            // 처음부터 재생 (이미 재생 중이어도)
+            audio.currentTime = 0;
+            audio.play().catch(e => console.warn(`[AudioSystem] SFX play blocked: ${sfxKey}`, e));
+
+            return true;
+        } catch (error) {
+            console.error(`[AudioSystem] Error playing SFX '${sfxKey}':`, error);
+            return false;
+        }
+    }
+
+    /**
+     * 모든 오디오 정지 및 정리
+     */
+    dispose() {
+        // 현재 BGM 정지
+        if (this.currentBGM) {
+            this.currentBGM.pause();
+            this.currentBGM = null;
+            this.currentBGMKey = null;
+        }
+
+        // 캐시 정리
+        Object.values(this.audioCache).forEach(audio => {
+            audio.pause();
+            audio.src = '';
+        });
+        this.audioCache = {};
+
+        // 스택 초기화
+        this.bgmStack = [];
+
+        console.log('[AudioSystem] Disposed');
+    }
+}

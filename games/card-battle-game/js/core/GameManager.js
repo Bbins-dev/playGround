@@ -14,6 +14,9 @@ class GameManager {
         this.animationManager = null;
         this.hpBarSystem = null;
         this.effectSystem = null;
+        this.audioSystem = null;
+        this.loadingScreen = null;
+        this.volumeControl = null;
 
         // 화면 관리
         this.mainMenu = null;
@@ -84,34 +87,107 @@ class GameManager {
     // 게임 초기화
     async init() {
         try {
+            // 로딩 화면 초기화 및 표시
+            this.loadingScreen = new LoadingScreen();
+            this.loadingScreen.show();
 
             // Canvas 초기화
             this.initCanvas();
 
-            // 고정 크기이므로 레이아웃 안정화 대기 불필요
+            // i18n 시스템 완전 로드 대기 (언어 번역 적용 후 메뉴 표시)
+            await this.waitForI18nReady();
 
             // 데이터베이스 초기화 (시스템들보다 먼저)
             CardDatabase.initialize();
 
-            // 시스템들 초기화
+            // 시스템들 초기화 (오디오 시스템 포함)
             this.initSystems();
+
+            // 오디오 파일 프리로드 (진행률 표시)
+            await this.preloadAudioAssets();
 
             // 이벤트 리스너 등록
             this.setupEventListeners();
 
-            // 메인 메뉴 표시
-            this.showMainMenu();
-
-            // 게임 루프 시작
+            // 게임 루프 시작 (메인 메뉴 표시 전에)
             this.startGameLoop();
+
+            // 로딩 완료 후 "Click to Start" 버튼 표시
+            this.loadingScreen.showStartButton();
+
+            // 사용자 클릭 대기 (Autoplay 차단 해결)
+            await this.loadingScreen.waitForUserClick();
+
+            // 사용자 클릭 후 로딩 화면 숨김
+            await this.loadingScreen.hide();
+
+            // 로딩 화면 완전히 숨긴 후 메인 메뉴 표시 (BGM은 showMainMenu에서 재생)
+            this.showMainMenu();
 
         } catch (error) {
             console.error('GameManager 초기화 중 오류:', error);
-            // 에러가 있어도 게임 루프는 시작
+            // 에러가 있어도 로딩 화면 숨기고 게임 시작
+            if (this.loadingScreen) {
+                this.loadingScreen.hideImmediately();
+            }
+            this.showMainMenu();
             if (!this.gameLoop) {
                 this.startGameLoop();
             }
         }
+    }
+
+    // i18n 시스템 준비 대기
+    async waitForI18nReady() {
+        // i18n 시스템이 이미 준비되어 있는지 확인
+        if (window.i18nSystem && window.i18nSystem.isReady) {
+            console.log('[GameManager] i18n system already ready');
+            return;
+        }
+
+        // 최대 2초 대기 (안전 장치)
+        const maxWaitTime = 2000;
+        const startTime = Date.now();
+
+        return new Promise((resolve) => {
+            const checkI18n = () => {
+                if (window.i18nSystem && window.i18nSystem.isReady) {
+                    console.log('[GameManager] i18n system is ready');
+                    resolve();
+                } else if (Date.now() - startTime > maxWaitTime) {
+                    console.warn('[GameManager] i18n system timeout, proceeding anyway');
+                    resolve();
+                } else {
+                    // 50ms마다 체크
+                    setTimeout(checkI18n, 50);
+                }
+            };
+            checkI18n();
+        });
+    }
+
+    // 오디오 에셋 프리로드
+    async preloadAudioAssets() {
+        if (!this.audioSystem) {
+            console.warn('[GameManager] AudioSystem not initialized');
+            return;
+        }
+
+        return new Promise((resolve) => {
+            this.audioSystem.preloadAll(
+                // 진행률 콜백
+                (loaded, total) => {
+                    if (this.loadingScreen) {
+                        this.loadingScreen.updateProgress(loaded, total);
+                    }
+                },
+                // 완료 콜백
+                () => {
+                    console.log('[GameManager] All audio assets loaded');
+                    resolve();
+                }
+            );
+        });
     }
 
     // Canvas 초기화
@@ -149,6 +225,12 @@ class GameManager {
         // 저장된 게임 속도 설정 불러오기
         const savedSpeed = parseInt(localStorage.getItem('cardBattle_gameSpeed') || '1');
         this.gameSpeed = savedSpeed;
+
+        // 오디오 시스템 초기화 (가장 먼저)
+        this.audioSystem = new AudioSystem();
+
+        // 볼륨 조절 시스템 초기화 (AudioSystem 다음)
+        this.volumeControl = new VolumeControl(this);
 
         // 카드 관리자 초기화
         this.cardManager = new CardManager(this);
@@ -193,8 +275,8 @@ class GameManager {
             ['speed-1x', 'click', () => this.setGameSpeed(1)],
             ['speed-2x', 'click', () => this.setGameSpeed(2)],
             ['speed-3x', 'click', () => this.setGameSpeed(3)],
-            ['card-gallery-btn', 'click', () => this.showCardGallery()],
-            ['close-gallery', 'click', () => this.hideCardGallery()]
+            ['card-gallery-btn', 'click', async () => await this.showCardGallery()],
+            ['close-gallery', 'click', async () => await this.hideCardGallery()]
         ]);
 
         // 키보드 이벤트 및 뷰포트 스케일링 이벤트
@@ -298,6 +380,16 @@ class GameManager {
         // 게임 상태를 메뉴로 설정
         this.gameState = 'menu';
         this.currentScreen = this.mainMenu;
+
+        // 메인 메뉴 BGM 재생
+        if (this.audioSystem) {
+            this.audioSystem.playBGM('mainMenu', true, true);
+        }
+
+        // 인게임 볼륨 버튼 숨기기 (메뉴 화면에서는 설정 모달 사용)
+        if (this.volumeControl) {
+            this.volumeControl.hideIngameVolumeButton();
+        }
 
         // UI Manager를 통해 화면 전환
         if (this.uiManager) {
@@ -484,6 +576,17 @@ class GameManager {
 
         this.changeGameState('battle');
 
+        // 전투 BGM 재생 (스테이지에 따라 일반/보스 자동 선택)
+        if (this.audioSystem) {
+            const battleBGMKey = this.audioSystem.getBattleBGM(this.currentStage);
+            this.audioSystem.playBGM(battleBGMKey, true, true);
+        }
+
+        // 인게임 볼륨 버튼 표시 (전투 중)
+        if (this.volumeControl) {
+            this.volumeControl.showIngameVolumeButton();
+        }
+
         if (this.battleSystem) {
             await this.battleSystem.startBattle(this.player, this.enemy);
         } else {
@@ -506,6 +609,12 @@ class GameManager {
     // 플레이어 승리 처리
     handlePlayerVictory() {
         try {
+            // 승리 BGM 재생 (반복 없음)
+            if (this.audioSystem) {
+                this.audioSystem.stopBGM(true);
+                this.audioSystem.playBGM('victoryModal', false, true);
+            }
+
             // 스테이지 클리어 효과 재생
             if (this.uiManager) {
                 this.uiManager.playStageCompleteEffect();
@@ -535,6 +644,12 @@ class GameManager {
     handlePlayerDefeat() {
         try {
             this.changeGameState('gameOver');
+
+            // 패배 BGM 재생 (반복 없음)
+            if (this.audioSystem) {
+                this.audioSystem.stopBGM(true);
+                this.audioSystem.playBGM('gameOver', false, true);
+            }
 
             // 통계 마무리 및 사망 원인 설정
             this.finalizeGameStats();
@@ -698,16 +813,27 @@ class GameManager {
     }
 
     // 카드 갤러리 표시 (DOM 모달 사용)
-    showCardGallery() {
+    async showCardGallery() {
         if (this.uiManager) {
             this.uiManager.showCardGallery();
+        }
+
+        // 현재 BGM 일시정지 & 스택에 저장, 카드 갤러리 BGM 재생
+        if (this.audioSystem) {
+            this.audioSystem.pauseAndSaveBGM();
+            await this.audioSystem.playBGM('cardGallery', true, true);
         }
     }
 
     // 카드 갤러리 숨기기 (DOM 모달 사용)
-    hideCardGallery() {
+    async hideCardGallery() {
         if (this.uiManager) {
             this.uiManager.hideCardGallery();
+        }
+
+        // 이전 BGM 복원 (내부적으로 현재 BGM 정지 처리)
+        if (this.audioSystem) {
+            await this.audioSystem.restorePreviousBGM();
         }
     }
 
