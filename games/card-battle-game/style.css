@@ -2183,7 +2183,7 @@ body {
     position: fixed;
     top: calc(20px + 50px + 20px + 64px + 10px); /* 볼륨 버튼 아래 (간격 10px) */
     left: 20px;
-    width: 260px;
+    width: 340px; /* 260px → 340px (확대) */
     background: linear-gradient(135deg, rgba(26, 26, 46, 0.97), rgba(15, 52, 96, 0.97));
     backdrop-filter: blur(15px);
     border: 2px solid rgba(255, 255, 255, 0.25);
@@ -2233,22 +2233,22 @@ body {
 }
 
 .volume-icon {
-    font-size: 20px;
+    font-size: 24px; /* 20px → 24px */
     margin-right: 8px;
 }
 
 .volume-label {
-    font-size: 16px;
+    font-size: 18px; /* 16px → 18px */
     font-weight: 600;
     color: white;
     flex: 1;
 }
 
 .volume-value {
-    font-size: 14px;
+    font-size: 16px; /* 14px → 16px */
     color: rgba(255, 255, 255, 0.7);
     font-family: monospace;
-    min-width: 45px;
+    min-width: 50px; /* 45px → 50px */
     text-align: right;
 }
 

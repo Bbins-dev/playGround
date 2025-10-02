@@ -189,7 +189,8 @@ class VolumeControl {
 
         // 인게임 볼륨 버튼 클릭
         if (this.volumeControlBtn) {
-            this.volumeControlBtn.addEventListener('click', () => {
+            this.volumeControlBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // 이벤트 버블링 방지
                 // 버튼 클릭 사운드 재생
                 if (this.gameManager?.audioSystem) {
                     this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
@@ -207,6 +208,13 @@ class VolumeControl {
         if (this.ingameSfxSlider) {
             this.ingameSfxSlider.addEventListener('input', (e) => {
                 this.handleVolumeChange('sfx', parseFloat(e.target.value));
+            });
+        }
+
+        // 팝업 내부 클릭 시 이벤트 전파 차단
+        if (this.volumePopupPanel) {
+            this.volumePopupPanel.addEventListener('click', (e) => {
+                e.stopPropagation();
             });
         }
 
