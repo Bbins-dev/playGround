@@ -455,6 +455,9 @@ class AudioSystem {
                         audio.load();
                     });
 
+                    // 각 파일 로딩 후 50ms 딜레이 (진행률 표시 가시성 향상)
+                    await new Promise(resolve => setTimeout(resolve, 50));
+
                     this.loadedCount++;
 
                     // 진행률 콜백 호출

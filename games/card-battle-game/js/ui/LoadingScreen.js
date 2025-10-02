@@ -44,6 +44,14 @@ class LoadingScreen {
         this.loadingScreen.classList.remove('hidden', 'fade-out');
         this.startTime = Date.now();
 
+        // 게이지를 명시적으로 0%로 초기화
+        if (this.loadingBarFill) {
+            this.loadingBarFill.style.width = '0%';
+        }
+        if (this.loadingProgressText) {
+            this.loadingProgressText.textContent = '0/0 files loaded';
+        }
+
         console.log('[LoadingScreen] Showing loading screen');
     }
 
@@ -58,10 +66,21 @@ class LoadingScreen {
         }
 
         // 진행률 계산 (0-100%)
-        const progress = total > 0 ? (loaded / total) * 100 : 0;
+        const rawProgress = total > 0 ? (loaded / total) * 100 : 0;
 
-        // 로딩 바 업데이트
-        this.loadingBarFill.style.width = `${progress}%`;
+        // 0-100% 범위로 클램핑 (안전 장치)
+        const progress = Math.max(0, Math.min(100, rawProgress));
+
+        // 100% 도달 시 transition과 animation 모두 제거하여 완전히 고정
+        if (progress >= 100) {
+            this.loadingBarFill.style.transition = 'none';
+            this.loadingBarFill.style.animation = 'none';  // shimmer 애니메이션 정지
+            this.loadingBarFill.style.width = '100%';
+        } else {
+            // 진행 중에는 transition 유지 (animation은 CSS에서 처리)
+            this.loadingBarFill.style.transition = 'width 0.3s ease-out';
+            this.loadingBarFill.style.width = `${progress}%`;
+        }
 
         // 진행률 텍스트 업데이트
         this.loadingProgressText.textContent = `${loaded}/${total} files loaded`;
