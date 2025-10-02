@@ -63,6 +63,10 @@ class VictoryDefeatModal {
         // 승리 모달 이벤트
         if (this.victoryContinueBtn) {
             this.victoryContinueBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
                 this.handleVictoryContinue();
             });
         }
@@ -70,42 +74,70 @@ class VictoryDefeatModal {
         // 카드 보상 관련 이벤트
         if (this.victorySkipBtn) {
             this.victorySkipBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
                 this.handleSkipReward();
             });
         }
 
         if (this.victoryAddToDeckBtn) {
             this.victoryAddToDeckBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
                 this.handleAddToDeck();
             });
         }
 
         if (this.victoryReplaceCardBtn) {
             this.victoryReplaceCardBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
                 this.handleReplaceCard();
             });
         }
 
         if (this.victoryCancelSelectionBtn) {
             this.victoryCancelSelectionBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
                 this.handleCancelSelection();
             });
         }
 
         if (this.cancelReplaceBtn) {
             this.cancelReplaceBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
                 this.handleCancelReplace();
             });
         }
 
         if (this.victoryConfirmReplacementBtn) {
             this.victoryConfirmReplacementBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
                 this.handleConfirmReplacement();
             });
         }
 
         if (this.victoryCancelHandSelectionBtn) {
             this.victoryCancelHandSelectionBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
                 this.handleCancelHandSelection();
             });
         }
@@ -113,12 +145,20 @@ class VictoryDefeatModal {
         // 패배 모달 이벤트
         if (this.defeatRestartBtn) {
             this.defeatRestartBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
                 this.handleDefeatRestart();
             });
         }
 
         if (this.defeatMainMenuBtn) {
             this.defeatMainMenuBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
                 this.handleDefeatMainMenu();
             });
         }

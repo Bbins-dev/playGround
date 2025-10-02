@@ -120,26 +120,50 @@ class UIManager {
         // 카드 갤러리 버튼
         const galleryBtn = document.getElementById('card-gallery-btn');
         if (galleryBtn) {
-            galleryBtn.addEventListener('click', () => this.showCardGallery());
+            galleryBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.showCardGallery();
+            });
         }
 
 
         // 메뉴화면으로 돌아가기 버튼
         const backToMenuBtn = document.getElementById('back-to-menu');
         if (backToMenuBtn) {
-            backToMenuBtn.addEventListener('click', () => this.backToMenu());
+            backToMenuBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.backToMenu();
+            });
         }
 
         // 갤러리 닫기
         const closeGallery = document.getElementById('close-gallery');
         if (closeGallery) {
-            closeGallery.addEventListener('click', () => this.hideCardGallery());
+            closeGallery.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.hideCardGallery();
+            });
         }
 
         // 갤러리 카드 상세 모달 닫기
         const closeGalleryCardDetail = document.getElementById('gallery-card-detail-close');
         if (closeGalleryCardDetail) {
-            closeGalleryCardDetail.addEventListener('click', () => this.hideGalleryCardDetail());
+            closeGalleryCardDetail.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.hideGalleryCardDetail();
+            });
         }
 
     }

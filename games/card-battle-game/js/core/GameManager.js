@@ -88,7 +88,7 @@ class GameManager {
     async init() {
         try {
             // 로딩 화면 초기화 및 표시
-            this.loadingScreen = new LoadingScreen();
+            this.loadingScreen = new LoadingScreen(this);
             this.loadingScreen.show();
 
             // Canvas 초기화
@@ -261,7 +261,7 @@ class GameManager {
         this.cardSelectionModal = new CardSelectionModal(this);
 
         // 플레이어 이름 모달 초기화
-        this.playerNameModal = new PlayerNameModal();
+        this.playerNameModal = new PlayerNameModal(this);
 
         // 현재 화면 설정
         this.currentScreen = this.mainMenu;
@@ -272,9 +272,27 @@ class GameManager {
     setupEventListeners() {
         // 게임 속도 조절 버튼
         this.addEventListeners([
-            ['speed-1x', 'click', () => this.setGameSpeed(1)],
-            ['speed-2x', 'click', () => this.setGameSpeed(2)],
-            ['speed-3x', 'click', () => this.setGameSpeed(3)],
+            ['speed-1x', 'click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.audioSystem) {
+                    this.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.setGameSpeed(1);
+            }],
+            ['speed-2x', 'click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.audioSystem) {
+                    this.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.setGameSpeed(2);
+            }],
+            ['speed-3x', 'click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.audioSystem) {
+                    this.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.setGameSpeed(3);
+            }],
             ['card-gallery-btn', 'click', async () => await this.showCardGallery()],
             ['close-gallery', 'click', async () => await this.hideCardGallery()]
         ]);

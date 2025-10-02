@@ -2,7 +2,8 @@
  * 플레이어 이름 입력 모달 관리 클래스
  */
 class PlayerNameModal {
-    constructor() {
+    constructor(gameManager = null) {
+        this.gameManager = gameManager;
         this.modal = document.getElementById('player-name-modal');
         this.nameInput = document.getElementById('player-name-input');
         this.confirmBtn = document.getElementById('confirm-name');
@@ -15,6 +16,10 @@ class PlayerNameModal {
     initializeEventListeners() {
         // 확인 버튼 클릭
         this.confirmBtn.addEventListener('click', () => {
+            // 버튼 클릭 사운드 재생
+            if (this.gameManager?.audioSystem) {
+                this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+            }
             this.handleConfirm();
         });
 
