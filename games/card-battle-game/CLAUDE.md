@@ -154,6 +154,53 @@ const coords = CanvasUtils.getCanvasCoordinates(event, canvas);
 2. CardRenderer와 DOMCardRenderer 둘 다 수정
 3. CSS 변수로 자동 동기화되는지 확인
 
+### 🔊 오디오 시스템 (Configuration-Driven Audio)
+**모든 오디오는 GameConfig.audio에서 중앙 관리 - 하드코딩 금지!**
+
+#### 핵심 원칙
+- **경로 하드코딩 금지**: 모든 BGM/SFX 경로는 `GameConfig.audio.bgm/sfx`에 정의
+- **UI 이벤트 매핑**: `GameConfig.audio.uiSounds`에서 이벤트별 SFX 관리
+- **안전한 호출**: Optional Chaining + 폴백값 필수
+
+#### ❌ 잘못된 패턴
+```javascript
+audio.src = 'assets/audio/bgm/main_menu.mp3';  // ❌ 경로 하드코딩
+this.audioSystem.playSFX('click');             // ❌ 직접 키 하드코딩
+```
+
+#### ✅ 올바른 패턴
+```javascript
+// BGM 재생
+this.audioSystem.playBGM('mainMenu', true, true);
+
+// SFX 재생 (UI 이벤트)
+this.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+
+// SFX 재생 (직접 키 사용)
+this.audioSystem.playSFX('attackHit');
+```
+
+#### 주요 기능
+- **BGM 스택 관리**: 카드 갤러리 등에서 이전 BGM 자동 복원
+  - `pauseAndSaveBGM()` → 현재 BGM 일시정지 및 저장
+  - `restorePreviousBGM()` → 이전 BGM 복원
+- **자동 BGM 선택**: `getBattleBGM(stage)` - 스테이지별 일반/보스 BGM 자동 선택
+- **페이드 효과**: 모든 BGM 전환에 페이드 인/아웃 적용
+- **프리로딩**: 게임 시작 시 모든 오디오 파일 사전 로딩
+
+#### GameConfig.audio 구조
+- **bgm**: BGM 파일 경로 (mainMenu, normalBattle, bossBattle, victoryModal, gameOver, cardGallery)
+- **sfx**: 효과음 파일 경로 (attack, defense, buff, UI sounds)
+- **volume**: 볼륨 설정 (master, bgm, sfx)
+- **fade**: 페이드 효과 타이밍 (duration, crossfade)
+- **uiSounds**: UI 이벤트별 SFX 매핑 (buttonClick, nameModal, victoryModal 등)
+- **bossStage**: 보스 스테이지 판정 규칙 (interval: 10의 배수)
+
+#### 신규 UI에 사운드 추가 시
+1. GameConfig.audio.sfx에 SFX 파일 경로 추가
+2. GameConfig.audio.uiSounds에 이벤트 매핑 추가 (선택)
+3. UI 컴포넌트에서 `playSFX()` 호출
+
 ### 5속성 상성 체계
 불🔥 → 독☠️ → 전기⚡ → 물💧 → 불🔥 + 노멀👊
 

@@ -41,6 +41,11 @@ class PlayerNameModal {
      * @param {Function} callback - 이름이 확정되었을 때 호출할 콜백 (playerName 매개변수 전달)
      */
     show(callback) {
+        // 플레이어 이름 모달 사운드 재생
+        if (this.gameManager?.audioSystem) {
+            this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.nameModal || 'nameModal');
+        }
+
         this.onNameConfirmed = callback;
         this.nameInput.value = '';
         this.modal.classList.remove('hidden');
