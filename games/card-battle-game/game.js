@@ -10,9 +10,9 @@ class CardBattleGame {
     async init() {
         try {
 
-            // i18n 시스템 초기화
+            // i18n 시스템 초기화 (await 추가)
             if (typeof initializeI18n === 'function') {
-                initializeI18n();
+                await initializeI18n();
             }
 
             // 게임 매니저 생성 및 초기화
@@ -331,11 +331,24 @@ window.addEventListener('unhandledrejection', (event) => {
 window.cardBattleGame = cardBattleGame;
 
 // i18n 헬퍼 함수들
-function initializeI18n() {
+async function initializeI18n() {
+    // 기존 window.i18n이 있고 이미 초기화되었는지 확인
+    if (window.i18n && window.i18n.isReady) {
+        console.log('[Game] i18n already initialized');
+        window.i18nSystem = window.i18n;
+        return;
+    }
+
     const savedLang = localStorage.getItem('selectedLanguage') || 'ko';
-    const i18n = new I18n();
-    i18n.init(savedLang, 'js/lang/');
-    window.i18nSystem = i18n;
+
+    // 기존 window.i18n 인스턴스 사용 (새로 생성하지 않음)
+    if (!window.i18n) {
+        window.i18n = new I18n();
+    }
+
+    // 초기화 및 동일 객체 참조
+    await window.i18n.init(savedLang, 'js/lang/');
+    window.i18nSystem = window.i18n;
 
     // 언어 선택기 동기화
     const languageSelect = document.getElementById('languageSelect');
@@ -343,6 +356,7 @@ function initializeI18n() {
         languageSelect.value = savedLang;
     }
 
+    console.log('[Game] i18n initialized successfully');
 }
 
 function changeLanguage(lang) {

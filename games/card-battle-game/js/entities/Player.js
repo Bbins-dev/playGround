@@ -33,6 +33,7 @@ class Player {
         this.speedTurns = 0; // 고속 버프 남은 턴 수
         this.scentBonus = 0; // 냄새 추가 대미지 (스택 수)
         this.scentTurns = 0; // 냄새 버프 남은 턴 수
+        this.lastStandTurns = 0; // 벼리기 버프 남은 턴 수
 
         // 턴 관련
         this.currentCardIndex = 0;
@@ -59,7 +60,15 @@ class Player {
 
         // 남은 대미지를 HP에 적용
         if (remainingDamage > 0) {
-            this.hp = Math.max(0, this.hp - remainingDamage);
+            const newHP = this.hp - remainingDamage;
+
+            // 벼리기 버프: HP가 0 이하가 되지 않고 1로 유지
+            if (newHP <= 0 && this.hasLastStandBuff()) {
+                this.hp = 1;  // 0이 되지 않고 1로 설정
+                // 버프는 소모하지 않음! 턴 종료까지 계속 유효
+            } else {
+                this.hp = Math.max(0, newHP);
+            }
         }
 
         const actualDamage = previousHP - this.hp;
@@ -293,6 +302,16 @@ class Player {
         return 0;
     }
 
+    // 벼리기 버프 관련 메서드
+    hasLastStandBuff() {
+        return this.lastStandTurns > 0;
+    }
+
+    addLastStandBuff(turns) {
+        this.lastStandTurns += turns;
+        return turns;
+    }
+
     clearBuffs() {
         this.strength = 0;
         this.enhanceTurns = 0;
@@ -374,6 +393,11 @@ class Player {
             if (this.scentTurns === 0) {
                 this.scentBonus = 0;
             }
+        }
+
+        // 벼리기 버프 턴수 차감
+        if (this.lastStandTurns > 0) {
+            this.lastStandTurns--;
         }
     }
 

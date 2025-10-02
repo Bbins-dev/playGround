@@ -1335,6 +1335,46 @@ const CardDatabase = {
                 };
             }
         });
+
+        // 벼리기 카드 (불 속성, 1턴 동안 HP가 1 아래로 내려가지 않음)
+        this.addCard({
+            id: 'last_stand',
+            nameKey: 'auto_battle_card_game.ui.cards.last_stand.name',
+            type: 'buff',
+            element: 'fire',
+            power: 0,
+            accuracy: 70,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.last_stand.description',
+            effect: function(user, target, battleSystem) {
+                // 중복 체크 (이미 벼리기 버프가 있으면 실패)
+                if (user.hasLastStandBuff && user.hasLastStandBuff()) {
+                    return {
+                        success: true,
+                        conditionFailed: true,
+                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        element: this.element
+                    };
+                }
+
+                // 벼리기 버프 획득 (1턴)
+                user.addLastStandBuff(1);
+
+                // 버프 라벨 즉시 업데이트
+                const isPlayer = (user === battleSystem.player);
+                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
+                    buffType: 'lastStand',
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig?.buffs?.lastStand?.name || '벼리기'
+                    }
+                };
+            }
+        });
     }
 };
 

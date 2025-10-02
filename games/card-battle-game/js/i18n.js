@@ -6,24 +6,29 @@ class I18n {
         this.translations = {};
         this.basePath = 'js/lang/';
         this.storageKey = window.PlayGroundConfig?.site.languageStorageKey || 'selectedLanguage';
+        this.isReady = false; // 초기화 완료 플래그
         // Don't auto-initialize, let manual init() calls control this
     }
 
     async init(initialLang, basePath = 'js/lang/') {
         this.basePath = basePath;
-        
+
         // Use config default if no initial language provided
         const defaultLang = window.PlayGroundConfig?.site.defaultLanguage || 'ko';
         this.currentLanguage = initialLang || defaultLang;
-        
+
         // Load default language
         await this.loadLanguage(this.currentLanguage);
-        
+
         // Set up language selector
         this.setupLanguageSelector();
-        
+
         // Apply translations
         this.applyTranslations();
+
+        // 초기화 완료 플래그 설정
+        this.isReady = true;
+        console.log('[I18n] System ready');
     }
 
     async loadLanguage(lang) {
@@ -174,20 +179,5 @@ if (!window.i18n) {
     window.i18n = new I18n();
 }
 
-// Auto-initialize for games only (main page is handled by main.js)
-if (window.location.pathname.includes('/games/')) {
-    document.addEventListener('DOMContentLoaded', async () => {
-        const storageKey = window.PlayGroundConfig?.site.languageStorageKey || 'selectedLanguage';
-        const defaultLang = window.PlayGroundConfig?.site.defaultLanguage || 'ko';
-        const savedLang = localStorage.getItem(storageKey) || defaultLang;
-
-        // Add initial language class to body
-        document.body.classList.add(`lang-${savedLang}`);
-
-        // For games, use relative path for language files
-        const basePath = 'js/lang/';
-        await window.i18n.init(savedLang, basePath);
-        // Update language selectors to match saved language
-        window.i18n.updateLanguageSelectors(savedLang);
-    });
-}
+// 게임별 수동 초기화로 변경 (이중 초기화 방지)
+// 각 게임의 game.js에서 initializeI18n() 호출로 관리

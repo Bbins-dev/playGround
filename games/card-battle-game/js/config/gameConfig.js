@@ -150,7 +150,8 @@ const GameConfig = {
             enhance: '#C0C0C0',       // 강화 - 은색
             focus: '#3498db',         // 집중 - 파란색 계열
             speed: '#FFD700',         // 고속 - 전기색 계열 (금색)
-            scent: '#FF6347'          // 냄새 - 토마토 레드 (불 속성 관련)
+            scent: '#FF6347',         // 냄새 - 토마토 레드 (불 속성 관련)
+            lastStand: '#FF6B6B'      // 벼리기 - 불 속성 색상 (코랄/주황색)
         },
 
         // 스탯 표시 색상
@@ -698,6 +699,19 @@ const GameConfig = {
             },
             effect: {
                 damagePerStack: 10  // 냄새 1당 불 속성 공격 대미지 +10
+            }
+        },
+        lastStand: {
+            nameKey: 'auto_battle_card_game.ui.buffs.lastStand',
+            name: '벼리기',
+            emoji: '🔥',
+            description: '1턴 동안 체력이 1 아래로 내려가지 않음',
+            get color() { return GameConfig.masterColors.buffs.lastStand; }, // 불 속성 색상
+            get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수
+            targetSelf: true, // 자신에게 적용되는 버프
+            display: {
+                showValue: false,  // 턴 표시 없음
+                format: ''  // 빈 문자열 (이모지 + 이름만)
             }
         }
     },
