@@ -67,7 +67,6 @@
 
 .name-input {
     width: var(--input-width, 300px);
-    max-width: 85%;
     padding: 16px 20px;
     font-size: 18px;
     font-weight: 500;
@@ -522,7 +521,6 @@
 }
 
 .victory-content-area {
-    max-height: 60vh;
     overflow-y: auto;
     padding: 0 20px 20px 20px;
 }
@@ -550,16 +548,6 @@
 
 .desktop-only {
     display: block;
-}
-
-@media (max-width: 768px) {
-    .mobile-only {
-        display: block;
-    }
-
-    .desktop-only {
-        display: none;
-    }
 }
 
 /* DOM 카드 스타일 (전투 중 확대 표시용) */
@@ -596,17 +584,13 @@
 
 /* 승리/패배 모달 스타일 */
 .victory-content {
-    max-width: 600px;
-    width: 90%;
-    /* max-height: 80vh; - Removed: conflicts with style.css modal height */
+    width: 600px;
     overflow-y: auto;
 }
 
 .defeat-content {
-    max-width: 720px;
-    width: 90%;
+    width: 720px;
     height: 1100px;
-    max-height: none;
     overflow-y: auto;
 }
 
@@ -749,65 +733,6 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* 반응형 디자인 */
-@media (max-width: 768px) {
-    .victory-content,
-    .defeat-content {
-        width: 95%;
-        max-height: 90vh;
-    }
-
-    .victory-content h2,
-    .defeat-content h2 {
-        font-size: 24px;
-    }
-
-    .stats-grid {
-        grid-template-columns: 1fr;
-        gap: 8px;
-    }
-
-    .stat-item {
-        padding: 8px 12px;
-    }
-
-    .stat-label {
-        font-size: 13px;
-    }
-
-    .stat-value {
-        font-size: 15px;
-    }
-
-}
-
-@media (max-width: 480px) {
-    .player-info,
-    .game-stats {
-        padding: 12px;
-    }
-
-    .game-stats h3 {
-        font-size: 18px;
-    }
-
-    .victory-info p,
-    .mvp-card p {
-        font-size: 16px;
-    }
-}
-
-/* 접근성 개선 */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
-
 /* =============================================== */
 /* 튜토리얼 모달 스타일 개선 */
 /* =============================================== */
@@ -815,9 +740,7 @@
 /* 튜토리얼 모달 기본 설정 - Configuration-Driven */
 .tutorial-modal {
     width: var(--modal-game-tutorial-width, 700px);
-    max-width: var(--modal-game-tutorial-max-width, 95vw);
     height: 1150px;
-    max-height: 1150px;
     overflow-y: auto;
     padding: var(--modal-game-tutorial-padding, 30px);
     padding-bottom: 40px;
@@ -1362,61 +1285,6 @@
     box-shadow: 0 2px 6px rgba(149, 165, 166, 0.3);
 }
 
-/* 반응형 디자인 */
-@media (max-width: 768px) {
-    .reward-cards-grid {
-        gap: 15px;
-    }
-
-    .reward-card {
-        min-width: 100px;
-        padding: 12px;
-    }
-
-    .card-visual {
-        width: 70px;
-        height: 95px;
-    }
-
-    .hand-cards-grid {
-        gap: 10px;
-    }
-
-    .hand-card .card-visual {
-        width: 50px;
-        height: 70px;
-    }
-
-    .button-group {
-        gap: 10px;
-    }
-
-    .ui-button {
-        padding: 10px 16px;
-        font-size: 13px;
-        min-width: 70px;
-    }
-}
-
-@media (max-width: 480px) {
-    .reward-cards-grid {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .hand-cards-grid {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .button-group {
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-    }
-}
-
 /* 글래스모피즘 스타일 */
 .glass-morphism {
     background: var(--glass-bg);
@@ -1754,8 +1622,7 @@
 
 /* 카드 상세 모달 스타일 */
 .card-detail-content {
-    max-width: 650px;
-    width: 95%;
+    width: 650px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -1788,27 +1655,4 @@
     font-weight: 700;
     min-width: 140px;
     border-radius: 12px;
-}
-
-/* 모바일 반응형 */
-
-@media (max-width: 480px) {
-    .card-selection-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: var(--card-grid-gap); /* GameConfig 설정 사용 */
-        padding: 20px 15px;
-    }
-
-    .card-detail-content {
-        width: 95%;
-        max-width: 450px;
-    }
-
-    .card-detail-display {
-        min-height: 380px;
-    }
-
-    .selection-instruction {
-        margin-bottom: 15px;
-    }
 }
