@@ -146,12 +146,24 @@ class VolumeControl {
     setupEventListeners() {
         // 설정 버튼 클릭
         if (this.settingsMenuBtn) {
-            this.settingsMenuBtn.addEventListener('click', () => this.showSettingsModal());
+            this.settingsMenuBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.showSettingsModal();
+            });
         }
 
         // 설정 모달 닫기
         if (this.closeSettingsBtn) {
-            this.closeSettingsBtn.addEventListener('click', () => this.hideSettingsModal());
+            this.closeSettingsBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.hideSettingsModal();
+            });
         }
 
         // 설정 모달 배경 클릭 시 닫기
@@ -177,7 +189,13 @@ class VolumeControl {
 
         // 인게임 볼륨 버튼 클릭
         if (this.volumeControlBtn) {
-            this.volumeControlBtn.addEventListener('click', () => this.toggleVolumePopup());
+            this.volumeControlBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.toggleVolumePopup();
+            });
         }
 
         // 인게임 팝업 슬라이더

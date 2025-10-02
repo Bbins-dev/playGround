@@ -2312,8 +2312,17 @@ const GameConfig = {
 
         // 페이드 효과 타이밍 (ms)
         fade: {
-            duration: 1000,      // 일반 페이드 인/아웃 시간
-            crossfade: 1500      // BGM 크로스 페이드 시간
+            duration: 300,       // 일반 페이드 인/아웃 시간 (빠른 전환)
+            crossfade: 500       // BGM 크로스 페이드 시간 (빠른 전환)
+        },
+
+        // UI 이벤트별 SFX 매핑 (하드코딩 방지)
+        uiSounds: {
+            buttonClick: 'click',        // 모든 버튼 클릭 시 재생
+            failed: 'failed',            // 실패/오류 시
+            nameModal: 'nameModal',      // 이름 입력 모달
+            victoryModal: 'victoryModal', // 승리 모달
+            gameOver: 'gameOver'         // 게임 오버
         },
 
         // 보스 스테이지 판정 규칙

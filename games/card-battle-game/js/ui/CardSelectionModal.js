@@ -30,12 +30,20 @@ class CardSelectionModal {
         // 확대 모달 버튼들
         if (this.selectBtn) {
             this.selectBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
                 this.handleCardSelect();
             });
         }
 
         if (this.cancelBtn) {
             this.cancelBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
                 this.hideDetailModal();
             });
         }
@@ -52,6 +60,10 @@ class CardSelectionModal {
         // 메인 취소 버튼 (메인 메뉴로 돌아가기)
         if (this.mainCancelBtn) {
             this.mainCancelBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
                 this.handleMainCancel();
             });
         }

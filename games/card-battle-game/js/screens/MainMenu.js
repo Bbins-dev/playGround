@@ -71,6 +71,10 @@ class MainMenu {
 
                 // 클릭 이벤트 리스너 추가
                 button._mainMenuClickHandler = () => {
+                    // 버튼 클릭 사운드 재생
+                    if (this.gameManager?.audioSystem) {
+                        this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                    }
                     this.currentSelection = index;
                     this.selectCurrent();
                 };
@@ -491,7 +495,13 @@ class MainMenu {
 
             // 닫기 버튼 이벤트 (한 번만 등록)
             if (closeBtn && !closeBtn._tutorialHandler) {
-                closeBtn._tutorialHandler = () => modal.classList.add('hidden');
+                closeBtn._tutorialHandler = () => {
+                    // 버튼 클릭 사운드 재생
+                    if (this.gameManager?.audioSystem) {
+                        this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                    }
+                    modal.classList.add('hidden');
+                };
                 closeBtn.addEventListener('click', closeBtn._tutorialHandler);
             }
 

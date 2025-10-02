@@ -13,7 +13,10 @@
  */
 
 class LoadingScreen {
-    constructor() {
+    constructor(gameManager = null) {
+        // GameManager 참조
+        this.gameManager = gameManager;
+
         // DOM 요소
         this.loadingScreen = document.getElementById('loading-screen');
         this.loadingBarFill = document.getElementById('loading-bar-fill');
@@ -141,6 +144,10 @@ class LoadingScreen {
             }
 
             const clickHandler = () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
                 this.startButton.removeEventListener('click', clickHandler);
                 console.log('[LoadingScreen] User clicked start button');
                 resolve();
