@@ -578,6 +578,11 @@ class VictoryDefeatModal {
      */
     selectRewardCard(cardIndex) {
         if (cardIndex >= 0 && cardIndex < this.rewardCards.length) {
+            // 카드 클릭 사운드 재생
+            if (this.gameManager?.audioSystem) {
+                this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.rewardCardClick || 'cardClick');
+            }
+
             this.selectedRewardCard = this.rewardCards[cardIndex];
 
             // 보상 카드 3개 숨기기
@@ -811,6 +816,11 @@ class VictoryDefeatModal {
      * @param {number} handIndex - 손패 인덱스
      */
     selectHandCard(handIndex) {
+        // 카드 클릭 사운드 재생
+        if (this.gameManager?.audioSystem) {
+            this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.handCardClick || 'cardClick');
+        }
+
         this.selectedHandCardIndex = handIndex;
 
         if (this.gameManager && this.gameManager.player && this.gameManager.player.hand[handIndex]) {

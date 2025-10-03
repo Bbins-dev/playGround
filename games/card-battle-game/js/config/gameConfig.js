@@ -2311,6 +2311,7 @@ const GameConfig = {
 
             // UI 사운드
             click: 'sfx/snd_click.mp3',
+            cardClick: 'sfx/snd_click.mp3',  // 카드 클릭 사운드 (현재는 click과 동일, 추후 교체 가능)
             failed: 'sfx/snd_failed.mp3',
             nameModal: 'sfx/snd_name_modal.mp3',
             victoryModal: 'sfx/snd_victory_modal.mp3',
@@ -2332,11 +2333,15 @@ const GameConfig = {
 
         // UI 이벤트별 SFX 매핑 (하드코딩 방지)
         uiSounds: {
-            buttonClick: 'click',        // 모든 버튼 클릭 시 재생
-            failed: 'failed',            // 실패/오류 시
-            nameModal: 'nameModal',      // 이름 입력 모달
-            victoryModal: 'victoryModal', // 승리 모달
-            gameOver: 'gameOver'         // 게임 오버
+            buttonClick: 'click',           // 모든 버튼 클릭 시 재생
+            cardGalleryClick: 'cardClick',  // 갤러리 카드 클릭
+            cardSelectionClick: 'cardClick', // 시작 카드 선택 클릭
+            rewardCardClick: 'cardClick',   // 보상 카드 클릭
+            handCardClick: 'cardClick',     // 손패 카드 클릭 (교체 모드)
+            failed: 'failed',               // 실패/오류 시
+            nameModal: 'nameModal',         // 이름 입력 모달
+            victoryModal: 'victoryModal',   // 승리 모달
+            gameOver: 'gameOver'            // 게임 오버
         },
 
         // 보스 스테이지 판정 규칙
