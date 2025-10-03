@@ -193,11 +193,11 @@
         },
         "thorn_armor": {
           "name": "棘の鎧",
-          "description": "自分にダメージ１を与えて{buff:strength}３を得ます。"
+          "description": "自分にダメージ１を与えて{buff:strength}２を得ます。"
         },
         "indomitable_gauntlet": {
           "name": "不屈の篭手",
-          "description": "自分に3ダメージを与え、{buff:strength}4を得る。"
+          "description": "自分に3ダメージを与え、{buff:strength}3を得る。"
         },
         "fire_shield": {
           "name": "火の盾",
@@ -317,7 +317,7 @@
         },
         "sharpen": {
           "name": "研ぎ",
-          "description": "1ターンの間、体力が1以下にならなくなります。{buff:sharpen}は重複しません。"
+          "description": "次のターン開始まで体力が1以下にならなくなります。{buff:sharpen}は重複しません。"
         },
         "hot_wind": {
           "name": "熱風",
