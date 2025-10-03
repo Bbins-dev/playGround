@@ -1656,3 +1656,21 @@
     min-width: 140px;
     border-radius: 12px;
 }
+
+/* 인라인 라벨 스타일 (카드 설명 내 버프/상태이상/카드타입 라벨) */
+.inline-label {
+    display: inline-block;
+    padding: 1px 4px;
+    border-radius: 3px;
+    border: 1px solid;
+    font-weight: bold;
+    color: #FFFFFF;
+    margin: 0 1px;
+    white-space: nowrap;
+    vertical-align: baseline;
+    text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000;
+}
