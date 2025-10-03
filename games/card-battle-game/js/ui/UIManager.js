@@ -595,6 +595,10 @@ class UIManager {
 
         // 클릭 이벤트 추가 (카드 상세 모달 표시)
         cardElement.addEventListener('click', () => {
+            // 카드 클릭 사운드 재생
+            if (this.gameManager?.audioSystem) {
+                this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.cardGalleryClick || 'cardClick');
+            }
             this.showGalleryCardDetail(card);
         });
 

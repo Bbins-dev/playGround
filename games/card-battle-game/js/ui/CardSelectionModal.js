@@ -170,6 +170,10 @@ class CardSelectionModal {
 
         // 클릭 이벤트 핸들러
         cardElement.addEventListener('click', () => {
+            // 카드 클릭 사운드 재생
+            if (this.gameManager?.audioSystem) {
+                this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.cardSelectionClick || 'cardClick');
+            }
             this.showCardDetail(card);
         });
 
