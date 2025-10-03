@@ -1368,6 +1368,7 @@ const CardDatabase = {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
                     buffType: 'sharpen',
+                    sharpenGain: 1,
                     element: this.element,
                     templateData: {
                         name: GameConfig?.buffs?.sharpen?.name || '벼리기'
