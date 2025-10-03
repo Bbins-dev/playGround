@@ -534,6 +534,11 @@ class BattleSystem {
             await this.effectSystem.showBuffEffect('scent', user, result.scentGain);
         }
 
+        // 벼리기 버프 획득 처리 (벼리기 카드) - 새로운 통합 메서드 사용
+        if (result.sharpenGain && result.sharpenGain > 0) {
+            await this.effectSystem.showBuffEffect('sharpen', user, result.sharpenGain);
+        }
+
         // 기타 버프 효과 - 확장 가능한 구조
         // TODO: 다른 버프 타입들도 동일한 패턴으로 추가 가능
     }
