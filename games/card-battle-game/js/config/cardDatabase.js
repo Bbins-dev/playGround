@@ -1376,6 +1376,42 @@ const CardDatabase = {
                 };
             }
         });
+
+        // 열풍 카드 (불 속성, 자해 데미지 5 + 열풍 버프 획득)
+        this.addCard({
+            id: 'hot_wind',
+            nameKey: 'auto_battle_card_game.ui.cards.hot_wind.name',
+            type: 'buff',
+            element: 'fire',
+            power: 0,
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.hot_wind.description',
+            selfDamage: GameConfig?.cardEffects?.hotWind?.selfDamage || 5,
+            effect: function(user, target, battleSystem) {
+                // 자해 데미지는 BattleSystem.preprocessSelfDamage()에서 이미 처리됨
+                // 여기서는 카드의 본연의 효과만 처리 (열풍 버프 추가)
+
+                // 열풍 버프 획득 (1턴, 중첩 가능)
+                user.addHotWindBuff(1);
+
+                // 버프 라벨 즉시 업데이트
+                const isPlayer = (user === battleSystem.player);
+                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
+                    buffType: 'hotWind',
+                    hotWindGain: 1,
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig?.buffs?.hotWind?.name || '열풍',
+                        value: user.hotWindTurns
+                    }
+                };
+            }
+        });
     }
 };
 
