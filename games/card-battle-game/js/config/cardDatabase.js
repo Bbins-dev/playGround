@@ -62,7 +62,7 @@ const CardDatabase = {
                 return Math.floor(Math.random() * 3) + 3; // 3-5 랜덤
             },
             effect: function(user, target, battleSystem) {
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
@@ -93,7 +93,7 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.heavy_strike.description',
             effect: function(user, target, battleSystem) {
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
@@ -124,7 +124,7 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.shield_bash.description',
             effect: function(user, target, battleSystem) {
-                let baseDamage = user.defense + (user.getStrength ? user.getStrength() : 0); // 방어력 + 힘 버프
+                let baseDamage = user.defense + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0); // 방어력 + 힘 버프
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
@@ -157,7 +157,7 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.concussion.description',
             stunChance: GameConfig?.cardEffects?.concussion?.stunChance || 40,
             effect: function(user, target, battleSystem) {
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
@@ -195,7 +195,7 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.counter_attack.description',
             effect: function(user, target, battleSystem) {
-                let baseDamage = user.lastDamageTaken + (user.getStrength ? user.getStrength() : 0); // 받은 대미지 + 힘 버프
+                let baseDamage = user.lastDamageTaken + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0); // 받은 대미지 + 힘 버프
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
@@ -487,7 +487,7 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.flame_throw.description',
             burnChance: 15,
             effect: function(user, target, battleSystem) {
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
@@ -529,7 +529,7 @@ const CardDatabase = {
                 return Math.floor(Math.random() * 4) + 2; // 2-5 랜덤
             },
             effect: function(user, target, battleSystem) {
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
@@ -560,7 +560,7 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.thunder_strike.description',
             effect: function(user, target, battleSystem) {
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
@@ -592,7 +592,7 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.smog.description',
             poisonChance: 70,
             effect: function(user, target, battleSystem) {
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
@@ -711,7 +711,7 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 // 자해 데미지는 BattleSystem.preprocessSelfDamage()에서 이미 처리됨
                 // 여기서는 카드의 본연의 효과만 처리 (상대에게 공격)
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
@@ -757,7 +757,7 @@ const CardDatabase = {
                 return Math.floor(Math.random() * 3) + 1; // 1-3 랜덤
             },
             effect: function(user, target, battleSystem) {
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
@@ -799,7 +799,7 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 // 자해 데미지는 BattleSystem.preprocessSelfDamage()에서 이미 처리됨
                 // 여기서는 카드의 본연의 효과만 처리 (상대에게 공격)
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
@@ -843,7 +843,7 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.fireball.description',
             burnChance: 60, // 명중 시 60% 확률로 화상
             effect: function(user, target, battleSystem) {
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
@@ -1257,7 +1257,7 @@ const CardDatabase = {
 
                 // 화상 상태일 경우 폭발: 데미지 + 화상 연장
                 const cardDamage = GameConfig?.cardEffects?.powderKeg?.damage || 10;
-                let baseDamage = cardDamage + (user.getStrength ? user.getStrength() : 0);
+                let baseDamage = cardDamage + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {

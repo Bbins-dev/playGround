@@ -36,7 +36,8 @@ const GameConfig = {
             disadvantage: 0.5,                  // 상성 불리 배율
             buffMultiplier: 1.5,                // 강화 버프 배율 (50% 증가)
             criticalHit: 2.0,                   // 치명타 배율
-            barricadeDefense: 2.0               // 바리케이트 방어력 배수
+            barricadeDefense: 2.0,              // 바리케이트 방어력 배수
+            attackPerStrength: 5                // 힘 버프 1당 공격력 증가량
         },
 
         // 게임 제한값
@@ -806,14 +807,11 @@ const GameConfig = {
             1: {
                 hp: 50,
                 cards: [
-                    { id: 'hot_wind', count: 1 },        // 열풍 1
-                    { id: 'hot_wind', count: 1 },        // 열풍 2
-                    { id: 'sharpen', count: 1 },         // 벼리기 1
-                    { id: 'sharpen', count: 1 },         // 벼리기 2
-                    { id: 'sharpen', count: 1 },         // 벼리기 3
-                    { id: 'karura_strike', count: 1 },   // 카루라일격 1
-                    { id: 'karura_strike', count: 1 },   // 카루라일격 2
-                    { id: 'karura_strike', count: 1 }    // 카루라일격 3
+                    { id: 'thorn_armor', count: 1 },     // 가시갑옷 1
+                    { id: 'thorn_armor', count: 1 },     // 가시갑옷 2
+                    { id: 'thorn_armor', count: 1 },     // 가시갑옷 3
+                    { id: 'fireball', count: 1 },        // 화염구 1
+                    { id: 'random_bash', count: 1 }      // 마구때리기 1
                 ]
             },
             2: {
