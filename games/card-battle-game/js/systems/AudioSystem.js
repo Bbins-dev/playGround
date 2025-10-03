@@ -105,8 +105,8 @@ class AudioSystem {
      * @returns {number} 0.0 ~ 1.0
      */
     getEffectiveVolume(type) {
-        const master = this.volumes.master || 1.0;
-        const typeVolume = this.volumes[type] || 1.0;
+        const master = this.volumes.master ?? 1.0;
+        const typeVolume = this.volumes[type] ?? 1.0;
         return Math.max(0, Math.min(1, master * typeVolume));
     }
 
