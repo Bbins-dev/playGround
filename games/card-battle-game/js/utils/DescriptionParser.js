@@ -10,8 +10,8 @@ class DescriptionParser {
     static parse(text) {
         if (!text) return [];
 
-        // 마커 형식: {buff:strength}, {status:burn}, {cardType:attack}, {defense}, {hp}
-        const regex = /\{(buff|status|cardType):(\w+)\}|\{(defense|hp)\}/g;
+        // 마커 형식: {buff:strength}, {status:burn}, {cardType:attack}, {defense}, {hp}, {fire}, {water}, {electric}, {poison}, {normal}
+        const regex = /\{(buff|status|cardType):(\w+)\}|\{(defense|hp|fire|water|electric|poison|normal)\}/g;
         const segments = [];
         let lastIndex = 0;
 
@@ -26,8 +26,8 @@ class DescriptionParser {
             }
 
             // 라벨 세그먼트
-            if (match[3] === 'defense' || match[3] === 'hp') {
-                // {defense} 또는 {hp} 단독 마커
+            if (match[3] === 'defense' || match[3] === 'hp' || match[3] === 'fire' || match[3] === 'water' || match[3] === 'electric' || match[3] === 'poison' || match[3] === 'normal') {
+                // {defense}, {hp}, {fire}, {water}, {electric}, {poison}, {normal} 단독 마커
                 segments.push({
                     type: 'label',
                     labelType: match[3],
@@ -95,6 +95,28 @@ class DescriptionParser {
                 emoji: GameConfig?.hpLabel?.emoji || '❤️',
                 name: name,
                 color: GameConfig?.masterColors?.hp || '#4CAF50'  // Material Green
+            };
+        }
+
+        // 속성 라벨 처리 (fire, water, electric, poison, normal)
+        const elementTypes = ['fire', 'water', 'electric', 'poison', 'normal'];
+        if (elementTypes.includes(labelType)) {
+            const elementConfig = GameConfig?.elements?.[labelType];
+            if (!elementConfig) {
+                console.warn(`[DescriptionParser] Unknown element: {${labelType}}`);
+                return null;
+            }
+
+            const langSelect = document.getElementById('languageSelect');
+            const currentLang = langSelect ? langSelect.value : 'ko';
+
+            // elementNames에서 다국어 이름 가져오기
+            let name = elementConfig.elementNames?.[currentLang] || elementConfig.name || labelType;
+
+            return {
+                emoji: elementConfig.emoji || '',
+                name: name,
+                color: elementConfig.color || '#999'
             };
         }
 

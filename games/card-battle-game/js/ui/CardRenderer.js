@@ -620,21 +620,13 @@ class CardRenderer {
 
         const config = this.style.elementLabel;
 
-        // 속성명 가져오기 (안전한 다국어 지원)
-        let elementName = elementConfig.name || card.element;
-
-        // 언어별 속성명 매핑 (안전한 방식)
+        // 속성명 가져오기 (Configuration-Driven)
         const langSelect = document.getElementById('languageSelect');
         const currentLang = langSelect ? langSelect.value : 'ko';
 
-        const elementNames = {
-            ko: { fire: '불', water: '물', electric: '전기', poison: '독', normal: '노멀', special: '특수' },
-            en: { fire: 'Fire', water: 'Water', electric: 'Electric', poison: 'Poison', normal: 'Normal', special: 'Special' },
-            ja: { fire: '火', water: '水', electric: '電기', poison: '毒', normal: 'ノーマル', special: '特別' }
-        };
-
-        if (elementNames[currentLang] && elementNames[currentLang][card.element]) {
-            elementName = elementNames[currentLang][card.element];
+        let elementName = elementConfig.name || card.element;
+        if (elementConfig.elementNames && elementConfig.elementNames[currentLang]) {
+            elementName = elementConfig.elementNames[currentLang];
         }
 
         // 텍스트만 사용 (이모지는 별도로 처리)

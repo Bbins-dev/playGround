@@ -161,7 +161,7 @@
         },
         "heavy_strike": {
           "name": "Heavy Strike",
-          "description": "Deliver a powerful strike to the opponent. 5 damage, 80% accuracy."
+          "description": "Deliver a powerful strike to the opponent, dealing 5 damage."
         },
         "shield_bash": {
           "name": "Shield Bash",
@@ -293,11 +293,11 @@
         },
         "focus": {
           "name": "Focus",
-          "description": "Increases normal {cardType:attack} card accuracy by 30% for one turn."
+          "description": "Increases {normal} {cardType:attack} card accuracy by 30% for one turn."
         },
         "fast_attack": {
           "name": "Fast Attack",
-          "description": "Increases normal {cardType:attack} card activation count by 1 for one turn."
+          "description": "Increases {normal} {cardType:attack} card activation count by 1 for one turn."
         },
         "barricade": {
           "name": "Barricade",
@@ -317,7 +317,7 @@
         },
         "opportunity_scent": {
           "name": "Opportunity's Scent",
-          "description": "When opponent is {status:burn}ed, gain +10 damage to fire {cardType:attack} cards for 1 turn. {buff:scent} stacks."
+          "description": "When opponent is {status:burn}ed, gain +10 damage to {fire} {cardType:attack} cards for 1 turn. {buff:scent} stacks."
         },
         "sharpen": {
           "name": "Sharpen",
@@ -325,7 +325,7 @@
         },
         "hot_wind": {
           "name": "Hot Wind",
-          "description": "Deal 5 damage to yourself and gain {buff:hotWind} buff. Fire {cardType:attack} cards gain bonus activations equal to {buff:hotWind} turns remaining."
+          "description": "Deal 5 damage to yourself and gain {buff:hotWind} buff. {fire} {cardType:attack} cards gain bonus activations equal to {buff:hotWind} turns remaining."
         }
       },
       "buffs": {
