@@ -32,16 +32,16 @@ class VolumeControl {
         this.ingameBgmValue = document.getElementById('ingame-bgm-value');
         this.ingameSfxValue = document.getElementById('ingame-sfx-value');
 
-        // 현재 볼륨 값
-        this.volumes = {
-            bgm: GameConfig?.audio?.volume?.bgm * 100 || 60,
-            sfx: GameConfig?.audio?.volume?.sfx * 100 || 80
-        };
-
         // LocalStorage 키
         this.storageKeys = {
             bgm: 'cardBattle_volumeBGM',
             sfx: 'cardBattle_volumeSFX'
+        };
+
+        // 현재 볼륨 값 - localStorage 우선, 없으면 GameConfig 기본값
+        this.volumes = {
+            bgm: this.getStoredVolume('bgm') ?? (GameConfig?.audio?.volume?.bgm * 100 || 60),
+            sfx: this.getStoredVolume('sfx') ?? (GameConfig?.audio?.volume?.sfx * 100 || 80)
         };
 
         // 초기화
@@ -54,9 +54,6 @@ class VolumeControl {
      * 초기화
      */
     init() {
-        // LocalStorage에서 볼륨 불러오기
-        this.loadVolumes();
-
         // 슬라이더 초기값 설정
         this.updateAllSliders();
 
@@ -65,26 +62,29 @@ class VolumeControl {
 
         // AudioSystem에 초기 볼륨 적용
         this.applyVolumesToAudioSystem();
+
+        console.log(`[VolumeControl] Initialized with volumes: BGM ${this.volumes.bgm}%, SFX ${this.volumes.sfx}%`);
     }
 
     /**
-     * LocalStorage에서 볼륨 불러오기
+     * LocalStorage에서 저장된 볼륨 가져오기
+     * @param {string} type - 'bgm' 또는 'sfx'
+     * @returns {number|null} 저장된 볼륨 값 (0-100) 또는 null
      */
-    loadVolumes() {
+    getStoredVolume(type) {
         try {
-            const savedBgm = localStorage.getItem(this.storageKeys.bgm);
-            const savedSfx = localStorage.getItem(this.storageKeys.sfx);
-
-            if (savedBgm !== null) {
-                this.volumes.bgm = parseFloat(savedBgm);
+            const stored = localStorage.getItem(this.storageKeys[type]);
+            if (stored !== null) {
+                const value = parseFloat(stored);
+                // 0도 유효한 값으로 인정
+                if (!isNaN(value) && value >= 0 && value <= 100) {
+                    return value;
+                }
             }
-            if (savedSfx !== null) {
-                this.volumes.sfx = parseFloat(savedSfx);
-            }
-
-            console.log(`[VolumeControl] Loaded volumes: BGM ${this.volumes.bgm}%, SFX ${this.volumes.sfx}%`);
+            return null;
         } catch (error) {
-            console.error('[VolumeControl] Error loading volumes:', error);
+            console.error(`[VolumeControl] Error reading ${type} volume from storage:`, error);
+            return null;
         }
     }
 
