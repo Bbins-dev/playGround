@@ -241,7 +241,11 @@
         },
         "bandage": {
           "name": "붕대감기",
-          "description": "붕대로 감아 응급처치한다."
+          "description": "붕대로 감아 {hp}을 3 회복시킨다."
+        },
+        "miracle_revival": {
+          "name": "기사회생",
+          "description": "현재 {hp}이 최대 {hp}의 30% 미만일 경우 최대 {hp}의 50%를 회복합니다."
         },
         "push_back": {
           "name": "밀쳐내기",
@@ -350,6 +354,7 @@
         "special": "특수",
         "status": "상태이상"
       },
+      "hp_label": "체력",
       "shield_bash_damage": "방패치기 피해",
       "concussion_stun": "뇌진탕으로 기절시켰습니다!",
       "counter_damage": "카운터어택 피해",

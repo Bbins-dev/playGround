@@ -241,7 +241,11 @@
         },
         "bandage": {
           "name": "包帯",
-          "description": "包帯で巻いて応急処置する。"
+          "description": "包帯で巻いて{hp}を3回復する。"
+        },
+        "miracle_revival": {
+          "name": "起死回生",
+          "description": "現在の{hp}が最大{hp}の30%未満の場合、最大{hp}の50%を回復します。"
         },
         "push_back": {
           "name": "押し返し",
@@ -350,6 +354,7 @@
         "special": "特殊",
         "status": "状態異常"
       },
+      "hp_label": "HP",
       "shield_bash_damage": "シールドバッシュダメージ",
       "concussion_stun": "脳震盪で気絶させました！",
       "counter_damage": "カウンターアタックダメージ",
