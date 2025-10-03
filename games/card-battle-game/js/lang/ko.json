@@ -315,7 +315,7 @@
           "name": "기회의 냄새",
           "description": "상대가 화상 상태일 때 발동 시 한 턴 간 불 속성 공격카드에 대미지 10 추가. 냄새는 중첩 가능하다."
         },
-        "last_stand": {
+        "sharpen": {
           "name": "벼리기",
           "description": "한 턴 간 체력이 1 아래로 내려가지 않습니다. 벼리기는 중첩되지 않습니다."
         }
@@ -327,7 +327,7 @@
         "focus": "집중",
         "speed": "고속",
         "scent": "냄새",
-        "lastStand": "벼리기"
+        "sharpen": "벼리기"
       },
       "elements": {
         "fire": "불",

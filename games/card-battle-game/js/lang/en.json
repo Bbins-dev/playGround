@@ -315,7 +315,7 @@
           "name": "Opportunity's Scent",
           "description": "When opponent is burned, gain +10 damage to fire attack cards for 1 turn. Scent stacks."
         },
-        "last_stand": {
+        "sharpen": {
           "name": "Sharpen",
           "description": "For one turn, HP will not drop below 1. Sharpen does not stack."
         }
@@ -327,7 +327,7 @@
         "focus": "FOC",
         "speed": "SPD",
         "scent": "SCN",
-        "lastStand": "SRP"
+        "sharpen": "SRP"
       },
       "elements": {
         "fire": "Fire",

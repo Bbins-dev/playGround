@@ -364,8 +364,8 @@ class HPBarSystem {
         }
 
         // 벼리기 버프 표시
-        if (player.hasLastStandBuff && player.hasLastStandBuff()) {
-            const buffConfig = GameConfig.buffs.lastStand;
+        if (player.hasSharpenBuff && player.hasSharpenBuff()) {
+            const buffConfig = GameConfig.buffs.sharpen;
 
             // 버프가 있는 경우 컨테이너 활성화
             effectsContainer.classList.add('active');
