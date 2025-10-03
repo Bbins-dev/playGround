@@ -377,6 +377,10 @@ class Player {
             }
         });
 
+        // 벼리기 버프 턴수 차감 (턴 시작 시 - 방어력 초기화와 동일한 타이밍)
+        if (this.sharpenTurns > 0) {
+            this.sharpenTurns--;
+        }
 
         // 화상 데미지는 BattleSystem에서 처리하므로 여기서는 제외
         // this.processStatusEffect('burn', 'start'); // BattleSystem으로 이동됨
@@ -420,10 +424,7 @@ class Player {
             }
         }
 
-        // 벼리기 버프 턴수 차감
-        if (this.sharpenTurns > 0) {
-            this.sharpenTurns--;
-        }
+        // 벼리기 버프 턴수 차감은 startTurn()에서 처리 (턴 시작 시 - 방어력 초기화와 동일한 타이밍)
 
         // 열풍 버프 턴수 차감
         if (this.hotWindTurns > 0) {

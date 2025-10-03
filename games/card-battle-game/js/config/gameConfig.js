@@ -707,7 +707,7 @@ const GameConfig = {
             nameKey: 'auto_battle_card_game.ui.buffs.sharpen',
             name: '벼리기',
             emoji: '⚒️',
-            description: '1턴 동안 체력이 1 아래로 내려가지 않음',
+            description: '다음 턴 시작까지 체력이 1 아래로 내려가지 않음',
             get color() { return GameConfig.masterColors.buffs.sharpen; }, // 불 속성 색상
             get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수
             targetSelf: true, // 자신에게 적용되는 버프
@@ -2195,7 +2195,7 @@ const GameConfig = {
 
         // 가시갑옷 카드 설정
         thornArmor: {
-            strengthGain: 3    // 힘 증가량
+            strengthGain: 2    // 힘 증가량
         },
 
         // 뇌진탕 카드 설정
@@ -2215,7 +2215,7 @@ const GameConfig = {
         // 불굴의 장갑 카드 설정
         indomitableGauntlet: {
             selfDamage: 3,     // 자해 데미지 3
-            strengthGain: 4    // 힘 증가량 4
+            strengthGain: 3    // 힘 증가량 3
         },
         // 기름붓기 카드 설정
         oilPour: {

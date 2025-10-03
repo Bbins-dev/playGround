@@ -193,11 +193,11 @@
         },
         "thorn_armor": {
           "name": "Thorn Armor",
-          "description": "Deal 1 damage to yourself and gain 3 {buff:strength}."
+          "description": "Deal 1 damage to yourself and gain 2 {buff:strength}."
         },
         "indomitable_gauntlet": {
           "name": "Indomitable Gauntlet",
-          "description": "Deal 3 damage to yourself and gain 4 {buff:strength}."
+          "description": "Deal 3 damage to yourself and gain 3 {buff:strength}."
         },
         "fire_shield": {
           "name": "Fire Shield",
@@ -317,7 +317,7 @@
         },
         "sharpen": {
           "name": "Sharpen",
-          "description": "For one turn, HP will not drop below 1. {buff:sharpen} does not stack."
+          "description": "HP will not drop below 1 until the start of next turn. {buff:sharpen} does not stack."
         },
         "hot_wind": {
           "name": "Hot Wind",
