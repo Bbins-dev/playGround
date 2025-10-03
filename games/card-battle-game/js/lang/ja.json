@@ -318,6 +318,10 @@
         "sharpen": {
           "name": "研ぎ",
           "description": "1ターンの間、体力が1以下にならなくなります。研ぎは重複しません。"
+        },
+        "hot_wind": {
+          "name": "熱風",
+          "description": "自分に5ダメージを与えて熱風バフを獲得。炎属性攻撃カードの発動回数を熱風残りターン分増加させる。"
         }
       },
       "buffs": {
@@ -327,7 +331,8 @@
         "focus": "集中",
         "speed": "高速",
         "scent": "匂い",
-        "sharpen": "研ぎ"
+        "sharpen": "研ぎ",
+        "hotWind": "熱風"
       },
       "elements": {
         "fire": "火",

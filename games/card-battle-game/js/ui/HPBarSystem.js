@@ -386,6 +386,30 @@ class HPBarSystem {
             buffsContainer.appendChild(buffElement);
         }
 
+        // 열풍 버프 표시
+        if (player.hasHotWindBuff && player.hasHotWindBuff()) {
+            const hotWindTurns = player.hotWindTurns;
+            const buffConfig = GameConfig.buffs.hotWind;
+
+            // 버프가 있는 경우 컨테이너 활성화
+            effectsContainer.classList.add('active');
+
+            const buffElement = document.createElement('div');
+            buffElement.className = 'buff-label';
+
+            // 다국어 지원 - I18nHelper 사용
+            const buffName = buffConfig.nameKey ?
+                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
+                buffConfig.name;
+            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} (${hotWindTurns})`;
+
+            // 버프별 색상 적용
+            buffElement.style.borderColor = buffConfig.color;
+            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
+
+            buffsContainer.appendChild(buffElement);
+        }
+
         // 버프가 없고 상태이상도 없으면 컨테이너 숨김
         const statusContainer = isPlayer ? this.playerStatusGrid : this.enemyStatusGrid;
         if (!buffsContainer.children.length && !statusContainer.children.length) {

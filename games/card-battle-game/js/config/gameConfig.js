@@ -151,7 +151,8 @@ const GameConfig = {
             focus: '#3498db',         // 집중 - 파란색 계열
             speed: '#FFD700',         // 고속 - 금색 (전기 속성)
             scent: '#FF4500',         // 냄새 - 오렌지-레드 (불꽃 느낌)
-            sharpen: '#708090'        // 벼리기 - 슬레이트 그레이 (금속 느낌)
+            sharpen: '#708090',       // 벼리기 - 슬레이트 그레이 (금속 느낌)
+            hotWind: '#FF6B6B'        // 열풍 - 코랄/주황색 (불 속성 색상)
         },
 
         // 스탯 표시 색상
@@ -713,6 +714,19 @@ const GameConfig = {
                 showValue: false,  // 턴 표시 없음
                 format: ''  // 빈 문자열 (이모지 + 이름만)
             }
+        },
+        hotWind: {
+            nameKey: 'auto_battle_card_game.ui.buffs.hotWind',
+            name: '열풍',
+            emoji: '🌪️',
+            description: '불 속성 공격카드 발동횟수 +{value}',
+            get color() { return GameConfig.masterColors.buffs.hotWind; }, // 열풍 - 불 속성 색상
+            get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수
+            targetSelf: true, // 자신에게 적용되는 버프
+            display: {
+                showValue: true,
+                format: '({value})'  // 예: (2)
+            }
         }
     },
 
@@ -792,6 +806,8 @@ const GameConfig = {
             1: {
                 hp: 50,
                 cards: [
+                    { id: 'hot_wind', count: 1 },        // 열풍 1
+                    { id: 'hot_wind', count: 1 },        // 열풍 2
                     { id: 'sharpen', count: 1 },         // 벼리기 1
                     { id: 'sharpen', count: 1 },         // 벼리기 2
                     { id: 'sharpen', count: 1 },         // 벼리기 3
@@ -2215,6 +2231,10 @@ const GameConfig = {
         // 기회의 냄새 카드 설정
         opportunityScent: {
             damagePerStack: 10    // 냄새 1당 불 속성 공격 대미지 +10
+        },
+        // 열풍 카드 설정
+        hotWind: {
+            selfDamage: 5      // 자해 데미지 5
         }
     },
 

@@ -34,6 +34,7 @@ class Player {
         this.scentBonus = 0; // 냄새 추가 대미지 (스택 수)
         this.scentTurns = 0; // 냄새 버프 남은 턴 수
         this.sharpenTurns = 0; // 벼리기 버프 남은 턴 수
+        this.hotWindTurns = 0; // 열풍 버프 남은 턴 수
 
         // 턴 관련
         this.currentCardIndex = 0;
@@ -312,6 +313,24 @@ class Player {
         return turns;
     }
 
+    // 열풍 버프 관련 메서드
+    hasHotWindBuff() {
+        return this.hotWindTurns > 0;
+    }
+
+    addHotWindBuff(turns) {
+        this.hotWindTurns += turns;
+
+        // 즉시 현재 손패의 불 속성 공격카드들에 적용
+        this.hand.forEach(card => {
+            if (card.type === 'attack' && card.element === 'fire') {
+                card.modifiedActivationCount = card.activationCount + this.hotWindTurns;
+            }
+        });
+
+        return turns;
+    }
+
     clearBuffs() {
         this.strength = 0;
         this.enhanceTurns = 0;
@@ -320,6 +339,7 @@ class Player {
         this.speedTurns = 0;
         this.scentBonus = 0;
         this.scentTurns = 0;
+        this.hotWindTurns = 0;
     }
 
     // 턴 관련 메서드
@@ -346,8 +366,13 @@ class Player {
             // 고속 버프 적용 (노멀 공격카드만)
             if (this.hasSpeedBuff() && card.type === 'attack' && card.element === 'normal') {
                 card.modifiedActivationCount = card.activationCount + this.speedBonus;
-            } else {
-                // 고속 버프가 없거나 적용 대상이 아닌 경우 초기화
+            }
+            // 열풍 버프 적용 (불 속성 공격카드만)
+            else if (this.hasHotWindBuff() && card.type === 'attack' && card.element === 'fire') {
+                card.modifiedActivationCount = card.activationCount + this.hotWindTurns;
+            }
+            else {
+                // 버프가 없거나 적용 대상이 아닌 경우 초기화
                 card.modifiedActivationCount = undefined;
             }
         });
@@ -398,6 +423,24 @@ class Player {
         // 벼리기 버프 턴수 차감
         if (this.sharpenTurns > 0) {
             this.sharpenTurns--;
+        }
+
+        // 열풍 버프 턴수 차감
+        if (this.hotWindTurns > 0) {
+            this.hotWindTurns--;
+
+            // 열풍 턴수 변경 즉시 불 공격카드들 발동횟수 재계산
+            this.hand.forEach(card => {
+                if (card.type === 'attack' && card.element === 'fire') {
+                    if (this.hotWindTurns > 0) {
+                        // 새로운 열풍 턴수로 재계산
+                        card.modifiedActivationCount = card.activationCount + this.hotWindTurns;
+                    } else {
+                        // 0이 되면 초기화
+                        card.modifiedActivationCount = undefined;
+                    }
+                }
+            });
         }
     }
 
