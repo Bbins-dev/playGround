@@ -704,7 +704,7 @@ const GameConfig = {
         sharpen: {
             nameKey: 'auto_battle_card_game.ui.buffs.sharpen',
             name: '벼리기',
-            emoji: '🔥',
+            emoji: '⚒️',
             description: '1턴 동안 체력이 1 아래로 내려가지 않음',
             get color() { return GameConfig.masterColors.buffs.sharpen; }, // 불 속성 색상
             get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수
