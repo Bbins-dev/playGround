@@ -405,7 +405,7 @@ class CardRenderer {
         });
     }
 
-    // 카드 설명 그리기
+    // 카드 설명 그리기 (인라인 라벨 지원)
     drawCardDescription(ctx, card, x, y, width, height, fontSize) {
         let description;
         if (card.getDisplayDescription) {
@@ -418,61 +418,56 @@ class CardRenderer {
         if (!description) return;
 
         ctx.font = `bold ${fontSize}px Arial`;
-        ctx.fillStyle = this.getOptimalTextColor(card);
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'top';
+        ctx.textBaseline = 'middle';
 
         const maxWidth = width * 0.85;
         const lineHeight = fontSize * 1.2;
-
-        // 카드 크기에 따른 더 많은 라인 허용 (줄임표 없이 모든 텍스트 표시)
-        let maxLines = 15; // 더 많은 줄 허용
-        if (width >= 360) { // victoryDetail 크기
-            maxLines = 15; // 매우 많은 줄 허용
-        } else if (width >= 240) { // preview/victory 크기
-            maxLines = 10; // 많은 줄 허용
-        } else if (width >= 150) { // victory 크기
-            maxLines = 8; // 적당한 줄 허용
-        } else {
-            maxLines = 6; // 작은 카드도 충분한 줄 허용
-        }
-
         const startY = y + height * this.style.layout.description.y;
 
-        const lines = this.wrapText(ctx, description, maxWidth);
+        // 마커 파싱 및 줄바꿈 (라벨 포함)
+        if (typeof DescriptionParser !== 'undefined') {
+            const segments = DescriptionParser.parse(description);
+            const lines = this.wrapDescriptionWithLabels(ctx, segments, maxWidth, fontSize);
 
-        // 모든 줄 표시 (줄임표 제거)
-        let displayLines = lines.slice(0, maxLines);
+            // 각 줄 렌더링
+            lines.forEach((line, lineIndex) => {
+                const lineY = startY + lineIndex * lineHeight;
 
-        // 텍스트가 여전히 길면 폰트 크기를 줄여서라도 모든 텍스트 표시
-        if (lines.length > maxLines) {
-            // 폰트 크기를 줄여서 모든 텍스트를 표시
-            let adjustedFontSize = fontSize;
-            const minFontSize = fontSize * 0.7; // 최소 70%까지 줄임
+                // 줄의 전체 너비 계산하여 중앙 정렬
+                const startX = x + width / 2 - line.totalWidth / 2;
+                let currentX = startX;
 
-            // 폰트 크기를 점진적으로 줄이면서 텍스트가 맞는지 확인
-            while (lines.length > maxLines && adjustedFontSize > minFontSize) {
-                adjustedFontSize *= 0.9;
-                ctx.font = `${adjustedFontSize}px Arial`;
+                // 각 아이템 렌더링 (텍스트 또는 라벨)
+                line.items.forEach(item => {
+                    if (item.type === 'text') {
+                        ctx.fillStyle = this.getOptimalTextColor(card);
+                        ctx.textAlign = 'left';
+                        this.drawTextWithOutline(ctx, item.content, currentX, lineY);
+                        currentX += item.width;
+                    } else if (item.type === 'label') {
+                        // 라벨 배경 박스
+                        this.drawInlineLabelBackground(ctx, currentX, lineY, item, fontSize);
 
-                // 새로운 폰트 크기로 다시 줄바꿈 계산
-                const newLines = this.wrapText(ctx, description, maxWidth);
-                if (newLines.length <= maxLines) {
-                    displayLines = newLines;
-                    break;
-                }
-            }
+                        // 라벨 텍스트
+                        ctx.fillStyle = '#FFFFFF';
+                        ctx.textAlign = 'left';
+                        const labelText = `${item.labelInfo.emoji} ${item.labelInfo.name}`;
+                        this.drawTextWithOutline(ctx, labelText, currentX + 4, lineY);
+                        currentX += item.width;
+                    }
+                });
+            });
+        } else {
+            // DescriptionParser가 없는 경우 기존 방식 (폴백)
+            const lines = this.wrapText(ctx, description, maxWidth);
+            ctx.fillStyle = this.getOptimalTextColor(card);
+            ctx.textAlign = 'center';
 
-            // 만약 여전히 길면 가능한 모든 줄을 표시
-            if (lines.length > maxLines) {
-                displayLines = lines; // 모든 줄 표시
-            }
+            lines.forEach((line, index) => {
+                const lineY = startY + index * lineHeight;
+                this.drawTextWithOutline(ctx, line, x + width / 2, lineY);
+            });
         }
-
-        displayLines.forEach((line, index) => {
-            const lineY = startY + index * lineHeight;
-            this.drawTextWithOutline(ctx, line, x + width / 2, lineY);
-        });
     }
 
     // 카드 비용 그리기
@@ -760,6 +755,95 @@ class CardRenderer {
 
         // 메인 텍스트
         ctx.fillText(emoji, textX, textY);
+
+        ctx.restore();
+    }
+
+    // 라벨 포함 줄바꿈 계산
+    wrapDescriptionWithLabels(ctx, segments, maxWidth, fontSize) {
+        const lines = [];
+        let currentLine = { items: [], totalWidth: 0 };
+
+        ctx.font = `bold ${fontSize}px Arial`;
+        const spaceWidth = ctx.measureText(' ').width;
+
+        segments.forEach(segment => {
+            if (segment.type === 'text') {
+                // 단어 단위로 분리
+                const words = segment.content.split(/\s+/).filter(w => w);
+
+                words.forEach((word, wordIndex) => {
+                    const wordWidth = ctx.measureText(word).width;
+                    const itemWidth = wordWidth + spaceWidth;
+
+                    // 현재 줄에 추가할 수 있는지 확인
+                    if (currentLine.totalWidth + itemWidth > maxWidth && currentLine.items.length > 0) {
+                        lines.push(currentLine);
+                        currentLine = { items: [], totalWidth: 0 };
+                    }
+
+                    currentLine.items.push({
+                        type: 'text',
+                        content: word + ' ',
+                        width: itemWidth
+                    });
+                    currentLine.totalWidth += itemWidth;
+                });
+            } else if (segment.type === 'label') {
+                const labelInfo = DescriptionParser.getLabelInfo(segment.labelType, segment.labelKey);
+                if (!labelInfo) return;
+
+                const labelText = `${labelInfo.emoji} ${labelInfo.name}`;
+                const labelTextWidth = ctx.measureText(labelText).width;
+                const padding = 8;
+                const labelWidth = labelTextWidth + padding * 2 + spaceWidth;
+
+                // 현재 줄에 추가할 수 있는지 확인
+                if (currentLine.totalWidth + labelWidth > maxWidth && currentLine.items.length > 0) {
+                    lines.push(currentLine);
+                    currentLine = { items: [], totalWidth: 0 };
+                }
+
+                currentLine.items.push({
+                    type: 'label',
+                    labelInfo: labelInfo,
+                    width: labelWidth
+                });
+                currentLine.totalWidth += labelWidth;
+            }
+        });
+
+        // 마지막 줄 추가
+        if (currentLine.items.length > 0) {
+            lines.push(currentLine);
+        }
+
+        return lines;
+    }
+
+    // 인라인 라벨 배경 그리기
+    drawInlineLabelBackground(ctx, x, y, item, fontSize) {
+        const padding = 4;
+        const bgHeight = fontSize + padding;
+        const bgY = y - bgHeight / 2;
+        const bgWidth = item.width - 4;  // spaceWidth 제외
+
+        ctx.save();
+
+        // 그라데이션 배경
+        const gradient = ctx.createLinearGradient(x, bgY, x, bgY + bgHeight);
+        gradient.addColorStop(0, item.labelInfo.color);
+        gradient.addColorStop(1, item.labelInfo.color + 'CC');
+
+        ctx.fillStyle = gradient;
+        this.roundRect(ctx, x, bgY, bgWidth, bgHeight, 3);
+        ctx.fill();
+
+        // 테두리
+        ctx.strokeStyle = item.labelInfo.color;
+        ctx.lineWidth = 1;
+        this.roundRect(ctx, x, bgY, bgWidth, bgHeight, 3);
+        ctx.stroke();
 
         ctx.restore();
     }

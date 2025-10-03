@@ -430,7 +430,29 @@ class DOMCardRenderer {
             white-space: normal;
             ${this.getTextOutlineStyle()}
         `;
-        descElement.textContent = description;
+
+        // 마커 파싱 및 인라인 라벨 렌더링
+        if (typeof DescriptionParser !== 'undefined') {
+            const segments = DescriptionParser.parse(description);
+
+            segments.forEach(segment => {
+                if (segment.type === 'text') {
+                    descElement.appendChild(document.createTextNode(segment.content));
+                } else if (segment.type === 'label') {
+                    const labelInfo = DescriptionParser.getLabelInfo(segment.labelType, segment.labelKey);
+                    if (labelInfo) {
+                        const labelSpan = document.createElement('span');
+                        labelSpan.className = 'inline-label';
+                        labelSpan.style.cssText = DescriptionParser.getLabelCSS(labelInfo, adjustedFontSize);
+                        labelSpan.textContent = `${labelInfo.emoji} ${labelInfo.name}`;
+                        descElement.appendChild(labelSpan);
+                    }
+                }
+            });
+        } else {
+            // DescriptionParser가 로드되지 않은 경우 폴백
+            descElement.textContent = description;
+        }
 
         return descElement;
     }

@@ -165,11 +165,11 @@
         },
         "shield_bash": {
           "name": "방패치기",
-          "description": "상대에게 현재 방어력만큼 대미지를 가합니다."
+          "description": "상대에게 현재 {defense}만큼 대미지를 가합니다."
         },
         "concussion": {
           "name": "뇌진탕",
-          "description": "상대에게 대미지 2를 가하고 일정 확률로 기절시킵니다."
+          "description": "상대에게 대미지 2를 가하고 일정 확률로 {status:stun}시킵니다."
         },
         "counter_attack": {
           "name": "카운터어택",
@@ -177,55 +177,55 @@
         },
         "raise_shield": {
           "name": "방패들기",
-          "description": "자신에게 방어력 3을 추가합니다."
+          "description": "자신에게 {defense} 3을 추가합니다."
         },
         "wear_armor": {
           "name": "갑옷입기",
-          "description": "자신에게 방어력 5를 추가합니다."
+          "description": "자신에게 {defense} 5를 추가합니다."
         },
         "crouch": {
           "name": "웅크리기",
-          "description": "자신에게 방어력 30을 추가하고 턴을 넘깁니다."
+          "description": "자신에게 {defense} 30을 추가하고 턴을 넘깁니다."
         },
         "large_shield": {
           "name": "거대방패",
-          "description": "자신에게 방어력 8을 추가합니다. 성공률 80%입니다."
+          "description": "자신에게 {defense} 8을 추가합니다. 성공률 80%입니다."
         },
         "thorn_armor": {
           "name": "가시갑옷",
-          "description": "자신에게 대미지 1을 가하고 힘 3을 얻습니다."
+          "description": "자신에게 대미지 1을 가하고 {buff:strength} 3을 얻습니다."
         },
         "indomitable_gauntlet": {
           "name": "불굴의 장갑",
-          "description": "자신에게 데미지를 3 입히고 힘 4를 얻습니다."
+          "description": "자신에게 데미지를 3 입히고 {buff:strength} 4를 얻습니다."
         },
         "fire_shield": {
           "name": "불의 방패",
-          "description": "자신에게 방어력을 5 추가합니다."
+          "description": "자신에게 {defense}을 5 추가합니다."
         },
         "flame_wall": {
           "name": "화염벽",
-          "description": "자신에게 방어력을 10 추가합니다."
+          "description": "자신에게 {defense}을 10 추가합니다."
         },
         "scorched_shield": {
           "name": "작열방패",
-          "description": "자신에게 데미지를 3 입히고 방어력 13을 얻습니다."
+          "description": "자신에게 데미지를 3 입히고 {defense} 13을 얻습니다."
         },
         "taunt": {
           "name": "도발",
-          "description": "상대방을 도발한다. 도발에 걸리면 공격 카드만 사용할 수 있다."
+          "description": "상대방을 {status:taunt}한다. {status:taunt}에 걸리면 {cardType:attack} 카드만 사용할 수 있다."
         },
         "flame_throw": {
           "name": "불꽃던지기",
-          "description": "상대에게 불꽃을 던져 3의 데미지를 줍니다. 명중 시 낮은 확률로 화상을 입힙니다."
+          "description": "상대에게 불꽃을 던져 3의 데미지를 줍니다. 명중 시 낮은 확률로 {status:burn}을 입힙니다."
         },
         "flame_burst": {
           "name": "화염방사",
-          "description": "상대에게 화염을 방사하여 1-3번 2 데미지를 주고 낮은 확률로 화상을 입힙니다."
+          "description": "상대에게 화염을 방사하여 1-3번 2 데미지를 주고 낮은 확률로 {status:burn}을 입힙니다."
         },
         "flame_ascension": {
           "name": "화염승천",
-          "description": "자신에게 5의 피해를 입힌 후 상대에게 7 데미지를 주고 명중 시 힘을 1 얻습니다. 일정확률로 화상을 입힙니다."
+          "description": "자신에게 5의 피해를 입힌 후 상대에게 7 데미지를 주고 명중 시 {buff:strength}을 1 얻습니다. 일정확률로 {status:burn}을 입힙니다."
         },
         "bubble_strike": {
           "name": "거품타격",
@@ -237,7 +237,7 @@
         },
         "smog": {
           "name": "스모그",
-          "description": "적을 스모그로 감싸 일정확률로 중독시킵니다."
+          "description": "적을 스모그로 감싸 일정확률로 {status:poisoned}시킵니다."
         },
         "bandage": {
           "name": "붕대감기",
@@ -245,83 +245,83 @@
         },
         "push_back": {
           "name": "밀쳐내기",
-          "description": "상대를 밀쳐내 기절시킵니다."
+          "description": "상대를 밀쳐내 {status:stun}시킵니다."
         },
         "sand_throw": {
           "name": "모래뿌리기",
-          "description": "상대의 눈에 모래를 뿌려 2턴간 공격카드의 명중률 30% 감소"
+          "description": "상대의 눈에 {status:sand}를 뿌려 2턴간 {cardType:attack} 카드의 명중률 30% 감소"
         },
         "karura_strike": {
           "name": "카루라 일격",
-          "description": "카루라 일족에게 배운 기술입니다. 자신에게 10 피해를 입힌 후 상대에게 12의 피해를 주고 화상을 입힙니다."
+          "description": "카루라 일족에게 배운 기술입니다. 자신에게 10 피해를 입힌 후 상대에게 12의 피해를 주고 {status:burn}을 입힙니다."
         },
         "fireball": {
           "name": "화염구",
-          "description": "강력한 화염 일격으로 4 데미지를 줍니다. 일정 확률로 화상을 입힙니다."
+          "description": "강력한 화염 일격으로 4 데미지를 줍니다. 일정 확률로 {status:burn}을 입힙니다."
         },
         "hot_breath": {
           "name": "뜨거운 입김",
-          "description": "상대에게 화상을 입힙니다."
+          "description": "상대에게 {status:burn}을 입힙니다."
         },
         "insult": {
           "name": "모욕",
-          "description": "상대를 모욕하여 2턴간 방어카드의 발동률 30% 감소시킵니다."
+          "description": "상대를 {status:insult}하여 2턴간 {cardType:defense} 카드의 발동률 30% 감소시킵니다."
         },
         "net_throw": {
           "name": "그물투척",
-          "description": "상대를 둔화시켜 2턴간 상태이상카드의 발동률을 30% 감소시킵니다."
+          "description": "상대를 {status:slow}시켜 2턴간 {cardType:status} 카드의 발동률을 30% 감소시킵니다."
         },
         "oil_pour": {
           "name": "기름붓기",
-          "description": "상대가 화상 상태일 경우 화상 2턴을 추가합니다."
+          "description": "상대가 {status:burn} 상태일 경우 {status:burn} 2턴을 추가합니다."
         },
         "chains_of_fire": {
           "name": "불의 사슬",
-          "description": "상대를 불의 사슬로 묶어 한 턴 간 힘 버프가 적용되지 않습니다."
+          "description": "상대를 불의 {status:chains}로 묶어 한 턴 간 {buff:strength} 버프가 적용되지 않습니다."
         },
         "endless_effort": {
           "name": "끝없는 노력",
-          "description": "강한 힘의 원천은 끝없는 노력입니다. 자신에게 힘 1을 추가합니다."
+          "description": "강한 {buff:strength}의 원천은 끝없는 노력입니다. 자신에게 {buff:strength} 1을 추가합니다."
         },
         "sword_dance": {
           "name": "칼춤",
-          "description": "한 턴간 공격카드의 공격력을 50% 상승시킵니다."
+          "description": "한 턴간 {cardType:attack} 카드의 공격력을 50% 상승시킵니다."
         },
         "focus": {
           "name": "집중",
-          "description": "한 턴간 노멀 공격카드의 명중률을 30% 상승시킵니다."
+          "description": "한 턴간 노멀 {cardType:attack} 카드의 명중률을 30% 상승시킵니다."
         },
         "fast_attack": {
           "name": "고속공격",
-          "description": "한 턴 간 노멀 공격카드의 발동횟수를 1회 증가시킵니다."
+          "description": "한 턴 간 노멀 {cardType:attack} 카드의 발동횟수를 1회 증가시킵니다."
         },
         "barricade": {
           "name": "바리케이트",
-          "description": "현재 방어력을 두 배로 높입니다."
+          "description": "현재 {defense}을 두 배로 높입니다."
         },
         "red_pendant": {
           "name": "붉은 펜던트",
-          "description": "자신에게 방어력 3과 힘 1을 추가합니다."
+          "description": "자신에게 {defense} 3과 {buff:strength} 1을 추가합니다."
         },
         "lava_prison": {
           "name": "용암 감옥",
-          "description": "발동 시 상대가 화상 상태일 경우 용암 감옥에 가둬 아무런 행동도 할 수 없게 만듭니다."
+          "description": "발동 시 상대가 {status:burn} 상태일 경우 용암 감옥에 가둬 아무런 행동도 할 수 없게 만듭니다."
         },
         "powder_keg": {
           "name": "화약통 투척",
-          "description": "상대가 화상 상태일 경우 발동 시 폭발하여 10 데미지를 주고 화상 1턴을 추가합니다."
+          "description": "상대가 {status:burn} 상태일 경우 발동 시 폭발하여 10 데미지를 주고 {status:burn} 1턴을 추가합니다."
         },
         "opportunity_scent": {
           "name": "기회의 냄새",
-          "description": "상대가 화상 상태일 때 발동 시 한 턴 간 불 속성 공격카드에 대미지 10 추가. 냄새는 중첩 가능하다."
+          "description": "상대가 {status:burn} 상태일 때 발동 시 한 턴 간 불 속성 {cardType:attack} 카드에 대미지 10 추가. {buff:scent}는 중첩 가능하다."
         },
         "sharpen": {
           "name": "벼리기",
-          "description": "한 턴 간 체력이 1 아래로 내려가지 않습니다. 벼리기는 중첩되지 않습니다."
+          "description": "한 턴 간 체력이 1 아래로 내려가지 않습니다. {buff:sharpen}는 중첩되지 않습니다."
         },
         "hot_wind": {
           "name": "열풍",
-          "description": "자신에게 5 데미지를 입힌 뒤 열풍 버프 획득. 불 속성 공격카드로 공격 시 열풍 잔여 턴 만큼 발동횟수를 증가시킨다."
+          "description": "자신에게 5 데미지를 입힌 뒤 {buff:hotWind} 버프 획득. 불 속성 {cardType:attack} 카드로 공격 시 {buff:hotWind} 잔여 턴 만큼 발동횟수를 증가시킨다."
         }
       },
       "buffs": {

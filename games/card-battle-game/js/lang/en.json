@@ -165,11 +165,11 @@
         },
         "shield_bash": {
           "name": "Shield Bash",
-          "description": "Deal damage equal to your current defense to the opponent."
+          "description": "Deal damage equal to your current {defense} to the opponent."
         },
         "concussion": {
           "name": "Concussion",
-          "description": "Deal 2 damage to the opponent and have a chance to stun them."
+          "description": "Deal 2 damage to the opponent and have a chance to {status:stun} them."
         },
         "counter_attack": {
           "name": "Counter Attack",
@@ -177,55 +177,55 @@
         },
         "raise_shield": {
           "name": "Raise Shield",
-          "description": "Add 3 defense to yourself."
+          "description": "Add 3 {defense} to yourself."
         },
         "wear_armor": {
           "name": "Wear Armor",
-          "description": "Add 5 defense to yourself."
+          "description": "Add 5 {defense} to yourself."
         },
         "crouch": {
           "name": "Crouch",
-          "description": "Add 30 defense to yourself and skip your turn."
+          "description": "Add 30 {defense} to yourself and skip your turn."
         },
         "large_shield": {
           "name": "Large Shield",
-          "description": "Add 8 defense to yourself. 80% success rate."
+          "description": "Add 8 {defense} to yourself. 80% success rate."
         },
         "thorn_armor": {
           "name": "Thorn Armor",
-          "description": "Deal 1 damage to yourself and gain 3 strength."
+          "description": "Deal 1 damage to yourself and gain 3 {buff:strength}."
         },
         "indomitable_gauntlet": {
           "name": "Indomitable Gauntlet",
-          "description": "Deal 3 damage to yourself and gain 4 Strength."
+          "description": "Deal 3 damage to yourself and gain 4 {buff:strength}."
         },
         "fire_shield": {
           "name": "Fire Shield",
-          "description": "Adds 5 defense to yourself."
+          "description": "Adds 5 {defense} to yourself."
         },
         "flame_wall": {
           "name": "Flame Wall",
-          "description": "Adds 10 defense to yourself."
+          "description": "Adds 10 {defense} to yourself."
         },
         "scorched_shield": {
           "name": "Scorched Shield",
-          "description": "Deal 3 damage to yourself and gain 13 defense."
+          "description": "Deal 3 damage to yourself and gain 13 {defense}."
         },
         "taunt": {
           "name": "Taunt",
-          "description": "Taunt the opponent. When taunted, only attack cards can be used."
+          "description": "{status:taunt} the opponent. When {status:taunt}ed, only {cardType:attack} cards can be used."
         },
         "flame_throw": {
           "name": "Flame Throw",
-          "description": "Throw flames at the enemy for 3 damage. Low chance to inflict burn on hit."
+          "description": "Throw flames at the enemy for 3 damage. Low chance to inflict {status:burn} on hit."
         },
         "flame_burst": {
           "name": "Flame Burst",
-          "description": "Shoots flames at the opponent 1-3 times for 2 damage each, with a low chance to inflict burn."
+          "description": "Shoots flames at the opponent 1-3 times for 2 damage each, with a low chance to inflict {status:burn}."
         },
         "flame_ascension": {
           "name": "Flame Ascension",
-          "description": "Deal 5 damage to yourself, then deal 7 damage to the opponent and gain 1 strength on hit. Has a chance to inflict burn."
+          "description": "Deal 5 damage to yourself, then deal 7 damage to the opponent and gain 1 {buff:strength} on hit. Has a chance to inflict {status:burn}."
         },
         "bubble_strike": {
           "name": "Bubble Strike",
@@ -237,7 +237,7 @@
         },
         "smog": {
           "name": "Smog",
-          "description": "Envelop the enemy in smog with a chance to poison."
+          "description": "Envelop the enemy in smog with a chance to {status:poisoned}."
         },
         "bandage": {
           "name": "Bandage",
@@ -245,83 +245,83 @@
         },
         "push_back": {
           "name": "Push Back",
-          "description": "Push the opponent back and stun them."
+          "description": "Push the opponent back and {status:stun} them."
         },
         "sand_throw": {
           "name": "Sand Throw",
-          "description": "Throw sand in opponent's eyes, reducing attack accuracy by 30% for 2 turns"
+          "description": "Throw {status:sand} in opponent's eyes, reducing {cardType:attack} card accuracy by 30% for 2 turns"
         },
         "karura_strike": {
           "name": "Karura Strike",
-          "description": "A technique learned from the Karura clan. Deal 10 damage to yourself, then deal 12 damage to opponent and inflict burn."
+          "description": "A technique learned from the Karura clan. Deal 10 damage to yourself, then deal 12 damage to opponent and inflict {status:burn}."
         },
         "fireball": {
           "name": "Fireball",
-          "description": "A powerful flame strike that deals 4 damage. Has a chance to inflict burn."
+          "description": "A powerful flame strike that deals 4 damage. Has a chance to inflict {status:burn}."
         },
         "hot_breath": {
           "name": "Hot Breath",
-          "description": "Inflicts burn on the opponent."
+          "description": "Inflicts {status:burn} on the opponent."
         },
         "insult": {
           "name": "Insult",
-          "description": "Insults the opponent, reducing defense card activation rate by 30% for 2 turns."
+          "description": "{status:insult}s the opponent, reducing {cardType:defense} card activation rate by 30% for 2 turns."
         },
         "net_throw": {
           "name": "Net Throw",
-          "description": "Slows the opponent, reducing status card activation rate by 30% for 2 turns."
+          "description": "{status:slow}s the opponent, reducing {cardType:status} card activation rate by 30% for 2 turns."
         },
         "oil_pour": {
           "name": "Pour Oil",
-          "description": "If the target is burned, extends burn by 2 turns."
+          "description": "If the target is {status:burn}ed, extends {status:burn} by 2 turns."
         },
         "chains_of_fire": {
           "name": "Chains of Fire",
-          "description": "Bind the opponent with chains of fire, preventing strength buffs from applying for one turn."
+          "description": "Bind the opponent with {status:chains} of fire, preventing {buff:strength} buffs from applying for one turn."
         },
         "endless_effort": {
           "name": "Endless Effort",
-          "description": "The source of strong power is endless effort. Adds 1 strength to yourself."
+          "description": "The source of strong power is endless effort. Adds 1 {buff:strength} to yourself."
         },
         "sword_dance": {
           "name": "Sword Dance",
-          "description": "Increases attack card damage by 50% for one turn."
+          "description": "Increases {cardType:attack} card damage by 50% for one turn."
         },
         "focus": {
           "name": "Focus",
-          "description": "Increases normal attack card accuracy by 30% for one turn."
+          "description": "Increases normal {cardType:attack} card accuracy by 30% for one turn."
         },
         "fast_attack": {
           "name": "Fast Attack",
-          "description": "Increases normal attack card activation count by 1 for one turn."
+          "description": "Increases normal {cardType:attack} card activation count by 1 for one turn."
         },
         "barricade": {
           "name": "Barricade",
-          "description": "Doubles your current defense."
+          "description": "Doubles your current {defense}."
         },
         "red_pendant": {
           "name": "Red Pendant",
-          "description": "Adds 3 defense and 1 strength to yourself."
+          "description": "Adds 3 {defense} and 1 {buff:strength} to yourself."
         },
         "lava_prison": {
           "name": "Lava Prison",
-          "description": "If the opponent is burned, trap them in a lava prison, preventing any actions."
+          "description": "If the opponent is {status:burn}ed, trap them in a lava prison, preventing any actions."
         },
         "powder_keg": {
           "name": "Powder Keg Throw",
-          "description": "If the opponent is burned, explode to deal 10 damage and extend burn by 1 turn."
+          "description": "If the opponent is {status:burn}ed, explode to deal 10 damage and extend {status:burn} by 1 turn."
         },
         "opportunity_scent": {
           "name": "Opportunity's Scent",
-          "description": "When opponent is burned, gain +10 damage to fire attack cards for 1 turn. Scent stacks."
+          "description": "When opponent is {status:burn}ed, gain +10 damage to fire {cardType:attack} cards for 1 turn. {buff:scent} stacks."
         },
         "sharpen": {
           "name": "Sharpen",
-          "description": "For one turn, HP will not drop below 1. Sharpen does not stack."
+          "description": "For one turn, HP will not drop below 1. {buff:sharpen} does not stack."
         },
         "hot_wind": {
           "name": "Hot Wind",
-          "description": "Deal 5 damage to yourself and gain Hot Wind buff. Fire attack cards gain bonus activations equal to Hot Wind turns remaining."
+          "description": "Deal 5 damage to yourself and gain {buff:hotWind} buff. Fire {cardType:attack} cards gain bonus activations equal to {buff:hotWind} turns remaining."
         }
       },
       "buffs": {

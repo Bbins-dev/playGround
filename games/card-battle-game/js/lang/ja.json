@@ -165,11 +165,11 @@
         },
         "shield_bash": {
           "name": "シールドバッシュ",
-          "description": "現在の防御力と同じダメージを相手に与えます。"
+          "description": "現在の{defense}と同じダメージを相手に与えます。"
         },
         "concussion": {
           "name": "脳震盪",
-          "description": "相手に2ダメージを与え、一定確率で気絶させます。"
+          "description": "相手に2ダメージを与え、一定確率で{status:stun}させます。"
         },
         "counter_attack": {
           "name": "カウンターアタック",
@@ -177,55 +177,55 @@
         },
         "raise_shield": {
           "name": "シールド構え",
-          "description": "自分に防御力3を追加します。"
+          "description": "自分に{defense}3を追加します。"
         },
         "wear_armor": {
           "name": "鎧装着",
-          "description": "自分に防御力5を追加します。"
+          "description": "自分に{defense}5を追加します。"
         },
         "crouch": {
           "name": "しゃがみ",
-          "description": "自分に防御力30を追加し、ターンをスキップします。"
+          "description": "自分に{defense}30を追加し、ターンをスキップします。"
         },
         "large_shield": {
           "name": "大盾",
-          "description": "自分に防御力8を追加します。成功率80%。"
+          "description": "自分に{defense}8を追加します。成功率80%。"
         },
         "thorn_armor": {
           "name": "棘の鎧",
-          "description": "自分にダメージ１を与えて力３を得ます。"
+          "description": "自分にダメージ１を与えて{buff:strength}３を得ます。"
         },
         "indomitable_gauntlet": {
           "name": "不屈の篭手",
-          "description": "自分に3ダメージを与え、力4を得る。"
+          "description": "自分に3ダメージを与え、{buff:strength}4を得る。"
         },
         "fire_shield": {
           "name": "火の盾",
-          "description": "自分に防御力を5追加します。"
+          "description": "自分に{defense}を5追加します。"
         },
         "flame_wall": {
           "name": "炎の壁",
-          "description": "自分に防御力を10追加します。"
+          "description": "自分に{defense}を10追加します。"
         },
         "scorched_shield": {
           "name": "灼熱の盾",
-          "description": "自分に3ダメージを与え、防御力を13獲得します。"
+          "description": "自分に3ダメージを与え、{defense}を13獲得します。"
         },
         "taunt": {
           "name": "挑発",
-          "description": "相手を挑発する。挑発状態では攻撃カードのみ使用できる。"
+          "description": "相手を挑発する。{status:taunt}状態では{cardType:attack}カードのみ使用できる。"
         },
         "flame_throw": {
           "name": "フレイムスロー",
-          "description": "相手に炎を投げて３のダメージを与えます。命中時、低確率で火傷を与えます。"
+          "description": "相手に炎を投げて３のダメージを与えます。命中時、低確率で{status:burn}を与えます。"
         },
         "flame_burst": {
           "name": "フレイムバースト",
-          "description": "相手に炎を放射して1-3回2ダメージを与え、低確率で火傷を負わせます。"
+          "description": "相手に炎を放射して1-3回2ダメージを与え、低確率で{status:burn}を負わせます。"
         },
         "flame_ascension": {
           "name": "炎昇天",
-          "description": "自分に5ダメージを与えた後、相手に7ダメージを与え、命中時に力を1得ます。一定確率で火傷を与えます。"
+          "description": "自分に5ダメージを与えた後、相手に7ダメージを与え、命中時に{buff:strength}を1得ます。一定確率で{status:burn}を与えます。"
         },
         "bubble_strike": {
           "name": "バブルストライク",
@@ -237,7 +237,7 @@
         },
         "smog": {
           "name": "スモッグ",
-          "description": "敵をスモッグで包み、一定確率で毒状態にします。"
+          "description": "敵をスモッグで包み、一定確率で{status:poisoned}状態にします。"
         },
         "bandage": {
           "name": "包帯",
@@ -245,83 +245,83 @@
         },
         "push_back": {
           "name": "押し返し",
-          "description": "相手を押し返して気絶させます。"
+          "description": "相手を押し返して{status:stun}させます。"
         },
         "sand_throw": {
           "name": "砂投げ",
-          "description": "相手の目に砂を投げて2ターン間攻撃カードの命中率30%減少"
+          "description": "相手の目に砂を投げて2ターン間{cardType:attack}カードの命中率30%減少"
         },
         "karura_strike": {
           "name": "カルラ一撃",
-          "description": "カルラ一族に学んだ技です。自分に10ダメージを与えた後、相手に12ダメージを与えて火傷を負わせます。"
+          "description": "カルラ一族に学んだ技です。自分に10ダメージを与えた後、相手に12ダメージを与えて{status:burn}を負わせます。"
         },
         "fireball": {
           "name": "ファイアボール",
-          "description": "強力な炎の一撃で4ダメージを与えます。一定確率で火傷を負わせます。"
+          "description": "強力な炎の一撃で4ダメージを与えます。一定確率で{status:burn}を負わせます。"
         },
         "hot_breath": {
           "name": "熱い息",
-          "description": "相手に火傷を負わせます。"
+          "description": "相手に{status:burn}を負わせます。"
         },
         "insult": {
           "name": "侮辱",
-          "description": "相手を侮辱し、2ターンの間防御カードの発動率を30%減少させます。"
+          "description": "相手を侮辱し、2ターンの間{cardType:defense}カードの発動率を30%減少させます。"
         },
         "net_throw": {
           "name": "網投げ",
-          "description": "相手を鈍化させ、2ターンの間状態異常カードの発動率を30%減少させます。"
+          "description": "相手を鈍化させ、2ターンの間{cardType:status}カードの発動率を30%減少させます。"
         },
         "oil_pour": {
           "name": "油を注ぐ",
-          "description": "相手が火傷状態の場合、火傷を2ターン延長します。"
+          "description": "相手が{status:burn}状態の場合、{status:burn}を2ターン延長します。"
         },
         "chains_of_fire": {
           "name": "炎の鎖",
-          "description": "相手を炎の鎖で縛り、1ターンの間力バフを無効化します。"
+          "description": "相手を炎の鎖で縛り、1ターンの間{buff:strength}バフを無効化します。"
         },
         "endless_effort": {
           "name": "絶え間ない努力",
-          "description": "強い力の源は絶え間ない努力です。自分に力1を追加します。"
+          "description": "強い{buff:strength}の源は絶え間ない努力です。自分に{buff:strength}1を追加します。"
         },
         "sword_dance": {
           "name": "剣舞",
-          "description": "一ターンの間、攻撃カードのダメージを50%増加させます。"
+          "description": "一ターンの間、{cardType:attack}カードのダメージを50%増加させます。"
         },
         "focus": {
           "name": "集中",
-          "description": "1ターンの間、ノーマル攻撃カードの命中率を30%増加させます。"
+          "description": "1ターンの間、ノーマル{cardType:attack}カードの命中率を30%増加させます。"
         },
         "fast_attack": {
           "name": "高速攻撃",
-          "description": "1ターンの間、ノーマル攻撃カードの発動回数を1回増やします。"
+          "description": "1ターンの間、ノーマル{cardType:attack}カードの発動回数を1回増やします。"
         },
         "barricade": {
           "name": "バリケード",
-          "description": "現在の防御力を2倍にします。"
+          "description": "現在の{defense}を2倍にします。"
         },
         "red_pendant": {
           "name": "赤いペンダント",
-          "description": "自分に防御力3と力1を追加します。"
+          "description": "自分に{defense}3と{buff:strength}1を追加します。"
         },
         "lava_prison": {
           "name": "溶岩の牢獄",
-          "description": "発動時、相手が火傷状態の場合、溶岩の牢獄に閉じ込めて何もできなくします。"
+          "description": "発動時、相手が{status:burn}状態の場合、溶岩の牢獄に閉じ込めて何もできなくします。"
         },
         "powder_keg": {
           "name": "火薬樽投擲",
-          "description": "相手が火傷状態の場合、発動時に爆発して10ダメージを与え、火傷を1ターン延長します。"
+          "description": "相手が{status:burn}状態の場合、発動時に爆発して10ダメージを与え、{status:burn}を1ターン延長します。"
         },
         "opportunity_scent": {
           "name": "機会の匂い",
-          "description": "相手が火傷状態の時、発動すると1ターンの間、火属性攻撃カードにダメージ10追加。匂いは重複可能。"
+          "description": "相手が{status:burn}状態の時、発動すると1ターンの間、火属性{cardType:attack}カードにダメージ10追加。{buff:scent}は重複可能。"
         },
         "sharpen": {
           "name": "研ぎ",
-          "description": "1ターンの間、体力が1以下にならなくなります。研ぎは重複しません。"
+          "description": "1ターンの間、体力が1以下にならなくなります。{buff:sharpen}は重複しません。"
         },
         "hot_wind": {
           "name": "熱風",
-          "description": "自分に5ダメージを与えて熱風バフを獲得。炎属性攻撃カードの発動回数を熱風残りターン分増加させる。"
+          "description": "自分に5ダメージを与えて{buff:hotWind}バフを獲得。炎属性{cardType:attack}カードの発動回数を{buff:hotWind}残りターン分増加させる。"
         }
       },
       "buffs": {
