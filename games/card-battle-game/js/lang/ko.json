@@ -161,7 +161,7 @@
         },
         "heavy_strike": {
           "name": "세게치기",
-          "description": "상대에게 강력한 일격을 가합니다. 피해 5, 명중률 80%입니다."
+          "description": "상대에게 강력한 일격을 가해 5의 피해를 줍니다."
         },
         "shield_bash": {
           "name": "방패치기",
@@ -293,11 +293,11 @@
         },
         "focus": {
           "name": "집중",
-          "description": "한 턴간 노멀 {cardType:attack} 카드의 명중률을 30% 상승시킵니다."
+          "description": "한 턴간 {normal} {cardType:attack} 카드의 명중률을 30% 상승시킵니다."
         },
         "fast_attack": {
           "name": "고속공격",
-          "description": "한 턴 간 노멀 {cardType:attack} 카드의 발동횟수를 1회 증가시킵니다."
+          "description": "한 턴 간 {normal} {cardType:attack} 카드의 발동횟수를 1회 증가시킵니다."
         },
         "barricade": {
           "name": "바리케이트",
@@ -317,7 +317,7 @@
         },
         "opportunity_scent": {
           "name": "기회의 냄새",
-          "description": "상대가 {status:burn} 상태일 때 발동 시 한 턴 간 불 속성 {cardType:attack} 카드에 피해 10 추가. {buff:scent}는 중첩 가능하다."
+          "description": "상대가 {status:burn} 상태일 때 발동 시 한 턴 간 {fire} {cardType:attack} 카드에 피해 10 추가. {buff:scent}는 중첩 가능하다."
         },
         "sharpen": {
           "name": "벼리기",
@@ -325,7 +325,7 @@
         },
         "hot_wind": {
           "name": "열풍",
-          "description": "자신에게 피해 5를 입힌 뒤 {buff:hotWind} 버프 획득. 불 속성 {cardType:attack} 카드로 공격 시 {buff:hotWind} 잔여 턴 만큼 발동횟수를 증가시킨다."
+          "description": "자신에게 피해 5를 입힌 뒤 {buff:hotWind} 버프 획득. {fire} {cardType:attack} 카드로 공격 시 {buff:hotWind} 잔여 턴 만큼 발동횟수를 증가시킨다."
         }
       },
       "buffs": {

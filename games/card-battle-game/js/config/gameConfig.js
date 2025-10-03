@@ -454,7 +454,12 @@ const GameConfig = {
             emoji: '🔥',
             strong: 'poison',       // 독에 강함
             weak: 'water',         // 물에 약함
-            immunity: 'burn'       // 화상 면역
+            immunity: 'burn',       // 화상 면역
+            elementNames: {
+                ko: '불',
+                en: 'Fire',
+                ja: '火'
+            }
         },
         water: {
             name: '물',
@@ -462,7 +467,12 @@ const GameConfig = {
             get color() { return GameConfig.masterColors.elements.water; },
             emoji: '💧',
             strong: 'fire',        // 불에 강함
-            weak: 'electric'       // 전기에 약함
+            weak: 'electric',       // 전기에 약함
+            elementNames: {
+                ko: '물',
+                en: 'Water',
+                ja: '水'
+            }
         },
         electric: {
             name: '전기',
@@ -471,7 +481,12 @@ const GameConfig = {
             emoji: '⚡',
             strong: 'water',       // 물에 강함
             weak: 'poison',        // 독에 약함
-            immunity: 'paralysis'  // 마비 면역
+            immunity: 'paralysis',  // 마비 면역
+            elementNames: {
+                ko: '전기',
+                en: 'Electric',
+                ja: '電気'
+            }
         },
         poison: {
             name: '독',
@@ -480,7 +495,12 @@ const GameConfig = {
             emoji: '☠️',
             strong: 'electric',    // 전기에 강함
             weak: 'fire',          // 불에 약함
-            immunity: 'poisoned'   // 중독 면역
+            immunity: 'poisoned',   // 중독 면역
+            elementNames: {
+                ko: '독',
+                en: 'Poison',
+                ja: '毒'
+            }
         },
         normal: {
             name: '노멀',
@@ -489,7 +509,12 @@ const GameConfig = {
             emoji: '👊',
             strong: null,          // 강점 없음
             weak: null,           // 약점 없음
-            immunity: null        // 면역 없음
+            immunity: null,        // 면역 없음
+            elementNames: {
+                ko: '노멀',
+                en: 'Normal',
+                ja: 'ノーマル'
+            }
         },
         special: {
             name: '특수',
@@ -498,7 +523,12 @@ const GameConfig = {
             emoji: '🔮',
             strong: null,          // 강점 없음
             weak: null,           // 약점 없음
-            immunity: null        // 면역 없음
+            immunity: null,        // 면역 없음
+            elementNames: {
+                ko: '특수',
+                en: 'Special',
+                ja: '特別'
+            }
         }
     },
 
@@ -1809,8 +1839,8 @@ const GameConfig = {
                 emoji: '💪',
                 format: (value) => value,
                 showCondition: (card, context) => {
-                    // 상태이상 카드와 버프 카드에서 주 스탯이 없는 경우 숨김
-                    if ((card.type === 'status' || card.type === 'buff') && card.power === 0) return false;
+                    // 상태이상 카드, 버프 카드, 특수 카드에서 주 스탯이 없는 경우 숨김
+                    if ((card.type === 'status' || card.type === 'buff' || card.type === 'special') && card.power === 0) return false;
                     return true;
                 }
             },

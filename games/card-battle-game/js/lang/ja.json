@@ -161,7 +161,7 @@
         },
         "heavy_strike": {
           "name": "重撃",
-          "description": "相手に強力な一撃を与えます。5ダメージ、命中率80%。"
+          "description": "相手に強力な一撃を与え、5のダメージを与えます。"
         },
         "shield_bash": {
           "name": "シールドバッシュ",
@@ -293,11 +293,11 @@
         },
         "focus": {
           "name": "集中",
-          "description": "1ターンの間、ノーマル{cardType:attack}カードの命中率を30%増加させます。"
+          "description": "1ターンの間、{normal}{cardType:attack}カードの命中率を30%増加させます。"
         },
         "fast_attack": {
           "name": "高速攻撃",
-          "description": "1ターンの間、ノーマル{cardType:attack}カードの発動回数を1回増やします。"
+          "description": "1ターンの間、{normal}{cardType:attack}カードの発動回数を1回増やします。"
         },
         "barricade": {
           "name": "バリケード",
@@ -317,7 +317,7 @@
         },
         "opportunity_scent": {
           "name": "機会の匂い",
-          "description": "相手が{status:burn}状態の時、発動すると1ターンの間、火属性{cardType:attack}カードにダメージ10追加。{buff:scent}は重複可能。"
+          "description": "相手が{status:burn}状態の時、発動すると1ターンの間、{fire}{cardType:attack}カードにダメージ10追加。{buff:scent}は重複可能。"
         },
         "sharpen": {
           "name": "研ぎ",
@@ -325,7 +325,7 @@
         },
         "hot_wind": {
           "name": "熱風",
-          "description": "自分に5ダメージを与えて{buff:hotWind}バフを獲得。炎属性{cardType:attack}カードの発動回数を{buff:hotWind}残りターン分増加させる。"
+          "description": "自分に5ダメージを与えて{buff:hotWind}バフを獲得。{fire}{cardType:attack}カードの発動回数を{buff:hotWind}残りターン分増加させる。"
         }
       },
       "buffs": {

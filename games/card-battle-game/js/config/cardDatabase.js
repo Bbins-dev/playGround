@@ -625,12 +625,13 @@ const CardDatabase = {
             nameKey: 'auto_battle_card_game.ui.cards.bandage.name',
             type: 'special',
             element: 'special', // 속성 없음을 표현
-            power: 3, // 회복량
+            power: 0, // 스탯 표시 안함 (healAmount 사용)
+            healAmount: 3, // 회복량
             accuracy: 100,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.bandage.description',
             effect: function(user, target, battleSystem) {
-                const maxHeal = this.power;
+                const maxHeal = this.healAmount;
                 const actualHealing = user.heal ? user.heal(maxHeal) : 0;
 
                 return {
@@ -650,7 +651,8 @@ const CardDatabase = {
             nameKey: 'auto_battle_card_game.ui.cards.miracle_revival.name',
             type: 'special',
             element: 'special',
-            power: 50, // 회복량 (최대 HP의 50%)
+            power: 0, // 스탯 표시 안함 (healPercent 사용)
+            healPercent: 50, // 회복량 (최대 HP의 50%)
             accuracy: 100,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.miracle_revival.description',
@@ -670,7 +672,7 @@ const CardDatabase = {
                 }
 
                 // 조건 충족: 최대 HP의 50% 회복
-                const healAmount = Math.floor(user.maxHP * this.power / 100);
+                const healAmount = Math.floor(user.maxHP * this.healPercent / 100);
                 const actualHealing = user.heal ? user.heal(healAmount) : 0;
 
                 return {
