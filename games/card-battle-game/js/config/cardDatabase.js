@@ -644,6 +644,46 @@ const CardDatabase = {
             }
         });
 
+        // 기사회생 카드 (특수 카드, 조건부 대량 회복)
+        this.addCard({
+            id: 'miracle_revival',
+            nameKey: 'auto_battle_card_game.ui.cards.miracle_revival.name',
+            type: 'special',
+            element: 'special',
+            power: 50, // 회복량 (최대 HP의 50%)
+            accuracy: 100,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.miracle_revival.description',
+            effect: function(user, target, battleSystem) {
+                const hpThreshold = 30; // 30% 미만일 때 발동
+                const currentHPPercent = (user.hp / user.maxHP) * 100;
+
+                // 조건 체크: 현재 HP가 최대 HP의 30% 미만인가?
+                if (currentHPPercent >= hpThreshold) {
+                    // 조건 미충족
+                    return {
+                        success: false,
+                        conditionFailed: true,
+                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        element: this.element
+                    };
+                }
+
+                // 조건 충족: 최대 HP의 50% 회복
+                const healAmount = Math.floor(user.maxHP * this.power / 100);
+                const actualHealing = user.heal ? user.heal(healAmount) : 0;
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.heal_effect',
+                    healAmount: actualHealing,
+                    element: this.element,
+                    effectType: 'heal',
+                    templateData: { value: actualHealing }
+                };
+            }
+        });
+
         // 밀쳐내기 카드 (노멀 상태이상, 기절)
         this.addCard({
             id: 'push_back',

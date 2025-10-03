@@ -241,7 +241,11 @@
         },
         "bandage": {
           "name": "Bandage",
-          "description": "Wrap wounds with bandage for first aid."
+          "description": "Wrap bandages to restore 3 {hp}."
+        },
+        "miracle_revival": {
+          "name": "Miracle Revival",
+          "description": "If current {hp} is below 30% of max {hp}, restore 50% of max {hp}."
         },
         "push_back": {
           "name": "Push Back",
@@ -350,6 +354,7 @@
         "special": "Special",
         "status": "Status"
       },
+      "hp_label": "HP",
       "shield_bash_damage": "Shield bash damage",
       "concussion_stun": "Stunned by concussion!",
       "counter_damage": "Counter attack damage",

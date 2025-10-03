@@ -10,8 +10,8 @@ class DescriptionParser {
     static parse(text) {
         if (!text) return [];
 
-        // 마커 형식: {buff:strength}, {status:burn}, {cardType:attack}, {defense}
-        const regex = /\{(buff|status|cardType):(\w+)\}|\{(defense)\}/g;
+        // 마커 형식: {buff:strength}, {status:burn}, {cardType:attack}, {defense}, {hp}
+        const regex = /\{(buff|status|cardType):(\w+)\}|\{(defense|hp)\}/g;
         const segments = [];
         let lastIndex = 0;
 
@@ -26,12 +26,12 @@ class DescriptionParser {
             }
 
             // 라벨 세그먼트
-            if (match[3] === 'defense') {
-                // {defense} 단독 마커
+            if (match[3] === 'defense' || match[3] === 'hp') {
+                // {defense} 또는 {hp} 단독 마커
                 segments.push({
                     type: 'label',
-                    labelType: 'defense',
-                    labelKey: 'defense'
+                    labelType: match[3],
+                    labelKey: match[3]
                 });
             } else {
                 // {type:key} 형식 마커
@@ -58,8 +58,8 @@ class DescriptionParser {
 
     /**
      * GameConfig에서 라벨 정보 가져오기
-     * @param {string} labelType - 'buff', 'status', 'cardType', 'defense'
-     * @param {string} labelKey - 'strength', 'burn', 'attack', 'defense' 등
+     * @param {string} labelType - 'buff', 'status', 'cardType', 'defense', 'hp'
+     * @param {string} labelKey - 'strength', 'burn', 'attack', 'defense', 'hp' 등
      * @returns {Object|null} {emoji, name, color} 또는 null
      */
     static getLabelInfo(labelType, labelKey) {
@@ -77,6 +77,24 @@ class DescriptionParser {
                 emoji: '🛡️',
                 name: defenseNames[currentLang] || defenseNames.ko,
                 color: '#C0C0C0'  // 은색
+            };
+        }
+
+        // hp는 특별 처리 (초록색 라벨)
+        if (labelType === 'hp') {
+            const langSelect = document.getElementById('languageSelect');
+            const currentLang = langSelect ? langSelect.value : 'ko';
+
+            // GameConfig에서 다국어 이름 가져오기
+            let name = GameConfig?.hpLabel?.name || '체력';
+            if (GameConfig?.hpLabel?.nameKey && typeof I18nHelper !== 'undefined') {
+                name = I18nHelper.getText(GameConfig.hpLabel.nameKey) || name;
+            }
+
+            return {
+                emoji: GameConfig?.hpLabel?.emoji || '❤️',
+                name: name,
+                color: GameConfig?.masterColors?.hp || '#4CAF50'  // Material Green
             };
         }
 

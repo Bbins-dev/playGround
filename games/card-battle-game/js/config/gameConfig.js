@@ -156,6 +156,9 @@ const GameConfig = {
             hotWind: '#FF6B6B'        // 열풍 - 코랄/주황색 (불 속성 색상)
         },
 
+        // 체력 라벨 색상
+        hp: '#4CAF50',                // 체력 - Material Green (생명력 상징, 특수 카드보다 진한 초록)
+
         // 스탯 표시 색상
         stats: {
             negativePower: '#FF6B6B'  // 음수 power - 빨간색 (fire 색상 재사용)
@@ -775,6 +778,14 @@ const GameConfig = {
             emoji: '🔮',
             statEmojis: { power: '🔮', accuracy: '✅' }
         }
+    },
+
+    // 체력 라벨 (인라인 라벨 시스템용)
+    hpLabel: {
+        nameKey: 'auto_battle_card_game.ui.hp_label',
+        name: '체력',
+        emoji: '❤️',
+        get color() { return GameConfig.masterColors.hp; }
     },
 
     // 플레이어 설정
