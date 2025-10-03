@@ -63,6 +63,32 @@ npx serve                                       # ❌ 루트에서 실행 금지
 - ✅ 사용자 **직접 요청** 시에만 Playwright 도구 사용
 - ✅ 구현 완료 후 "테스트해보세요" 안내만 제공
 
+## ⚡ 핵심 체크리스트 (빠뜨리지 말 것!)
+
+### 🎯 버프/상태이상 적용 시 (필수!)
+- [ ] **버프 획득** → `hpBarSystem.updateBuffs(user, isPlayer)` 호출
+- [ ] **상태이상 적용** → `hpBarSystem.updateStatusEffects(target, isEnemy)` 호출
+- [ ] **방어력 변경** → `hpBarSystem.updateHP(unit, isPlayer)` 호출
+- [ ] **즉시 효과(독/화상/자해)** → `hpBarSystem.updateHP()` 즉시 호출
+
+**처리 위치**:
+- `processDefenseResult()` → 버프 처리 후 `updateBuffs()` 호출
+- `processBuffResult()` → 버프 처리 후 `updateBuffs()` 호출
+- `tryApplyStatusEffect()` → 자동 처리 (통합 시스템 사용 시)
+
+### 🌐 다국어 필수 업데이트
+- [ ] **3개 언어팩 모두 업데이트**: ko.json, en.json, ja.json
+- [ ] **언어팩 키 통일**: 모든 언어에서 동일한 키 사용
+- [ ] **빠뜨림 방지**: 하나라도 누락 시 다국어 지원 실패
+
+### 📝 카드 설명 작성 시
+- [ ] **인라인 라벨 사용**: 버프/상태이상 언급 시 마커 사용
+  - 버프: `{buff:strength}` → 💪 힘
+  - 상태이상: `{status:burn}` → 🔥 화상
+  - 카드타입: `{cardType:attack}` → ⚔️ 공격
+  - 방어력: `{defense}` → 🛡️ 방어력
+- [ ] **3개 언어팩에 모두 마커 적용**: 마커는 언어 독립적
+
 ## 🏗️ GameConfig 구조 (핵심 섹션들)
 
 ### Master Systems (Single Source of Truth)
@@ -114,30 +140,24 @@ const x = (event.clientX - rect.left) / scale;
 const coords = CanvasUtils.getCanvasCoordinates(event, canvas);
 ```
 
-### 3. 상태이상 턴 처리 순서 (BattleSystem.endTurn)
-1. 즉시 해제 (도발, 기절)
-2. 독/화상 데미지 → 전투종료체크
-3. 상태이상 턴수 차감
-4. UI 업데이트
-
-**⚠️ 순서 변경 시 0턴 상태이상이 화면에 남는 버그 발생**
-
-### 4. 안전한 접근 방식 (Optional Chaining) ⚠️
+### 3. 안전한 접근 방식 (Optional Chaining) ⚠️
 - **필수**: GameConfig 접근 시 항상 `GameConfig?.section?.property || defaultValue` 사용
 - **카드 effect 함수**: 설정값 접근 시 반드시 기본값 제공
 - **에러 방지**: try-catch 블록에서 에러 로깅 추가
 - **초기화 타이밍 문제 해결**: 동적으로 추가된 설정값도 안전하게 접근
 
-### 5. JavaScript 네이밍 규칙
+### 4. JavaScript 네이밍 규칙
 - **타입 이름**: camelCase 필수 (`conditionFailed`, `selfDamage`)
 - **i18n 키**: snake_case 유지 (`auto_battle_card_game.ui.condition_failed`)
 - **GameConfig 속성**: camelCase (`messageTypes.conditionFailed`)
 - **타입 vs i18n 키**: 별개의 개념 - 타입은 코드 레벨, i18n은 텍스트 레벨
 - **신규 타입 추가 시**: 하드코딩 추가 대신 코드의 타입 이름을 camelCase로 통일
 
-## 🎮 게임 시스템 특성
+## 🎮 게임 시스템 규칙
 
-### 🎨 카드 이미지 통합 관리 시스템
+### 🎨 카드 이미지 & 렌더링
+
+#### 카드 이미지 통합 관리
 **모든 카드 시각적 요소는 GameConfig.cardStyle에서 중앙 관리**
 
 - **통합 렌더링 시스템**: CardRenderer (Canvas) / DOMCardRenderer (DOM) 모두 동일한 설정 참조
@@ -153,6 +173,109 @@ const coords = CanvasUtils.getCanvasCoordinates(event, canvas);
 1. GameConfig.cardStyle에서 설정값 정의
 2. CardRenderer와 DOMCardRenderer 둘 다 수정
 3. CSS 변수로 자동 동기화되는지 확인
+
+#### 📝 인라인 라벨 시스템 (DescriptionParser)
+**카드 설명에 버프/상태이상/카드타입/방어력 언급 시 시각적 라벨 자동 렌더링**
+
+**마커 문법** (언어 독립적):
+```javascript
+{buff:strength}      // → 💪 힘 (gradient 배경)
+{status:burn}        // → 🔥 화상
+{cardType:attack}    // → ⚔️ 공격
+{defense}            // → 🛡️ 방어력 (은색)
+```
+
+**자동 처리**:
+- `DescriptionParser.parse(text)` → 마커를 라벨 정보로 변환
+- Canvas(CardRenderer) / DOM(DOMCardRenderer) 둘 다 지원
+- HPBarSystem 라벨과 동일한 스타일 (gradient, border, emoji, text-shadow)
+- 라벨 색상/이름은 GameConfig에서 자동 조회
+
+**신규 버프/상태이상 추가 시**:
+1. GameConfig.buffs 또는 statusEffects에 정의 (emoji, color, i18nKey)
+2. 언어팩 3개에 마커 추가 (예: `"힘 3을 얻습니다"` → `"{buff:strength} 3을 얻습니다"`)
+3. 자동으로 라벨 렌더링됨 (추가 코드 불필요)
+
+**핵심 파일**:
+- `js/utils/DescriptionParser.js` - 마커 파싱 및 라벨 정보 조회
+- `js/ui/CardRenderer.js` - Canvas 인라인 라벨 렌더링
+- `js/ui/DOMCardRenderer.js` - DOM 인라인 라벨 렌더링
+- `css/components.css` - `.inline-label` 스타일
+
+### ⚔️ 전투 & 효과 시스템
+
+#### 🔄 통합 상태이상 시스템 (Configuration-Driven)
+**모든 상태이상 카드는 통합 시스템 사용 - 하드코딩 금지!**
+
+**❌ 레거시 방식 (금지)**:
+```javascript
+// 9줄 하드코딩 - 면역 메시지 없음
+let burned = false;
+const burnRoll = Math.random() * 100;
+if (burnRoll < this.burnChance) {
+    const result = target.addStatusEffect('burn', 15, 1);
+    burned = result.success;
+}
+return { burned, statusType: burned ? 'burn' : null };
+```
+
+**✅ 통합 방식 (필수)**:
+```javascript
+// 5줄 설정 기반 - 면역/중복/성공 자동 메시지
+return {
+    statusEffect: {
+        type: 'burn',
+        chance: this.burnChance,  // ⚠️ this.xxxChance 사용 (하드코딩 금지)
+        power: GameConfig.statusEffects.burn.defaultPercent,
+        duration: 1
+    }
+};
+```
+
+**핵심 원칙**:
+1. **`chance`는 항상 `this.xxxChance` 사용**: 하드코딩(100, 50 등) 금지
+2. **카드 정의에 xxxChance 속성 추가**: `burnChance: 100`, `stunChance: 40`
+3. **BattleSystem.tryApplyStatusEffect()가 자동 처리**: 확률체크 + 면역체크 + 메시지 표시
+4. **면역 시 자동 메시지**: `"🔥 화상 면역!"` (사용자 피드백 보장)
+
+**statusEffect 구조**:
+```javascript
+{
+    type: 'burn' | 'stun' | 'poisoned' | 'paralysis' | 'taunt' | 'sand' | 'insult' | 'slow' | 'chains',
+    chance: this.xxxChance,  // 카드 속성 참조 (필수!)
+    power: GameConfig.statusEffects.xxx.defaultPercent || null,
+    duration: 1  // 턴 수
+}
+```
+
+**적용 카드 목록 (14개)**:
+- **공격 카드**: concussion, flame_throw, smog, fireball, karura_strike, flame_burst, flame_ascension
+- **상태이상 카드**: taunt, push_back, sand_throw, hot_breath, insult, net_throw, oil_pour, chains_of_fire, lava_prison, powder_keg
+
+#### 🔄 상태이상 턴 처리 순서 (BattleSystem.endTurn)
+**⚠️ 순서 변경 시 0턴 상태이상이 화면에 남는 버그 발생**
+
+1. 즉시 해제 (도발, 기절)
+2. 독/화상 데미지 → 전투종료체크
+3. 상태이상 턴수 차감
+4. UI 업데이트
+
+#### 💉 자해 데미지 처리 시스템
+**카드 실행 순서**: 발동 연출 → 자해 데미지 적용 (명중 여부 무관) → 명중 체크 → 카드 효과
+
+- `selfDamage` 속성만 추가하면 자동 처리
+- 자해 데미지는 항상 적용 (Miss여도 HP 차감됨)
+- **HP 즉시 반영**: preprocessSelfDamage에서 `hpBarSystem.updateHP()` 즉시 호출
+- **중복 방지**: `selfDamageProcessed` 플래그로 processCardResult에서 중복 업데이트 방지
+- **표시 방식**: `-10` 형태로만 표시 (텍스트 메시지 없음)
+
+#### 💬 카드 타입별 메시지 처리
+- **defense 타입 카드**: processDefenseResult() → showDefenseGainMessage() (🛡️ 방어력 +N)
+- **buff 타입 방어력 증가**: processBuffResult()에서 defenseGain 체크 → showDefenseGainMessage() 직접 호출
+- **버프 라벨 vs 즉시 효과**: 지속 버프는 showBuffEffect(), 즉시 방어력 증가는 showDefenseGainMessage()
+
+#### 🔥 5속성 상성 체계
+불🔥 → 독☠️ → 전기⚡ → 물💧 → 불🔥 + 노멀👊
 
 ### 🔊 오디오 시스템 (Configuration-Driven Audio)
 **모든 오디오는 GameConfig.audio에서 중앙 관리 - 하드코딩 금지!**
@@ -201,87 +324,17 @@ this.audioSystem.playSFX('attackHit');
 2. GameConfig.audio.uiSounds에 이벤트 매핑 추가 (선택)
 3. UI 컴포넌트에서 `playSFX()` 호출
 
-### 5속성 상성 체계
-불🔥 → 독☠️ → 전기⚡ → 물💧 → 불🔥 + 노멀👊
-
-### 자해 데미지 처리 시스템
-**카드 실행 순서**: 발동 연출 → 자해 데미지 적용 (명중 여부 무관) → 명중 체크 → 카드 효과
-- `selfDamage` 속성만 추가하면 자동 처리
-- 자해 데미지는 항상 적용 (Miss여도 HP 차감됨)
-- **HP 즉시 반영**: preprocessSelfDamage에서 `hpBarSystem.updateHP()` 즉시 호출
-- **중복 방지**: `selfDamageProcessed` 플래그로 processCardResult에서 중복 업데이트 방지
-- **표시 방식**: `-10` 형태로만 표시 (텍스트 메시지 없음)
-
-### 중요 규칙들
+### 📋 중요 규칙 모음
 - **3개 언어 필수 지원**: 한국어(ko.json), 영어(en.json), 일본어(ja.json) 모두 업데이트
 - **이중 명중률 체크 금지**: Card.js에서만 처리
 - **퍼센트 계산**: 곱셈 방식만 사용 `value * (1 - percent/100)`
 - **중앙 통계**: 모든 대미지는 `GameManager.recordDamage()`로만 기록
 - **즉시 효과 HP 반영**: 자해/화상/독 등은 효과 발생 즉시 `hpBarSystem.updateHP()` 호출
 
-### 🔄 통합 상태이상 시스템 (Configuration-Driven)
-**모든 상태이상 카드는 통합 시스템 사용 - 하드코딩 금지!**
-
-#### ❌ 레거시 방식 (금지)
-```javascript
-// 9줄 하드코딩 - 면역 메시지 없음
-let burned = false;
-const burnRoll = Math.random() * 100;
-if (burnRoll < this.burnChance) {
-    const result = target.addStatusEffect('burn', 15, 1);
-    burned = result.success;
-}
-return { burned, statusType: burned ? 'burn' : null };
-```
-
-#### ✅ 통합 방식 (필수)
-```javascript
-// 5줄 설정 기반 - 면역/중복/성공 자동 메시지
-return {
-    statusEffect: {
-        type: 'burn',
-        chance: this.burnChance,  // ⚠️ this.xxxChance 사용 (하드코딩 금지)
-        power: GameConfig.statusEffects.burn.defaultPercent,
-        duration: 1
-    }
-};
-```
-
-#### 핵심 원칙
-1. **`chance`는 항상 `this.xxxChance` 사용**: 하드코딩(100, 50 등) 금지
-2. **카드 정의에 xxxChance 속성 추가**: `burnChance: 100`, `stunChance: 40`
-3. **BattleSystem.tryApplyStatusEffect()가 자동 처리**: 확률체크 + 면역체크 + 메시지 표시
-4. **면역 시 자동 메시지**: `"🔥 화상 면역!"` (사용자 피드백 보장)
-
-#### statusEffect 구조
-```javascript
-{
-    type: 'burn' | 'stun' | 'poisoned' | 'paralysis' | 'taunt' | 'sand' | 'insult' | 'slow' | 'chains',
-    chance: this.xxxChance,  // 카드 속성 참조 (필수!)
-    power: GameConfig.statusEffects.xxx.defaultPercent || null,
-    duration: 1  // 턴 수
-}
-```
-
-#### 적용 카드 목록 (14개)
-- **공격 카드**: concussion, flame_throw, smog, fireball, karura_strike, flame_burst, flame_ascension
-- **상태이상 카드**: taunt, push_back, sand_throw, hot_breath, insult, net_throw, oil_pour, chains_of_fire, lava_prison, powder_keg
-
-### GameConfig 접근 규칙
+### ⚙️ GameConfig 접근 규칙
 - **안전한 접근 필수**: `GameConfig?.section?.subsection?.property || defaultValue` 사용
 - **하드코딩 대신 설정 추가**: 새 기능 추가 시 먼저 GameConfig에 설정값 정의
 - **카드 효과 설정**: `cardEffects` 섹션에 카드별 설정 추가 (예: thornArmor.strengthGain)
-
-### 버프/UI 즉시 반영 규칙 ⚠️
-- **버프 획득 시 라벨 즉시 업데이트**: `hpBarSystem.updateBuffs(user, isPlayer)` 필수 호출
-- **방어 카드 버프**: processDefenseResult에서 버프 처리 후 updateBuffs 호출
-- **버프 카드**: processBuffResult에서도 동일하게 처리
-- **상태 변경 즉시 반영**: 버프, 디버프, 상태이상 적용 시 관련 UI 즉시 업데이트
-
-### 카드 타입별 메시지 처리
-- **defense 타입 카드**: processDefenseResult() → showDefenseGainMessage() (🛡️ 방어력 +N)
-- **buff 타입 방어력 증가**: processBuffResult()에서 defenseGain 체크 → showDefenseGainMessage() 직접 호출
-- **버프 라벨 vs 즉시 효과**: 지속 버프는 showBuffEffect(), 즉시 방어력 증가는 showDefenseGainMessage()
 
 ## 🚀 Quick Development
 
