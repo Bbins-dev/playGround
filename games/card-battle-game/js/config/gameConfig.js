@@ -151,7 +151,7 @@ const GameConfig = {
             focus: '#3498db',         // 집중 - 파란색 계열
             speed: '#FFD700',         // 고속 - 전기색 계열 (금색)
             scent: '#FF6347',         // 냄새 - 토마토 레드 (불 속성 관련)
-            lastStand: '#FF6B6B'      // 벼리기 - 불 속성 색상 (코랄/주황색)
+            sharpen: '#FF6B6B'        // 벼리기 - 불 속성 색상 (코랄/주황색)
         },
 
         // 스탯 표시 색상
@@ -701,12 +701,12 @@ const GameConfig = {
                 damagePerStack: 10  // 냄새 1당 불 속성 공격 대미지 +10
             }
         },
-        lastStand: {
-            nameKey: 'auto_battle_card_game.ui.buffs.lastStand',
+        sharpen: {
+            nameKey: 'auto_battle_card_game.ui.buffs.sharpen',
             name: '벼리기',
             emoji: '🔥',
             description: '1턴 동안 체력이 1 아래로 내려가지 않음',
-            get color() { return GameConfig.masterColors.buffs.lastStand; }, // 불 속성 색상
+            get color() { return GameConfig.masterColors.buffs.sharpen; }, // 불 속성 색상
             get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수
             targetSelf: true, // 자신에게 적용되는 버프
             display: {
@@ -790,16 +790,14 @@ const GameConfig = {
         // 스테이지별 적 설정 (1-10스테이지)
         stageConfigs: {
             1: {
-                hp: 10000,
+                hp: 50,
                 cards: [
-                    { id: 'karura_strike', count: 1 },
-                    { id: 'oil_pour', count: 1 },
-                    { id: 'chains_of_fire', count: 1 },
-                    { id: 'powder_keg', count: 1 },
-                    { id: 'opportunity_scent', count: 3 },
-                    { id: 'fireball', count: 1 },
-                    { id: 'flame_burst', count: 1 },
-                    { id: 'flame_ascension', count: 1 }
+                    { id: 'sharpen', count: 1 },         // 벼리기 1
+                    { id: 'sharpen', count: 1 },         // 벼리기 2
+                    { id: 'sharpen', count: 1 },         // 벼리기 3
+                    { id: 'karura_strike', count: 1 },   // 카루라일격 1
+                    { id: 'karura_strike', count: 1 },   // 카루라일격 2
+                    { id: 'karura_strike', count: 1 }    // 카루라일격 3
                 ]
             },
             2: {

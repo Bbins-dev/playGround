@@ -280,13 +280,21 @@ class Renderer {
                     }
                 }
             } else {
-                // 적: 0-4는 윗줄(row 0), 5-9는 아랫줄(row 1)
-                if (globalIndex < cardsPerRow) {
+                // 적: 6-9장일 때 윗줄 5장, 아랫줄 나머지
+                if (cardCount <= 5) {
+                    // 5장 이하: 모두 윗줄
                     targetRow = 0;
                     cardIndexInRow = globalIndex;
                 } else {
-                    targetRow = 1;
-                    cardIndexInRow = globalIndex - cardsPerRow;
+                    // 6-9장: 처음 (cardCount-5)장은 아랫줄, 나머지 5장은 윗줄
+                    const bottomRowCount = cardCount - 5;
+                    if (globalIndex < bottomRowCount) {
+                        targetRow = 1;  // 아랫줄
+                        cardIndexInRow = globalIndex;
+                    } else {
+                        targetRow = 0;  // 윗줄
+                        cardIndexInRow = globalIndex - bottomRowCount;
+                    }
                 }
             }
 
@@ -300,9 +308,12 @@ class Renderer {
                     cardsInTargetRow = targetRow === 0 ? newCardsCount : 5;
                 }
             } else {
-                cardsInTargetRow = targetRow === 0 ?
-                    Math.min(cardCount, cardsPerRow) :
-                    Math.max(0, cardCount - cardsPerRow);
+                if (cardCount <= 5) {
+                    cardsInTargetRow = cardCount;  // 모두 윗줄
+                } else {
+                    const bottomRowCount = cardCount - 5;
+                    cardsInTargetRow = targetRow === 1 ? bottomRowCount : 5;
+                }
             }
 
             if (cardsInTargetRow === 0) return;

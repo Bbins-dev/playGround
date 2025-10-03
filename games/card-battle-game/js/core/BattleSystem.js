@@ -204,8 +204,8 @@ class BattleSystem {
             return;
         }
 
-        // 카드 발동 순서 정렬 (GameConfig 기반)
-        const sortedCards = this.sortCardsByActivationOrder(activatableCards, currentPlayer === this.enemy);
+        // 카드 발동 순서: 손패 배열 순서 그대로 사용 (인덱스 0부터 순차적)
+        const sortedCards = activatableCards;
 
         // 카드를 순차적으로 발동
         for (let i = 0; i < sortedCards.length; i++) {
