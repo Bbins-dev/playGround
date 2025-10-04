@@ -1716,7 +1716,7 @@
     border: 2px solid var(--color-primary, #FFD700);
     border-radius: 12px;
     padding: 24px;
-    width: 550px;
+    width: 600px;  /* 550px → 600px로 확대 */
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
     animation: tooltipFadeIn 150ms ease;
 }
