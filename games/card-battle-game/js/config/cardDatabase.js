@@ -1416,7 +1416,7 @@ const CardDatabase = {
             type: 'buff',
             element: 'fire',
             power: 0,
-            accuracy: 70,
+            accuracy: 100,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.sharpen.description',
             effect: function(user, target, battleSystem) {
