@@ -103,14 +103,23 @@
       "defense": "Defense",
       "status_effects": {
         "taunt": "Taunt",
+        "taunt_description": "Only attack cards activate on the next turn. Cannot use defense or buff cards.",
         "stun": "Stun",
+        "stun_description": "No cards activate on the next turn. Completely skips the turn.",
         "paralysis": "Paralysis",
+        "paralysis_description": "30% chance to skip turn. When paralysis triggers, cards do not activate for that turn.",
         "burn": "Burn",
+        "burn_description": "Takes 15% of max HP as burn damage at turn start. Ignores defense.",
         "poisoned": "Poison",
+        "poisoned_description": "Takes 15% of max HP as poison damage at turn end. Ignores defense.",
         "sand": "Sand",
+        "sand_description": "Reduces attack card accuracy by 30%. Lasts for 2 turns.",
         "insult": "Insult",
+        "insult_description": "Reduces defense card activation rate by 30%. Lasts for 2 turns.",
         "slow": "Slow",
-        "chains": "Chains"
+        "slow_description": "Reduces status card activation rate by 30%. Lasts for 2 turns.",
+        "chains": "Chains",
+        "chains_description": "Strength buffs are not applied for 1 turn. Attack power is temporarily reduced."
       },
       "buffs": {
       },
@@ -330,13 +339,20 @@
       },
       "buffs": {
         "strength": "STR",
+        "strength_description": "Deals 3 additional damage per stack when attacking. Can stack multiple times.",
         "defense": "DEF",
         "enhance": "ENH",
+        "enhance_description": "Increases attack card damage by 50%. Effect disappears after turn ends.",
         "focus": "FOC",
+        "focus_description": "Increases normal element attack card accuracy by 30%.",
         "speed": "SPD",
+        "speed_description": "Increases the activation count of normal element attack cards.",
         "scent": "SCN",
+        "scent_description": "Increases fire element attack card damage by 10 per stack.",
         "sharpen": "SRP",
-        "hotWind": "HTW"
+        "sharpen_description": "HP cannot go below 1 until next turn starts. Last stand effect.",
+        "hotWind": "HTW",
+        "hotWind_description": "Increases fire element attack card activation count by remaining Hot Wind buff turns."
       },
       "elements": {
         "fire": "Fire",
@@ -355,6 +371,10 @@
         "status": "Status"
       },
       "hp_label": "HP",
+      "stats": {
+        "defense_description": "Defense that reduces incoming damage. When attacked, defense is consumed first, and HP decreases only when defense reaches 0.",
+        "hp_description": "Character's life force. Defeat occurs when it reaches 0."
+      },
       "shield_bash_damage": "Shield bash damage",
       "concussion_stun": "Stunned by concussion!",
       "counter_damage": "Counter attack damage",

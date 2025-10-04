@@ -103,14 +103,23 @@
       "defense": "방어력",
       "status_effects": {
         "taunt": "도발",
+        "taunt_description": "다음 턴에는 공격 카드만 발동됩니다. 방어나 버프 카드를 사용할 수 없습니다.",
         "stun": "기절",
+        "stun_description": "다음 턴에 아무 카드도 발동되지 않습니다. 턴을 완전히 건너뛰게 됩니다.",
         "paralysis": "마비",
+        "paralysis_description": "30% 확률로 턴을 넘깁니다. 마비가 발동하면 해당 턴의 카드가 발동되지 않습니다.",
         "burn": "화상",
+        "burn_description": "턴 시작 시 최대 체력의 15%만큼 화상 대미지를 받습니다. 방어력을 무시합니다.",
         "poisoned": "중독",
+        "poisoned_description": "턴 종료 시 최대 체력의 15%만큼 중독 대미지를 받습니다. 방어력을 무시합니다.",
         "sand": "모래",
+        "sand_description": "공격 카드의 명중률이 30% 감소합니다. 2턴 동안 지속됩니다.",
         "insult": "모욕",
+        "insult_description": "방어 카드의 발동률이 30% 감소합니다. 2턴 동안 지속됩니다.",
         "slow": "둔화",
-        "chains": "사슬"
+        "slow_description": "상태이상 카드의 발동률이 30% 감소합니다. 2턴 동안 지속됩니다.",
+        "chains": "사슬",
+        "chains_description": "1턴 간 힘 버프가 적용되지 않습니다. 공격력이 일시적으로 감소합니다."
       },
       "buffs": {
       },
@@ -330,13 +339,20 @@
       },
       "buffs": {
         "strength": "힘",
+        "strength_description": "공격 시 1중첩당 3의 추가 대미지를 줍니다. 여러 번 중첩될 수 있습니다.",
         "defense": "방어력",
         "enhance": "강화",
+        "enhance_description": "공격 카드의 대미지가 50% 증가합니다. 턴이 지나면 효과가 사라집니다.",
         "focus": "집중",
+        "focus_description": "노멀 속성 공격 카드의 명중률이 30% 증가합니다.",
         "speed": "고속",
+        "speed_description": "노멀 속성 공격 카드의 발동 횟수가 증가합니다.",
         "scent": "냄새",
+        "scent_description": "불 속성 공격 카드의 대미지가 1중첩당 10씩 증가합니다.",
         "sharpen": "벼리기",
-        "hotWind": "열풍"
+        "sharpen_description": "다음 턴 시작까지 체력이 1 아래로 내려가지 않습니다. 기사회생 효과입니다.",
+        "hotWind": "열풍",
+        "hotWind_description": "불 속성 공격 카드의 발동 횟수가 열풍 버프의 잔여 턴 수만큼 증가합니다."
       },
       "elements": {
         "fire": "불",
@@ -355,6 +371,10 @@
         "status": "상태이상"
       },
       "hp_label": "체력",
+      "stats": {
+        "defense_description": "받는 피해를 줄여주는 방어력입니다. 공격을 받으면 먼저 방어력이 소모되고, 방어력이 0이면 체력이 감소합니다.",
+        "hp_description": "캐릭터의 생명력입니다. 0이 되면 전투에서 패배합니다."
+      },
       "shield_bash_damage": "방패치기 피해",
       "concussion_stun": "뇌진탕으로 기절시켰습니다!",
       "counter_damage": "카운터어택 피해",

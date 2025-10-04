@@ -1674,3 +1674,98 @@
         -1px 1px 0 #000,
         1px 1px 0 #000;
 }
+
+/* 클릭 가능한 인라인 라벨 스타일 */
+.inline-label.clickable-label {
+    cursor: pointer;
+    transition: transform var(--timing-ui-fast, 150ms) ease,
+                box-shadow var(--timing-ui-fast, 150ms) ease,
+                filter var(--timing-ui-fast, 150ms) ease;
+}
+
+.inline-label.clickable-label:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+    filter: brightness(1.15);
+}
+
+.inline-label.clickable-label:active {
+    transform: scale(1.02);
+}
+
+/* 툴팁 모달 스타일 (버프/상태이상 설명) */
+.tooltip-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 3000;  /* 다른 모달들(2000)보다 위에 표시 */
+    padding: 20px;
+}
+
+.tooltip-modal-content {
+    background: rgba(0, 0, 0, 0.95);
+    border: 2px solid var(--color-primary, #FFD700);
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 360px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+    animation: tooltipFadeIn 150ms ease;
+}
+
+.tooltip-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.tooltip-emoji {
+    font-size: 32px;
+    line-height: 1;
+}
+
+.tooltip-name {
+    font-size: 24px;
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+}
+
+.tooltip-description {
+    font-size: 17px;
+    line-height: 1.5;
+    color: #FFFFFF;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* 툴팁 모달 애니메이션 */
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes tooltipFadeOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}

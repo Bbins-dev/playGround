@@ -488,6 +488,17 @@
             </div>
         </div>
 
+        <!-- 버프/상태이상 툴팁 모달 -->
+        <div id="tooltip-modal" class="modal hidden tooltip-modal">
+            <div class="tooltip-modal-content">
+                <div class="tooltip-header">
+                    <span class="tooltip-emoji"></span>
+                    <span class="tooltip-name"></span>
+                </div>
+                <div class="tooltip-description"></div>
+            </div>
+        </div>
+
     </div>
 
     <!-- 스크립트 로드 -->
@@ -510,6 +521,7 @@
     <!-- 오디오 시스템 -->
     <script src="js/systems/AudioSystem.js"></script>
     <script src="js/ui/HPBarSystem.js"></script>
+    <script src="js/ui/BuffStatusTooltipModal.js"></script>
     <script src="js/ui/EffectSystem.js"></script>
     <!-- UI 기본 컴포넌트 먼저 로드 -->
     <script src="js/ui/LoadingScreen.js"></script>
