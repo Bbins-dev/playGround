@@ -198,7 +198,7 @@ class Player {
 
         const statusEffect = {
             type: statusType,
-            power: power || statusConfig.defaultPercent || statusConfig.defaultChance || 0,
+            power: power || statusConfig.defaultDamage || statusConfig.defaultChance || 0,
             duration: duration || statusConfig.duration || -1, // -1은 영구
             turnsLeft: duration || statusConfig.duration || -1
         };

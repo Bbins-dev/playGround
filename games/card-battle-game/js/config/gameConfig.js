@@ -450,6 +450,7 @@ const GameConfig = {
         fire: {
             name: '불',
             nameKey: 'auto_battle_card_game.elements.fire',
+            descriptionKey: 'auto_battle_card_game.ui.elements.fire_description',
             get color() { return GameConfig.masterColors.elements.fire; },
             emoji: '🔥',
             strong: 'poison',       // 독에 강함
@@ -464,6 +465,7 @@ const GameConfig = {
         water: {
             name: '물',
             nameKey: 'auto_battle_card_game.elements.water',
+            descriptionKey: 'auto_battle_card_game.ui.elements.water_description',
             get color() { return GameConfig.masterColors.elements.water; },
             emoji: '💧',
             strong: 'fire',        // 불에 강함
@@ -477,6 +479,7 @@ const GameConfig = {
         electric: {
             name: '전기',
             nameKey: 'auto_battle_card_game.elements.electric',
+            descriptionKey: 'auto_battle_card_game.ui.elements.electric_description',
             get color() { return GameConfig.masterColors.elements.electric; },
             emoji: '⚡',
             strong: 'water',       // 물에 강함
@@ -491,6 +494,7 @@ const GameConfig = {
         poison: {
             name: '독',
             nameKey: 'auto_battle_card_game.elements.poison',
+            descriptionKey: 'auto_battle_card_game.ui.elements.poison_description',
             get color() { return GameConfig.masterColors.elements.poison; },
             emoji: '☠️',
             strong: 'electric',    // 전기에 강함
@@ -505,6 +509,7 @@ const GameConfig = {
         normal: {
             name: '노멀',
             nameKey: 'auto_battle_card_game.elements.normal',
+            descriptionKey: 'auto_battle_card_game.ui.elements.normal_description',
             get color() { return GameConfig.masterColors.elements.normal; },
             emoji: '👊',
             strong: null,          // 강점 없음
@@ -573,8 +578,8 @@ const GameConfig = {
             descriptionKey: 'auto_battle_card_game.ui.status_effects.burn_description',
             name: '화상',
             emoji: '🔥',
-            description: '턴 시작 시 최대 HP의 일정 비율 대미지',
-            get defaultPercent() { return GameConfig.constants.probabilities.statusPercent; },
+            description: '턴 시작 시 기본 피해 5',
+            defaultDamage: 5,
             duration: 1,
             get color() { return GameConfig.masterColors.statusEffects.burn; }
         },
@@ -583,8 +588,8 @@ const GameConfig = {
             descriptionKey: 'auto_battle_card_game.ui.status_effects.poisoned_description',
             name: '중독',
             emoji: '☠️',
-            description: '턴 종료 시 최대 HP의 일정 비율 대미지',
-            get defaultPercent() { return GameConfig.constants.probabilities.statusPercent; },
+            description: '턴 종료 시 기본 피해 5',
+            defaultDamage: 5,
             get color() { return GameConfig.masterColors.statusEffects.poisoned; }
         },
         sand: {
@@ -784,6 +789,7 @@ const GameConfig = {
     cardTypes: {
         attack: {
             nameKey: 'auto_battle_card_game.ui.card_types.attack',
+            descriptionKey: 'auto_battle_card_game.ui.card_types.attack_description',
             name: '공격',
             get color() { return GameConfig.masterColors.cardTypes.attack; },
             emoji: '⚔️',
@@ -791,6 +797,7 @@ const GameConfig = {
         },
         defense: {
             nameKey: 'auto_battle_card_game.ui.card_types.defense',
+            descriptionKey: 'auto_battle_card_game.ui.card_types.defense_description',
             name: '방어',
             get color() { return GameConfig.masterColors.cardTypes.defense; },
             emoji: '🛡️',
@@ -798,6 +805,7 @@ const GameConfig = {
         },
         status: {
             nameKey: 'auto_battle_card_game.ui.card_types.status',
+            descriptionKey: 'auto_battle_card_game.ui.card_types.status_description',
             name: '상태이상',
             get color() { return GameConfig.masterColors.cardTypes.status; },
             emoji: '💀',
@@ -805,6 +813,7 @@ const GameConfig = {
         },
         buff: {
             nameKey: 'auto_battle_card_game.ui.card_types.buff',
+            descriptionKey: 'auto_battle_card_game.ui.card_types.buff_description',
             name: '버프',
             get color() { return GameConfig.masterColors.cardTypes.buff; },
             emoji: '✨',
@@ -812,6 +821,7 @@ const GameConfig = {
         },
         debuff: {
             nameKey: 'auto_battle_card_game.ui.card_types.debuff',
+            descriptionKey: 'auto_battle_card_game.ui.card_types.debuff_description',
             name: '디버프',
             get color() { return GameConfig.masterColors.cardTypes.debuff; },
             emoji: '💔',
@@ -819,6 +829,7 @@ const GameConfig = {
         },
         special: {
             nameKey: 'auto_battle_card_game.ui.card_types.special',
+            descriptionKey: 'auto_battle_card_game.ui.card_types.special_description',
             name: '특수',
             get color() { return GameConfig.masterColors.cardTypes.special; },
             emoji: '🔮',

@@ -1017,7 +1017,7 @@ class BattleSystem {
             return false;
         }
 
-        const damage = Math.floor(player.maxHP * poisonEffect.power / 100);
+        const damage = poisonEffect.power; // 고정 데미지 (기본 5, 증폭 가능)
         if (GameConfig?.debugMode?.showDamageCalculation) {
             console.log(`[DOT] 독: -${damage} HP (${player.name})`);
         }
@@ -1054,7 +1054,7 @@ class BattleSystem {
             return false;
         }
 
-        const damage = Math.floor(player.maxHP * burnEffect.power / 100);
+        const damage = burnEffect.power; // 고정 데미지 (기본 5)
 
         if (damage > 0) {
             const position = isPlayerTurn ?
