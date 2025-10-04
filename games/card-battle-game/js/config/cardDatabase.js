@@ -491,10 +491,15 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
 
-                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                // 곱셈 버프 적용 (강화, Li⁺)
+                let multiplier = 1.0;
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
-                    baseDamage = Math.floor(baseDamage * 1.5);
+                    multiplier *= 1.5;
                 }
+                if (user.hasLithiumBuff && user.hasLithiumBuff()) {
+                    multiplier *= user.getLithiumTurns();
+                }
+                baseDamage = Math.floor(baseDamage * multiplier);
 
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
@@ -759,10 +764,15 @@ const CardDatabase = {
                 // 여기서는 카드의 본연의 효과만 처리 (상대에게 공격)
                 let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
 
-                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                // 곱셈 버프 적용 (강화, Li⁺)
+                let multiplier = 1.0;
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
-                    baseDamage = Math.floor(baseDamage * 1.5);
+                    multiplier *= 1.5;
                 }
+                if (user.hasLithiumBuff && user.hasLithiumBuff()) {
+                    multiplier *= user.getLithiumTurns();
+                }
+                baseDamage = Math.floor(baseDamage * multiplier);
 
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
@@ -807,10 +817,15 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
 
-                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                // 곱셈 버프 적용 (강화, Li⁺)
+                let multiplier = 1.0;
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
-                    baseDamage = Math.floor(baseDamage * 1.5);
+                    multiplier *= 1.5;
                 }
+                if (user.hasLithiumBuff && user.hasLithiumBuff()) {
+                    multiplier *= user.getLithiumTurns();
+                }
+                baseDamage = Math.floor(baseDamage * multiplier);
 
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
@@ -849,10 +864,15 @@ const CardDatabase = {
                 // 여기서는 카드의 본연의 효과만 처리 (상대에게 공격)
                 let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
 
-                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                // 곱셈 버프 적용 (강화, Li⁺)
+                let multiplier = 1.0;
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
-                    baseDamage = Math.floor(baseDamage * 1.5);
+                    multiplier *= 1.5;
                 }
+                if (user.hasLithiumBuff && user.hasLithiumBuff()) {
+                    multiplier *= user.getLithiumTurns();
+                }
+                baseDamage = Math.floor(baseDamage * multiplier);
 
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
@@ -893,10 +913,15 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
 
-                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                // 곱셈 버프 적용 (강화, Li⁺)
+                let multiplier = 1.0;
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
-                    baseDamage = Math.floor(baseDamage * 1.5);
+                    multiplier *= 1.5;
                 }
+                if (user.hasLithiumBuff && user.hasLithiumBuff()) {
+                    multiplier *= user.getLithiumTurns();
+                }
+                baseDamage = Math.floor(baseDamage * multiplier);
 
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
@@ -1456,6 +1481,38 @@ const CardDatabase = {
                     templateData: {
                         name: GameConfig?.buffs?.hotWind?.name || '열풍',
                         value: user.hotWindTurns
+                    }
+                };
+            }
+        });
+
+        // 배터리폭발 카드 (Li⁺ 버프 카드)
+        this.addCard({
+            id: 'battery_explosion',
+            nameKey: 'auto_battle_card_game.ui.cards.battery_explosion.name',
+            type: 'buff',
+            element: 'fire',
+            power: 0,
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.battery_explosion.description',
+            effect: function(user, target, battleSystem) {
+                // Li⁺ 버프 획득 (1턴, 재사용 시 누적)
+                user.addLithiumBuff(1);
+
+                // 버프 라벨 즉시 업데이트
+                const isPlayer = (user === battleSystem.player);
+                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
+                    buffType: 'lithium',
+                    lithiumGain: 1,
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig?.buffs?.lithium?.name || 'Li⁺',
+                        value: user.lithiumTurns
                     }
                 };
             }

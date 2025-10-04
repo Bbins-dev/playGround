@@ -335,6 +335,10 @@
         "hot_wind": {
           "name": "Hot Wind",
           "description": "Deal 5 damage to yourself and gain {buff:hotWind} buff. {fire} {cardType:attack} cards gain bonus activations equal to {buff:hotWind} turns remaining."
+        },
+        "battery_explosion": {
+          "name": "Battery Blast",
+          "description": "Gain {buff:lithium} for 1 turn. {fire} {cardType:attack} cards' current damage is multiplied by {buff:lithium} remaining turns."
         }
       },
       "buffs": {
@@ -352,7 +356,9 @@
         "sharpen": "SRP",
         "sharpen_description": "HP cannot go below 1 until next turn starts. Last stand effect.",
         "hotWind": "HTW",
-        "hotWind_description": "Increases fire element attack card activation count by remaining Hot Wind buff turns."
+        "hotWind_description": "Increases fire element attack card activation count by remaining Hot Wind buff turns.",
+        "lithium": "Li⁺",
+        "lithium_description": "Fire element attack card damage is multiplied by remaining Li⁺ turns."
       },
       "elements": {
         "fire": "Fire",

@@ -35,6 +35,7 @@ class Player {
         this.scentTurns = 0; // 냄새 버프 남은 턴 수
         this.sharpenTurns = 0; // 벼리기 버프 남은 턴 수
         this.hotWindTurns = 0; // 열풍 버프 남은 턴 수
+        this.lithiumTurns = 0; // Li⁺ 버프 남은 턴 수 (곱셈 배율)
 
         // 턴 관련
         this.currentCardIndex = 0;
@@ -340,6 +341,21 @@ class Player {
         return turns;
     }
 
+    // Li⁺ 버프 관련 메서드
+    hasLithiumBuff() {
+        return this.lithiumTurns > 0;
+    }
+
+    addLithiumBuff(turns) {
+        this.lithiumTurns += turns;  // 누적 방식 (재사용 시 턴 추가)
+        this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
+        return turns;
+    }
+
+    getLithiumTurns() {
+        return this.lithiumTurns;
+    }
+
     clearBuffs() {
         this.strength = 0;
         this.enhanceTurns = 0;
@@ -349,6 +365,7 @@ class Player {
         this.scentBonus = 0;
         this.scentTurns = 0;
         this.hotWindTurns = 0;
+        this.lithiumTurns = 0;
     }
 
     // 런타임 카드 스탯 업데이트 (버프/상태이상 반영)
@@ -512,6 +529,11 @@ class Player {
                     }
                 }
             });
+        }
+
+        // Li⁺ 버프 턴수 차감
+        if (this.lithiumTurns > 0) {
+            this.lithiumTurns--;
         }
 
         // 런타임 스탯 업데이트 (버프가 차감되었으므로)
