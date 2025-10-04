@@ -380,34 +380,34 @@ class Player {
             // 명중률 계산 (Card.checkAccuracy 로직과 동일)
             let modifiedAccuracy = card.accuracy;
 
-            // 모래 상태이상 체크 (공격 카드만) - 곱셈 방식으로 감소
+            // 모래 상태이상 체크 (공격 카드만) - 곱셈 방식으로 감소 (소수점 버림)
             if (card.type === 'attack' && this.hasStatusEffect('sand')) {
                 const sandEffect = this.statusEffects.find(e => e.type === 'sand');
                 if (sandEffect) {
-                    modifiedAccuracy = Math.max(0, modifiedAccuracy * (1 - sandEffect.power / 100));
+                    modifiedAccuracy = Math.max(0, Math.floor(modifiedAccuracy * (1 - sandEffect.power / 100)));
                 }
             }
 
-            // 모욕 상태이상 체크 (방어 카드만) - 곱셈 방식으로 감소
+            // 모욕 상태이상 체크 (방어 카드만) - 곱셈 방식으로 감소 (소수점 버림)
             if (card.type === 'defense' && this.hasStatusEffect('insult')) {
                 const insultEffect = this.statusEffects.find(e => e.type === 'insult');
                 if (insultEffect) {
-                    modifiedAccuracy = Math.max(0, modifiedAccuracy * (1 - insultEffect.power / 100));
+                    modifiedAccuracy = Math.max(0, Math.floor(modifiedAccuracy * (1 - insultEffect.power / 100)));
                 }
             }
 
-            // 둔화 상태이상 체크 (상태이상 카드만) - 곱셈 방식으로 감소
+            // 둔화 상태이상 체크 (상태이상 카드만) - 곱셈 방식으로 감소 (소수점 버림)
             if (card.type === 'status' && this.hasStatusEffect('slow')) {
                 const slowEffect = this.statusEffects.find(e => e.type === 'slow');
                 if (slowEffect) {
-                    modifiedAccuracy = Math.max(0, modifiedAccuracy * (1 - slowEffect.power / 100));
+                    modifiedAccuracy = Math.max(0, Math.floor(modifiedAccuracy * (1 - slowEffect.power / 100)));
                 }
             }
 
-            // 집중 버프 체크 (노멀 공격 카드만) - 상태이상 적용 후 곱셈 방식으로 증가
+            // 집중 버프 체크 (노멀 공격 카드만) - 상태이상 적용 후 곱셈 방식으로 증가 (소수점 버림)
             if (card.type === 'attack' && card.element === 'normal' && this.hasFocusBuff()) {
                 const focusEffect = GameConfig?.buffs?.focus?.effect?.accuracy || 30; // 30%
-                modifiedAccuracy = modifiedAccuracy * (1 + focusEffect / 100);
+                modifiedAccuracy = Math.floor(modifiedAccuracy * (1 + focusEffect / 100));
             }
 
             // 명중률 상한 100% 제한
@@ -452,13 +452,8 @@ class Player {
             }
         });
 
-        // 벼리기 버프 턴수 차감 (턴 시작 시 - 방어력 초기화와 동일한 타이밍)
-        if (this.sharpenTurns > 0) {
-            this.sharpenTurns--;
-        }
-
-        // 화상 데미지는 BattleSystem에서 처리하므로 여기서는 제외
-        // this.processStatusEffect('burn', 'start'); // BattleSystem으로 이동됨
+        // 벼리기 버프 턴수 차감은 BattleSystem.startTurn()에서 처리 (UI 동기화를 위해)
+        // 화상 데미지도 BattleSystem에서 처리
 
         // 런타임 스탯 업데이트 (버프/상태이상이 변경되었으므로)
         this.updateRuntimeCardStats();
@@ -500,8 +495,6 @@ class Player {
                 this.scentBonus = 0;
             }
         }
-
-        // 벼리기 버프 턴수 차감은 startTurn()에서 처리 (턴 시작 시 - 방어력 초기화와 동일한 타이밍)
 
         // 열풍 버프 턴수 차감
         if (this.hotWindTurns > 0) {

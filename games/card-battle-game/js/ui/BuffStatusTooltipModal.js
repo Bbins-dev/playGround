@@ -70,6 +70,11 @@ class BuffStatusTooltipModal {
      * @param {string} labelKey - 'strength', 'burn', 'attack' 등
      */
     show(labelType, labelKey) {
+        // 클릭 사운드 재생 (중앙화된 처리)
+        if (window.gameManager?.audioSystem) {
+            window.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+        }
+
         // 초기화되지 않았으면 재시도 (Lazy Initialization)
         if (!this.modal) {
             this.initialize();
@@ -154,6 +159,23 @@ class BuffStatusTooltipModal {
      * @returns {Object|null} {emoji, name, color}
      */
     getLabelInfo(labelType, labelKey) {
+        // 방어속성 배지 특별 처리
+        if (labelType === 'defenseElement') {
+            const elementConfig = GameConfig?.elements?.[labelKey];
+            if (elementConfig) {
+                let name = labelKey;
+                if (elementConfig.nameKey && typeof I18nHelper !== 'undefined') {
+                    name = I18nHelper.getText(elementConfig.nameKey) || labelKey;
+                }
+                return {
+                    emoji: elementConfig.emoji || '🛡️',
+                    name: name,
+                    color: elementConfig.color || '#999'
+                };
+            }
+            return null;
+        }
+
         // DescriptionParser가 있으면 재사용
         if (typeof DescriptionParser !== 'undefined') {
             return DescriptionParser.getLabelInfo(labelType, labelKey);
@@ -195,6 +217,11 @@ class BuffStatusTooltipModal {
         }
         if (labelType === 'hp') {
             return this.getStatDescription('hp');
+        }
+
+        // 방어속성 배지 처리 (defenseElement)
+        if (labelType === 'defenseElement') {
+            return this.getDefenseElementDescription(labelKey);
         }
 
         // 속성 처리
@@ -267,6 +294,30 @@ class BuffStatusTooltipModal {
 
         // 폴백
         return elementConfig.description || `${element} 속성에 대한 설명이 없습니다.`;
+    }
+
+    /**
+     * 방어속성 배지 설명 가져오기 (간결한 버전)
+     * @param {string} element - 'fire', 'water', 'electric', 'poison', 'normal'
+     * @returns {string} 설명 텍스트
+     */
+    getDefenseElementDescription(element) {
+        // 새로 추가한 defense_element_descriptions 키 사용
+        if (typeof I18nHelper !== 'undefined') {
+            const descriptionKey = `auto_battle_card_game.ui.defense_element_descriptions.${element}`;
+            const description = I18nHelper.getText(descriptionKey);
+            if (description && description !== descriptionKey) {
+                return description;
+            }
+        }
+
+        // 폴백: 기본 속성 설명 사용
+        const elementConfig = GameConfig?.elements?.[element];
+        if (elementConfig) {
+            return elementConfig.description || `${element} 방어속성에 대한 설명이 없습니다.`;
+        }
+
+        return `${element} 방어속성에 대한 설명이 없습니다.`;
     }
 }
 

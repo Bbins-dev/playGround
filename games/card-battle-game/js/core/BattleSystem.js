@@ -107,7 +107,16 @@ class BattleSystem {
             this.gameManager.updateStatsOnTurn();
         }
 
-        // 1. 먼저 방어력 초기화 처리 (플레이어와 적 모두)
+        // ===== 1. 턴 시작 시 제거되는 버프 차감 =====
+        // 벼리기 버프 차감 (턴 시작 시 - "다음 턴 시작까지" 지속)
+        if (currentPlayer.sharpenTurns > 0) {
+            currentPlayer.sharpenTurns--;
+
+            // 버프 UI 즉시 업데이트
+            this.hpBarSystem.updateBuffs(currentPlayer, isPlayerTurn);
+        }
+
+        // ===== 2. 방어력 초기화 =====
         if (currentPlayer.defense > 0) {
             // 방어력 감소 애니메이션 실행
             await this.hpBarSystem.animateDefenseDecrease(currentPlayer, isPlayerTurn);
@@ -116,20 +125,19 @@ class BattleSystem {
             currentPlayer.resetDefense();
         }
 
-        // 2. 그 다음 화상 데미지 처리 (방어력 초기화 후)
+        // ===== 3. 화상 데미지 처리 =====
         const burnDamageApplied = await this.processBurnDamage(currentPlayer, isPlayerTurn);
 
         // 화상 데미지 후 즉시 사망 체크
         if (burnDamageApplied && currentPlayer.isDead()) {
-            // 화상 데미지로 사망했을 경우 즉시 전투 종료
             await this.checkBattleEnd();
             return;
         }
 
-        // 3. 마지막으로 턴 시작 처리 (화상 처리 제외)
+        // ===== 4. Player.startTurn() 호출 (카드 초기화만) =====
         currentPlayer.startTurn();
 
-        // 스테이지 회복 애니메이션 (플레이어 턴 시작 시만)
+        // ===== 5. 스테이지 회복 =====
         if (isPlayerTurn && this.gameManager.stageHealingAmount > 0) {
             const playerPosition = this.effectSystem.getPlayerPosition();
             this.effectSystem.showDamageNumber(
@@ -141,20 +149,20 @@ class BattleSystem {
             // HP바 업데이트
             this.hpBarSystem.updateHP(this.player, true);
 
-            // 회복량 초기화 (다음 턴에는 표시하지 않도록)
+            // 회복량 초기화
             this.gameManager.stageHealingAmount = 0;
 
-            // 회복 애니메이션을 위한 잠시 대기
+            // 회복 애니메이션 대기
             await this.wait(800);
         }
 
-        // 기절 상태 체크
+        // ===== 6. 기절 상태 체크 (턴 스킵) =====
         if (currentPlayer.hasStatusEffect('stun')) {
             const position = isPlayerTurn ?
                 this.effectSystem.getPlayerPosition() :
                 this.effectSystem.getEnemyPosition();
 
-            // 기절 효과 표시 (읽기 시간 포함)
+            // 기절 효과 표시
             await this.effectSystem.showEffectMessage('stun', position, 'status_applied');
 
             // 기절 해제
@@ -166,12 +174,10 @@ class BattleSystem {
             return;
         }
 
-        // 마비 상태 체크
+        // ===== 7. 마비 상태 체크 (확률적 턴 스킵) =====
         if (currentPlayer.hasStatusEffect('paralysis')) {
             const paralysisChance = currentPlayer.statusEffects.find(e => e.type === 'paralysis').power;
             if (Math.random() * 100 < paralysisChance) {
-
-                // 마비 효과 표시
                 const position = isPlayerTurn ?
                     this.effectSystem.getPlayerPosition() :
                     this.effectSystem.getEnemyPosition();
@@ -184,12 +190,13 @@ class BattleSystem {
             }
         }
 
-        // 턴 인디케이터 표시
+        // ===== 8. 턴 인디케이터 표시 =====
         this.hpBarSystem.showTurnIndicator(currentPlayer.name, isPlayerTurn);
 
         // 잠시 대기 후 카드 발동 시작
         await this.wait(1000);
 
+        // ===== 9. 카드 발동 시작 =====
         this.battlePhase = 'cardActivation';
         await this.activateCards();
     }

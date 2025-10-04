@@ -58,8 +58,10 @@ const CardDatabase = {
             activationCount: 3, // 기본값, 턴 시작 시 동적으로 3-5로 설정됨
             descriptionKey: 'auto_battle_card_game.ui.cards.random_bash.description',
             isRandomBash: true, // 마구때리기 카드임을 표시
+            minActivation: 3, // 최소 발동 횟수
+            maxActivation: 5, // 최대 발동 횟수
             getRandomActivationCount: function() {
-                return Math.floor(Math.random() * 3) + 3; // 3-5 랜덤
+                return Math.floor(Math.random() * (this.maxActivation - this.minActivation + 1)) + this.minActivation;
             },
             effect: function(user, target, battleSystem) {
                 let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
@@ -525,8 +527,10 @@ const CardDatabase = {
             activationCount: 2, // 기본값, 턴 시작 시 동적으로 2-5로 설정됨
             descriptionKey: 'auto_battle_card_game.ui.cards.bubble_strike.description',
             isRandomBash: true, // 마구때리기 타입 카드
+            minActivation: 2, // 최소 발동 횟수
+            maxActivation: 5, // 최대 발동 횟수
             getRandomActivationCount: function() {
-                return Math.floor(Math.random() * 4) + 2; // 2-5 랜덤
+                return Math.floor(Math.random() * (this.maxActivation - this.minActivation + 1)) + this.minActivation;
             },
             effect: function(user, target, battleSystem) {
                 let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
@@ -794,9 +798,11 @@ const CardDatabase = {
             activationCount: 1, // 기본값, 턴 시작 시 동적으로 1-3으로 설정됨
             descriptionKey: 'auto_battle_card_game.ui.cards.flame_burst.description',
             isRandomBash: true, // 랜덤 연속 공격 카드임을 표시
+            minActivation: 1, // 최소 발동 횟수
+            maxActivation: 3, // 최대 발동 횟수
             burnChance: 10, // 각 타격마다 10% 확률로 화상
             getRandomActivationCount: function() {
-                return Math.floor(Math.random() * 3) + 1; // 1-3 랜덤
+                return Math.floor(Math.random() * (this.maxActivation - this.minActivation + 1)) + this.minActivation;
             },
             effect: function(user, target, battleSystem) {
                 let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
