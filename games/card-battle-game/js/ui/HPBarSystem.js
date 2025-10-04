@@ -229,6 +229,15 @@ class HPBarSystem {
             statusElement.style.borderColor = statusConfig.color;
             statusElement.style.background = `linear-gradient(135deg, ${statusConfig.color}, ${statusConfig.color}CC)`;
 
+            // 클릭 이벤트 추가 (툴팁 모달 표시)
+            statusElement.style.cursor = 'pointer';
+            statusElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.BuffStatusTooltipModal) {
+                    window.BuffStatusTooltipModal.show('status', effect.type);
+                }
+            });
+
             statusContainer.appendChild(statusElement);
         });
     }
@@ -262,6 +271,15 @@ class HPBarSystem {
             buffElement.style.borderColor = buffConfig.color;
             buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
 
+            // 클릭 이벤트 추가 (툴팁 모달 표시)
+            buffElement.style.cursor = 'pointer';
+            buffElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.BuffStatusTooltipModal) {
+                    window.BuffStatusTooltipModal.show('buff', 'strength');
+                }
+            });
+
             buffsContainer.appendChild(buffElement);
         }
 
@@ -286,6 +304,15 @@ class HPBarSystem {
             buffElement.style.borderColor = buffConfig.color;
             buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
 
+            // 클릭 이벤트 추가 (툴팁 모달 표시)
+            buffElement.style.cursor = 'pointer';
+            buffElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.BuffStatusTooltipModal) {
+                    window.BuffStatusTooltipModal.show('buff', 'enhance');
+                }
+            });
+
             buffsContainer.appendChild(buffElement);
         }
 
@@ -309,6 +336,15 @@ class HPBarSystem {
             // 버프별 색상 적용
             buffElement.style.borderColor = buffConfig.color;
             buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
+
+            // 클릭 이벤트 추가 (툴팁 모달 표시)
+            buffElement.style.cursor = 'pointer';
+            buffElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.BuffStatusTooltipModal) {
+                    window.BuffStatusTooltipModal.show('buff', 'focus');
+                }
+            });
 
             buffsContainer.appendChild(buffElement);
         }
@@ -335,6 +371,15 @@ class HPBarSystem {
             buffElement.style.borderColor = buffConfig.color;
             buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
 
+            // 클릭 이벤트 추가 (툴팁 모달 표시)
+            buffElement.style.cursor = 'pointer';
+            buffElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.BuffStatusTooltipModal) {
+                    window.BuffStatusTooltipModal.show('buff', 'speed');
+                }
+            });
+
             buffsContainer.appendChild(buffElement);
         }
 
@@ -360,6 +405,15 @@ class HPBarSystem {
             buffElement.style.borderColor = buffConfig.color;
             buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
 
+            // 클릭 이벤트 추가 (툴팁 모달 표시)
+            buffElement.style.cursor = 'pointer';
+            buffElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.BuffStatusTooltipModal) {
+                    window.BuffStatusTooltipModal.show('buff', 'scent');
+                }
+            });
+
             buffsContainer.appendChild(buffElement);
         }
 
@@ -382,6 +436,15 @@ class HPBarSystem {
             // 버프별 색상 적용
             buffElement.style.borderColor = buffConfig.color;
             buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
+
+            // 클릭 이벤트 추가 (툴팁 모달 표시)
+            buffElement.style.cursor = 'pointer';
+            buffElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.BuffStatusTooltipModal) {
+                    window.BuffStatusTooltipModal.show('buff', 'sharpen');
+                }
+            });
 
             buffsContainer.appendChild(buffElement);
         }
@@ -406,6 +469,15 @@ class HPBarSystem {
             // 버프별 색상 적용
             buffElement.style.borderColor = buffConfig.color;
             buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
+
+            // 클릭 이벤트 추가 (툴팁 모달 표시)
+            buffElement.style.cursor = 'pointer';
+            buffElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.BuffStatusTooltipModal) {
+                    window.BuffStatusTooltipModal.show('buff', 'hotWind');
+                }
+            });
 
             buffsContainer.appendChild(buffElement);
         }
@@ -495,6 +567,23 @@ class HPBarSystem {
 
         // 새 속성 클래스 추가
         defenseElementBadge.classList.add(defenseElement);
+
+        // 클릭 이벤트 추가 (툴팁 모달 표시)
+        defenseElementBadge.style.cursor = 'pointer';
+        // 기존 이벤트 리스너 제거 (중복 방지)
+        const oldClickHandler = defenseElementBadge._clickHandler;
+        if (oldClickHandler) {
+            defenseElementBadge.removeEventListener('click', oldClickHandler);
+        }
+        // 새 이벤트 리스너 추가
+        const newClickHandler = (e) => {
+            e.stopPropagation();
+            if (window.BuffStatusTooltipModal) {
+                window.BuffStatusTooltipModal.show('defenseElement', defenseElement);
+            }
+        };
+        defenseElementBadge.addEventListener('click', newClickHandler);
+        defenseElementBadge._clickHandler = newClickHandler; // 참조 저장
     }
 
     // 방어력 감소 애니메이션 (턴 시작 시 0으로 초기화)

@@ -64,34 +64,34 @@ class Card {
         let actualAccuracy = this.accuracy;
 
 
-        // 모래 상태이상 체크 (공격 카드만) - 곱셈 방식으로 감소
+        // 모래 상태이상 체크 (공격 카드만) - 곱셈 방식으로 감소 (소수점 버림)
         if (this.type === 'attack' && user && user.hasStatusEffect('sand')) {
             const sandEffect = user.statusEffects.find(e => e.type === 'sand');
             if (sandEffect) {
-                actualAccuracy = Math.max(0, actualAccuracy * (1 - sandEffect.power / 100));
+                actualAccuracy = Math.max(0, Math.floor(actualAccuracy * (1 - sandEffect.power / 100)));
             }
         }
 
-        // 모욕 상태이상 체크 (방어 카드만) - 곱셈 방식으로 감소
+        // 모욕 상태이상 체크 (방어 카드만) - 곱셈 방식으로 감소 (소수점 버림)
         if (this.type === 'defense' && user && user.hasStatusEffect('insult')) {
             const insultEffect = user.statusEffects.find(e => e.type === 'insult');
             if (insultEffect) {
-                actualAccuracy = Math.max(0, actualAccuracy * (1 - insultEffect.power / 100));
+                actualAccuracy = Math.max(0, Math.floor(actualAccuracy * (1 - insultEffect.power / 100)));
             }
         }
 
-        // 둔화 상태이상 체크 (상태이상 카드만) - 곱셈 방식으로 감소
+        // 둔화 상태이상 체크 (상태이상 카드만) - 곱셈 방식으로 감소 (소수점 버림)
         if (this.type === 'status' && user && user.hasStatusEffect('slow')) {
             const slowEffect = user.statusEffects.find(e => e.type === 'slow');
             if (slowEffect) {
-                actualAccuracy = Math.max(0, actualAccuracy * (1 - slowEffect.power / 100));
+                actualAccuracy = Math.max(0, Math.floor(actualAccuracy * (1 - slowEffect.power / 100)));
             }
         }
 
-        // 집중 버프 체크 (노멀 공격 카드만) - 상태이상 적용 후 곱셈 방식으로 증가
+        // 집중 버프 체크 (노멀 공격 카드만) - 상태이상 적용 후 곱셈 방식으로 증가 (소수점 버림)
         if (this.type === 'attack' && this.element === 'normal' && user && user.hasFocusBuff && user.hasFocusBuff()) {
             const focusEffect = GameConfig.buffs.focus.effect.accuracy; // 30%
-            actualAccuracy = actualAccuracy * (1 + focusEffect / 100);
+            actualAccuracy = Math.floor(actualAccuracy * (1 + focusEffect / 100));
         }
 
         // 명중률 상한 100% 제한
@@ -180,12 +180,27 @@ class Card {
             // 런타임 - 버프/디버프가 적용된 실시간 스탯
             stats.power = this.buffedPower !== undefined ? this.buffedPower : this.power;
             stats.accuracy = this.modifiedAccuracy !== undefined ? this.modifiedAccuracy : this.accuracy;
-            stats.activation = this.modifiedActivationCount !== undefined ? this.modifiedActivationCount : this.activationCount;
+
+            // 발동횟수 - 랜덤 카드는 범위 표시
+            if (this.modifiedActivationCount !== undefined) {
+                if (this.isRandomBash && this.minActivation !== undefined && this.maxActivation !== undefined) {
+                    // 랜덤 카드: 버프 적용된 범위 표시 (예: "2-5" → "3-6")
+                    const bonus = this.modifiedActivationCount - this.activationCount;
+                    stats.activation = `${this.minActivation + bonus}-${this.maxActivation + bonus}`;
+                } else {
+                    // 일반 카드: 숫자로 표시 (예: 1 → 2)
+                    stats.activation = this.modifiedActivationCount;
+                }
+            } else {
+                // 버프 없을 때: 기본 표시
+                stats.activation = this.isRandomBash ? this.getDisplayActivationCount() : this.activationCount;
+            }
         } else {
             // 기본값 - 원래 카드 스펙
             stats.power = this.power;
             stats.accuracy = this.accuracy;
-            stats.activation = this.activationCount;
+            // 랜덤 발동 카드는 범위 문자열 반환 (예: "1-3")
+            stats.activation = this.isRandomBash ? this.getDisplayActivationCount() : this.activationCount;
         }
 
         return stats;
@@ -198,18 +213,14 @@ class Card {
         this.modifiedActivationCount = undefined;
     }
 
-    // 발동횟수 표시용 (마구때리기 카드는 "2-5", 일반 카드는 숫자)
+    // 발동횟수 표시용 (랜덤 발동 카드는 "2-5", 일반 카드는 숫자)
     getDisplayActivationCount() {
         if (this.isRandomBash) {
-            // 카드별로 정확한 범위 표시
-            if (this.id === 'bubble_strike') {
-                return "2-5";
-            } else if (this.id === 'random_bash') {
-                return "3-5";
-            } else if (this.id === 'flame_burst') {
-                return "1-3";
+            // 자동으로 범위 생성 (Configuration-Driven - 하드코딩 제거)
+            if (this.minActivation !== undefined && this.maxActivation !== undefined) {
+                return `${this.minActivation}-${this.maxActivation}`;
             }
-            // 알 수 없는 랜덤 카드는 물음표로 표시 (부정확한 정보 방지)
+            // 속성이 없으면 물음표 (안전 장치 - 부정확한 정보 방지)
             return "?";
         }
         return this.activationCount.toString();

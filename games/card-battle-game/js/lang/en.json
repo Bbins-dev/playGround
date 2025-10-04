@@ -386,6 +386,13 @@
         "defense_description": "Defense that reduces incoming damage. When attacked, defense is consumed first, and HP decreases only when defense reaches 0.",
         "hp_description": "Character's life force. Defeat occurs when it reaches 0."
       },
+      "defense_element_descriptions": {
+        "fire": "Fire defense attribute active. Take 1.5x damage from Water attacks, 0.5x from Poison attacks.",
+        "water": "Water defense attribute active. Take 1.5x damage from Electric attacks, 0.5x from Fire attacks.",
+        "electric": "Electric defense attribute active. Take 1.5x damage from Poison attacks, 0.5x from Water attacks.",
+        "poison": "Poison defense attribute active. Take 1.5x damage from Fire attacks, 0.5x from Electric attacks.",
+        "normal": "Normal defense attribute active. Take 1x damage from all elemental attacks."
+      },
       "shield_bash_damage": "Shield bash damage",
       "concussion_stun": "Stunned by concussion!",
       "counter_damage": "Counter attack damage",

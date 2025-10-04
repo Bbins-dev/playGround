@@ -1226,6 +1226,17 @@ body {
     min-height: var(--effect-icon-size, 36px);
 }
 
+/* 클릭 가능한 상태이상 라벨 호버 효과 */
+.status-label:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+    filter: brightness(1.15);
+}
+
+.status-label:active {
+    transform: scale(1.02);
+}
+
 /* 업데이트된 버프 라벨 */
 .buff-label {
     display: inline-flex;
@@ -1244,6 +1255,17 @@ body {
     pointer-events: auto;
     min-width: var(--effect-icon-size, 36px);
     min-height: var(--effect-icon-size, 36px);
+}
+
+/* 클릭 가능한 버프 라벨 호버 효과 */
+.buff-label:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+    filter: brightness(1.15);
+}
+
+.buff-label:active {
+    transform: scale(1.02);
 }
 
 /* 방어속성 배지 스타일 */
@@ -1300,6 +1322,17 @@ body {
 .defense-element-badge.normal {
     background: linear-gradient(135deg, rgba(240, 230, 216, 0.85), rgba(230, 220, 206, 0.85));
     border-color: #E0D0C0;
+}
+
+/* 클릭 가능한 방어속성 배지 호버 효과 */
+.defense-element-badge:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+    filter: brightness(1.1);
+}
+
+.defense-element-badge:active {
+    transform: scale(1.02);
 }
 
 /* 방어속성 배지 래퍼 스타일 */
