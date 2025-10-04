@@ -109,9 +109,9 @@
         "paralysis": "Paralysis",
         "paralysis_description": "30% chance to skip turn. When paralysis triggers, cards do not activate for that turn.",
         "burn": "Burn",
-        "burn_description": "Takes 15% of max HP as burn damage at turn start. Ignores defense.",
+        "burn_description": "Takes 5 burn damage at turn start. Ignores defense.",
         "poisoned": "Poison",
-        "poisoned_description": "Takes 15% of max HP as poison damage at turn end. Ignores defense.",
+        "poisoned_description": "Takes 5 poison damage at turn end.",
         "sand": "Sand",
         "sand_description": "Reduces attack card accuracy by 30%. Lasts for 2 turns.",
         "insult": "Insult",
@@ -356,19 +356,30 @@
       },
       "elements": {
         "fire": "Fire",
+        "fire_description": "Represents Fire element cards. When defense element becomes Fire based on hand composition, you take 1.5x damage from Water attacks and 0.5x damage from Poison attacks. Immune to Burn status.",
         "water": "Water",
+        "water_description": "Represents Water element cards. When defense element becomes Water based on hand composition, you take 1.5x damage from Electric attacks and 0.5x damage from Fire attacks.",
         "electric": "Electric",
+        "electric_description": "Represents Electric element cards. When defense element becomes Electric based on hand composition, you take 1.5x damage from Poison attacks and 0.5x damage from Water attacks. Immune to Paralysis status.",
         "poison": "Poison",
+        "poison_description": "Represents Poison element cards. When defense element becomes Poison based on hand composition, you take 1.5x damage from Fire attacks and 0.5x damage from Electric attacks. Immune to Poisoned status.",
         "normal": "Normal",
+        "normal_description": "Represents Normal element cards. When defense element becomes Normal based on hand composition, you take equal damage from all elemental attacks.",
         "special": "Special"
       },
       "card_types": {
         "attack": "Attack",
+        "attack_description": "Cards that deal direct damage to enemies. Depletes defense first, then reduces HP. Elemental attack cards deal 1.5x, 1x, or 0.5x damage depending on the opponent's defense element.",
         "defense": "Defense",
+        "defense_description": "Cards that increase your defense to reduce incoming damage.",
         "buff": "Buff",
+        "buff_description": "Cards that enhance your abilities.",
         "debuff": "Debuff",
+        "debuff_description": "Cards that weaken the enemy's abilities.",
         "special": "Special",
-        "status": "Status"
+        "special_description": "Special cards with unique effects.",
+        "status": "Status",
+        "status_description": "Cards that inflict negative effects like stun, burn, or poison on enemies."
       },
       "hp_label": "HP",
       "stats": {
