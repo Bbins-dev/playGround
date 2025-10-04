@@ -335,6 +335,10 @@
         "hot_wind": {
           "name": "熱風",
           "description": "自分に5ダメージを与えて{buff:hotWind}バフを獲得。{fire}{cardType:attack}カードの発動回数を{buff:hotWind}残りターン分増加させる。"
+        },
+        "battery_explosion": {
+          "name": "バッテリー爆発",
+          "description": "{buff:lithium}を1ターン獲得。{fire}{cardType:attack}カードの現在の攻撃力に{buff:lithium}残りターン数が乗算されます。"
         }
       },
       "buffs": {
@@ -352,7 +356,9 @@
         "sharpen": "研ぎ",
         "sharpen_description": "次のターン開始までHPが1以下にならなくなります。起死回生効果。",
         "hotWind": "熱風",
-        "hotWind_description": "火属性攻撃カードの発動回数が熱風バフの残りターン数分増加します。"
+        "hotWind_description": "火属性攻撃カードの発動回数が熱風バフの残りターン数分増加します。",
+        "lithium": "Li⁺",
+        "lithium_description": "火属性攻撃カードの攻撃力がLi⁺残りターン数分だけ乗算されます。"
       },
       "elements": {
         "fire": "火",

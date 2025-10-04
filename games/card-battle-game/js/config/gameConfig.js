@@ -153,7 +153,8 @@ const GameConfig = {
             speed: '#FFD700',         // 고속 - 금색 (전기 속성)
             scent: '#FF4500',         // 냄새 - 오렌지-레드 (불꽃 느낌)
             sharpen: '#708090',       // 벼리기 - 슬레이트 그레이 (금속 느낌)
-            hotWind: '#FF6B6B'        // 열풍 - 코랄/주황색 (불 속성 색상)
+            hotWind: '#FF6B6B',       // 열풍 - 코랄/주황색 (불 속성 색상)
+            lithium: '#00CED1'        // Li⁺ - 다크 터쿼이즈 (배터리 에너지 느낌)
         },
 
         // 체력 라벨 색상
@@ -784,6 +785,20 @@ const GameConfig = {
             display: {
                 showValue: true,
                 format: '({value})'  // 예: (2)
+            }
+        },
+        lithium: {
+            nameKey: 'auto_battle_card_game.ui.buffs.lithium',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.lithium_description',
+            name: 'Li⁺',
+            emoji: '⚡',
+            description: '불 속성 공격카드 공격력 ×{value}',
+            get color() { return GameConfig.masterColors.buffs.lithium; }, // Li⁺ - 터쿼이즈 배터리 색상
+            get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수 (턴수)
+            targetSelf: true, // 자신에게 적용되는 버프
+            display: {
+                showValue: true,
+                format: '×{value}'  // 예: ×2 (곱셈 배율 표시)
             }
         }
     },
