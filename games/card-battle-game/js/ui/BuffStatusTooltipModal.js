@@ -231,8 +231,8 @@ class BuffStatusTooltipModal {
      * @returns {string} 설명 텍스트
      */
     getStatDescription(statType) {
-        // 언어팩에서 조회
-        const descriptionKey = `auto_battle_card_game.stats.${statType}_description`;
+        // 언어팩에서 조회 (ui.stats 구조로 통일)
+        const descriptionKey = `auto_battle_card_game.ui.stats.${statType}_description`;
         if (typeof I18nHelper !== 'undefined') {
             const description = I18nHelper.getText(descriptionKey);
             if (description && description !== descriptionKey) {

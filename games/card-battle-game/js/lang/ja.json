@@ -339,7 +339,7 @@
       },
       "buffs": {
         "strength": "力",
-        "strength_description": "攻撃時にスタックごとに3の追加ダメージを与えます。複数回スタックできます。",
+        "strength_description": "攻撃時にスタックごとに1の追加ダメージを与えます。複数回スタックできます。",
         "defense": "防御力",
         "enhance": "強化",
         "enhance_description": "攻撃カードのダメージが50%増加します。ターン終了後、効果は消えます。",
