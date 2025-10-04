@@ -543,6 +543,7 @@ const GameConfig = {
     statusEffects: {
         taunt: {
             nameKey: 'auto_battle_card_game.ui.status_effects.taunt',
+            descriptionKey: 'auto_battle_card_game.ui.status_effects.taunt_description',
             name: '도발',
             emoji: '😡',
             description: '다음 턴에 공격 카드만 발동',
@@ -551,6 +552,7 @@ const GameConfig = {
         },
         stun: {
             nameKey: 'auto_battle_card_game.ui.status_effects.stun',
+            descriptionKey: 'auto_battle_card_game.ui.status_effects.stun_description',
             name: '기절',
             emoji: '😵',
             description: '다음 턴에 아무 카드도 발동되지 않음',
@@ -559,6 +561,7 @@ const GameConfig = {
         },
         paralysis: {
             nameKey: 'auto_battle_card_game.ui.status_effects.paralysis',
+            descriptionKey: 'auto_battle_card_game.ui.status_effects.paralysis_description',
             name: '마비',
             emoji: '⚡',
             description: '확률적으로 턴을 넘김',
@@ -567,6 +570,7 @@ const GameConfig = {
         },
         burn: {
             nameKey: 'auto_battle_card_game.ui.status_effects.burn',
+            descriptionKey: 'auto_battle_card_game.ui.status_effects.burn_description',
             name: '화상',
             emoji: '🔥',
             description: '턴 시작 시 최대 HP의 일정 비율 대미지',
@@ -576,6 +580,7 @@ const GameConfig = {
         },
         poisoned: {
             nameKey: 'auto_battle_card_game.ui.status_effects.poisoned',
+            descriptionKey: 'auto_battle_card_game.ui.status_effects.poisoned_description',
             name: '중독',
             emoji: '☠️',
             description: '턴 종료 시 최대 HP의 일정 비율 대미지',
@@ -584,6 +589,7 @@ const GameConfig = {
         },
         sand: {
             nameKey: 'auto_battle_card_game.ui.status_effects.sand',
+            descriptionKey: 'auto_battle_card_game.ui.status_effects.sand_description',
             name: '모래',
             emoji: '💨',
             description: '공격 카드의 명중률 30% 감소',
@@ -593,6 +599,7 @@ const GameConfig = {
         },
         insult: {
             nameKey: 'auto_battle_card_game.ui.status_effects.insult',
+            descriptionKey: 'auto_battle_card_game.ui.status_effects.insult_description',
             name: '모욕',
             emoji: '😤',
             description: '방어 카드의 발동률 30% 감소',
@@ -602,6 +609,7 @@ const GameConfig = {
         },
         slow: {
             nameKey: 'auto_battle_card_game.ui.status_effects.slow',
+            descriptionKey: 'auto_battle_card_game.ui.status_effects.slow_description',
             name: '둔화',
             emoji: '🐢',
             description: '상태이상 카드의 발동률 30% 감소',
@@ -611,6 +619,7 @@ const GameConfig = {
         },
         chains: {
             nameKey: 'auto_battle_card_game.ui.status_effects.chains',
+            descriptionKey: 'auto_battle_card_game.ui.status_effects.chains_description',
             name: '사슬',
             emoji: '⛓️',
             description: '1턴 간 힘 버프가 적용되지 않음',
@@ -664,6 +673,7 @@ const GameConfig = {
     buffs: {
         strength: {
             nameKey: 'auto_battle_card_game.ui.buffs.strength',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.strength_description',
             name: '힘',
             emoji: '💪',
             description: '공격력 +{value}',
@@ -677,6 +687,7 @@ const GameConfig = {
         },
         enhance: {
             nameKey: 'auto_battle_card_game.ui.buffs.enhance',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.enhance_description',
             name: '강화',
             emoji: '🗡️',
             description: '공격카드 대미지 50% 증가',
@@ -690,6 +701,7 @@ const GameConfig = {
         },
         focus: {
             nameKey: 'auto_battle_card_game.ui.buffs.focus',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.focus_description',
             name: '집중',
             emoji: '🎯',
             description: '노멀 공격카드 명중률 30% 증가',
@@ -706,6 +718,7 @@ const GameConfig = {
         },
         speed: {
             nameKey: 'auto_battle_card_game.ui.buffs.speed',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.speed_description',
             name: '고속',
             emoji: '⚡',
             description: '노멀 공격카드 발동횟수 +{value}',
@@ -722,6 +735,7 @@ const GameConfig = {
         },
         scent: {
             nameKey: 'auto_battle_card_game.ui.buffs.scent',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.scent_description',
             name: '냄새',
             emoji: '🔥',
             description: '불 속성 공격카드 대미지 +{value}',
@@ -738,6 +752,7 @@ const GameConfig = {
         },
         sharpen: {
             nameKey: 'auto_battle_card_game.ui.buffs.sharpen',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.sharpen_description',
             name: '벼리기',
             emoji: '⚒️',
             description: '다음 턴 시작까지 체력이 1 아래로 내려가지 않음',
@@ -751,6 +766,7 @@ const GameConfig = {
         },
         hotWind: {
             nameKey: 'auto_battle_card_game.ui.buffs.hotWind',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.hotWind_description',
             name: '열풍',
             emoji: '🌪️',
             description: '불 속성 공격카드 발동횟수 +{value}',
@@ -2322,6 +2338,39 @@ const GameConfig = {
             gap: 10,              // 카드 간 간격 (최적화된 10px)
             columns: 2,           // 그리드 열 개수
             padding: '20px 15px'  // 그리드 패딩
+        }
+    },
+
+    // 버프/상태이상 툴팁 모달 설정 (Configuration-Driven)
+    tooltipModal: {
+        // 모달 크기 및 스타일
+        modal: {
+            maxWidth: 360,
+            padding: 24,
+            get borderRadius() { return GameConfig.constants.pixels.radiusLarge; },
+            backgroundColor: 'rgba(0, 0, 0, 0.95)',
+            get borderColor() { return GameConfig.masterColors.ui.accent; },
+            borderWidth: 2
+        },
+
+        // 헤더 스타일 (이모지 + 이름)
+        header: {
+            get fontSize() { return GameConfig.masterFonts.sizes.xlarge; },
+            emojiSize: 32,
+            spacing: 8
+        },
+
+        // 설명 텍스트 스타일
+        description: {
+            fontSize: 17,
+            lineHeight: 1.5,
+            color: '#FFFFFF'
+        },
+
+        // 애니메이션
+        animation: {
+            fadeIn: 150,
+            fadeOut: 100
         }
     },
 

@@ -103,14 +103,23 @@
       "defense": "防御力",
       "status_effects": {
         "taunt": "挑発",
+        "taunt_description": "次のターンは攻撃カードのみ発動されます。防御やバフカードを使用できません。",
         "stun": "気絶",
+        "stun_description": "次のターンにカードが発動されません。ターンを完全にスキップします。",
         "paralysis": "麻痺",
+        "paralysis_description": "30%の確率でターンをスキップします。麻痺が発動すると、そのターンのカードが発動されません。",
         "burn": "火傷",
+        "burn_description": "ターン開始時に最大HPの15%の火傷ダメージを受けます。防御力を無視します。",
         "poisoned": "毒",
+        "poisoned_description": "ターン終了時に最大HPの15%の毒ダメージを受けます。防御力を無視します。",
         "sand": "砂",
+        "sand_description": "攻撃カードの命中率が30%減少します。2ターン持続します。",
         "insult": "侮辱",
+        "insult_description": "防御カードの発動率が30%減少します。2ターン持続します。",
         "slow": "鈍化",
-        "chains": "鎖"
+        "slow_description": "状態異常カードの発動率が30%減少します。2ターン持続します。",
+        "chains": "鎖",
+        "chains_description": "1ターンの間、力バフが適用されません。攻撃力が一時的に減少します。"
       },
       "buffs": {
       },
@@ -330,13 +339,20 @@
       },
       "buffs": {
         "strength": "力",
+        "strength_description": "攻撃時にスタックごとに3の追加ダメージを与えます。複数回スタックできます。",
         "defense": "防御力",
         "enhance": "強化",
+        "enhance_description": "攻撃カードのダメージが50%増加します。ターン終了後、効果は消えます。",
         "focus": "集中",
+        "focus_description": "ノーマル属性攻撃カードの命中率が30%増加します。",
         "speed": "高速",
+        "speed_description": "ノーマル属性攻撃カードの発動回数が増加します。",
         "scent": "匂い",
+        "scent_description": "火属性攻撃カードのダメージがスタックごとに10増加します。",
         "sharpen": "研ぎ",
-        "hotWind": "熱風"
+        "sharpen_description": "次のターン開始までHPが1以下にならなくなります。起死回生効果。",
+        "hotWind": "熱風",
+        "hotWind_description": "火属性攻撃カードの発動回数が熱風バフの残りターン数分増加します。"
       },
       "elements": {
         "fire": "火",
@@ -355,6 +371,10 @@
         "status": "状態異常"
       },
       "hp_label": "HP",
+      "stats": {
+        "defense_description": "受けるダメージを軽減する防御力です。攻撃を受けると、まず防御力が消費され、防御力が0になるとHPが減少します。",
+        "hp_description": "キャラクターの生命力です。0になると戦闘で敗北します。"
+      },
       "shield_bash_damage": "シールドバッシュダメージ",
       "concussion_stun": "脳震盪で気絶させました！",
       "counter_damage": "カウンターアタックダメージ",

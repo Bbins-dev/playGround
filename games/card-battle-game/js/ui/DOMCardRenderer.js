@@ -442,9 +442,19 @@ class DOMCardRenderer {
                     const labelInfo = DescriptionParser.getLabelInfo(segment.labelType, segment.labelKey);
                     if (labelInfo) {
                         const labelSpan = document.createElement('span');
-                        labelSpan.className = 'inline-label';
+                        labelSpan.className = 'inline-label clickable-label';
                         labelSpan.style.cssText = DescriptionParser.getLabelCSS(labelInfo, adjustedFontSize);
                         labelSpan.textContent = `${labelInfo.emoji} ${labelInfo.name}`;
+
+                        // 클릭 이벤트 추가 - 툴팁 모달 표시
+                        labelSpan.addEventListener('click', (e) => {
+                            e.stopPropagation(); // 카드 클릭 이벤트 방지
+
+                            if (window.BuffStatusTooltipModal) {
+                                window.BuffStatusTooltipModal.show(segment.labelType, segment.labelKey);
+                            }
+                        });
+
                         descElement.appendChild(labelSpan);
                     }
                 }
