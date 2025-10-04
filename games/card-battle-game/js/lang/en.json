@@ -339,7 +339,7 @@
       },
       "buffs": {
         "strength": "STR",
-        "strength_description": "Deals 3 additional damage per stack when attacking. Can stack multiple times.",
+        "strength_description": "Deals 1 additional damage per stack when attacking. Can stack multiple times.",
         "defense": "DEF",
         "enhance": "ENH",
         "enhance_description": "Increases attack card damage by 50%. Effect disappears after turn ends.",

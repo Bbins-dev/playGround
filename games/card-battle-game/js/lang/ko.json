@@ -339,7 +339,7 @@
       },
       "buffs": {
         "strength": "힘",
-        "strength_description": "공격 시 1중첩당 3의 추가 대미지를 줍니다. 여러 번 중첩될 수 있습니다.",
+        "strength_description": "공격 시 1중첩당 1의 추가 대미지를 줍니다. 여러 번 중첩될 수 있습니다.",
         "defense": "방어력",
         "enhance": "강화",
         "enhance_description": "공격 카드의 대미지가 50% 증가합니다. 턴이 지나면 효과가 사라집니다.",
@@ -381,11 +381,11 @@
         "status": "상태이상",
         "status_description": "적에게 기절, 화상, 중독 등 부정적 효과를 거는 카드입니다."
       },
-      "hp_label": "체력",
       "stats": {
-        "defense_description": "받는 피해를 줄여주는 방어력입니다. 공격을 받으면 먼저 방어력이 소모되고, 방어력이 0이면 체력이 감소합니다.",
-        "hp_description": "캐릭터의 생명력입니다. 0이 되면 전투에서 패배합니다."
+        "defense_description": "받는 피해를 줄여주는 방어력입니다. 공격을 받으면 먼저 방어력이 소모됩니다.",
+        "hp_description": "캐릭터의 생명력입니다. 0이 되면 패배합니다."
       },
+      "hp_label": "체력",
       "shield_bash_damage": "방패치기 피해",
       "concussion_stun": "뇌진탕으로 기절시켰습니다!",
       "counter_damage": "카운터어택 피해",

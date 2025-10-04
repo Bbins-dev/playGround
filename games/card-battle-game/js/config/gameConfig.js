@@ -37,7 +37,7 @@ const GameConfig = {
             buffMultiplier: 1.5,                // 강화 버프 배율 (50% 증가)
             criticalHit: 2.0,                   // 치명타 배율
             barricadeDefense: 2.0,              // 바리케이트 방어력 배수
-            attackPerStrength: 3                // 힘 버프 1당 공격력 증가량
+            attackPerStrength: 1                // 힘 버프 1당 공격력 증가량
         },
 
         // 게임 제한값
