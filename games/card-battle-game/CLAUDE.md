@@ -180,36 +180,16 @@ const coords = CanvasUtils.getCanvasCoordinates(event, canvas);
 #### 📝 인라인 라벨 시스템 (DescriptionParser)
 **카드 설명에 버프/상태이상/카드타입/방어력 언급 시 시각적 라벨 자동 렌더링**
 
-**마커 문법** (언어 독립적):
-```javascript
-{buff:strength}      // → 💪 힘 (gradient 배경)
-{status:burn}        // → 🔥 화상
-{cardType:attack}    // → ⚔️ 공격
-{defense}            // → 🛡️ 방어력 (은색)
-{hp}                 // → ❤️ 체력 (초록색)
-{fire}               // → 🔥 불 (코랄/주황색)
-{water}              // → 💧 물 (하늘색)
-{electric}           // → ⚡ 전기 (노란색)
-{poison}             // → ☠️ 독 (보라색)
-{normal}             // → 👊 노멀 (밝은 베이지)
-```
+**마커 문법**: `{buff:strength}` `{status:burn}` `{cardType:attack}` `{defense}` `{hp}` `{fire}` 등
+- 언어팩 마커 → GameConfig 조회 → 자동 렌더링 (라벨, 툴팁, HPBar)
 
-**자동 처리**:
-- `DescriptionParser.parse(text)` → 마커를 라벨 정보로 변환
-- Canvas(CardRenderer) / DOM(DOMCardRenderer) 둘 다 지원
-- HPBarSystem 라벨과 동일한 스타일 (gradient, border, emoji, text-shadow)
-- 라벨 색상/이름은 GameConfig에서 자동 조회
+**신규 요소 추가 시 필수 체크**:
+1. **GameConfig 정의**: buffs/statusEffects/elements에 emoji, color, nameKey 추가
+2. **언어팩 3개 업데이트**: ko.json, en.json, ja.json (이름, 설명)
+3. **카드 설명에 마커 추가**: `"{buff:myBuff} 2를 얻습니다"` (3개 언어 모두)
+4. **자동 작동 확인**: 인라인 라벨, 툴팁 모달, HPBar 표시
 
-**신규 버프/상태이상 추가 시**:
-1. GameConfig.buffs 또는 statusEffects에 정의 (emoji, color, i18nKey)
-2. 언어팩 3개에 마커 추가 (예: `"힘 3을 얻습니다"` → `"{buff:strength} 3을 얻습니다"`)
-3. 자동으로 라벨 렌더링됨 (추가 코드 불필요)
-
-**핵심 파일**:
-- `js/utils/DescriptionParser.js` - 마커 파싱 및 라벨 정보 조회
-- `js/ui/CardRenderer.js` - Canvas 인라인 라벨 렌더링
-- `js/ui/DOMCardRenderer.js` - DOM 인라인 라벨 렌더링
-- `css/components.css` - `.inline-label` 스타일
+**핵심 파일**: DescriptionParser.js, CardRenderer.js, DOMCardRenderer.js, BuffStatusTooltipModal.js
 
 ### ⚔️ 전투 & 효과 시스템
 
