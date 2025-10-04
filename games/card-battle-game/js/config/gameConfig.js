@@ -2359,7 +2359,7 @@ const GameConfig = {
     tooltipModal: {
         // 모달 크기 및 스타일
         modal: {
-            maxWidth: 360,
+            maxWidth: 600,  // 550px → 600px로 확대
             padding: 24,
             get borderRadius() { return GameConfig.constants.pixels.radiusLarge; },
             backgroundColor: 'rgba(0, 0, 0, 0.95)',
