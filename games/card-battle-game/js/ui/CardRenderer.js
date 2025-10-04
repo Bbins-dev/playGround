@@ -384,12 +384,33 @@ class CardRenderer {
 
             ctx.textAlign = alignments[index];
 
+            // 색상 결정 (런타임 스탯 vs 기본 스탯 비교)
+            let color = this.getOptimalTextColor(card);
+
             // 음수 power일 때 색상 변경 (Configuration-Driven)
             if (def.key === 'power' && value < 0) {
-                ctx.fillStyle = GameConfig?.masterColors?.stats?.negativePower || '#FF6B6B';
-            } else {
-                ctx.fillStyle = this.getOptimalTextColor(card);
+                color = GameConfig?.masterColors?.stats?.negativePower || '#FF6B6B';
             }
+            // 런타임 context일 때 원래 값과 비교하여 색상 결정
+            else if (context === 'runtime') {
+                const originalStats = card.getDisplayStats ? card.getDisplayStats('default') : {
+                    power: card.power,
+                    accuracy: card.accuracy,
+                    activation: card.activationCount
+                };
+                const originalValue = originalStats[def.key];
+
+                if (value > originalValue) {
+                    // 증가: 초록색
+                    color = GameConfig?.masterColors?.stats?.increased || '#4CAF50';
+                } else if (value < originalValue) {
+                    // 감소: 붉은색
+                    color = GameConfig?.masterColors?.stats?.decreased || '#FF6B6B';
+                }
+                // 동일하면 기본 흰색 유지
+            }
+
+            ctx.fillStyle = color;
 
             // 통일된 이모지 간격 적용
             const spacing = statConfig.emojiSpacing;

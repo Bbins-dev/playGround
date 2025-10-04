@@ -127,6 +127,7 @@ class Player {
 
         this.hand.push(card);
         this.updateDefenseElement();
+        this.updateRuntimeCardStats();  // 새 카드의 런타임 스탯 즉시 계산
         return true;
     }
 
@@ -204,6 +205,7 @@ class Player {
         };
 
         this.statusEffects.push(statusEffect);
+        this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
         return { success: true };
     }
 
@@ -211,6 +213,7 @@ class Player {
         const index = this.statusEffects.findIndex(effect => effect.type === statusType);
         if (index !== -1) {
             const removed = this.statusEffects.splice(index, 1)[0];
+            this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
             return true;
         }
         return false;
@@ -233,6 +236,7 @@ class Player {
         }
 
         this.strength += amount;
+        this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
         return amount;
     }
 
@@ -251,6 +255,7 @@ class Player {
 
     addEnhanceBuff(turns) {
         this.enhanceTurns += turns;
+        this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
         return turns;
     }
 
@@ -261,6 +266,7 @@ class Player {
 
     addFocusBuff(turns) {
         this.focusTurns += turns;
+        this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
         return turns;
     }
 
@@ -280,6 +286,7 @@ class Player {
             }
         });
 
+        this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
         return bonus;
     }
 
@@ -291,6 +298,7 @@ class Player {
     addScentBuff(bonus) {
         this.scentBonus += bonus;
         this.scentTurns = 1; // 항상 1턴
+        this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
         return bonus;
     }
 
@@ -328,6 +336,7 @@ class Player {
             }
         });
 
+        this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
         return turns;
     }
 
@@ -340,6 +349,72 @@ class Player {
         this.scentBonus = 0;
         this.scentTurns = 0;
         this.hotWindTurns = 0;
+    }
+
+    // 런타임 카드 스탯 업데이트 (버프/상태이상 반영)
+    updateRuntimeCardStats() {
+        if (!this.hand) return;
+
+        this.hand.forEach(card => {
+            // 공격력 계산 (공격 카드만)
+            if (card.type === 'attack') {
+                let buffedPower = card.power;
+
+                // 힘 버프 적용 (+3/스택)
+                buffedPower += this.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 3);
+
+                // 냄새 버프 적용 (불 속성만)
+                buffedPower += this.getScentBonus(card.element);
+
+                // 강화 버프 적용 (1.5배)
+                if (this.hasEnhanceBuff()) {
+                    buffedPower = Math.floor(buffedPower * (GameConfig?.constants?.multipliers?.buffMultiplier || 1.5));
+                }
+
+                card.buffedPower = buffedPower;
+            } else {
+                // 방어/버프/상태이상 카드는 buffedPower 초기화
+                card.buffedPower = undefined;
+            }
+
+            // 명중률 계산 (Card.checkAccuracy 로직과 동일)
+            let modifiedAccuracy = card.accuracy;
+
+            // 모래 상태이상 체크 (공격 카드만) - 곱셈 방식으로 감소
+            if (card.type === 'attack' && this.hasStatusEffect('sand')) {
+                const sandEffect = this.statusEffects.find(e => e.type === 'sand');
+                if (sandEffect) {
+                    modifiedAccuracy = Math.max(0, modifiedAccuracy * (1 - sandEffect.power / 100));
+                }
+            }
+
+            // 모욕 상태이상 체크 (방어 카드만) - 곱셈 방식으로 감소
+            if (card.type === 'defense' && this.hasStatusEffect('insult')) {
+                const insultEffect = this.statusEffects.find(e => e.type === 'insult');
+                if (insultEffect) {
+                    modifiedAccuracy = Math.max(0, modifiedAccuracy * (1 - insultEffect.power / 100));
+                }
+            }
+
+            // 둔화 상태이상 체크 (상태이상 카드만) - 곱셈 방식으로 감소
+            if (card.type === 'status' && this.hasStatusEffect('slow')) {
+                const slowEffect = this.statusEffects.find(e => e.type === 'slow');
+                if (slowEffect) {
+                    modifiedAccuracy = Math.max(0, modifiedAccuracy * (1 - slowEffect.power / 100));
+                }
+            }
+
+            // 집중 버프 체크 (노멀 공격 카드만) - 상태이상 적용 후 곱셈 방식으로 증가
+            if (card.type === 'attack' && card.element === 'normal' && this.hasFocusBuff()) {
+                const focusEffect = GameConfig?.buffs?.focus?.effect?.accuracy || 30; // 30%
+                modifiedAccuracy = modifiedAccuracy * (1 + focusEffect / 100);
+            }
+
+            // 명중률 상한 100% 제한
+            modifiedAccuracy = Math.min(100, modifiedAccuracy);
+
+            card.modifiedAccuracy = modifiedAccuracy;
+        });
     }
 
     // 턴 관련 메서드
@@ -385,6 +460,8 @@ class Player {
         // 화상 데미지는 BattleSystem에서 처리하므로 여기서는 제외
         // this.processStatusEffect('burn', 'start'); // BattleSystem으로 이동됨
 
+        // 런타임 스탯 업데이트 (버프/상태이상이 변경되었으므로)
+        this.updateRuntimeCardStats();
     }
 
     endTurn() {
@@ -443,6 +520,9 @@ class Player {
                 }
             });
         }
+
+        // 런타임 스탯 업데이트 (버프가 차감되었으므로)
+        this.updateRuntimeCardStats();
     }
 
     // 다음 발동할 카드 가져오기

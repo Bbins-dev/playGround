@@ -361,11 +361,33 @@ class DOMCardRenderer {
                 emoji = typeEmojiConfig.accuracy;
             }
 
+            // 색상 결정 (런타임 스탯 vs 기본 스탯 비교)
+            let color = '#FFFFFF';
+
             // 음수 power일 때 색상 변경 (Configuration-Driven)
             if (def.key === 'power' && value < 0) {
-                const negativeColor = GameConfig?.masterColors?.stats?.negativePower || '#FF6B6B';
-                element.style.color = negativeColor;
+                color = GameConfig?.masterColors?.stats?.negativePower || '#FF6B6B';
             }
+            // 런타임 context일 때 원래 값과 비교하여 색상 결정
+            else if (context === 'runtime') {
+                const originalStats = card.getDisplayStats ? card.getDisplayStats('default') : {
+                    power: card.power,
+                    accuracy: card.accuracy,
+                    activation: card.activationCount
+                };
+                const originalValue = originalStats[def.key];
+
+                if (value > originalValue) {
+                    // 증가: 초록색
+                    color = GameConfig?.masterColors?.stats?.increased || '#4CAF50';
+                } else if (value < originalValue) {
+                    // 감소: 붉은색
+                    color = GameConfig?.masterColors?.stats?.decreased || '#FF6B6B';
+                }
+                // 동일하면 기본 흰색 유지
+            }
+
+            element.style.color = color;
 
             // 조건부 표시 체크 (visibility: hidden으로 공간 유지)
             if (def.showCondition && !def.showCondition(card, context)) {

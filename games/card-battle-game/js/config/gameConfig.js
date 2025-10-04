@@ -161,7 +161,10 @@ const GameConfig = {
 
         // 스탯 표시 색상
         stats: {
-            negativePower: '#FF6B6B'  // 음수 power - 빨간색 (fire 색상 재사용)
+            negativePower: '#FF6B6B',  // 음수 power - 빨간색 (fire 색상 재사용)
+            increased: '#4CAF50',      // 증가된 스탯 - 초록색 (hp 색상 재사용)
+            decreased: '#FF6B6B',      // 감소된 스탯 - 빨간색 (fire 색상 재사용)
+            normal: '#FFFFFF'          // 기본 스탯 - 흰색
         },
 
         // 기본 UI 색상
