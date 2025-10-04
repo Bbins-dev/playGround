@@ -342,7 +342,7 @@ class Renderer {
                 isFadingOut,
                 fadeStartTime,
                 index: globalIndex,
-                context: 'hand'  // 손패 카드임을 명시
+                context: 'runtime'  // 런타임 스탯 표시 (버프/상태이상 반영)
             });
         });
     }
