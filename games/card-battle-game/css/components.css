@@ -566,12 +566,14 @@
 
 /* Card Detail 모달 내부 카드는 호버 효과 없음 (버튼 가림 방지) */
 #card-detail-modal .dom-card,
-#gallery-card-detail-modal .dom-card {
+#gallery-card-detail-modal .dom-card,
+.selected-card-detail .dom-card {
     cursor: default; /* pointer → default로 변경 (클릭 불가 암시) */
 }
 
 #card-detail-modal .dom-card:hover,
-#gallery-card-detail-modal .dom-card:hover {
+#gallery-card-detail-modal .dom-card:hover,
+.selected-card-detail .dom-card:hover {
     transform: none;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }

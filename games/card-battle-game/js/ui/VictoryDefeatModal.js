@@ -56,6 +56,9 @@ class VictoryDefeatModal {
         // CardRenderer 인스턴스
         this.cardRenderer = new CardRenderer();
 
+        // DOMCardRenderer 인스턴스 (확대 카드용)
+        this.domCardRenderer = new DOMCardRenderer();
+
         this.initializeEventListeners();
     }
 
@@ -531,7 +534,7 @@ class VictoryDefeatModal {
     }
 
     /**
-     * 선택된 카드 확대 표시
+     * 선택된 카드 확대 표시 (DOM 방식 - 인라인 라벨 클릭 가능)
      * @param {Object} card - 표시할 카드 데이터
      */
     showSelectedCardDetail(card) {
@@ -541,25 +544,20 @@ class VictoryDefeatModal {
         // 기존 컨텐츠 제거
         detailContainer.innerHTML = '';
 
-        // Canvas 생성
-        const canvas = document.createElement('canvas');
+        // DOMCardRenderer로 카드 생성 (Canvas 대신 DOM 방식)
         const cardSize = GameConfig.cardSizes.victoryDetail; // 승리 모달 확대 카드 크기 사용
-        canvas.width = cardSize.width;
-        canvas.height = cardSize.height;
-        canvas.style.borderRadius = '12px';
-        canvas.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
-
-        const ctx = canvas.getContext('2d');
-
-        // CardRenderer로 카드 렌더링
-        this.cardRenderer.renderCard(ctx, card, 0, 0, cardSize.width, cardSize.height, {
+        const cardElement = this.domCardRenderer.createCard(card, cardSize.width, cardSize.height, {
             isSelected: true,
             isHighlighted: false,
-            opacity: 1
+            opacity: 1,
+            context: 'default'
         });
 
-        detailContainer.appendChild(canvas);
-        this.selectedCardCanvas = canvas;
+        // 카드 스타일 추가
+        cardElement.style.borderRadius = '12px';
+        cardElement.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+
+        detailContainer.appendChild(cardElement);
 
         // 컨테이너 표시
         detailContainer.classList.remove('hidden');
@@ -840,7 +838,7 @@ class VictoryDefeatModal {
     }
 
     /**
-     * 선택된 손패 카드 확대 표시
+     * 선택된 손패 카드 확대 표시 (DOM 방식 - 인라인 라벨 클릭 가능)
      * @param {Object} card - 표시할 카드 데이터
      */
     showSelectedHandCardDetail(card) {
@@ -850,24 +848,20 @@ class VictoryDefeatModal {
         // 기존 컨텐츠 제거
         detailContainer.innerHTML = '';
 
-        // Canvas 생성
-        const canvas = document.createElement('canvas');
+        // DOMCardRenderer로 카드 생성 (Canvas 대신 DOM 방식)
         const cardSize = GameConfig.cardSizes.victoryDetail; // 승리 모달 확대 카드 크기 사용
-        canvas.width = cardSize.width;
-        canvas.height = cardSize.height;
-        canvas.style.borderRadius = '12px';
-        canvas.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
-
-        const ctx = canvas.getContext('2d');
-
-        // CardRenderer로 카드 렌더링
-        this.cardRenderer.renderCard(ctx, card, 0, 0, cardSize.width, cardSize.height, {
+        const cardElement = this.domCardRenderer.createCard(card, cardSize.width, cardSize.height, {
             isSelected: true,
             isHighlighted: false,
-            opacity: 1
+            opacity: 1,
+            context: 'default'
         });
 
-        detailContainer.appendChild(canvas);
+        // 카드 스타일 추가
+        cardElement.style.borderRadius = '12px';
+        cardElement.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+
+        detailContainer.appendChild(cardElement);
 
         // 컨테이너 표시
         detailContainer.classList.remove('hidden');
