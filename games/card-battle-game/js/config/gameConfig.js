@@ -738,7 +738,7 @@ const GameConfig = {
             targetSelf: true, // 자신에게 적용되는 버프
             display: {
                 showValue: true,
-                format: '+{value}({turns})'  // 예: +3(1)
+                format: '+{value}'  // 예: +3 (항상 1턴이므로 턴 표시 제거)
             },
             effect: {
                 activationBonus: 1  // 카드당 추가 횟수
@@ -755,7 +755,7 @@ const GameConfig = {
             targetSelf: true, // 자신에게 적용되는 버프
             display: {
                 showValue: true,
-                format: '+{value}({turns})'  // 예: +4(1)
+                format: '+{value}'  // 예: +4 (항상 1턴이므로 턴 표시 제거)
             },
             effect: {
                 damagePerStack: 10  // 냄새 1당 불 속성 공격 대미지 +10
@@ -813,8 +813,8 @@ const GameConfig = {
             get maxStack() { return 1; }, // 중복 불가 (1턴만 유지)
             targetSelf: true, // 자신에게 적용되는 버프
             display: {
-                showValue: true,
-                format: '({value})'  // 예: (1)
+                showValue: false,  // 턴 표시 없음 (항상 1턴이므로)
+                format: ''  // 빈 문자열 (이모지 + 이름만)
             }
         }
     },
@@ -1913,8 +1913,8 @@ const GameConfig = {
                 emoji: '💪',
                 format: (value) => value,
                 showCondition: (card, context) => {
-                    // 상태이상 카드, 버프 카드, 특수 카드에서 주 스탯이 없는 경우 숨김
-                    if ((card.type === 'status' || card.type === 'buff' || card.type === 'special') && card.power === 0) return false;
+                    // 상태이상 카드, 버프 카드, 특수 카드, 회복 카드에서 주 스탯이 없는 경우 숨김
+                    if ((card.type === 'status' || card.type === 'buff' || card.type === 'special' || card.type === 'heal') && card.power === 0) return false;
                     return true;
                 }
             },
