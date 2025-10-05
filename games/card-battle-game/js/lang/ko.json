@@ -256,6 +256,10 @@
           "name": "기사회생",
           "description": "현재 {hp}이 최대 {hp}의 30% 미만일 경우 최대 {hp}의 50%를 회복합니다."
         },
+        "one_times_hundred": {
+          "name": "1x100=?",
+          "description": "현재 {hp}이 1일 경우 {hp}를 가득 채워줍니다."
+        },
         "push_back": {
           "name": "밀쳐내기",
           "description": "상대를 밀쳐내 {status:stun}시킵니다."

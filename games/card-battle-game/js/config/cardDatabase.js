@@ -694,6 +694,43 @@ const CardDatabase = {
             }
         });
 
+        // 1x100=? 카드 (회복 카드, HP=1일 때 최대 HP로 회복)
+        this.addCard({
+            id: 'one_times_hundred',
+            nameKey: 'auto_battle_card_game.ui.cards.one_times_hundred.name',
+            type: 'heal',
+            element: 'special',
+            power: 0, // 스탯 표시 안함
+            accuracy: 100,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.one_times_hundred.description',
+            effect: function(user, target, battleSystem) {
+                // 조건 체크: 현재 HP가 정확히 1인가?
+                if (user.hp !== 1) {
+                    // 조건 미충족
+                    return {
+                        success: false,
+                        conditionFailed: true,
+                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        element: this.element
+                    };
+                }
+
+                // 조건 충족: 최대 HP까지 회복 (현재 HP가 1이므로 healAmount = maxHP - 1)
+                const healAmount = user.maxHP - user.hp;
+                const actualHealing = user.heal ? user.heal(healAmount) : 0;
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.heal_effect',
+                    healAmount: actualHealing,
+                    element: this.element,
+                    effectType: 'heal',
+                    templateData: { value: actualHealing }
+                };
+            }
+        });
+
         // 밀쳐내기 카드 (노멀 상태이상, 기절)
         this.addCard({
             id: 'push_back',

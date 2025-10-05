@@ -256,6 +256,10 @@
           "name": "Miracle Revival",
           "description": "If current {hp} is below 30% of max {hp}, restore 50% of max {hp}."
         },
+        "one_times_hundred": {
+          "name": "1x100=?",
+          "description": "If current {hp} is 1, fully restores {hp}."
+        },
         "push_back": {
           "name": "Push Back",
           "description": "Push the opponent back and {status:stun} them."
