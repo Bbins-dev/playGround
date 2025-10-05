@@ -1457,7 +1457,7 @@ const CardDatabase = {
             type: 'buff',
             element: 'fire',
             power: 0,
-            accuracy: 80,
+            accuracy: 70,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.hot_wind.description',
             selfDamage: GameConfig?.cardEffects?.hotWind?.selfDamage || 5,
@@ -1493,7 +1493,7 @@ const CardDatabase = {
             type: 'buff',
             element: 'fire',
             power: 0,
-            accuracy: 80,
+            accuracy: 70,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.fire_breath.description',
             effect: function(user, target, battleSystem) {
@@ -1531,7 +1531,7 @@ const CardDatabase = {
             type: 'buff',
             element: 'fire',
             power: 0,
-            accuracy: 80,
+            accuracy: 70,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.battery_explosion.description',
             effect: function(user, target, battleSystem) {
