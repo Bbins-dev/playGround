@@ -731,7 +731,7 @@ const GameConfig = {
             nameKey: 'auto_battle_card_game.ui.buffs.speed',
             descriptionKey: 'auto_battle_card_game.ui.buffs.speed_description',
             name: '고속',
-            emoji: '⚡',
+            emoji: '💫',
             description: '노멀 공격카드 발동횟수 +{value}',
             get color() { return GameConfig.masterColors.buffs.speed; }, // 전기색 계열
             get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수
