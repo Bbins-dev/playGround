@@ -249,8 +249,8 @@
           "description": "敵をスモッグで包み、一定確率で{status:poisoned}状態にします。"
         },
         "bandage": {
-          "name": "包帯",
-          "description": "包帯で巻いて{hp}を3回復する。"
+          "name": "包帯巻き",
+          "description": "包帯を巻いて3 {hp}を回復します。"
         },
         "miracle_revival": {
           "name": "起死回生",
@@ -391,7 +391,9 @@
         "special": "特殊",
         "special_description": "独特な効果を持つ特別なカードです。",
         "status": "状態異常",
-        "status_description": "敵に気絶、火傷、毒などの負の効果をかけるカードです。"
+        "status_description": "敵に気絶、火傷、毒などの負の効果をかけるカードです。",
+        "heal": "回復",
+        "heal_description": "体力を回復するカードです。"
       },
       "hp_label": "HP",
       "stats": {

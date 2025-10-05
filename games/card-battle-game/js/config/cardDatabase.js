@@ -628,12 +628,12 @@ const CardDatabase = {
             }
         });
 
-        // 붕대감기 카드 (특수 카드, 체력 회복)
+        // 붕대감기 카드 (회복 카드, 체력 회복)
         this.addCard({
             id: 'bandage',
             nameKey: 'auto_battle_card_game.ui.cards.bandage.name',
-            type: 'special',
-            element: 'special', // 속성 없음을 표현
+            type: 'heal',
+            element: 'special', // 특수 속성
             power: 0, // 스탯 표시 안함 (healAmount 사용)
             healAmount: 3, // 회복량
             accuracy: 100,
@@ -648,17 +648,16 @@ const CardDatabase = {
                     messageKey: 'auto_battle_card_game.ui.templates.heal_effect',
                     healAmount: actualHealing,
                     element: this.element,
-                    effectType: 'heal',
                     templateData: { value: actualHealing }
                 };
             }
         });
 
-        // 기사회생 카드 (특수 카드, 조건부 대량 회복)
+        // 기사회생 카드 (회복 카드, 조건부 대량 회복)
         this.addCard({
             id: 'miracle_revival',
             nameKey: 'auto_battle_card_game.ui.cards.miracle_revival.name',
-            type: 'special',
+            type: 'heal',
             element: 'special',
             power: 0, // 스탯 표시 안함 (healPercent 사용)
             healPercent: 50, // 회복량 (최대 HP의 50%)

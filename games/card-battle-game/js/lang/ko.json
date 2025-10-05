@@ -250,7 +250,7 @@
         },
         "bandage": {
           "name": "붕대감기",
-          "description": "붕대로 감아 {hp}을 3 회복시킨다."
+          "description": "붕대를 감아 3 {hp}를 회복합니다."
         },
         "miracle_revival": {
           "name": "기사회생",
@@ -391,7 +391,9 @@
         "special": "특수",
         "special_description": "독특한 효과를 가진 특별한 카드입니다.",
         "status": "상태이상",
-        "status_description": "적에게 기절, 화상, 중독 등 부정적 효과를 거는 카드입니다."
+        "status_description": "적에게 기절, 화상, 중독 등 부정적 효과를 거는 카드입니다.",
+        "heal": "회복",
+        "heal_description": "체력을 회복하는 카드입니다."
       },
       "stats": {
         "defense_description": "받는 피해를 줄여주는 방어력입니다. 공격을 받으면 먼저 방어력이 소모됩니다.",

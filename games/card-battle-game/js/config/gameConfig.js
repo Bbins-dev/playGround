@@ -142,7 +142,8 @@ const GameConfig = {
             status: '#9B59B6',        // 상태이상 - 보라색
             buff: '#2ECC71',          // 버프 - 초록색
             debuff: '#E67E22',        // 디버프 - 주황색
-            special: '#90EE90'        // 특수 - 연두색
+            special: '#90EE90',       // 특수 - 연두색
+            heal: '#2ECC71'           // 회복 - 초록색 (생명력 상징)
         },
 
         // 버프 색상
@@ -867,6 +868,14 @@ const GameConfig = {
             get color() { return GameConfig.masterColors.cardTypes.special; },
             emoji: '🔮',
             statEmojis: { power: '🔮', accuracy: '✅' }
+        },
+        heal: {
+            nameKey: 'auto_battle_card_game.ui.card_types.heal',
+            descriptionKey: 'auto_battle_card_game.ui.card_types.heal_description',
+            name: '회복',
+            get color() { return GameConfig.masterColors.cardTypes.heal; },
+            emoji: '✚',
+            statEmojis: { power: '✚', accuracy: '✅' }
         }
     },
 
