@@ -442,6 +442,7 @@
         "poisoned_extended": "☠️ 중독+{value}턴!",
         "burn_damage": "🔥 화상으로 {value} 피해!",
         "buff_gained": "{name} +{value}",
+        "buff_gained_turns": "{name} +{value}턴!",
         "buff_reduced": "{name} {value}",
         "defense_gained": "🛡️ 방어력 +{value}",
         "heal_effect": "❤️ 체력 +{value}",

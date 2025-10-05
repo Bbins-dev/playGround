@@ -691,6 +691,7 @@ const GameConfig = {
             get color() { return GameConfig.masterColors.buffs.strength; }, // 주황색 계열
             get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수
             targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'intensity', // 강도 추가 방식 (스택 카운터)
             display: {
                 showValue: true,
                 format: '+{value}'
@@ -705,6 +706,7 @@ const GameConfig = {
             get color() { return GameConfig.masterColors.buffs.enhance; }, // 골드색
             get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수 (턴수 누적)
             targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'duration', // 턴 추가 방식 (enhanceTurns)
             display: {
                 showValue: true,
                 format: '({value})'
@@ -719,6 +721,7 @@ const GameConfig = {
             get color() { return GameConfig.masterColors.buffs.focus; }, // 파란색 계열
             get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수 (턴수 누적)
             targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'duration', // 턴 추가 방식 (focusTurns)
             display: {
                 showValue: true,
                 format: '({value})'
@@ -736,6 +739,7 @@ const GameConfig = {
             get color() { return GameConfig.masterColors.buffs.speed; }, // 전기색 계열
             get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수
             targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'intensity', // 강도 추가 방식 (speedBonus)
             display: {
                 showValue: true,
                 format: '+{value}'  // 예: +3 (항상 1턴이므로 턴 표시 제거)
@@ -753,6 +757,7 @@ const GameConfig = {
             get color() { return GameConfig.masterColors.buffs.scent; }, // 토마토 레드
             get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수
             targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'intensity', // 강도 추가 방식 (scentBonus)
             display: {
                 showValue: true,
                 format: '+{value}'  // 예: +4 (항상 1턴이므로 턴 표시 제거)
@@ -770,6 +775,7 @@ const GameConfig = {
             get color() { return GameConfig.masterColors.buffs.sharpen; }, // 불 속성 색상
             get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수
             targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'special', // 특수 (값 표시 없음)
             display: {
                 showValue: false,  // 턴 표시 없음
                 format: ''  // 빈 문자열 (이모지 + 이름만)
@@ -784,6 +790,7 @@ const GameConfig = {
             get color() { return GameConfig.masterColors.buffs.hotWind; }, // 열풍 - 불 속성 색상
             get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수
             targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'duration', // 턴 추가 방식 (hotWindTurns)
             display: {
                 showValue: true,
                 format: '({value})'  // 예: (2)
@@ -798,6 +805,7 @@ const GameConfig = {
             get color() { return GameConfig.masterColors.buffs.lithium; }, // Li⁺ - 터쿼이즈 배터리 색상
             get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수 (턴수)
             targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'duration', // 턴 추가 방식 (lithiumTurns)
             display: {
                 showValue: true,
                 format: '×{value}'  // 예: ×2 (곱셈 배율 표시)
@@ -812,6 +820,7 @@ const GameConfig = {
             get color() { return GameConfig.masterColors.buffs.breath; }, // 호흡 - 흰색 계열
             get maxStack() { return 1; }, // 중복 불가 (1턴만 유지)
             targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'special', // 특수 (값 표시 없음)
             display: {
                 showValue: false,  // 턴 표시 없음 (항상 1턴이므로)
                 format: ''  // 빈 문자열 (이모지 + 이름만)
