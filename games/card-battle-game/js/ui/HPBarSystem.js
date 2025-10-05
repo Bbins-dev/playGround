@@ -374,7 +374,7 @@ class HPBarSystem {
             const buffName = buffConfig.nameKey ?
                 I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
                 buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} +${speedBonus}(${speedTurns})`;
+            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} +${speedBonus}`;
 
             // 버프별 색상 적용
             buffElement.style.borderColor = buffConfig.color;
@@ -398,7 +398,6 @@ class HPBarSystem {
         // 냄새 버프 표시
         if (player.hasScentBuff && player.hasScentBuff()) {
             const scentBonus = player.scentBonus;
-            const scentTurns = player.scentTurns;
             const buffConfig = GameConfig.buffs.scent;
 
             // 버프가 있는 경우 컨테이너 활성화
@@ -411,7 +410,7 @@ class HPBarSystem {
             const buffName = buffConfig.nameKey ?
                 I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
                 buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} +${scentBonus}(${scentTurns})`;
+            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} +${scentBonus}`;
 
             // 버프별 색상 적용
             buffElement.style.borderColor = buffConfig.color;
@@ -541,7 +540,6 @@ class HPBarSystem {
 
         // 호흡 버프 표시
         if (player.hasBreathBuff && player.hasBreathBuff()) {
-            const breathTurns = player.breathTurns;
             const buffConfig = GameConfig.buffs.breath;
 
             // 버프가 있는 경우 컨테이너 활성화
@@ -554,7 +552,7 @@ class HPBarSystem {
             const buffName = buffConfig.nameKey ?
                 I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
                 buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} (${breathTurns})`;
+            buffElement.innerHTML = `${buffConfig.emoji} ${buffName}`;
 
             // 버프별 색상 적용
             buffElement.style.borderColor = buffConfig.color;
