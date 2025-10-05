@@ -163,9 +163,11 @@ class BuffStatusTooltipModal {
         if (labelType === 'defenseElement') {
             const elementConfig = GameConfig?.elements?.[labelKey];
             if (elementConfig) {
+                // HPBarSystem과 동일한 키 참조 방식 사용 (ui.elements 경로)
+                const elementNameKey = `auto_battle_card_game.ui.elements.${labelKey}`;
                 let name = labelKey;
-                if (elementConfig.nameKey && typeof I18nHelper !== 'undefined') {
-                    name = I18nHelper.getText(elementConfig.nameKey) || labelKey;
+                if (typeof I18nHelper !== 'undefined') {
+                    name = I18nHelper.getText(elementNameKey) || labelKey;
                 }
                 return {
                     emoji: elementConfig.emoji || '🛡️',
