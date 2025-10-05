@@ -300,8 +300,19 @@ class BattleSystem {
 
             // 효과별 후처리
             await this.processCardResult(result, card, user, target, selfDamageProcessed);
+        } else if (result.conditionFailed) {
+            // 조건 실패 (명중했지만 조건 미달)
+            const targetPosition = isPlayerCard ?
+                this.effectSystem.getEnemyPosition() :
+                this.effectSystem.getPlayerPosition();
+
+            // "실패!" 메시지 표시
+            this.effectSystem.showDamageNumber(0, targetPosition, 'conditionFailed');
+
+            // 조건 실패 시 추가 대기 (플레이어가 확인할 수 있도록)
+            await this.wait((GameConfig.timing?.cards?.missDelay || 800) / this.gameSpeed);
         } else {
-            // 실패 (빗나감)
+            // 명중률 실패 (빗나감)
             if (isPlayerCard) {
                 this.gameManager.updateStatsOnMiss();
             }
@@ -310,7 +321,7 @@ class BattleSystem {
                 this.effectSystem.getEnemyPosition() :
                 this.effectSystem.getPlayerPosition();
 
-            // 빗나감 표시
+            // "빗나감!" 표시
             this.effectSystem.showDamageNumber(0, targetPosition, 'miss');
 
             // Miss 시 추가 대기 (플레이어가 확인할 수 있도록)
@@ -337,7 +348,11 @@ class BattleSystem {
                 break;
 
             case 'heal':
-                await this.processHealResult(result, user, targetPosition);
+                // 회복은 자신에게 적용되므로 user 위치 사용
+                const healUserPosition = isPlayerCard ?
+                    this.effectSystem.getPlayerPosition() :
+                    this.effectSystem.getEnemyPosition();
+                await this.processHealResult(result, user, healUserPosition);
                 break;
 
             case 'buff':
@@ -489,7 +504,19 @@ class BattleSystem {
         const healing = result.healAmount || result.healing || 0;
 
         if (healing > 0) {
-            this.effectSystem.showStatusEffect('heal', targetPosition, healing);
+            // 템플릿 기반 회복 메시지 표시
+            let template = I18nHelper.getText(result.messageKey || 'auto_battle_card_game.ui.templates.heal_effect');
+            if (!template) {
+                template = '❤️ HP +{value}'; // fallback
+            }
+            const message = template.replace('{value}', healing);
+            await this.effectSystem.showDamageNumber(healing, targetPosition, 'heal', message);
+
+            // HP바 즉시 업데이트 (프로젝트 규칙: 회복 시 HP 즉시 반영)
+            const isPlayer = (user === this.player);
+            if (this.hpBarSystem) {
+                this.hpBarSystem.updateHP(user, isPlayer);
+            }
         }
     }
 

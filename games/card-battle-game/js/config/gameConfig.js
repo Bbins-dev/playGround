@@ -917,8 +917,8 @@ const GameConfig = {
             1: {
                 hp: 50,
                 cards: [
-                    { id: 'fire_breath', count: 1 },         // 불의 호흡 1
-                    { id: 'fire_breath', count: 1 },         // 불의 호흡 2
+                    { id: 'one_times_hundred', count: 1 },   // 1x100=?
+                    { id: 'miracle_revival', count: 1 },     // 기사회생
                     { id: 'sharpen', count: 1 },             // 벼리기
                     { id: 'opportunity_scent', count: 1 },   // 기회의 냄새
                     { id: 'hot_breath', count: 1 },          // 뜨거운 입김
@@ -1377,14 +1377,14 @@ const GameConfig = {
                 buff: '#2ECC71',
                 debuff: '#E74C3C'
             },
-            // z-index 우선순위 설정 (높을수록 위에 표시)
+            // z-index 우선순위 설정 (높을수록 위에 표시) - HP 바(1000)보다 높게 설정
             zIndexPriority: {
-                damage: 700,        // 실제 대미지 숫자 (최상위)
-                status: 500,        // 상태이상 메시지
-                buff: 500,          // 버프 메시지
-                defense: 500,       // 방어력 메시지
-                heal: 600,          // 회복 메시지 (대미지보다는 낮지만 다른 것보다 높게)
-                default: 500        // 기본값
+                damage: 1200,       // 실제 대미지 숫자 (최상위)
+                status: 1100,       // 상태이상 메시지
+                buff: 1100,         // 버프 메시지
+                defense: 1100,      // 방어력 메시지
+                heal: 1150,         // 회복 메시지 (대미지보다는 낮지만 다른 것보다 높게)
+                default: 1100       // 기본값
             },
             // 메시지 위치 오프셋 설정 (픽셀 단위)
             positionOffset: {

@@ -256,6 +256,10 @@
           "name": "起死回生",
           "description": "現在の{hp}が最大{hp}の30%未満の場合、最大{hp}の50%を回復します。"
         },
+        "one_times_hundred": {
+          "name": "1x100=?",
+          "description": "現在の{hp}が1の場合、{hp}を最大まで回復します。"
+        },
         "push_back": {
           "name": "押し返し",
           "description": "相手を押し返して{status:stun}させます。"
