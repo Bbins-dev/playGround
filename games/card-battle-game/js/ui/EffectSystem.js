@@ -501,7 +501,18 @@ class EffectSystem {
     async showBuffEffect(buffType, target, value) {
         // target이 player인지 enemy인지 자동 판단하여 올바른 위치에 표시
         const position = this.getTargetPosition(target);
-        await this.showEffectMessage(buffType, position, 'buff_gained', value);
+
+        // GameConfig에서 버프 설정 가져오기 (안전한 접근 방식)
+        const buffConfig = GameConfig?.buffs?.[buffType];
+
+        // durationType에 따라 템플릿 선택
+        let templateType = 'buff_gained'; // 기본값 (intensity-based)
+        if (buffConfig?.durationType === 'duration') {
+            templateType = 'buff_gained_turns'; // 턴 추가 방식
+        }
+        // 'special'이나 'intensity'는 기본값 사용
+
+        await this.showEffectMessage(buffType, position, templateType, value);
     }
 
     // 타겟 위치 자동 결정 (하드코딩 제거)

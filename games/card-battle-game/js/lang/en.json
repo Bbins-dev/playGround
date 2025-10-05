@@ -442,6 +442,7 @@
         "poisoned_extended": "☠️ Poison+{value}T!",
         "burn_damage": "🔥 {value} burn damage!",
         "buff_gained": "{name} +{value}",
+        "buff_gained_turns": "{name} +{value}T!",
         "buff_reduced": "{name} {value}",
         "defense_gained": "🛡️ DEF +{value}",
         "heal_effect": "❤️ HP +{value}",
