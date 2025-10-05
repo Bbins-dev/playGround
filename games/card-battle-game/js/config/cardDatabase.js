@@ -1486,6 +1486,44 @@ const CardDatabase = {
             }
         });
 
+        // 불의 호흡 카드 (불 속성, 한 턴 간 불 속성 버프카드 100% 발동)
+        this.addCard({
+            id: 'fire_breath',
+            nameKey: 'auto_battle_card_game.ui.cards.fire_breath.name',
+            type: 'buff',
+            element: 'fire',
+            power: 0,
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.fire_breath.description',
+            effect: function(user, target, battleSystem) {
+                // 중복 체크 (이미 호흡 버프가 있으면 실패)
+                if (user.hasBreathBuff && user.hasBreathBuff()) {
+                    return {
+                        success: true,
+                        conditionFailed: true,
+                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        element: this.element
+                    };
+                }
+
+                // 호흡 버프 획득 (1턴, 중복 불가)
+                user.addBreathBuff(1);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
+                    buffType: 'breath',
+                    breathGain: 1,
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig?.buffs?.breath?.name || '호흡',
+                        value: user.breathTurns
+                    }
+                };
+            }
+        });
+
         // 배터리폭발 카드 (Li⁺ 버프 카드)
         this.addCard({
             id: 'battery_explosion',
@@ -1499,10 +1537,6 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 // Li⁺ 버프 획득 (1턴, 재사용 시 누적)
                 user.addLithiumBuff(1);
-
-                // 버프 라벨 즉시 업데이트
-                const isPlayer = (user === battleSystem.player);
-                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
 
                 return {
                     success: true,

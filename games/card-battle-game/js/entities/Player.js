@@ -36,6 +36,7 @@ class Player {
         this.sharpenTurns = 0; // 벼리기 버프 남은 턴 수
         this.hotWindTurns = 0; // 열풍 버프 남은 턴 수
         this.lithiumTurns = 0; // Li⁺ 버프 남은 턴 수 (곱셈 배율)
+        this.breathTurns = 0; // 호흡 버프 남은 턴 수 (불 속성 버프카드 100% 발동)
 
         // 턴 관련
         this.currentCardIndex = 0;
@@ -356,6 +357,17 @@ class Player {
         return this.lithiumTurns;
     }
 
+    // 호흡 버프 관련 메서드
+    hasBreathBuff() {
+        return this.breathTurns > 0;
+    }
+
+    addBreathBuff(turns) {
+        this.breathTurns = turns;  // 중복 불가이므로 덮어쓰기 (1턴만 유지)
+        this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
+        return turns;
+    }
+
     clearBuffs() {
         this.strength = 0;
         this.enhanceTurns = 0;
@@ -366,6 +378,7 @@ class Player {
         this.scentTurns = 0;
         this.hotWindTurns = 0;
         this.lithiumTurns = 0;
+        this.breathTurns = 0;
     }
 
     // 런타임 카드 스탯 업데이트 (버프/상태이상 반영)
@@ -386,6 +399,12 @@ class Player {
                 // 강화 버프 적용 (1.5배)
                 if (this.hasEnhanceBuff()) {
                     buffedPower = Math.floor(buffedPower * (GameConfig?.constants?.multipliers?.buffMultiplier || 1.5));
+                }
+
+                // Li⁺ 버프 적용 (불 속성 공격 카드만, 턴수만큼 곱셈)
+                if (card.element === 'fire' && this.hasLithiumBuff && this.hasLithiumBuff()) {
+                    const lithiumMultiplier = this.getLithiumTurns();
+                    buffedPower = Math.floor(buffedPower * lithiumMultiplier);
                 }
 
                 card.buffedPower = buffedPower;
@@ -534,6 +553,11 @@ class Player {
         // Li⁺ 버프 턴수 차감
         if (this.lithiumTurns > 0) {
             this.lithiumTurns--;
+        }
+
+        // 호흡 버프 턴수 차감
+        if (this.breathTurns > 0) {
+            this.breathTurns--;
         }
 
         // 런타임 스탯 업데이트 (버프가 차감되었으므로)

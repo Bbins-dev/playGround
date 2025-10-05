@@ -94,6 +94,11 @@ class Card {
             actualAccuracy = Math.floor(actualAccuracy * (1 + focusEffect / 100));
         }
 
+        // 호흡 버프 체크 (불 속성 버프 카드만) - 발동률 100% 보장
+        if (this.type === 'buff' && this.element === 'fire' && user && user.hasBreathBuff && user.hasBreathBuff()) {
+            actualAccuracy = 100;
+        }
+
         // 명중률 상한 100% 제한
         actualAccuracy = Math.min(100, actualAccuracy);
 
