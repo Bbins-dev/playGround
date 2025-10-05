@@ -485,7 +485,8 @@ class BattleSystem {
 
     // 회복 결과 처리
     async processHealResult(result, user, targetPosition) {
-        const healing = result.healing || 0;
+        // healAmount 또는 healing 속성 모두 지원 (하위 호환성)
+        const healing = result.healAmount || result.healing || 0;
 
         if (healing > 0) {
             this.effectSystem.showStatusEffect('heal', targetPosition, healing);
