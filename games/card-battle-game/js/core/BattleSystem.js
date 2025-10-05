@@ -551,6 +551,20 @@ class BattleSystem {
             await this.effectSystem.showBuffEffect('hotWind', user, result.hotWindGain);
         }
 
+        // Li⁺ 버프 획득 처리 (배터리폭발 카드) - 새로운 통합 메서드 사용
+        if (result.lithiumGain && result.lithiumGain > 0) {
+            await this.effectSystem.showBuffEffect('lithium', user, result.lithiumGain);
+        }
+
+        // 호흡 버프 획득 처리 (불의호흡 카드) - 새로운 통합 메서드 사용
+        if (result.breathGain && result.breathGain > 0) {
+            await this.effectSystem.showBuffEffect('breath', user, result.breathGain);
+        }
+
+        // 버프 획득 후 HPBar 버프 라벨 즉시 업데이트
+        const isPlayer = (user === this.player);
+        this.hpBarSystem.updateBuffs(user, isPlayer);
+
         // 기타 버프 효과 - 확장 가능한 구조
         // TODO: 다른 버프 타입들도 동일한 패턴으로 추가 가능
     }

@@ -76,6 +76,14 @@ npx serve                                       # ❌ 루트에서 실행 금지
 - `processBuffResult()` → 버프 처리 후 `updateBuffs()` 호출
 - `tryApplyStatusEffect()` → 자동 처리 (통합 시스템 사용 시)
 
+### 💪 신규 버프 카드 추가 시 (4단계 필수!)
+1. **CardDatabase** - effect 함수에서 `xxxGain` 반환 (예: `lithiumGain: 1`)
+2. **BattleSystem.processBuffResult()** - `xxxGain` 처리 추가 (`showBuffEffect` 호출)
+3. **HPBarSystem.updateBuffs()** - 버프 라벨 렌더링 블록 추가
+4. **Player.updateRuntimeCardStats()** - 곱셈 버프인 경우 `buffedPower` 계산 추가
+
+**주의**: CardDatabase에서 `updateBuffs()` 직접 호출 금지 (BattleSystem이 자동 처리)
+
 ### 🌐 다국어 필수 업데이트
 - [ ] **3개 언어팩 모두 업데이트**: ko.json, en.json, ja.json
 - [ ] **언어팩 키 통일**: 모든 언어에서 동일한 키 사용

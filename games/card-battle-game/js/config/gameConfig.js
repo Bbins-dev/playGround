@@ -154,7 +154,8 @@ const GameConfig = {
             scent: '#FF4500',         // 냄새 - 오렌지-레드 (불꽃 느낌)
             sharpen: '#708090',       // 벼리기 - 슬레이트 그레이 (금속 느낌)
             hotWind: '#FF6B6B',       // 열풍 - 코랄/주황색 (불 속성 색상)
-            lithium: '#00CED1'        // Li⁺ - 다크 터쿼이즈 (배터리 에너지 느낌)
+            lithium: '#00CED1',       // Li⁺ - 다크 터쿼이즈 (배터리 에너지 느낌)
+            breath: '#F0F0F0'         // 호흡 - 흰색 계열 (확 구분되는 색상)
         },
 
         // 체력 라벨 색상
@@ -800,6 +801,20 @@ const GameConfig = {
                 showValue: true,
                 format: '×{value}'  // 예: ×2 (곱셈 배율 표시)
             }
+        },
+        breath: {
+            nameKey: 'auto_battle_card_game.ui.buffs.breath',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.breath_description',
+            name: '호흡',
+            emoji: '🫁',
+            description: '불 속성 버프카드가 반드시 발동',
+            get color() { return GameConfig.masterColors.buffs.breath; }, // 호흡 - 흰색 계열
+            get maxStack() { return 1; }, // 중복 불가 (1턴만 유지)
+            targetSelf: true, // 자신에게 적용되는 버프
+            display: {
+                showValue: true,
+                format: '({value})'  // 예: (1)
+            }
         }
     },
 
@@ -893,11 +908,16 @@ const GameConfig = {
             1: {
                 hp: 50,
                 cards: [
-                    { id: 'thorn_armor', count: 1 },     // 가시갑옷 1
-                    { id: 'thorn_armor', count: 1 },     // 가시갑옷 2
-                    { id: 'thorn_armor', count: 1 },     // 가시갑옷 3
-                    { id: 'fireball', count: 1 },        // 화염구 1
-                    { id: 'random_bash', count: 1 }      // 마구때리기 1
+                    { id: 'fire_breath', count: 1 },         // 불의 호흡 1
+                    { id: 'fire_breath', count: 1 },         // 불의 호흡 2
+                    { id: 'sharpen', count: 1 },             // 벼리기
+                    { id: 'opportunity_scent', count: 1 },   // 기회의 냄새
+                    { id: 'hot_breath', count: 1 },          // 뜨거운 입김
+                    { id: 'oil_pour', count: 1 },            // 기름붓기
+                    { id: 'battery_explosion', count: 1 },   // 배터리폭발 1
+                    { id: 'battery_explosion', count: 1 },   // 배터리폭발 2
+                    { id: 'karura_strike', count: 1 },       // 카루라 일격
+                    { id: 'flame_throw', count: 1 }          // 화염방사
                 ]
             },
             2: {
