@@ -119,7 +119,11 @@
         "slow": "鈍化",
         "slow_description": "状態異常カードの発動率が30%減少します。2ターン持続します。",
         "chains": "鎖",
-        "chains_description": "1ターンの間、力バフが適用されません。攻撃力が一時的に減少します。"
+        "chains_description": "1ターンの間、力バフが適用されません。攻撃力が一時的に減少します。",
+        "wet": "濡れ",
+        "wet_description": "びしょ濡れです。",
+        "frozen": "氷",
+        "frozen_description": "攻撃カードの命中率が50%減少します。1ターン持続します。"
       },
       "buffs": {
       },
@@ -240,13 +244,29 @@
           "name": "バブルストライク",
           "description": "相手に泡を送って破裂させ、１のダメージを２～５回与えます。"
         },
+        "water_bomb": {
+          "name": "水爆弾",
+          "description": "相手に水爆弾を投げて3ダメージを与え、高確率で{status:wet}にします。"
+        },
+        "tsunami": {
+          "name": "津波",
+          "description": "自分に15ダメージを与えた後、相手に15ダメージを与えます。両方とも{status:wet}状態にします。"
+        },
+        "freezing_wind": {
+          "name": "冷凍風",
+          "description": "{status:wet}状態の敵に{status:wet}残りターンごとに10の大ダメージ。1ターンの間{status:frozen}状態にできます。"
+        },
+        "ice_breaker": {
+          "name": "氷砕き",
+          "description": "{status:frozen}状態の敵に最大{hp}の20%の固定ダメージを与え、命中時に{status:frozen}状態を解除します。"
+        },
         "thunder_strike": {
           "name": "サンダーストライク",
           "description": "敵に稲妻のような一撃を加えます。"
         },
         "smog": {
           "name": "スモッグ",
-          "description": "敵をスモッグで包み、一定確率で{status:poisoned}状態にします。"
+          "description": "敵をスモッグで包み、2のダメージを与え、一定確率で{status:poisoned}状態にします。"
         },
         "bandage": {
           "name": "包帯巻き",
@@ -440,6 +460,7 @@
         "status_immune": "{name} 無効!",
         "burn_extended": "🔥 火傷+{value}ターン!",
         "poisoned_extended": "☠️ 毒+{value}ターン!",
+        "wet_extended": "💧 濡れ+{value}ターン!",
         "burn_damage": "🔥 火傷で{value}ダメージ！",
         "buff_gained": "{name} +{value}",
         "buff_gained_turns": "{name} +{value}ターン!",

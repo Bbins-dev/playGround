@@ -132,7 +132,9 @@ const GameConfig = {
             sand: '#D4A76A',          // 모래 - 베이지색
             insult: '#8B4513',        // 모욕 - 갈색
             slow: '#6C757D',          // 둔화 - 회색
-            chains: '#FF4500'         // 사슬 - 오렌지-레드
+            chains: '#FF4500',        // 사슬 - 오렌지-레드
+            wet: '#5DADE2',           // 젖음 - 밝은 파란색
+            frozen: '#B0E0E6'         // 얼음 - 파우더 블루
         },
 
         // 카드 타입 색상
@@ -587,6 +589,7 @@ const GameConfig = {
             description: '턴 시작 시 기본 피해 5',
             defaultDamage: 5,
             duration: 1,
+            canExtend: true,  // 턴 연장 가능 (중복 적용 시 누적)
             get color() { return GameConfig.masterColors.statusEffects.burn; }
         },
         poisoned: {
@@ -596,6 +599,7 @@ const GameConfig = {
             emoji: '☠️',
             description: '턴 종료 시 기본 피해 5',
             defaultDamage: 5,
+            canExtend: true,  // 턴 연장 가능 (중복 적용 시 누적)
             get color() { return GameConfig.masterColors.statusEffects.poisoned; }
         },
         sand: {
@@ -636,6 +640,26 @@ const GameConfig = {
             description: '1턴 간 힘 버프가 적용되지 않음',
             duration: 1,
             get color() { return GameConfig.masterColors.statusEffects.chains; }
+        },
+        wet: {
+            nameKey: 'auto_battle_card_game.ui.status_effects.wet',
+            descriptionKey: 'auto_battle_card_game.ui.status_effects.wet_description',
+            name: '젖음',
+            emoji: '💧',
+            description: '흠뻑 젖었습니다.',
+            duration: 1,
+            canExtend: true,  // 턴 연장 가능 (중복 적용 시 누적)
+            get color() { return GameConfig.masterColors.statusEffects.wet; }
+        },
+        frozen: {
+            nameKey: 'auto_battle_card_game.ui.status_effects.frozen',
+            descriptionKey: 'auto_battle_card_game.ui.status_effects.frozen_description',
+            name: '얼음',
+            emoji: '❄️',
+            description: '공격 카드의 명중률이 50% 감소합니다.',
+            defaultReduction: 50,
+            duration: 1,
+            get color() { return GameConfig.masterColors.statusEffects.frozen; }
         }
     },
 
@@ -670,6 +694,16 @@ const GameConfig = {
             className: 'status-border-chains',
             get color() { return GameConfig.masterColors.statusEffects.chains; },
             priority: 6
+        },
+        wet: {
+            className: 'status-border-wet',
+            get color() { return GameConfig.masterColors.statusEffects.wet; },
+            priority: 7
+        },
+        frozen: {
+            className: 'status-border-frozen',
+            get color() { return GameConfig.masterColors.statusEffects.frozen; },
+            priority: 8
         }
     },
 
@@ -926,16 +960,9 @@ const GameConfig = {
             1: {
                 hp: 50,
                 cards: [
-                    { id: 'one_times_hundred', count: 1 },   // 1x100=?
-                    { id: 'miracle_revival', count: 1 },     // 기사회생
-                    { id: 'sharpen', count: 1 },             // 벼리기
-                    { id: 'opportunity_scent', count: 1 },   // 기회의 냄새
-                    { id: 'hot_breath', count: 1 },          // 뜨거운 입김
-                    { id: 'oil_pour', count: 1 },            // 기름붓기
-                    { id: 'battery_explosion', count: 1 },   // 배터리폭발 1
-                    { id: 'battery_explosion', count: 1 },   // 배터리폭발 2
-                    { id: 'karura_strike', count: 1 },       // 카루라 일격
-                    { id: 'flame_throw', count: 1 }          // 화염방사
+                    { id: 'water_bomb', count: 1 },      // 물폭탄 (물 속성, 대미지 3 + 젖음)
+                    { id: 'freezing_wind', count: 1 },   // 냉동바람 (젖음 턴 × 10 대미지 + 얼음)
+                    { id: 'ice_breaker', count: 1 }      // 얼음깨기 (얼음 상태 시 최대 HP 20% 고정 피해 + 얼음 제거)
                 ]
             },
             2: {
@@ -2357,6 +2384,12 @@ const GameConfig = {
         // 열풍 카드 설정
         hotWind: {
             selfDamage: 5      // 자해 데미지 5
+        },
+        // 쓰나미 카드 설정
+        tsunami: {
+            selfDamage: 15,    // 자해 데미지 15
+            power: 15,         // 공격력 15
+            wetChance: 100     // 젖음 확률 100%
         }
     },
 

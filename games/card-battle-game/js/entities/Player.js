@@ -41,6 +41,9 @@ class Player {
         // 턴 관련
         this.currentCardIndex = 0;
         this.cardsActivatedThisTurn = 0;
+
+        // 상대 참조 (동적 공격력 계산용)
+        this.opponent = null;
     }
 
     // HP 관련 메서드
@@ -175,30 +178,41 @@ class Player {
             return { success: false, reason: 'immune' };
         }
 
-        // 화상과 중독의 경우 중복 적용 시 턴 수 누적
-        const existingEffect = this.statusEffects.find(effect => effect.type === statusType);
-        if (existingEffect && (statusType === 'burn' || statusType === 'poisoned')) {
-            // 화상과 중독은 중복 적용 시 턴 수 누적
-            const additionalTurns = duration || statusConfig.duration || 1;
-            existingEffect.turnsLeft += additionalTurns;
-            if (GameConfig?.debugMode?.showStatusEffects) {
-                console.log(`[STATUS] ${statusType} 연장: ${this.name} (+${additionalTurns}턴)`);
-            }
-            return { success: true, extended: true, statusType: statusType };
-        }
-
-        // 기타 상태이상은 중복 불가
-        const hasDuplicate = this.hasStatusEffect(statusType);
-        if (hasDuplicate) {
-            return { success: false, duplicate: true, statusType: statusType };
-        }
-
+        // 상태이상 설정 확인
         const statusConfig = GameConfig.statusEffects[statusType];
         if (!statusConfig) {
             console.warn('Player.addStatusEffect: 존재하지 않는 상태이상:', statusType);
             return { success: false, reason: 'invalid_status' };
         }
 
+        // 연장 가능한 상태이상 (Configuration-Driven - 하드코딩 제거)
+        const existingEffect = this.statusEffects.find(effect => effect.type === statusType);
+        if (existingEffect && statusConfig.canExtend) {
+            // 중복 적용 시 턴 수 누적
+            const additionalTurns = duration || statusConfig.duration || 1;
+            existingEffect.turnsLeft += additionalTurns;
+            if (GameConfig?.debugMode?.showStatusEffects) {
+                console.log(`[STATUS] ${statusType} 연장: ${this.name} (+${additionalTurns}턴)`);
+            }
+
+            // 자신의 런타임 스탯 업데이트
+            this.updateRuntimeCardStats();
+
+            // 상대방의 런타임 스탯 즉시 업데이트 (동적 공격력 계산)
+            if (this.opponent) {
+                this.opponent.updateRuntimeCardStats();
+            }
+
+            return { success: true, extended: true, statusType: statusType };
+        }
+
+        // 연장 불가능한 상태이상은 중복 불가
+        const hasDuplicate = this.hasStatusEffect(statusType);
+        if (hasDuplicate) {
+            return { success: false, duplicate: true, statusType: statusType };
+        }
+
+        // 새 상태이상 추가
         const statusEffect = {
             type: statusType,
             power: power || statusConfig.defaultDamage || statusConfig.defaultChance || 0,
@@ -207,7 +221,15 @@ class Player {
         };
 
         this.statusEffects.push(statusEffect);
-        this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
+
+        // 자신의 런타임 스탯 업데이트
+        this.updateRuntimeCardStats();
+
+        // 상대방의 런타임 스탯 즉시 업데이트 (동적 공격력 계산)
+        if (this.opponent) {
+            this.opponent.updateRuntimeCardStats();
+        }
+
         return { success: true };
     }
 
@@ -216,6 +238,12 @@ class Player {
         if (index !== -1) {
             const removed = this.statusEffects.splice(index, 1)[0];
             this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
+
+            // 상대방의 런타임 스탯 즉시 업데이트 (동적 공격력 계산)
+            if (this.opponent) {
+                this.opponent.updateRuntimeCardStats();
+            }
+
             return true;
         }
         return false;
@@ -382,13 +410,31 @@ class Player {
     }
 
     // 런타임 카드 스탯 업데이트 (버프/상태이상 반영)
-    updateRuntimeCardStats() {
+    updateRuntimeCardStats(opponent) {
         if (!this.hand) return;
+
+        // opponent 파라미터가 전달되면 사용, 아니면 this.opponent 사용 (폴백)
+        const target = opponent || this.opponent;
 
         this.hand.forEach(card => {
             // 공격력 계산 (공격 카드만)
             if (card.type === 'attack') {
                 let buffedPower = card.power;
+
+                // freezing_wind 카드: 적의 젖음 잔여 턴 × 10 (동적 계산)
+                if (card.id === 'freezing_wind' && target) {
+                    const wetEffect = target.statusEffects?.find(e => e.type === 'wet');
+                    const wetTurns = wetEffect ? wetEffect.turnsLeft : 0;
+                    buffedPower = wetTurns * 10;
+                }
+
+                // ice_breaker 카드: 적이 frozen 상태일 때 적 최대 HP의 20% (고정 피해)
+                if (card.id === 'ice_breaker' && target) {
+                    const hasFrozen = target.hasStatusEffect('frozen');
+                    buffedPower = hasFrozen ? Math.floor(target.maxHP * 0.2) : 0;
+                    card.buffedPower = buffedPower;
+                    return; // 고정 피해이므로 버프 계산 건너뛰기
+                }
 
                 // 힘 버프 적용 (+3/스택)
                 buffedPower += this.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 3);
@@ -437,6 +483,14 @@ class Player {
                 const slowEffect = this.statusEffects.find(e => e.type === 'slow');
                 if (slowEffect) {
                     modifiedAccuracy = Math.max(0, Math.floor(modifiedAccuracy * (1 - slowEffect.power / 100)));
+                }
+            }
+
+            // 얼음 상태이상 체크 (공격 카드만) - 곱셈 방식으로 감소 (소수점 버림)
+            if (card.type === 'attack' && this.hasStatusEffect('frozen')) {
+                const frozenEffect = this.statusEffects.find(e => e.type === 'frozen');
+                if (frozenEffect) {
+                    modifiedAccuracy = Math.max(0, Math.floor(modifiedAccuracy * (1 - frozenEffect.power / 100)));
                 }
             }
 
@@ -624,6 +678,11 @@ class Player {
             }
             return effect.turnsLeft === -1; // 영구 상태이상
         });
+
+        // 상태이상 턴수 변동/제거 시 상대방 스탯 즉시 업데이트 (동적 공격력 계산)
+        if (this.opponent) {
+            this.opponent.updateRuntimeCardStats();
+        }
     }
 
     // 턴에서 발동 가능한 카드 필터링 (상태이상 고려)

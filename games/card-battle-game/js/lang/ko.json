@@ -119,7 +119,11 @@
         "slow": "둔화",
         "slow_description": "상태이상 카드의 발동률이 30% 감소합니다. 2턴 동안 지속됩니다.",
         "chains": "사슬",
-        "chains_description": "1턴 간 힘 버프가 적용되지 않습니다. 공격력이 일시적으로 감소합니다."
+        "chains_description": "1턴 간 힘 버프가 적용되지 않습니다. 공격력이 일시적으로 감소합니다.",
+        "wet": "젖음",
+        "wet_description": "흠뻑 젖었습니다.",
+        "frozen": "얼음",
+        "frozen_description": "공격 카드의 명중률이 50% 감소합니다. 1턴 동안 지속됩니다."
       },
       "buffs": {
       },
@@ -240,17 +244,33 @@
           "name": "거품타격",
           "description": "상대에게 거품을 보내 터뜨려 피해 1을 2-5회 줍니다."
         },
+        "water_bomb": {
+          "name": "물폭탄",
+          "description": "상대에게 물폭탄을 던져 3의 피해를 입히고 높은 확률로 {status:wet}을 입힙니다."
+        },
+        "tsunami": {
+          "name": "쓰나미",
+          "description": "자신에게 15의 피해를 입힌 후 상대에게 15 피해를 입힙니다. 모두 {status:wet} 상태로 만듭니다."
+        },
+        "freezing_wind": {
+          "name": "냉동바람",
+          "description": "{status:wet} 상태의 적에게 {status:wet} 잔여 턴 당 10의 큰 피해를 입힙니다. 한 턴 간 {status:frozen} 상태로 만들 수 있습니다."
+        },
+        "ice_breaker": {
+          "name": "얼음깨기",
+          "description": "{status:frozen} 상태의 적에게 적 최대 {hp}의 20%에 해당하는 고정 피해를 입히고 명중 시 {status:frozen} 상태를 없앱니다."
+        },
         "thunder_strike": {
           "name": "번개일격",
           "description": "적에게 번개같은 일격을 가합니다."
         },
         "smog": {
           "name": "스모그",
-          "description": "적을 스모그로 감싸 일정확률로 {status:poisoned}시킵니다."
+          "description": "적을 스모그로 감싸 2의 피해를 입히고 일정확률로 {status:poisoned}시킵니다."
         },
         "bandage": {
           "name": "붕대감기",
-          "description": "붕대를 감아 3 {hp}를 회복합니다."
+          "description": "붕대를 감아 3 {hp}을 회복합니다."
         },
         "miracle_revival": {
           "name": "기사회생",
@@ -258,7 +278,7 @@
         },
         "one_times_hundred": {
           "name": "1x100=?",
-          "description": "현재 {hp}이 1일 경우 {hp}를 가득 채워줍니다."
+          "description": "현재 {hp}이 1일 경우 {hp}을 가득 채워줍니다."
         },
         "push_back": {
           "name": "밀쳐내기",
@@ -346,7 +366,7 @@
         },
         "fire_breath": {
           "name": "불의 호흡",
-          "description": "한 턴 간 {fire} {cardType:buff} 카드의 발동이 항상 성공합니다. {buff:breath}는 중첩되지 않습니다."
+          "description": "한 턴 간 {fire} {cardType:buff} 카드의 발동이 항상 성공합니다. {buff:breath}은 중첩되지 않습니다."
         }
       },
       "buffs": {
@@ -440,6 +460,7 @@
         "status_immune": "{name} 면역!",
         "burn_extended": "🔥 화상+{value}턴!",
         "poisoned_extended": "☠️ 중독+{value}턴!",
+        "wet_extended": "💧 젖음+{value}턴!",
         "burn_damage": "🔥 화상으로 {value} 피해!",
         "buff_gained": "{name} +{value}",
         "buff_gained_turns": "{name} +{value}턴!",
