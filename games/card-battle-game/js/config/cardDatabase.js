@@ -558,6 +558,180 @@ const CardDatabase = {
             }
         });
 
+        // 물폭탄 카드 (물 속성, 공격 + 젖음 상태이상)
+        this.addCard({
+            id: 'water_bomb',
+            nameKey: 'auto_battle_card_game.ui.cards.water_bomb.name',
+            type: 'attack',
+            element: 'water',
+            power: 3,
+            accuracy: 80,
+            activationCount: 1,
+            wetChance: 80,
+            descriptionKey: 'auto_battle_card_game.ui.cards.water_bomb.description',
+            effect: function(user, target, battleSystem) {
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    statusEffect: {
+                        type: 'wet',
+                        chance: this.wetChance,
+                        power: null,
+                        duration: 1
+                    },
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
+        // 쓰나미 카드 (물 속성, 자해 15 + 상대에게 15 공격 + 양측 젖음)
+        this.addCard({
+            id: 'tsunami',
+            nameKey: 'auto_battle_card_game.ui.cards.tsunami.name',
+            type: 'attack',
+            element: 'water',
+            power: GameConfig?.cardEffects?.tsunami?.power || 15,
+            accuracy: 90,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.tsunami.description',
+            selfDamage: GameConfig?.cardEffects?.tsunami?.selfDamage || 15,
+            selfStatusEffect: {
+                type: 'wet',
+                chance: 100,
+                power: null,
+                duration: 1
+            },
+            wetChance: GameConfig?.cardEffects?.tsunami?.wetChance || 100,
+            effect: function(user, target, battleSystem) {
+                // 자해 데미지는 BattleSystem.preprocessSelfDamage()에서 이미 처리됨
+                // 자해 시 자신에게 젖음도 이미 적용됨 (selfStatusEffect)
+                // 여기서는 카드의 본연의 효과만 처리 (상대에게 공격 + 젖음)
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                // 상대에게 젖음 적용 (통합 시스템 - 면역 메시지 지원)
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    statusEffect: {
+                        type: 'wet',
+                        chance: this.wetChance,
+                        power: null,
+                        duration: 1
+                    },
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
+        // 냉동바람 카드 (물 속성, 젖음 턴 기반 동적 공격력 + 얼음 상태이상)
+        this.addCard({
+            id: 'freezing_wind',
+            nameKey: 'auto_battle_card_game.ui.cards.freezing_wind.name',
+            type: 'attack',
+            element: 'water',
+            power: 0,  // 동적 계산: 적의 젖음 잔여 턴 × 10
+            accuracy: 80,
+            activationCount: 1,
+            frozenChance: 30,
+            descriptionKey: 'auto_battle_card_game.ui.cards.freezing_wind.description',
+            effect: function(user, target, battleSystem) {
+                // 동적 공격력: 적의 젖음 잔여 턴 × 10 (Player.updateRuntimeCardStats()에서 이미 계산됨)
+                // 여기서는 카드의 buffedPower를 사용
+                let baseDamage = this.buffedPower || 0;
+                baseDamage += (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                // 젖음 상태 확인 - 얼음 적용 여부 결정
+                const wetEffect = target.statusEffects?.find(e => e.type === 'wet');
+                const hasWet = wetEffect && wetEffect.turnsLeft > 0;
+
+                // 얼음 적용 (통합 시스템 - 젖음 있을 때만)
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    statusEffect: hasWet ? {
+                        type: 'frozen',
+                        chance: this.frozenChance,
+                        power: GameConfig.statusEffects.frozen.defaultReduction,
+                        duration: 1
+                    } : null,  // 젖음 없으면 얼음 적용 안함
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
+        // 얼음깨기 카드 (물 속성, 얼음 상태의 적에게 고정 피해 + 얼음 제거)
+        this.addCard({
+            id: 'ice_breaker',
+            nameKey: 'auto_battle_card_game.ui.cards.ice_breaker.name',
+            type: 'attack',
+            element: 'water',
+            power: 0,  // 동적 계산: 적이 frozen 상태일 때 적 최대 HP의 20%
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.ice_breaker.description',
+            isFixedDamage: true,  // 고정 피해 (버프 무시)
+            effect: function(user, target, battleSystem) {
+                // 동적 공격력: 적이 frozen 상태일 때만 대미지 (Player.updateRuntimeCardStats()에서 계산됨)
+                let baseDamage = this.buffedPower || 0;
+
+                // 고정 피해이므로 버프 적용 건너뛰기 (힘, 강화, Li⁺ 등 무시)
+
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                // 얼음 상태 확인 (명중 시에만 제거)
+                const hasFrozen = target.hasStatusEffect('frozen');
+
+                // 명중 시 얼음 제거
+                if (hasFrozen) {
+                    target.removeStatusEffect('frozen');
+                    // 상태이상 UI 업데이트는 BattleSystem에서 자동 처리
+                    // 상대방의 런타임 스탯 즉시 업데이트 (Player.removeStatusEffect에서 자동 호출됨)
+                }
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    frozenRemoved: hasFrozen,  // 얼음 제거 여부 (UI 업데이트용)
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
         // 번개일격 카드 (전기 속성, 강력하지만 낮은 명중률)
         this.addCard({
             id: 'thunder_strike',

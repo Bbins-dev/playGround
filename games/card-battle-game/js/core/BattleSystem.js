@@ -59,6 +59,10 @@ class BattleSystem {
         this.displayTurn = 'player';
         this.battlePhase = 'waiting';
 
+        // 상대 참조 설정 (동적 공격력 계산용)
+        this.player.opponent = this.enemy;
+        this.enemy.opponent = this.player;
+
         // 시스템 초기화
         await this.initializeSystems();
 
@@ -136,6 +140,10 @@ class BattleSystem {
 
         // ===== 4. Player.startTurn() 호출 (카드 초기화만) =====
         currentPlayer.startTurn();
+
+        // ===== 4-1. 런타임 카드 스탯 업데이트 (동적 공격력 계산 포함) =====
+        const opponent = isPlayerTurn ? this.enemy : this.player;
+        currentPlayer.updateRuntimeCardStats(opponent);
 
         // ===== 5. 스테이지 회복 =====
         if (isPlayerTurn && this.gameManager.stageHealingAmount > 0) {
@@ -788,6 +796,11 @@ class BattleSystem {
                 this.gameManager.uiManager.updateStatusBorder();
             }
 
+            // 상대방의 런타임 스탯 즉시 업데이트 (동적 공격력 계산, 예: 냉동바람)
+            if (target.opponent) {
+                target.opponent.updateRuntimeCardStats();
+            }
+
             return { success: true, statusType: statusInfo.type, extended: result.extended };
         } else if (result.duplicate) {
             // 중복 - 이미 상태이상 걸림
@@ -834,6 +847,7 @@ class BattleSystem {
         // 1. 즉시 해제가 필요한 상태이상 제거
         currentPlayer.removeStatusEffect('taunt');
         currentPlayer.removeStatusEffect('stun'); // 안전장치
+        currentPlayer.removeStatusEffect('frozen'); // 얼음 즉시 해제
 
         // 2. 턴 종료 시 데미지 처리 (독 등)
         const poisonDamageApplied = await this.processPoisonDamage(currentPlayer, isPlayerTurn);
@@ -1243,6 +1257,12 @@ class BattleSystem {
 
         // 자해 데미지 표시 대기 시간
         await this.wait(config.timing.animationDelay / this.gameSpeed);
+
+        // 자해 후 자신에게 상태이상 적용 (selfStatusEffect 지원)
+        if (card.selfStatusEffect && !user.isDead()) {
+            // 자신에게 상태이상 적용 (통합 시스템 사용)
+            await this.tryApplyStatusEffect(card.selfStatusEffect, user, userPosition);
+        }
 
         // 사망 체크
         if (user.isDead()) {

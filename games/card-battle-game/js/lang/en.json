@@ -119,7 +119,11 @@
         "slow": "Slow",
         "slow_description": "Reduces status card activation rate by 30%. Lasts for 2 turns.",
         "chains": "Chains",
-        "chains_description": "Strength buffs are not applied for 1 turn. Attack power is temporarily reduced."
+        "chains_description": "Strength buffs are not applied for 1 turn. Attack power is temporarily reduced.",
+        "wet": "Wet",
+        "wet_description": "Soaking wet.",
+        "frozen": "Frozen",
+        "frozen_description": "Attack card accuracy is reduced by 50%. Lasts for 1 turn."
       },
       "buffs": {
       },
@@ -240,13 +244,29 @@
           "name": "Bubble Strike",
           "description": "Send bubbles to burst for 1 damage 2-5 times."
         },
+        "water_bomb": {
+          "name": "Water Bomb",
+          "description": "Throw a water bomb at the opponent for 3 damage and a high chance to inflict {status:wet}."
+        },
+        "tsunami": {
+          "name": "Tsunami",
+          "description": "Deal 15 damage to yourself, then deal 15 damage to the opponent. Both become {status:wet}."
+        },
+        "freezing_wind": {
+          "name": "Freezing Wind",
+          "description": "Deal 10 damage per {status:wet} turn remaining to {status:wet} enemies. Can {status:frozen} for 1 turn."
+        },
+        "ice_breaker": {
+          "name": "Ice Breaker",
+          "description": "Deal fixed damage equal to 20% of enemy's max {hp} to {status:frozen} enemies and remove {status:frozen} on hit."
+        },
         "thunder_strike": {
           "name": "Thunder Strike",
           "description": "Deliver a thunderous strike to the enemy."
         },
         "smog": {
           "name": "Smog",
-          "description": "Envelop the enemy in smog with a chance to {status:poisoned}."
+          "description": "Envelop the enemy in smog, dealing 2 damage with a chance to {status:poisoned}."
         },
         "bandage": {
           "name": "Bandage",
@@ -440,6 +460,7 @@
         "status_immune": "{name} Immune!",
         "burn_extended": "🔥 Burn+{value}T!",
         "poisoned_extended": "☠️ Poison+{value}T!",
+        "wet_extended": "💧 Wet+{value}T!",
         "burn_damage": "🔥 {value} burn damage!",
         "buff_gained": "{name} +{value}",
         "buff_gained_turns": "{name} +{value}T!",

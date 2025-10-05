@@ -213,9 +213,9 @@ class HPBarSystem {
             const statusElement = document.createElement('div');
             statusElement.className = 'status-label';
 
-            // 지속 턴수가 있는 경우 카운트다운 표시
+            // 지속 턴수가 있는 경우 카운트다운 표시 (단, frozen은 1턴 고정이므로 표시 제외)
             let countdownHtml = '';
-            if (effect.turnsLeft && effect.turnsLeft > 0) {
+            if (effect.turnsLeft && effect.turnsLeft > 0 && effect.type !== 'frozen') {
                 countdownHtml = `(${effect.turnsLeft})`;
             }
 
