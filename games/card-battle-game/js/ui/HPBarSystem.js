@@ -280,6 +280,9 @@ class HPBarSystem {
                 }
             });
 
+            // Flexbox column-reverse/column으로 방향 제어
+            // 플레이어: column-reverse로 아래→위 자동 처리
+            // 적: column으로 위→아래 자동 처리
             buffsContainer.appendChild(buffElement);
         }
 
@@ -313,6 +316,9 @@ class HPBarSystem {
                 }
             });
 
+            // Flexbox column-reverse/column으로 방향 제어
+            // 플레이어: column-reverse로 아래→위 자동 처리
+            // 적: column으로 위→아래 자동 처리
             buffsContainer.appendChild(buffElement);
         }
 
@@ -346,6 +352,9 @@ class HPBarSystem {
                 }
             });
 
+            // Flexbox column-reverse/column으로 방향 제어
+            // 플레이어: column-reverse로 아래→위 자동 처리
+            // 적: column으로 위→아래 자동 처리
             buffsContainer.appendChild(buffElement);
         }
 
@@ -380,6 +389,9 @@ class HPBarSystem {
                 }
             });
 
+            // Flexbox column-reverse/column으로 방향 제어
+            // 플레이어: column-reverse로 아래→위 자동 처리
+            // 적: column으로 위→아래 자동 처리
             buffsContainer.appendChild(buffElement);
         }
 
@@ -414,6 +426,9 @@ class HPBarSystem {
                 }
             });
 
+            // Flexbox column-reverse/column으로 방향 제어
+            // 플레이어: column-reverse로 아래→위 자동 처리
+            // 적: column으로 위→아래 자동 처리
             buffsContainer.appendChild(buffElement);
         }
 
@@ -446,6 +461,9 @@ class HPBarSystem {
                 }
             });
 
+            // Flexbox column-reverse/column으로 방향 제어
+            // 플레이어: column-reverse로 아래→위 자동 처리
+            // 적: column으로 위→아래 자동 처리
             buffsContainer.appendChild(buffElement);
         }
 
@@ -479,6 +497,9 @@ class HPBarSystem {
                 }
             });
 
+            // Flexbox column-reverse/column으로 방향 제어
+            // 플레이어: column-reverse로 아래→위 자동 처리
+            // 적: column으로 위→아래 자동 처리
             buffsContainer.appendChild(buffElement);
         }
 
@@ -512,6 +533,9 @@ class HPBarSystem {
                 }
             });
 
+            // Flexbox column-reverse/column으로 방향 제어
+            // 플레이어: column-reverse로 아래→위 자동 처리
+            // 적: column으로 위→아래 자동 처리
             buffsContainer.appendChild(buffElement);
         }
 
@@ -545,6 +569,9 @@ class HPBarSystem {
                 }
             });
 
+            // Flexbox column-reverse/column으로 방향 제어
+            // 플레이어: column-reverse로 아래→위 자동 처리
+            // 적: column으로 위→아래 자동 처리
             buffsContainer.appendChild(buffElement);
         }
 

@@ -1161,46 +1161,53 @@ body {
     width: calc(60% + 60px);
 }
 
-/* 상태이상 그리드 (왼쪽 정렬) */
+/* 상태이상 그리드 (왼쪽 정렬) - Flexbox 사용 */
 .status-effects-grid {
     position: absolute;
-    display: grid;
-    grid-template-columns: repeat(var(--effect-columns, 2), 1fr);
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--effect-vertical-spacing, 6px) var(--effect-spacing, 8px);
     left: 0;
+    max-width: calc(var(--effect-columns, 2) * 150px); /* 최대 2열 너비 */
 }
 
-/* 버프 그리드 (오른쪽 정렬) */
+/* 버프 그리드 (오른쪽 정렬) - Flexbox 사용 */
 .buffs-grid {
     position: absolute;
-    display: grid;
-    grid-template-columns: repeat(var(--effect-columns, 2), 1fr);
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--effect-vertical-spacing, 6px) var(--effect-spacing, 8px);
     right: 0;
+    max-width: calc(var(--effect-columns, 2) * 150px); /* 최대 2열 너비 */
+    direction: rtl;  /* 오른쪽부터 왼쪽으로 요소 채움 */
 }
 
-/* 플레이어 상태이상 - 위로 증가 */
+/* 플레이어 상태이상 - 아래→위로 쌓임 */
 .player-status {
-    grid-auto-flow: row;
-    align-content: end;
+    flex-direction: row;
+    flex-wrap: wrap-reverse;  /* 행을 아래부터 위로 쌓음 */
+    align-content: flex-end;
 }
 
-/* 플레이어 버프 - 위로 증가 */
+/* 플레이어 버프 - 아래→위로 쌓임 (RTL 유지) */
 .player-buffs {
-    grid-auto-flow: row;
-    align-content: end;
+    flex-direction: row;
+    flex-wrap: wrap-reverse;  /* 행을 아래부터 위로 쌓음 */
+    align-content: flex-end;
 }
 
-/* 적 상태이상 - 아래로 증가 */
+/* 적 상태이상 - 위→아래로 쌓임 */
 .enemy-status {
-    grid-auto-flow: row;
-    align-content: start;
+    flex-direction: row;
+    flex-wrap: wrap;  /* 행을 위부터 아래로 쌓음 */
+    align-content: flex-start;
 }
 
-/* 적 버프 - 아래로 증가 */
+/* 적 버프 - 위→아래로 쌓임 (RTL 유지) */
 .enemy-buffs {
-    grid-auto-flow: row;
-    align-content: start;
+    flex-direction: row;
+    flex-wrap: wrap;  /* 행을 위부터 아래로 쌓음 */
+    align-content: flex-start;
 }
 
 /* 업데이트된 상태이상 라벨 */
@@ -1221,6 +1228,7 @@ body {
     pointer-events: auto;
     min-width: var(--effect-icon-size, 36px);
     min-height: var(--effect-icon-size, 36px);
+    width: max-content;  /* 콘텐츠 크기만 차지, 독립적 너비 */
 }
 
 /* 클릭 가능한 상태이상 라벨 호버 효과 */
@@ -1252,6 +1260,8 @@ body {
     pointer-events: auto;
     min-width: var(--effect-icon-size, 36px);
     min-height: var(--effect-icon-size, 36px);
+    direction: ltr;  /* 부모 RTL 상속 차단, 이모지→텍스트 순서 유지 */
+    width: max-content;  /* 콘텐츠 크기만 차지, 독립적 너비 */
 }
 
 /* 클릭 가능한 버프 라벨 호버 효과 */

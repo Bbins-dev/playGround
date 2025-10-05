@@ -76,13 +76,36 @@ npx serve                                       # ❌ 루트에서 실행 금지
 - `processBuffResult()` → 버프 처리 후 `updateBuffs()` 호출
 - `tryApplyStatusEffect()` → 자동 처리 (통합 시스템 사용 시)
 
+**⚠️ HPBarSystem 수정 시 주의**:
+- **버프/상태이상 라벨 추가**: 반드시 조건부 DOM 추가
+  ```javascript
+  if (isPlayer) {
+      container.prepend(element);  // 플레이어: 아래→위
+  } else {
+      container.appendChild(element);  // 적: 위→아래
+  }
+  ```
+- Grid RTL 배치 시스템으로 플레이어/적 시각적 방향 구분
+
 ### 💪 신규 버프 카드 추가 시 (4단계 필수!)
 1. **CardDatabase** - effect 함수에서 `xxxGain` 반환 (예: `lithiumGain: 1`)
 2. **BattleSystem.processBuffResult()** - `xxxGain` 처리 추가 (`showBuffEffect` 호출)
 3. **HPBarSystem.updateBuffs()** - 버프 라벨 렌더링 블록 추가
+   - **필수 패턴**: 조건부 DOM 추가 (플레이어/적 방향 차이)
+     ```javascript
+     if (isPlayer) {
+         buffsContainer.prepend(buffElement);  // 플레이어: 아래→위 쌓임
+     } else {
+         buffsContainer.appendChild(buffElement);  // 적: 위→아래 쌓임
+     }
+     ```
+   - 모든 버프 블록에 동일 패턴 적용 (기존 9개 버프 참고)
+   - **이유**: Grid RTL 배치 + 플레이어/적 시각적 방향 차이
 4. **Player.updateRuntimeCardStats()** - 곱셈 버프인 경우 `buffedPower` 계산 추가
 
-**주의**: CardDatabase에서 `updateBuffs()` 직접 호출 금지 (BattleSystem이 자동 처리)
+**주의**:
+- CardDatabase에서 `updateBuffs()` 직접 호출 금지 (BattleSystem이 자동 처리)
+- CSS 수정 불필요 (`.buffs-grid { direction: rtl; }`, `.buff-label { direction: ltr; width: max-content; }` 이미 적용됨)
 
 ### 🌐 다국어 필수 업데이트
 - [ ] **3개 언어팩 모두 업데이트**: ko.json, en.json, ja.json

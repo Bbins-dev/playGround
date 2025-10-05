@@ -2387,6 +2387,13 @@ const GameConfig = {
             gap: 10,              // 카드 간 간격 (최적화된 10px)
             columns: 2,           // 그리드 열 개수
             padding: '20px 15px'  // 그리드 패딩
+        },
+        effects: {
+            spacing: 8,           // 버프/상태이상 가로 간격
+            verticalSpacing: 6,   // 버프/상태이상 세로 간격
+            columns: 2,           // 그리드 열 개수
+            fontSize: 14,         // 라벨 폰트 크기
+            iconSize: 36          // 라벨 최소 크기
         }
     },
 
