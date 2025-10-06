@@ -367,6 +367,14 @@
         "fire_breath": {
           "name": "炎の呼吸",
           "description": "1ターンの間、{fire}{cardType:buff}カードの発動が必ず成功します。{buff:breath}は重複しません。"
+        },
+        "water_healing": {
+          "name": "水の治癒",
+          "description": "自分が{water}防御属性状態の場合、8 {hp}を回復します。"
+        },
+        "skin_breathing": {
+          "name": "皮膚呼吸",
+          "description": "自分を6 {hp}回復します。自分が{status:wet}状態の場合、回復量が3倍になります。"
         }
       },
       "buffs": {

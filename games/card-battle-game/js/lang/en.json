@@ -367,6 +367,14 @@
         "fire_breath": {
           "name": "Fire Breath",
           "description": "For 1 turn, {fire} {cardType:buff} cards always activate successfully. {buff:breath} does not stack."
+        },
+        "water_healing": {
+          "name": "Water Healing",
+          "description": "If you have {water} defense attribute, restore 8 {hp}."
+        },
+        "skin_breathing": {
+          "name": "Skin Breathing",
+          "description": "Restore 6 {hp}. If you have {status:wet} status, healing triples."
         }
       },
       "buffs": {
