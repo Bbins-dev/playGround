@@ -250,7 +250,9 @@ class Player {
     }
 
     hasStatusEffect(statusType) {
-        return this.statusEffects.some(effect => effect.type === statusType);
+        return this.statusEffects.some(effect =>
+            effect.type === statusType && effect.turnsLeft > 0
+        );
     }
 
     clearAllStatusEffects() {
