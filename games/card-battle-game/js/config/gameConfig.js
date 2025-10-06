@@ -961,10 +961,10 @@ const GameConfig = {
                 hp: 50,
                 cards: [
                     { id: 'rain', count: 1 },            // 비내리기 (자신과 상대 모두 젖음 1턴)
-                    { id: 'slash_water', count: 1 },     // 칼로 물 베기 (마지막 받은 피해만큼 회복)
-                    { id: 'liquify', count: 1 },         // 액체화 (잃은 체력의 50% 회복 + 젖음 제거 + 턴 넘김)
-                    { id: 'healing_spring', count: 1 },  // 회복의 샘 (젖음 상태일 때만 10 회복)
-                    { id: 'water_bomb', count: 1 },      // 물폭탄 (물 속성, 대미지 3 + 젖음)
+                    { id: 'cold_snap', count: 1 },       // 혹한기 (젖음 상태일 때만 얼음 적용)
+                    { id: 'mud_bath', count: 1 },        // 진흙탕 (모래 상태 1턴 적용)
+                    { id: 'cold_burn', count: 1 },       // 저온화상 (젖음/얼음 상태일 때 화상 추가)
+                    { id: 'sleet', count: 1 },           // 진눈깨비 (물 속성, 대미지 2 + 젖음)
                     { id: 'freezing_wind', count: 1 },   // 냉동바람 (젖음 턴 × 10 대미지 + 얼음)
                     { id: 'ice_breaker', count: 1 },     // 얼음깨기 (얼음 시 최대 HP 20% 고정 피해)
                     { id: 'liquify', count: 1 }          // 액체화 (잃은 체력 50% 회복 + 젖음 제거)

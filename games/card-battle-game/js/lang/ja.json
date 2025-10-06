@@ -288,6 +288,14 @@
           "name": "砂投げ",
           "description": "相手の目に砂を投げて2ターン間{cardType:attack}カードの命中率30%減少"
         },
+        "mud_bath": {
+          "name": "泥沼",
+          "description": "相手を泥沼に引きずり込み、1ターン間{status:sand}状態にします。"
+        },
+        "cold_snap": {
+          "name": "酷寒期",
+          "description": "{status:wet}状態の敵を凍らせ、1ターンの間{status:frozen}状態にします。"
+        },
         "karura_strike": {
           "name": "カルラ一撃",
           "description": "カルラ一族に学んだ技です。自分に10ダメージを与えた後、相手に12ダメージを与えて{status:burn}を負わせます。"

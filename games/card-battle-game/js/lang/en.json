@@ -288,6 +288,14 @@
           "name": "Sand Throw",
           "description": "Throw {status:sand} in opponent's eyes, reducing {cardType:attack} card accuracy by 30% for 2 turns"
         },
+        "mud_bath": {
+          "name": "Mud Bath",
+          "description": "Pull opponent into muddy water, causing {status:sand} status for 1 turn."
+        },
+        "cold_snap": {
+          "name": "Cold Snap",
+          "description": "Freeze {status:wet} enemies, causing {status:frozen} status for 1 turn."
+        },
         "karura_strike": {
           "name": "Karura Strike",
           "description": "A technique learned from the Karura clan. Deal 10 damage to yourself, then deal 12 damage to opponent and inflict {status:burn}."

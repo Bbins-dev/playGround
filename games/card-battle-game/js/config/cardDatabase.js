@@ -957,6 +957,69 @@ const CardDatabase = {
             }
         });
 
+        // 진흙탕 카드 (물 속성 상태이상, 모래 상태 1턴 적용)
+        this.addCard({
+            id: 'mud_bath',
+            nameKey: 'auto_battle_card_game.ui.cards.mud_bath.name',
+            type: 'status',
+            element: 'water',
+            power: 0,
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.mud_bath.description',
+            sandChance: 80,
+            effect: function(user, target, battleSystem) {
+                // 모래 적용 (통합 시스템 - 면역 메시지 지원)
+                return {
+                    success: true,
+                    statusEffect: {
+                        type: 'sand',
+                        chance: this.sandChance,
+                        power: GameConfig.statusEffects.sand.defaultReduction,
+                        duration: 1
+                    },
+                    element: this.element
+                };
+            }
+        });
+
+        // 혹한기 카드 (물 속성 상태이상, 젖음 상태일 때만 얼음 적용)
+        this.addCard({
+            id: 'cold_snap',
+            nameKey: 'auto_battle_card_game.ui.cards.cold_snap.name',
+            type: 'status',
+            element: 'water',
+            power: 0,
+            accuracy: 70,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.cold_snap.description',
+            frozenChance: 70,
+            effect: function(user, target, battleSystem) {
+                // 젖음 상태 체크
+                const hasWet = target.hasStatusEffect('wet');
+                if (!hasWet) {
+                    // 젖음 상태가 아니면 조건 실패
+                    return {
+                        success: true,           // 명중은 성공
+                        conditionFailed: true,   // 조건 실패
+                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        element: this.element
+                    };
+                }
+                // 젖음 상태일 경우 얼음 적용 (통합 시스템 - 면역/중복 메시지 지원)
+                return {
+                    success: true,
+                    statusEffect: {
+                        type: 'frozen',
+                        chance: this.frozenChance,
+                        power: GameConfig.statusEffects.frozen.defaultReduction,
+                        duration: 1
+                    },
+                    element: this.element
+                };
+            }
+        });
+
         // 카루라 일격 카드 (불 속성, 자해 + 강력한 공격 + 확정 화상)
         this.addCard({
             id: 'karura_strike',
