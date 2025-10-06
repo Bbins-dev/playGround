@@ -960,6 +960,7 @@ const GameConfig = {
             1: {
                 hp: 50,
                 cards: [
+                    { id: 'healing_spring', count: 1 },  // 회복의 샘 (젖음 상태일 때만 10 회복)
                     { id: 'water_bomb', count: 1 },      // 물폭탄 (물 속성, 대미지 3 + 젖음)
                     { id: 'freezing_wind', count: 1 },   // 냉동바람 (젖음 턴 × 10 대미지 + 얼음)
                     { id: 'ice_breaker', count: 1 },     // 얼음깨기 (얼음 상태 시 최대 HP 20% 고정 피해 + 얼음 제거)
@@ -2399,6 +2400,10 @@ const GameConfig = {
             selfDamage: 15,    // 자해 데미지 15
             power: 15,         // 공격력 15
             wetChance: 100     // 젖음 확률 100%
+        },
+        // 회복의 샘 카드 설정
+        healingSpring: {
+            healAmount: 10    // 젖음 상태일 때 회복량
         }
     },
 

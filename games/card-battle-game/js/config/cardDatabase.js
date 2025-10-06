@@ -1826,6 +1826,44 @@ const CardDatabase = {
                 };
             }
         });
+
+        // 회복의 샘 카드 (물 속성 회복 카드, 젖음 상태일 때만 발동)
+        this.addCard({
+            id: 'healing_spring',
+            nameKey: 'auto_battle_card_game.ui.cards.healing_spring.name',
+            type: 'heal',
+            element: 'water',
+            power: 10, // 파워 스탯에 회복량 표시 (젖음 상태일 때만 발동)
+            healAmount: 10,
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.healing_spring.description',
+            effect: function(user, target, battleSystem) {
+                // buffedPower 사용 (젖음 상태 자동 반영됨)
+                const healAmount = this.buffedPower || this.healAmount;
+
+                // 젖음 상태가 아니면 조건 실패
+                if (healAmount === 0) {
+                    return {
+                        success: false,
+                        conditionFailed: true,
+                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        element: this.element
+                    };
+                }
+
+                const actualHealing = user.heal ? user.heal(healAmount) : 0;
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.heal_effect',
+                    healAmount: actualHealing,
+                    element: this.element,
+                    effectType: 'heal',
+                    templateData: { value: actualHealing }
+                };
+            }
+        });
     }
 };
 

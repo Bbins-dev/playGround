@@ -375,6 +375,10 @@
         "skin_breathing": {
           "name": "피부호흡",
           "description": "자신을 6 {hp} 회복합니다. 자신이 {status:wet} 상태일 경우 회복량이 세 배로 올라갑니다."
+        },
+        "healing_spring": {
+          "name": "회복의 샘",
+          "description": "자신이 {status:wet} 상태일 경우 발동 시 10의 {hp}을 회복합니다."
         }
       },
       "buffs": {
