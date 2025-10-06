@@ -1147,7 +1147,7 @@ body {
 
 /* 플레이어 효과 위치 (HP바 위쪽) */
 .player-effects {
-    bottom: 164px; /* HP바 위 (2px 더 위로 조정) */
+    bottom: 130px; /* HP바 bottom(85px) + height(40px) + gap(5px) = HP바 위 5px 여백 */
     left: 50%;
     transform: translateX(-50%);
     width: calc(60% + 60px);
@@ -1184,20 +1184,23 @@ body {
 
 /* 플레이어 상태이상 - 아래→위로 쌓임 */
 .player-status {
+    bottom: 0;  /* 부모 컨테이너 하단에 고정 */
     flex-direction: row;
     flex-wrap: wrap-reverse;  /* 행을 아래부터 위로 쌓음 */
-    align-content: flex-start;  /* 위쪽부터 채워서 2줄 이상일 때 위로 확장 */
+    align-content: flex-end;  /* 아래쪽 정렬 + wrap-reverse = 위로 확장 */
 }
 
 /* 플레이어 버프 - 아래→위로 쌓임 (RTL 유지) */
 .player-buffs {
+    bottom: 0;  /* 부모 컨테이너 하단에 고정 */
     flex-direction: row;
     flex-wrap: wrap-reverse;  /* 행을 아래부터 위로 쌓음 */
-    align-content: flex-start;  /* 위쪽부터 채워서 2줄 이상일 때 위로 확장 */
+    align-content: flex-end;  /* 아래쪽 정렬 + wrap-reverse = 위로 확장 */
 }
 
 /* 적 상태이상 - 위→아래로 쌓임 */
 .enemy-status {
+    top: 0;  /* 부모 컨테이너 상단에 고정 */
     flex-direction: row;
     flex-wrap: wrap;  /* 행을 위부터 아래로 쌓음 */
     align-content: flex-start;
@@ -1205,6 +1208,7 @@ body {
 
 /* 적 버프 - 위→아래로 쌓임 (RTL 유지) */
 .enemy-buffs {
+    top: 0;  /* 부모 컨테이너 상단에 고정 */
     flex-direction: row;
     flex-wrap: wrap;  /* 행을 위부터 아래로 쌓음 */
     align-content: flex-start;
