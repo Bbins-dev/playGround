@@ -383,6 +383,10 @@
         "liquify": {
           "name": "액체화",
           "description": "자신을 액체화 하여 잃은 {hp}의 50%를 회복하고 {status:wet} 상태를 제거하며 턴을 넘깁니다."
+        },
+        "slash_water": {
+          "name": "칼로 물 베기",
+          "description": "칼로 물을 벤 것 같네요, 마지막 받은 피해 만큼 자신의 {hp}을 회복합니다."
         }
       },
       "buffs": {
