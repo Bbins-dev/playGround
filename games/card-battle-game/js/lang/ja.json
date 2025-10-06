@@ -379,6 +379,10 @@
         "healing_spring": {
           "name": "癒しの泉",
           "description": "自分が{status:wet}状態の場合、発動時に10の{hp}を回復します。"
+        },
+        "liquify": {
+          "name": "液体化",
+          "description": "自分を液体化して失った{hp}の50%を回復し、{status:wet}状態を解除してターンをスキップします。"
         }
       },
       "buffs": {
@@ -479,6 +483,7 @@
         "buff_reduced": "{name} {value}",
         "defense_gained": "🛡️ 防御力 +{value}",
         "heal_effect": "❤️ 体力 +{value}",
+        "liquify_effect": "💧 体力 +{value} (液体化)",
         "self_damage": "自分に{damage}ダメージ！",
         "karura_strike_effect": "自分に{selfDamage}ダメージ！相手に{damage}ダメージ！",
         "red_pendant_effect": "🛡️ 防御力 +{defense}、💪 力 +{strength}",

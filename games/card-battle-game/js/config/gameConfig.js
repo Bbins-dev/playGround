@@ -960,6 +960,7 @@ const GameConfig = {
             1: {
                 hp: 50,
                 cards: [
+                    { id: 'liquify', count: 1 },         // 액체화 (잃은 체력의 50% 회복 + 젖음 제거 + 턴 넘김)
                     { id: 'healing_spring', count: 1 },  // 회복의 샘 (젖음 상태일 때만 10 회복)
                     { id: 'water_bomb', count: 1 },      // 물폭탄 (물 속성, 대미지 3 + 젖음)
                     { id: 'freezing_wind', count: 1 },   // 냉동바람 (젖음 턴 × 10 대미지 + 얼음)
@@ -1958,8 +1959,8 @@ const GameConfig = {
                     return value;
                 },
                 showCondition: (card, context) => {
-                    // 상태이상 카드, 버프 카드, 특수 카드, 회복 카드에서 주 스탯이 없는 경우 숨김
-                    if ((card.type === 'status' || card.type === 'buff' || card.type === 'special' || card.type === 'heal') && card.power === 0) return false;
+                    // 상태이상 카드, 버프 카드, 특수 카드에서 주 스탯이 없는 경우 숨김 (회복 카드는 power:0이어도 표시)
+                    if ((card.type === 'status' || card.type === 'buff' || card.type === 'special') && card.power === 0) return false;
                     return true;
                 }
             },

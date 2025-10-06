@@ -379,6 +379,10 @@
         "healing_spring": {
           "name": "Healing Spring",
           "description": "If you have {status:wet} status, restore 10 {hp} when activated."
+        },
+        "liquify": {
+          "name": "Liquify",
+          "description": "Liquify yourself to recover 50% of lost {hp}, remove {status:wet} status, and skip turn."
         }
       },
       "buffs": {
@@ -479,6 +483,7 @@
         "buff_reduced": "{name} {value}",
         "defense_gained": "🛡️ DEF +{value}",
         "heal_effect": "❤️ HP +{value}",
+        "liquify_effect": "💧 HP +{value} (Liquify)",
         "self_damage": "{damage} self-damage!",
         "karura_strike_effect": "{selfDamage} self-damage! {damage} damage to opponent!",
         "red_pendant_effect": "🛡️ Defense +{defense}, 💪 Strength +{strength}",
