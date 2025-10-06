@@ -68,16 +68,16 @@ class CardSelectionModal {
             });
         }
 
-        // ESC 키로 닫기
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                if (this.detailModal && !this.detailModal.classList.contains('hidden')) {
-                    this.hideDetailModal();
-                } else if (this.modal && !this.modal.classList.contains('hidden')) {
-                    // 메인 카드 선택 모달은 ESC로 닫지 않음 (필수 선택)
-                }
-            }
-        });
+        // ESC 키로 닫기 (비활성화)
+        // document.addEventListener('keydown', (e) => {
+        //     if (e.key === 'Escape') {
+        //         if (this.detailModal && !this.detailModal.classList.contains('hidden')) {
+        //             this.hideDetailModal();
+        //         } else if (this.modal && !this.modal.classList.contains('hidden')) {
+        //             // 메인 카드 선택 모달은 ESC로 닫지 않음 (필수 선택)
+        //         }
+        //     }
+        // });
     }
 
     /**

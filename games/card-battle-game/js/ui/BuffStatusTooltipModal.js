@@ -56,12 +56,12 @@ class BuffStatusTooltipModal {
             });
         }
 
-        // ESC 키로 닫기
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.isVisible) {
-                this.hide();
-            }
-        });
+        // ESC 키로 닫기 (비활성화)
+        // document.addEventListener('keydown', (e) => {
+        //     if (e.key === 'Escape' && this.isVisible) {
+        //         this.hide();
+        //     }
+        // });
     }
 
     /**

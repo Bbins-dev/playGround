@@ -658,6 +658,23 @@ class BattleSystem {
             }
         }
 
+        // 양쪽 상태이상 처리 (비내리기 카드 등 - 자신과 상대 모두에게 적용)
+        if (result.statusEffectBoth) {
+            // 카드 사용자(user) 확인 - target의 반대
+            const user = target === this.player ? this.enemy : this.player;
+            const userPosition = target === this.player ?
+                this.effectSystem.getEnemyPosition() :
+                this.effectSystem.getPlayerPosition();
+
+            // 상대(target)에게 상태이상 적용
+            await this.tryApplyStatusEffect(result.statusEffectBoth, target, targetPosition);
+
+            // 자신(user)에게도 상태이상 적용
+            await this.tryApplyStatusEffect(result.statusEffectBoth, user, userPosition);
+
+            return; // 양쪽 처리 완료
+        }
+
         // 통합 상태이상 처리 (신규 방식 - 면역 메시지 지원)
         if (result.statusEffect) {
             await this.tryApplyStatusEffect(result.statusEffect, target, targetPosition);

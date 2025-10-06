@@ -387,6 +387,10 @@
         "slash_water": {
           "name": "칼로 물 베기",
           "description": "칼로 물을 벤 것 같네요, 마지막 받은 피해 만큼 자신의 {hp}을 회복합니다."
+        },
+        "rain": {
+          "name": "비내리기",
+          "description": "비를 내려 자신과 상대를 {status:wet} 상태로 만듭니다."
         }
       },
       "buffs": {

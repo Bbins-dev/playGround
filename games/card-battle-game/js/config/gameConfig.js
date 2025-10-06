@@ -960,6 +960,7 @@ const GameConfig = {
             1: {
                 hp: 50,
                 cards: [
+                    { id: 'rain', count: 1 },            // 비내리기 (자신과 상대 모두 젖음 1턴)
                     { id: 'slash_water', count: 1 },     // 칼로 물 베기 (마지막 받은 피해만큼 회복)
                     { id: 'liquify', count: 1 },         // 액체화 (잃은 체력의 50% 회복 + 젖음 제거 + 턴 넘김)
                     { id: 'healing_spring', count: 1 },  // 회복의 샘 (젖음 상태일 때만 10 회복)

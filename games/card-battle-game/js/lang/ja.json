@@ -387,6 +387,10 @@
         "slash_water": {
           "name": "水斬り",
           "description": "水を斬ったようです、最後に受けたダメージと同じだけの{hp}を回復します。"
+        },
+        "rain": {
+          "name": "雨降らし",
+          "description": "雨を降らせて自分と相手を{status:wet}状態にします。"
         }
       },
       "buffs": {
