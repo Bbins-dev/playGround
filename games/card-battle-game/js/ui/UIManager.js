@@ -443,24 +443,29 @@ class UIManager {
 
     // 키보드 입력 처리
     handleKeydown(event) {
-        // 메인메뉴에서는 키보드 내비게이션 비활성화
-        // DOM 버튼과 언어선택만 키보드로 조작 가능
+        // 모든 키보드 입력 무시 (마우스/터치만 사용)
+        return;
 
-        // 전역 키보드 단축키 (일부만 유지)
-        switch (event.key) {
-            // ESC 키 기능 비활성화
-            // case 'Escape':
-            //     this.hideAllModals();
-            //     break;
-            // 스페이스바 게임 시작 기능 제거
-            // case ' ': 제거
-            case '1':
-            case '2':
-            case '3':
-                const speed = parseInt(event.key);
-                this.gameManager.setGameSpeed(speed);
-                break;
-        }
+        // (아래 코드는 실행되지 않음)
+        // // 메인메뉴에서는 키보드 내비게이션 비활성화
+        // // DOM 버튼과 언어선택만 키보드로 조작 가능
+
+        // // 전역 키보드 단축키 모두 비활성화
+        // switch (event.key) {
+        //     // ESC 키 기능 비활성화
+        //     // case 'Escape':
+        //     //     this.hideAllModals();
+        //     //     break;
+        //     // 스페이스바 게임 시작 기능 제거
+        //     // case ' ': 제거
+        //     // 1,2,3 키 게임 속도 변경 기능 비활성화
+        //     // case '1':
+        //     // case '2':
+        //     // case '3':
+        //     //     const speed = parseInt(event.key);
+        //     //     this.gameManager.setGameSpeed(speed);
+        //     //     break;
+        // }
     }
 
     // 화면 크기 조정 처리

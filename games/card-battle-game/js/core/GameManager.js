@@ -925,31 +925,35 @@ class GameManager {
 
     // 키보드 이벤트 처리
     handleKeyDown(event) {
-        // 현재 화면에 키보드 이벤트 전달
-        if (this.currentScreen && this.currentScreen.handleInput) {
-            this.currentScreen.handleInput(event.key);
-            return;
-        }
+        // 모든 키보드 입력 무시 (마우스/터치만 사용)
+        return;
 
-        // 전역 키보드 이벤트
-        switch (event.key) {
-            // ESC 키로 메인 메뉴 복귀 기능 비활성화
-            // case 'Escape':
-            //     if (this.gameState === 'battle') {
-            //         this.switchScreen('menu');
-            //     }
-            //     break;
+        // (아래 코드는 실행되지 않음)
+        // // 현재 화면에 키보드 이벤트 전달
+        // if (this.currentScreen && this.currentScreen.handleInput) {
+        //     this.currentScreen.handleInput(event.key);
+        //     return;
+        // }
 
-            case '1':
-            case '2':
-            case '3':
-                this.setGameSpeed(parseInt(event.key));
-                break;
+        // // 전역 키보드 이벤트
+        // switch (event.key) {
+        //     // ESC 키로 메인 메뉴 복귀 기능 비활성화
+        //     // case 'Escape':
+        //     //     if (this.gameState === 'battle') {
+        //     //         this.switchScreen('menu');
+        //     //     }
+        //     //     break;
 
-            case 'g':
-                this.showCardGallery();
-                break;
-        }
+        //     case '1':
+        //     case '2':
+        //     case '3':
+        //         this.setGameSpeed(parseInt(event.key));
+        //         break;
+
+        //     case 'g':
+        //         this.showCardGallery();
+        //         break;
+        // }
     }
 
     // 휠 이벤트 처리 (스크롤)
