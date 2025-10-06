@@ -1906,6 +1906,34 @@ const CardDatabase = {
                 };
             }
         });
+
+        // 칼로 물 베기 카드 (물 속성 회복 카드, 마지막 받은 피해만큼 회복)
+        this.addCard({
+            id: 'slash_water',
+            nameKey: 'auto_battle_card_game.ui.cards.slash_water.name',
+            type: 'heal',
+            element: 'water',
+            power: 0, // 파워 스탯에 회복량 표시 (실시간 동적 계산: 마지막 받은 피해)
+            healAmount: 0, // 사용하지 않음, buffedPower만 사용
+            accuracy: 80,
+            activationCount: 1,
+            usageLimit: 1, // 1회만 사용 가능
+            descriptionKey: 'auto_battle_card_game.ui.cards.slash_water.description',
+            effect: function(user, target, battleSystem) {
+                // buffedPower 사용 (실시간 동적 계산됨: 마지막 받은 피해)
+                const healAmount = this.buffedPower || 0;
+                const actualHealing = user.heal ? user.heal(healAmount) : 0;
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.heal_effect',
+                    healAmount: actualHealing,
+                    element: this.element,
+                    effectType: 'heal',
+                    templateData: { value: actualHealing }
+                };
+            }
+        });
     }
 };
 

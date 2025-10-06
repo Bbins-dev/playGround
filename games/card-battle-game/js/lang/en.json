@@ -383,6 +383,10 @@
         "liquify": {
           "name": "Liquify",
           "description": "Liquify yourself to recover 50% of lost {hp}, remove {status:wet} status, and skip turn."
+        },
+        "slash_water": {
+          "name": "Water Slash",
+          "description": "Looks like you slashed water, recover {hp} equal to the last damage taken."
         }
       },
       "buffs": {

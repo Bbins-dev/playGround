@@ -476,6 +476,11 @@ class Player {
                     buffedHealAmount = Math.floor(lostHP * 0.5);
                 }
 
+                // slash_water 카드: 마지막 받은 피해만큼 회복 (실시간 동적 계산)
+                if (card.id === 'slash_water') {
+                    buffedHealAmount = this.lastDamageTaken || 0;
+                }
+
                 // 향후 회복 관련 버프 추가 가능 (예: 회복량 증가 버프)
 
                 card.buffedPower = buffedHealAmount;  // power에 할당하여 UI 통합
