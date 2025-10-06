@@ -1934,6 +1934,33 @@ const CardDatabase = {
                 };
             }
         });
+
+        // 비내리기 카드 (물 속성 상태이상 카드, 자신과 상대 모두에게 젖음 상태 적용)
+        this.addCard({
+            id: 'rain',
+            nameKey: 'auto_battle_card_game.ui.cards.rain.name',
+            type: 'status',
+            element: 'water',
+            power: 0, // 상태이상 카드는 파워가 없음
+            accuracy: 90,
+            activationCount: 1,
+            usageLimit: 1, // 1회만 사용 가능
+            descriptionKey: 'auto_battle_card_game.ui.cards.rain.description',
+            wetChance: 100, // 발동 시 젖음 확률 100%
+            effect: function(user, target, battleSystem) {
+                // 통합 상태이상 시스템 사용 (양쪽 적용)
+                return {
+                    success: true,
+                    statusEffectBoth: {
+                        type: 'wet',
+                        chance: this.wetChance,
+                        power: null,
+                        duration: 1
+                    },
+                    element: this.element
+                };
+            }
+        });
     }
 };
 

@@ -387,6 +387,10 @@
         "slash_water": {
           "name": "Water Slash",
           "description": "Looks like you slashed water, recover {hp} equal to the last damage taken."
+        },
+        "rain": {
+          "name": "Rain",
+          "description": "Make it rain to apply {status:wet} to both yourself and opponent."
         }
       },
       "buffs": {

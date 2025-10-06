@@ -505,14 +505,14 @@ class MainMenu {
                 closeBtn.addEventListener('click', closeBtn._tutorialHandler);
             }
 
-            // ESC 키로 닫기
-            const handleEsc = (e) => {
-                if (e.key === 'Escape') {
-                    modal.classList.add('hidden');
-                    document.removeEventListener('keydown', handleEsc);
-                }
-            };
-            document.addEventListener('keydown', handleEsc);
+            // ESC 키로 닫기 (비활성화)
+            // const handleEsc = (e) => {
+            //     if (e.key === 'Escape') {
+            //         modal.classList.add('hidden');
+            //         document.removeEventListener('keydown', handleEsc);
+            //     }
+            // };
+            // document.addEventListener('keydown', handleEsc);
         }
     }
 

@@ -177,12 +177,12 @@ class VictoryDefeatModal {
             }
         });
 
-        // ESC 키로 모달 닫기
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                this.hideAll();
-            }
-        });
+        // ESC 키로 모달 닫기 (비활성화)
+        // document.addEventListener('keydown', (e) => {
+        //     if (e.key === 'Escape') {
+        //         this.hideAll();
+        //     }
+        // });
     }
 
     /**

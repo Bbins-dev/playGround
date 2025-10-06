@@ -216,12 +216,12 @@ class UIManager {
             }
         });
 
-        // ESC 키로 모달 닫기
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                this.hideAllModals();
-            }
-        });
+        // ESC 키로 모달 닫기 (비활성화)
+        // document.addEventListener('keydown', (e) => {
+        //     if (e.key === 'Escape') {
+        //         this.hideAllModals();
+        //     }
+        // });
     }
 
 
@@ -448,9 +448,10 @@ class UIManager {
 
         // 전역 키보드 단축키 (일부만 유지)
         switch (event.key) {
-            case 'Escape':
-                this.hideAllModals();
-                break;
+            // ESC 키 기능 비활성화
+            // case 'Escape':
+            //     this.hideAllModals();
+            //     break;
             // 스페이스바 게임 시작 기능 제거
             // case ' ': 제거
             case '1':
@@ -766,6 +767,24 @@ class UIManager {
             gameWrapper.classList.add(highestPriorityEffect.className);
             gameWrapper.offsetHeight; // 강제 리플로우로 스타일 적용 보장
         }
+    }
+
+    // 상태이상 테두리 완전 제거 (메인 메뉴 복귀 시 등)
+    clearStatusBorder() {
+        const gameWrapper = document.querySelector('.game-wrapper');
+        if (!gameWrapper) return;
+
+        // 모든 상태이상 테두리 CSS 클래스 제거
+        Object.values(GameConfig.statusBorderEffects).forEach(effect => {
+            gameWrapper.classList.remove(effect.className);
+        });
+
+        // border 스타일 완전 초기화
+        gameWrapper.style.border = 'none';
+        gameWrapper.style.animation = 'none';
+
+        // 강제 리플로우
+        gameWrapper.offsetHeight;
     }
 
     // 승리 모달 표시

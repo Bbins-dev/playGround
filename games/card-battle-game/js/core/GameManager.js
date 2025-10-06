@@ -394,10 +394,78 @@ class GameManager {
     }
 
     // 메인 메뉴 표시
+    // 모든 게임 UI 완전 초기화 (메인 메뉴 복귀 시 등)
+    clearAllGameUI() {
+        // HPBarSystem 완전 초기화
+        if (this.hpBarSystem) {
+            // 화면 테두리 효과 제거
+            this.hpBarSystem.clearScreenBorderEffect();
+
+            // 플레이어/적 상태이상 라벨 제거
+            if (this.hpBarSystem.playerStatusGrid) {
+                this.hpBarSystem.playerStatusGrid.innerHTML = '';
+            }
+            if (this.hpBarSystem.enemyStatusGrid) {
+                this.hpBarSystem.enemyStatusGrid.innerHTML = '';
+            }
+
+            // 버프 라벨 제거
+            if (this.hpBarSystem.playerBuffsGrid) {
+                this.hpBarSystem.playerBuffsGrid.innerHTML = '';
+            }
+            if (this.hpBarSystem.enemyBuffsGrid) {
+                this.hpBarSystem.enemyBuffsGrid.innerHTML = '';
+            }
+
+            // Effects Container 비활성화
+            if (this.hpBarSystem.playerEffectsContainer) {
+                this.hpBarSystem.playerEffectsContainer.classList.remove('active');
+            }
+            if (this.hpBarSystem.enemyEffectsContainer) {
+                this.hpBarSystem.enemyEffectsContainer.classList.remove('active');
+            }
+        }
+
+        // UIManager 상태이상 테두리 제거
+        if (this.uiManager) {
+            this.uiManager.clearStatusBorder();
+        }
+
+        // Player/Enemy 객체 상태 초기화
+        if (this.player) {
+            this.player.statusEffects = [];
+            this.player.strength = 0;
+            this.player.enhance = 0;
+            this.player.focus = 0;
+            this.player.speed = 0;
+            this.player.scent = 0;
+            this.player.sharpen = 0;
+            this.player.hotWind = 0;
+            this.player.lithium = 0;
+            this.player.breath = 0;
+        }
+
+        if (this.enemy) {
+            this.enemy.statusEffects = [];
+            this.enemy.strength = 0;
+            this.enemy.enhance = 0;
+            this.enemy.focus = 0;
+            this.enemy.speed = 0;
+            this.enemy.scent = 0;
+            this.enemy.sharpen = 0;
+            this.enemy.hotWind = 0;
+            this.enemy.lithium = 0;
+            this.enemy.breath = 0;
+        }
+    }
+
     showMainMenu() {
         // 게임 상태를 메뉴로 설정
         this.gameState = 'menu';
         this.currentScreen = this.mainMenu;
+
+        // 상태이상 UI 완전 초기화
+        this.clearAllGameUI();
 
         // 메인 메뉴 BGM 재생
         if (this.audioSystem) {
@@ -865,11 +933,12 @@ class GameManager {
 
         // 전역 키보드 이벤트
         switch (event.key) {
-            case 'Escape':
-                if (this.gameState === 'battle') {
-                    this.switchScreen('menu');
-                }
-                break;
+            // ESC 키로 메인 메뉴 복귀 기능 비활성화
+            // case 'Escape':
+            //     if (this.gameState === 'battle') {
+            //         this.switchScreen('menu');
+            //     }
+            //     break;
 
             case '1':
             case '2':
