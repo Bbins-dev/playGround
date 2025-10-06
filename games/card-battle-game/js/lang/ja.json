@@ -391,6 +391,14 @@
         "rain": {
           "name": "雨降らし",
           "description": "雨を降らせて自分と相手を{status:wet}状態にします。"
+        },
+        "sleet": {
+          "name": "みぞれ",
+          "description": "敵が{status:wet}状態の場合、{status:slow}を1ターン付与します。"
+        },
+        "cold_burn": {
+          "name": "低温火傷",
+          "description": "敵が{status:wet}または{status:frozen}状態の場合、{status:burn}を1ターン付与します。"
         }
       },
       "buffs": {

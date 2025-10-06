@@ -391,6 +391,14 @@
         "rain": {
           "name": "비내리기",
           "description": "비를 내려 자신과 상대를 {status:wet} 상태로 만듭니다."
+        },
+        "sleet": {
+          "name": "진눈깨비",
+          "description": "적이 {status:wet} 상태일 경우 {status:slow}를 1턴 추가합니다."
+        },
+        "cold_burn": {
+          "name": "저온화상",
+          "description": "적이 {status:wet} 혹은 {status:frozen} 상태일 경우 {status:burn}을 1턴 추가합니다."
         }
       },
       "buffs": {

@@ -391,6 +391,14 @@
         "rain": {
           "name": "Rain",
           "description": "Make it rain to apply {status:wet} to both yourself and opponent."
+        },
+        "sleet": {
+          "name": "Sleet",
+          "description": "If the enemy is {status:wet}, apply {status:slow} for 1 turn."
+        },
+        "cold_burn": {
+          "name": "Cold Burn",
+          "description": "If the enemy is {status:wet} or {status:frozen}, apply {status:burn} for 1 turn."
         }
       },
       "buffs": {
