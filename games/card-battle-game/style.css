@@ -1186,14 +1186,14 @@ body {
 .player-status {
     flex-direction: row;
     flex-wrap: wrap-reverse;  /* 행을 아래부터 위로 쌓음 */
-    align-content: flex-end;
+    align-content: flex-start;  /* 위쪽부터 채워서 2줄 이상일 때 위로 확장 */
 }
 
 /* 플레이어 버프 - 아래→위로 쌓임 (RTL 유지) */
 .player-buffs {
     flex-direction: row;
     flex-wrap: wrap-reverse;  /* 행을 아래부터 위로 쌓음 */
-    align-content: flex-end;
+    align-content: flex-start;  /* 위쪽부터 채워서 2줄 이상일 때 위로 확장 */
 }
 
 /* 적 상태이상 - 위→아래로 쌓임 */

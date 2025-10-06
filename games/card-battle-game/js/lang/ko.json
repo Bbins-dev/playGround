@@ -288,6 +288,14 @@
           "name": "모래뿌리기",
           "description": "상대의 눈에 {status:sand}를 뿌려 2턴간 {cardType:attack} 카드의 명중률 30% 감소"
         },
+        "mud_bath": {
+          "name": "진흙탕",
+          "description": "상대를 진흙탕 속으로 끌어들여 한 턴 간 {status:sand} 상태로 만듭니다."
+        },
+        "cold_snap": {
+          "name": "혹한기",
+          "description": "{status:wet} 상태의 적을 얼려 한 턴 간 {status:frozen} 상태로 만듭니다."
+        },
         "karura_strike": {
           "name": "카루라 일격",
           "description": "카루라 일족에게 배운 기술입니다. 자신에게 피해 10을 입힌 후 상대에게 피해 12를 주고 {status:burn}을 입힙니다."
