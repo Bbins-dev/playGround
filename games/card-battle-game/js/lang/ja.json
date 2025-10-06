@@ -375,6 +375,10 @@
         "skin_breathing": {
           "name": "皮膚呼吸",
           "description": "自分を6 {hp}回復します。自分が{status:wet}状態の場合、回復量が3倍になります。"
+        },
+        "healing_spring": {
+          "name": "癒しの泉",
+          "description": "自分が{status:wet}状態の場合、発動時に10の{hp}を回復します。"
         }
       },
       "buffs": {

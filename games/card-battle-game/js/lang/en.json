@@ -375,6 +375,10 @@
         "skin_breathing": {
           "name": "Skin Breathing",
           "description": "Restore 6 {hp}. If you have {status:wet} status, healing triples."
+        },
+        "healing_spring": {
+          "name": "Healing Spring",
+          "description": "If you have {status:wet} status, restore 10 {hp} when activated."
         }
       },
       "buffs": {

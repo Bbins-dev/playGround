@@ -464,6 +464,12 @@ class Player {
                     buffedHealAmount = hasWet ? buffedHealAmount * 3 : buffedHealAmount;
                 }
 
+                // healing_spring 카드: 젖음 상태일 때만 회복 (0 → 10)
+                if (card.id === 'healing_spring') {
+                    const hasWet = this.hasStatusEffect('wet');
+                    buffedHealAmount = hasWet ? (GameConfig?.cardEffects?.healingSpring?.healAmount || 10) : 0;
+                }
+
                 // 향후 회복 관련 버프 추가 가능 (예: 회복량 증가 버프)
 
                 card.buffedPower = buffedHealAmount;  // power에 할당하여 UI 통합
