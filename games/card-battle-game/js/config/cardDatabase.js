@@ -808,7 +808,7 @@ const CardDatabase = {
             nameKey: 'auto_battle_card_game.ui.cards.bandage.name',
             type: 'heal',
             element: 'special', // 특수 속성
-            power: 0, // 스탯 표시 안함 (healAmount 사용)
+            power: 3, // 스탯 표시 (고정 회복량 3)
             healAmount: 3, // 회복량
             accuracy: 100,
             activationCount: 1,
@@ -833,7 +833,7 @@ const CardDatabase = {
             nameKey: 'auto_battle_card_game.ui.cards.miracle_revival.name',
             type: 'heal',
             element: 'special',
-            power: 0, // 스탯 표시 안함 (healPercent 사용)
+            power: 50, // 스탯 표시 (회복량 50%)
             healPercent: 50, // 회복량 (최대 HP의 50%)
             accuracy: 100,
             activationCount: 1,
@@ -874,7 +874,7 @@ const CardDatabase = {
             nameKey: 'auto_battle_card_game.ui.cards.one_times_hundred.name',
             type: 'heal',
             element: 'special',
-            power: 0, // 스탯 표시 안함
+            power: 100, // 스탯 표시 (회복량 100%)
             accuracy: 100,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.one_times_hundred.description',
@@ -1758,6 +1758,71 @@ const CardDatabase = {
                         name: GameConfig?.buffs?.lithium?.name || 'Li⁺',
                         value: user.lithiumTurns
                     }
+                };
+            }
+        });
+
+        // 물의 치유 카드 (물 속성 회복 카드, 물 방어속성일 때만 발동)
+        this.addCard({
+            id: 'water_healing',
+            nameKey: 'auto_battle_card_game.ui.cards.water_healing.name',
+            type: 'heal',
+            element: 'water',
+            power: 8, // 파워 스탯에 회복량 표시
+            healAmount: 8,
+            accuracy: 100,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.water_healing.description',
+            effect: function(user, target, battleSystem) {
+                // 조건 체크: 현재 방어속성이 물인가?
+                if (user.defenseElement !== 'water') {
+                    // 조건 미충족 (물 방어속성 아님)
+                    return {
+                        success: false,
+                        conditionFailed: true,
+                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        element: this.element
+                    };
+                }
+
+                // 조건 충족: 8 회복
+                const healAmount = this.healAmount;
+                const actualHealing = user.heal ? user.heal(healAmount) : 0;
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.heal_effect',
+                    healAmount: actualHealing,
+                    element: this.element,
+                    effectType: 'heal',
+                    templateData: { value: actualHealing }
+                };
+            }
+        });
+
+        // 피부호흡 카드 (물 속성 회복 카드, 젖음 상태일 때 3배 회복)
+        this.addCard({
+            id: 'skin_breathing',
+            nameKey: 'auto_battle_card_game.ui.cards.skin_breathing.name',
+            type: 'heal',
+            element: 'water',
+            power: 6, // 파워 스탯에 회복량 표시 (젖음 상태일 때 18로 실시간 변경)
+            healAmount: 6,
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.skin_breathing.description',
+            effect: function(user, target, battleSystem) {
+                // buffedPower 사용 (젖음 상태 자동 반영됨)
+                const healAmount = this.buffedPower || this.healAmount;
+                const actualHealing = user.heal ? user.heal(healAmount) : 0;
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.heal_effect',
+                    healAmount: actualHealing,
+                    element: this.element,
+                    effectType: 'heal',
+                    templateData: { value: actualHealing }
                 };
             }
         });

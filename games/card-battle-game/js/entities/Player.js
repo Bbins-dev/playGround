@@ -454,6 +454,19 @@ class Player {
                 }
 
                 card.buffedPower = buffedPower;
+            } else if (card.type === 'heal') {
+                // 회복 카드 처리
+                let buffedHealAmount = card.healAmount || card.power || 0;
+
+                // skin_breathing 카드: 젖음 상태일 때 3배
+                if (card.id === 'skin_breathing') {
+                    const hasWet = this.hasStatusEffect('wet');
+                    buffedHealAmount = hasWet ? buffedHealAmount * 3 : buffedHealAmount;
+                }
+
+                // 향후 회복 관련 버프 추가 가능 (예: 회복량 증가 버프)
+
+                card.buffedPower = buffedHealAmount;  // power에 할당하여 UI 통합
             } else {
                 // 방어/버프/상태이상 카드는 buffedPower 초기화
                 card.buffedPower = undefined;

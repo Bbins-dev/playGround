@@ -367,6 +367,14 @@
         "fire_breath": {
           "name": "불의 호흡",
           "description": "한 턴 간 {fire} {cardType:buff} 카드의 발동이 항상 성공합니다. {buff:breath}은 중첩되지 않습니다."
+        },
+        "water_healing": {
+          "name": "물의 치유",
+          "description": "자신이 {water} 방어속성 상태일 경우 8 {hp}을 회복합니다."
+        },
+        "skin_breathing": {
+          "name": "피부호흡",
+          "description": "자신을 6 {hp} 회복합니다. 자신이 {status:wet} 상태일 경우 회복량이 세 배로 올라갑니다."
         }
       },
       "buffs": {

@@ -1947,7 +1947,13 @@ const GameConfig = {
             {
                 key: 'power',
                 emoji: '💪',
-                format: (value) => value,
+                format: (value, card) => {
+                    // 회복 카드 중 퍼센트 표시가 필요한 카드들
+                    if (card.type === 'heal' && (card.id === 'miracle_revival' || card.id === 'one_times_hundred')) {
+                        return `${value}%`;
+                    }
+                    return value;
+                },
                 showCondition: (card, context) => {
                     // 상태이상 카드, 버프 카드, 특수 카드, 회복 카드에서 주 스탯이 없는 경우 숨김
                     if ((card.type === 'status' || card.type === 'buff' || card.type === 'special' || card.type === 'heal') && card.power === 0) return false;
@@ -1978,7 +1984,8 @@ const GameConfig = {
             status: { power: '⏱️', accuracy: '✅' },
             buff: { power: '✨', accuracy: '✅' },
             debuff: { power: '⬇️', accuracy: '✅' },
-            special: { power: '🔮', accuracy: '✅' }
+            special: { power: '🔮', accuracy: '✅' },
+            heal: { power: '✚', accuracy: '✅' }
         }
     },
 
