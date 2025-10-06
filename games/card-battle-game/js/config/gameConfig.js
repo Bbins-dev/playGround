@@ -966,9 +966,8 @@ const GameConfig = {
                     { id: 'healing_spring', count: 1 },  // 회복의 샘 (젖음 상태일 때만 10 회복)
                     { id: 'water_bomb', count: 1 },      // 물폭탄 (물 속성, 대미지 3 + 젖음)
                     { id: 'freezing_wind', count: 1 },   // 냉동바람 (젖음 턴 × 10 대미지 + 얼음)
-                    { id: 'ice_breaker', count: 1 },     // 얼음깨기 (얼음 상태 시 최대 HP 20% 고정 피해 + 얼음 제거)
-                    { id: 'water_healing', count: 1 },   // 물의치유 (물 방어속성일 때 8 회복)
-                    { id: 'skin_breathing', count: 1 }   // 피부호흡 (6 회복, 젖음 상태 시 18 회복)
+                    { id: 'ice_breaker', count: 1 },     // 얼음깨기 (얼음 시 최대 HP 20% 고정 피해)
+                    { id: 'liquify', count: 1 }          // 액체화 (잃은 체력 50% 회복 + 젖음 제거)
                 ]
             },
             2: {

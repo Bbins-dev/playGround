@@ -1961,6 +1961,90 @@ const CardDatabase = {
                 };
             }
         });
+
+        // 진눈깨비 카드 (물 속성 상태이상 카드, 젖음 상태의 적에게 둔화 적용)
+        this.addCard({
+            id: 'sleet',
+            nameKey: 'auto_battle_card_game.ui.cards.sleet.name',
+            type: 'status',
+            element: 'water',
+            power: 0, // 상태이상 카드는 파워가 없음
+            accuracy: 80,
+            activationCount: 1,
+            usageLimit: 1, // 1회만 사용 가능
+            slowChance: 80, // 둔화 발동률 80%
+            descriptionKey: 'auto_battle_card_game.ui.cards.sleet.description',
+            effect: function(user, target, battleSystem) {
+                // 적의 젖음 상태 확인
+                const wetEffect = target.statusEffects?.find(e => e.type === 'wet');
+                const hasWet = wetEffect && wetEffect.turnsLeft > 0;
+
+                // 젖음 상태가 아니면 조건 실패 (발동률 성공해도 실패 메시지)
+                if (!hasWet) {
+                    return {
+                        success: false,
+                        conditionFailed: true,
+                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        element: this.element
+                    };
+                }
+
+                // 젖음 상태일 때 둔화 적용 (통합 시스템)
+                return {
+                    success: true,
+                    statusEffect: {
+                        type: 'slow',
+                        chance: this.slowChance,
+                        power: GameConfig?.statusEffects?.slow?.defaultReduction || 30,
+                        duration: 1
+                    },
+                    element: this.element
+                };
+            }
+        });
+
+        // 저온화상 카드 (물 속성 상태이상 카드, 젖음 또는 얼음 상태의 적에게 화상 적용)
+        this.addCard({
+            id: 'cold_burn',
+            nameKey: 'auto_battle_card_game.ui.cards.cold_burn.name',
+            type: 'status',
+            element: 'water',
+            power: 0, // 상태이상 카드는 파워가 없음
+            accuracy: 80,
+            activationCount: 1,
+            usageLimit: 1, // 1회만 사용 가능
+            burnChance: 80, // 화상 발동률 80%
+            descriptionKey: 'auto_battle_card_game.ui.cards.cold_burn.description',
+            effect: function(user, target, battleSystem) {
+                // 적의 젖음 또는 얼음 상태 확인
+                const wetEffect = target.statusEffects?.find(e => e.type === 'wet');
+                const frozenEffect = target.statusEffects?.find(e => e.type === 'frozen');
+                const hasWet = wetEffect && wetEffect.turnsLeft > 0;
+                const hasFrozen = frozenEffect && frozenEffect.turnsLeft > 0;
+
+                // 젖음도 얼음도 없으면 조건 실패 (발동률 성공해도 실패 메시지)
+                if (!hasWet && !hasFrozen) {
+                    return {
+                        success: false,
+                        conditionFailed: true,
+                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        element: this.element
+                    };
+                }
+
+                // 젖음 또는 얼음 상태일 때 화상 적용 (통합 시스템)
+                return {
+                    success: true,
+                    statusEffect: {
+                        type: 'burn',
+                        chance: this.burnChance,
+                        power: null, // burn은 defaultDamage 사용
+                        duration: 1
+                    },
+                    element: this.element
+                };
+            }
+        });
     }
 };
 
