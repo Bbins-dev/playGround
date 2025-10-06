@@ -470,6 +470,12 @@ class Player {
                     buffedHealAmount = hasWet ? (GameConfig?.cardEffects?.healingSpring?.healAmount || 10) : 0;
                 }
 
+                // liquify 카드: 잃은 체력의 50% 회복 (실시간 동적 계산)
+                if (card.id === 'liquify') {
+                    const lostHP = this.maxHP - this.hp;
+                    buffedHealAmount = Math.floor(lostHP * 0.5);
+                }
+
                 // 향후 회복 관련 버프 추가 가능 (예: 회복량 증가 버프)
 
                 card.buffedPower = buffedHealAmount;  // power에 할당하여 UI 통합

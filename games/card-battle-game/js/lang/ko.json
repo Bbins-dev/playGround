@@ -379,6 +379,10 @@
         "healing_spring": {
           "name": "회복의 샘",
           "description": "자신이 {status:wet} 상태일 경우 발동 시 10의 {hp}을 회복합니다."
+        },
+        "liquify": {
+          "name": "액체화",
+          "description": "자신을 액체화 하여 잃은 {hp}의 50%를 회복하고 {status:wet} 상태를 제거하며 턴을 넘깁니다."
         }
       },
       "buffs": {
@@ -479,6 +483,7 @@
         "buff_reduced": "{name} {value}",
         "defense_gained": "🛡️ 방어력 +{value}",
         "heal_effect": "❤️ 체력 +{value}",
+        "liquify_effect": "💧 체력 +{value} (액체화)",
         "self_damage": "자신에게 {damage} 피해!",
         "karura_strike_effect": "자신에게 {selfDamage} 피해! 상대에게 {damage} 피해!",
         "red_pendant_effect": "🛡️ 방어력 +{defense}, 💪 힘 +{strength}",
