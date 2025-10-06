@@ -511,7 +511,8 @@ class BattleSystem {
         // healAmount 또는 healing 속성 모두 지원 (하위 호환성)
         const healing = result.healAmount || result.healing || 0;
 
-        if (healing > 0) {
+        // 회복 카드 발동 시 항상 메시지 표시 (healing >= 0)
+        if (healing >= 0) {
             // 템플릿 기반 회복 메시지 표시
             let template = I18nHelper.getText(result.messageKey || 'auto_battle_card_game.ui.templates.heal_effect');
             if (!template) {
