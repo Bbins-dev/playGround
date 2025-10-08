@@ -267,6 +267,11 @@ class UIManager {
 
         this.currentScreen = screenName;
 
+        // 메뉴 화면으로 전환 시 상태이상 테두리 확실히 제거 (안전장치)
+        if (screenName === 'menu') {
+            this.clearStatusBorder();
+        }
+
         // 화면별 UI 요소 표시/숨김
         this.updateUIVisibility();
 
@@ -779,17 +784,29 @@ class UIManager {
         const gameWrapper = document.querySelector('.game-wrapper');
         if (!gameWrapper) return;
 
-        // 모든 상태이상 테두리 CSS 클래스 제거
-        Object.values(GameConfig.statusBorderEffects).forEach(effect => {
-            gameWrapper.classList.remove(effect.className);
-        });
+        try {
+            // Step 1: 애니메이션 즉시 중단 (inline 스타일 우선 적용으로 GPU 애니메이션 강제 중단)
+            gameWrapper.style.animation = 'none';
+            gameWrapper.style.border = 'none';
 
-        // border 스타일 완전 초기화
-        gameWrapper.style.border = 'none';
-        gameWrapper.style.animation = 'none';
+            // Step 2: 강제 리플로우 (GPU 애니메이션 중단 보장)
+            void gameWrapper.offsetHeight;
 
-        // 강제 리플로우
-        gameWrapper.offsetHeight;
+            // Step 3: 모든 상태이상 CSS 클래스 제거 (Configuration-Driven)
+            Object.values(GameConfig.statusBorderEffects).forEach(effect => {
+                gameWrapper.classList.remove(effect.className);
+            });
+
+            // Step 4: inline 스타일 완전 제거 (CSS 우선순위 정리)
+            gameWrapper.style.removeProperty('animation');
+            gameWrapper.style.removeProperty('border');
+
+            // Step 5: 최종 강제 리플로우 (모든 스타일 변경 적용 보장)
+            void gameWrapper.offsetHeight;
+
+        } catch (error) {
+            console.error('[UIManager] 상태이상 테두리 제거 중 오류:', error);
+        }
     }
 
     // 승리 모달 표시

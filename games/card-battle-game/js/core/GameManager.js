@@ -464,6 +464,9 @@ class GameManager {
         this.gameState = 'menu';
         this.currentScreen = this.mainMenu;
 
+        // HTML body에 게임 상태 표시 (CSS 선택자용)
+        document.body.setAttribute('data-game-state', 'menu');
+
         // 상태이상 UI 완전 초기화
         this.clearAllGameUI();
 
@@ -661,6 +664,9 @@ class GameManager {
         }
 
         this.changeGameState('battle');
+
+        // HTML body에 게임 상태 표시 (CSS 선택자용)
+        document.body.setAttribute('data-game-state', 'battle');
 
         // 전투 BGM 재생 (스테이지에 따라 일반/보스 자동 선택)
         if (this.audioSystem) {
