@@ -471,28 +471,9 @@ class Player {
         // 기본 회복량 계산
         let healAmount = this.absorptionBonus * baseHeal;
 
-        // 젖음 상태 체크
-        const isWet = this.hasStatusEffect('wet');
-
-        // 디버그 로그
-        if (GameConfig?.debugMode?.showDamageCalculation) {
-            console.log('[DEBUG] 흡수 회복 계산:', {
-                플레이어: this.name,
-                흡수스택: this.absorptionBonus,
-                기본회복량: baseHeal,
-                젖음상태: isWet,
-                젖음배율: wetMultiplier,
-                상태이상목록: this.statusEffects.map(e => `${e.type}(턴:${e.turnsLeft})`).join(', '),
-                계산전회복량: healAmount
-            });
-        }
-
         // 젖음 상태이면 회복량 2배
-        if (isWet) {
+        if (this.hasStatusEffect('wet')) {
             healAmount *= wetMultiplier;
-            if (GameConfig?.debugMode?.showDamageCalculation) {
-                console.log('[DEBUG] 젖음 2배 적용 후:', healAmount);
-            }
         }
 
         return healAmount;
