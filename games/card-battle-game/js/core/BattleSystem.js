@@ -526,6 +526,9 @@ class BattleSystem {
             if (this.hpBarSystem) {
                 this.hpBarSystem.updateHP(user, isPlayer);
             }
+
+            // 회복 후 런타임 스탯 재계산 (질량 버프 등 HP 기반 계산 즉시 반영)
+            user.updateRuntimeCardStats();
         }
     }
 
@@ -1132,6 +1135,9 @@ class BattleSystem {
             // HP/방어력 바 순차 업데이트 (방어력 → HP 순서 보장)
             await this.hpBarSystem.updateAfterDamage(player, isPlayerTurn);
 
+            // 독 데미지 후 런타임 스탯 재계산 (질량 버프 등 HP 기반 계산 즉시 반영)
+            player.updateRuntimeCardStats();
+
             return actualDamage > 0;
         }
         return false;
@@ -1167,6 +1173,9 @@ class BattleSystem {
             if (this.hpBarSystem) {
                 await this.hpBarSystem.updateAfterDamage(player, isPlayerTurn);
             }
+
+            // 화상 데미지 후 런타임 스탯 재계산 (질량 버프 등 HP 기반 계산 즉시 반영)
+            player.updateRuntimeCardStats();
 
             if (GameConfig?.debugMode?.showDamageCalculation) {
                 console.log(`[DOT] 화상: -${actualDamage} HP (${player.name})`);
@@ -1233,6 +1242,10 @@ class BattleSystem {
         // 플레이어와 적의 순차 업데이트를 병렬로 실행 (각각 내부적으로는 방어력→HP 순서)
         await Promise.all(updatePromises);
 
+        // HP 변경 후 런타임 스탯 재계산 (질량 버프 등 HP 기반 계산 즉시 반영)
+        this.player.updateRuntimeCardStats();
+        this.enemy.updateRuntimeCardStats();
+
         // 이름 업데이트 (시각적 우선순위 낮음)
         this.hpBarSystem.updateNames(this.player, this.enemy);
     }
@@ -1282,6 +1295,9 @@ class BattleSystem {
         if (this.hpBarSystem) {
             await this.hpBarSystem.updateAfterDamage(user, isPlayerCard);
         }
+
+        // 셀프 데미지 후 런타임 스탯 재계산 (질량 버프 등 HP 기반 계산 즉시 반영)
+        user.updateRuntimeCardStats();
 
         // 자해 데미지 표시 대기 시간
         await this.wait(config.timing.animationDelay / this.gameSpeed);
