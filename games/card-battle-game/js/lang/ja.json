@@ -415,6 +415,14 @@
         "torrent": {
           "name": "激流",
           "description": "1ターンの間、{water}{cardType:attack}カードの発動回数を{buff:torrent}回数だけ増やします。"
+        },
+        "water_play": {
+          "name": "水遊び",
+          "description": "自分を{status:wet}状態にします。"
+        },
+        "moisture_absorption": {
+          "name": "水分吸収",
+          "description": "吸収+1を得ます。ターン開始時に吸収値分{hp}を回復します。{status:wet}状態の場合、回復量が2倍になります。"
         }
       },
       "buffs": {
@@ -440,7 +448,9 @@
         "mass": "質量",
         "mass_description": "水属性攻撃カードの攻撃力に現在HPの20%が重複回数分だけ追加されます。1ターン持続します。",
         "torrent": "激流",
-        "torrent_description": "水属性攻撃カードの発動回数が増加します。"
+        "torrent_description": "水属性攻撃カードの発動回数が増加します。",
+        "absorption": "吸収",
+        "absorption_description": "ターン開始時に吸収値分HPを回復します。濡れ状態の場合、回復量が2倍になります。"
       },
       "elements": {
         "fire": "火",
@@ -525,7 +535,9 @@
         "red_pendant_effect": "🛡️ 防御力 +{defense}、💪 力 +{strength}",
         "powder_keg_effect": "💥 ドカン！-{damage}",
         "scent_buff_gained": "🔥 匂い +{value}({turns})!",
-        "torrent_buff_gained": "🌊 激流 +{value}({turns})!"
+        "torrent_buff_gained": "🌊 激流 +{value}({turns})!",
+        "absorption_heal": "💧 吸収 +{value}!",
+        "absorption_heal_wet": "💦 吸収 +{value}!"
       },
       "card_selection": {
         "initial_title": "スタートカード選択",

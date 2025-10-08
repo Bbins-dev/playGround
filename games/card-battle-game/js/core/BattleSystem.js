@@ -138,6 +138,9 @@ class BattleSystem {
             return;
         }
 
+        // ===== 3-1. 흡수 버프 회복 처리 =====
+        await this.processAbsorptionHeal(currentPlayer, isPlayerTurn);
+
         // ===== 4. Player.startTurn() 호출 (카드 초기화만) =====
         currentPlayer.startTurn();
 
@@ -609,6 +612,21 @@ class BattleSystem {
         // 급류 버프 획득 처리 (급류 카드) - 새로운 통합 메서드 사용
         if (result.torrentGain && result.torrentGain > 0) {
             await this.effectSystem.showBuffEffect('torrent', user, result.torrentGain);
+        }
+
+        // 흡수 버프 획득 처리 (수분흡수 카드) - 새로운 통합 메서드 사용
+        if (result.absorptionGain && result.absorptionGain > 0) {
+            await this.effectSystem.showBuffEffect('absorption', user, result.absorptionGain);
+        }
+
+        // 자신에게 상태이상 적용 처리 (물장구 카드 등 - 버프 카드지만 자신에게 상태이상 적용)
+        if (result.statusEffectSelf) {
+            const userPosition = user.isPlayer ?
+                this.effectSystem.getPlayerPosition() :
+                this.effectSystem.getEnemyPosition();
+
+            // 통합 상태이상 시스템 사용 (확률, 면역, 중복 자동 처리)
+            await this.tryApplyStatusEffect(result.statusEffectSelf, user, userPosition);
         }
 
         // 버프 획득 후 HPBar 버프 라벨 즉시 업데이트
@@ -1181,6 +1199,55 @@ class BattleSystem {
                 console.log(`[DOT] 화상: -${actualDamage} HP (${player.name})`);
             }
             return actualDamage > 0;
+        }
+        return false;
+    }
+
+    // 흡수 버프 회복 처리 (턴 시작 시)
+    async processAbsorptionHeal(player, isPlayerTurn) {
+        // 흡수 버프가 없으면 리턴
+        if (!player.hasAbsorptionBuff()) {
+            return false;
+        }
+
+        const healAmount = player.getAbsorptionHeal();
+
+        if (healAmount > 0) {
+            const position = isPlayerTurn ?
+                this.effectSystem.getPlayerPosition() :
+                this.effectSystem.getEnemyPosition();
+
+            // 회복 전 HP 저장
+            const beforeHP = player.hp;
+
+            // 실제 회복 적용
+            const actualHeal = player.heal(healAmount);
+
+            // 회복 메시지 표시 (젖음 상태 체크)
+            const isWet = player.hasStatusEffect('wet');
+            const templateKey = isWet ?
+                'auto_battle_card_game.ui.templates.absorption_heal_wet' :
+                'auto_battle_card_game.ui.templates.absorption_heal';
+
+            // 템플릿 메시지 가져오기
+            const template = I18nHelper.getText(templateKey);
+            const message = template.replace('{value}', actualHeal);
+
+            // 회복 이펙트 표시 (읽기 시간 포함)
+            await this.effectSystem.showDamageNumber(actualHeal, position, 'heal', message);
+
+            // HP바 업데이트
+            if (this.hpBarSystem) {
+                this.hpBarSystem.updateHP(player, isPlayerTurn);
+            }
+
+            // 회복 후 런타임 스탯 재계산
+            player.updateRuntimeCardStats();
+
+            if (GameConfig?.debugMode?.showDamageCalculation) {
+                console.log(`[HEAL] 흡수: +${actualHeal} HP (${player.name}) [젖음: ${isWet}]`);
+            }
+            return actualHeal > 0;
         }
         return false;
     }

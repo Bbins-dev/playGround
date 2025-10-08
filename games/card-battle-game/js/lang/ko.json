@@ -415,6 +415,14 @@
         "torrent": {
           "name": "급류",
           "description": "한 턴 간 {water}{cardType:attack} 카드의 발동 횟수를 {buff:torrent} 횟수 만큼 더합니다."
+        },
+        "water_play": {
+          "name": "물장구",
+          "description": "자신을 {status:wet} 상태로 만듭니다."
+        },
+        "moisture_absorption": {
+          "name": "수분흡수",
+          "description": "흡수 +1을 얻습니다. 흡수 수치만큼 턴 시작 시 {hp}을 회복합니다. {status:wet}상태일 경우 회복력이 두 배가 됩니다."
         }
       },
       "buffs": {
@@ -440,7 +448,9 @@
         "mass": "질량",
         "mass_description": "물 속성 공격 카드의 공격력에 현재 체력의 20%가 중첩 횟수만큼 추가됩니다. 한 턴 동안 지속됩니다.",
         "torrent": "급류",
-        "torrent_description": "물 속성 공격 카드의 발동 횟수가 증가합니다."
+        "torrent_description": "물 속성 공격 카드의 발동 횟수가 증가합니다.",
+        "absorption": "흡수",
+        "absorption_description": "턴 시작 시 흡수 수치만큼 HP를 회복합니다. 젖음 상태일 경우 회복량이 두 배가 됩니다."
       },
       "elements": {
         "fire": "불",
@@ -525,7 +535,9 @@
         "red_pendant_effect": "🛡️ 방어력 +{defense}, 💪 힘 +{strength}",
         "powder_keg_effect": "💥 펑!-{damage}",
         "scent_buff_gained": "🔥 냄새 +{value}({turns})!",
-        "torrent_buff_gained": "🌊 급류 +{value}({turns})!"
+        "torrent_buff_gained": "🌊 급류 +{value}({turns})!",
+        "absorption_heal": "💧 흡수 +{value}!",
+        "absorption_heal_wet": "💦 흡수 +{value}!"
       },
       "card_selection": {
         "initial_title": "시작 카드 선택",
