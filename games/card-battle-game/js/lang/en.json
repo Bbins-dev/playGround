@@ -277,7 +277,7 @@
           "description": "If current {hp} is below 30% of max {hp}, restore 50% of max {hp}."
         },
         "one_times_hundred": {
-          "name": "1x100=?",
+          "name": "1x100",
           "description": "If current {hp} is 1, fully restores {hp}."
         },
         "push_back": {
@@ -423,6 +423,10 @@
         "moisture_absorption": {
           "name": "Moisture Absorption",
           "description": "Gain Absorption +1. Restore {hp} equal to Absorption value at turn start. Healing doubles when {status:wet}."
+        },
+        "purification": {
+          "name": "Purification",
+          "description": "Removes all current {cardType:status} effects."
         }
       },
       "buffs": {
@@ -537,7 +541,9 @@
         "scent_buff_gained": "🔥 Scent +{value}({turns})!",
         "torrent_buff_gained": "🌊 Torrent +{value}({turns})!",
         "absorption_heal": "💧 ABS +{value}!",
-        "absorption_heal_wet": "💦 ABS +{value}!"
+        "absorption_heal_wet": "💦 ABS +{value}!",
+        "purification_success": "✨ Purified!",
+        "purification_no_status": "No status effects to remove."
       },
       "card_selection": {
         "initial_title": "Start Card Selection",

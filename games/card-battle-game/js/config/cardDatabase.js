@@ -2236,6 +2236,55 @@ const CardDatabase = {
                 };
             }
         });
+
+        // 정화 카드 (물 속성 버프 카드, 모든 상태이상 제거)
+        this.addCard({
+            id: 'purification',
+            nameKey: 'auto_battle_card_game.ui.cards.purification.name',
+            type: 'buff',
+            element: 'water',
+            power: 0, // 버프 카드는 파워가 없음
+            accuracy: GameConfig?.cardEffects?.purification?.activationChance || 80,
+            activationCount: 1,
+            usageLimit: 1, // 1회만 사용 가능
+            descriptionKey: 'auto_battle_card_game.ui.cards.purification.description',
+            effect: function(user, target, battleSystem) {
+                // 현재 상태이상 카운트
+                const statusCount = user.statusEffects.length;
+
+                // 상태이상이 없는 경우
+                if (statusCount === 0) {
+                    return {
+                        success: true,
+                        noStatusEffects: true,
+                        messageKey: GameConfig?.cardEffects?.purification?.noStatusKey ||
+                                   'auto_battle_card_game.ui.templates.purification_no_status'
+                    };
+                }
+
+                // 모든 상태이상 제거 (복사본으로 순회하여 안전하게 제거)
+                const removedEffects = [...user.statusEffects];
+                user.clearAllStatusEffects();
+
+                // 즉시 런타임 스탯 재계산 (중요!)
+                user.updateRuntimeCardStats();
+
+                // 상대방의 런타임 스탯도 재계산 (젖음 기반 공격력 등)
+                if (user.opponent) {
+                    user.opponent.updateRuntimeCardStats();
+                }
+
+                return {
+                    success: true,
+                    purified: true,
+                    removedCount: statusCount,
+                    removedEffects: removedEffects,
+                    messageKey: GameConfig?.cardEffects?.purification?.messageKey ||
+                               'auto_battle_card_game.ui.templates.purification_success',
+                    element: this.element
+                };
+            }
+        });
     }
 };
 

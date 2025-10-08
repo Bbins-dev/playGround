@@ -1020,7 +1020,9 @@ const GameConfig = {
                 cards: [
                     { id: 'tsunami', count: 1 },              // 쓰나미 (자신과 상대 젖음 + 15 대미지)
                     { id: 'moisture_absorption', count: 1 },  // 수분흡수 (흡수 버프 획득)
-                    { id: 'water_bomb', count: 1 }            // 물폭탄 (물 속성 공격)
+                    { id: 'water_bomb', count: 1 },           // 물폭탄 (물 속성 공격)
+                    { id: 'purification', count: 1 },         // 정화 (모든 상태이상 제거)
+                    { id: 'purification', count: 1 }          // 정화 (모든 상태이상 제거)
                 ]
             },
             2: {
@@ -2473,6 +2475,16 @@ const GameConfig = {
             baseHeal: 8,         // 기본 회복량 (스택당)
             wetMultiplier: 2,    // 젖음 상태일 때 배율
             fixedTurns: 1        // 1턴 고정 지속 (스테이지 내내 유지)
+        },
+        // 정화 카드 설정
+        purification: {
+            activationChance: 80,  // 80% 발동률
+            messageKey: 'auto_battle_card_game.ui.templates.purification_success',
+            noStatusKey: 'auto_battle_card_game.ui.templates.purification_no_status',
+            visual: {
+                effectColor: '#4ECDC4',  // 청록색 (정화 효과)
+                particleCount: 20
+            }
         }
     },
 
