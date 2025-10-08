@@ -159,7 +159,8 @@ const GameConfig = {
             hotWind: '#FF6B6B',       // 열풍 - 코랄/주황색 (불 속성 색상)
             lithium: '#00CED1',       // Li⁺ - 다크 터쿼이즈 (배터리 에너지 느낌)
             breath: '#F0F0F0',        // 호흡 - 흰색 계열 (확 구분되는 색상)
-            mass: '#87CEEB'           // 질량 - 하늘색 (물 속성 색상)
+            mass: '#87CEEB',          // 질량 - 하늘색 (물 속성 색상)
+            torrent: '#4682B4'        // 급류 - 스틸 블루 (물결/파도 느낌)
         },
 
         // 체력 라벨 색상
@@ -878,6 +879,24 @@ const GameConfig = {
             effect: {
                 hpPercent: 20  // 현재 체력의 20%
             }
+        },
+        torrent: {
+            nameKey: 'auto_battle_card_game.ui.buffs.torrent',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.torrent_description',
+            name: '급류',
+            emoji: '🌊',
+            description: '물 속성 공격카드 발동횟수 +{value}',
+            get color() { return GameConfig.masterColors.buffs.torrent; }, // 급류 - 스틸 블루
+            get maxStack() { return GameConfig.constants.limits.maxBuffStacks; }, // 최대 중첩 수
+            targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'intensity', // 강도 추가 방식 (torrentBonus)
+            display: {
+                showValue: true,
+                format: '+{value}'  // 예: +3 (항상 1턴이므로 턴 표시 제거)
+            },
+            effect: {
+                activationBonus: 1  // 카드당 추가 횟수
+            }
         }
     },
 
@@ -979,6 +998,7 @@ const GameConfig = {
             1: {
                 hp: 50,
                 cards: [
+                    { id: 'torrent', count: 1 },         // 급류 (물 속성 공격카드 발동횟수 +1)
                     { id: 'massive_weight', count: 2 },  // 상당한 질량 (질량 버프 획득)
                     { id: 'heavy_strike', count: 1 },    // 세게치기 (노멀 속성 공격)
                     { id: 'water_bomb', count: 1 },      // 물폭탄 (물 속성 공격)
@@ -1985,10 +2005,8 @@ const GameConfig = {
                 key: 'activation',
                 emoji: '🔄',
                 format: (value, card) => {
-                    // getDisplayActivationCount 메서드가 있으면 사용
-                    if (card.getDisplayActivationCount) {
-                        return card.getDisplayActivationCount();
-                    }
+                    // value는 이미 getDisplayStats에서 계산된 올바른 값 (런타임 버프 반영)
+                    // 추가 처리 없이 그대로 반환
                     return value;
                 }
             },

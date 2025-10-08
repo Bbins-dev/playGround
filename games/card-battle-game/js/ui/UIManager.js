@@ -639,7 +639,7 @@ class UIManager {
             isHighlighted: false,
             isNextActive: false,
             opacity: 1,
-            context: 'default'
+            context: 'runtime'  // 런타임 버프/디버프 반영
         });
 
         // 카드 상세 내용 업데이트

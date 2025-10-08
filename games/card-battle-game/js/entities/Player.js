@@ -39,6 +39,8 @@ class Player {
         this.breathTurns = 0; // 호흡 버프 남은 턴 수 (불 속성 버프카드 100% 발동)
         this.massBonus = 0; // 질량 버프 스택 수
         this.massTurns = 0; // 질량 버프 남은 턴 수 (항상 1턴 고정)
+        this.torrentBonus = 0; // 급류 추가 발동횟수
+        this.torrentTurns = 0; // 급류 버프 남은 턴 수 (항상 1턴 고정)
 
         // 턴 관련
         this.currentCardIndex = 0;
@@ -421,6 +423,26 @@ class Player {
         return 0;
     }
 
+    // 급류 버프 관련 메서드
+    hasTorrentBuff() {
+        return this.torrentTurns > 0;
+    }
+
+    addTorrentBuff(bonus) {
+        this.torrentBonus += bonus;
+        this.torrentTurns = 1; // 항상 1턴
+
+        // 즉시 현재 손패의 물 속성 공격카드들에 적용
+        this.hand.forEach(card => {
+            if (card.type === 'attack' && card.element === 'water') {
+                card.modifiedActivationCount = card.activationCount + this.torrentBonus;
+            }
+        });
+
+        this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
+        return bonus;
+    }
+
     clearBuffs() {
         this.strength = 0;
         this.enhanceTurns = 0;
@@ -434,6 +456,8 @@ class Player {
         this.breathTurns = 0;
         this.massBonus = 0;
         this.massTurns = 0;
+        this.torrentBonus = 0;
+        this.torrentTurns = 0;
     }
 
     // 런타임 카드 스탯 업데이트 (버프/상태이상 반영)
@@ -603,6 +627,10 @@ class Player {
             else if (this.hasHotWindBuff() && card.type === 'attack' && card.element === 'fire') {
                 card.modifiedActivationCount = card.activationCount + this.hotWindTurns;
             }
+            // 급류 버프 적용 (물 속성 공격카드만)
+            else if (this.hasTorrentBuff() && card.type === 'attack' && card.element === 'water') {
+                card.modifiedActivationCount = card.activationCount + this.torrentBonus;
+            }
             else {
                 // 버프가 없거나 적용 대상이 아닌 경우 초기화
                 card.modifiedActivationCount = undefined;
@@ -686,6 +714,20 @@ class Player {
             this.massTurns--;
             if (this.massTurns === 0) {
                 this.massBonus = 0;  // 스택도 함께 초기화
+            }
+        }
+
+        // 급류 버프 턴수 차감
+        if (this.torrentTurns > 0) {
+            this.torrentTurns--;
+            if (this.torrentTurns === 0) {
+                this.torrentBonus = 0;
+                // 버프 해제 시 모든 카드의 modifiedActivationCount 초기화
+                this.hand.forEach(card => {
+                    if (card.type === 'attack' && card.element === 'water') {
+                        card.modifiedActivationCount = undefined;
+                    }
+                });
             }
         }
 

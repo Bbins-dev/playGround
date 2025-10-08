@@ -2141,6 +2141,40 @@ const CardDatabase = {
                 };
             }
         });
+
+        // 급류 카드 (물 속성 버프 카드, 급류 버프 획득)
+        this.addCard({
+            id: 'torrent',
+            nameKey: 'auto_battle_card_game.ui.cards.torrent.name',
+            type: 'buff',
+            element: 'water',
+            power: 0, // 버프 카드는 파워가 없음
+            accuracy: 70,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.torrent.description',
+            effect: function(user, target, battleSystem) {
+                // 급류 버프 획득
+                const torrentGain = 1;
+                user.addTorrentBuff(torrentGain);
+
+                // 버프 라벨 즉시 업데이트
+                const isPlayer = (user === battleSystem.player);
+                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.torrent_buff_gained',
+                    buffType: 'torrent',
+                    torrentGain: torrentGain,
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig.buffs.torrent.name,
+                        value: user.torrentBonus,
+                        turns: user.torrentTurns
+                    }
+                };
+            }
+        });
     }
 };
 

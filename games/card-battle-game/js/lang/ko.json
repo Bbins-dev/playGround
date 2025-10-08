@@ -411,6 +411,10 @@
         "massive_weight": {
           "name": "상당한 질량",
           "description": "한 턴 간 자신의 현재 체력의 20%에 해당하는 수치를 {water}{cardType:attack} 카드 기본공격력에 더합니다. {buff:mass} 버프 획득."
+        },
+        "torrent": {
+          "name": "급류",
+          "description": "한 턴 간 {water}{cardType:attack} 카드의 발동 횟수를 {buff:torrent} 횟수 만큼 더합니다."
         }
       },
       "buffs": {
@@ -434,7 +438,9 @@
         "breath": "호흡",
         "breath_description": "불 속성 버프 카드의 발동이 항상 성공합니다.",
         "mass": "질량",
-        "mass_description": "물 속성 공격 카드의 공격력에 현재 체력의 20%가 중첩 횟수만큼 추가됩니다. 한 턴 동안 지속됩니다."
+        "mass_description": "물 속성 공격 카드의 공격력에 현재 체력의 20%가 중첩 횟수만큼 추가됩니다. 한 턴 동안 지속됩니다.",
+        "torrent": "급류",
+        "torrent_description": "물 속성 공격 카드의 발동 횟수가 증가합니다."
       },
       "elements": {
         "fire": "불",
@@ -518,7 +524,8 @@
         "karura_strike_effect": "자신에게 {selfDamage} 피해! 상대에게 {damage} 피해!",
         "red_pendant_effect": "🛡️ 방어력 +{defense}, 💪 힘 +{strength}",
         "powder_keg_effect": "💥 펑!-{damage}",
-        "scent_buff_gained": "🔥 냄새 +{value}({turns})!"
+        "scent_buff_gained": "🔥 냄새 +{value}({turns})!",
+        "torrent_buff_gained": "🌊 급류 +{value}({turns})!"
       },
       "card_selection": {
         "initial_title": "시작 카드 선택",

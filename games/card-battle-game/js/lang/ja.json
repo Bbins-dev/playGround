@@ -411,6 +411,10 @@
         "massive_weight": {
           "name": "相当な質量",
           "description": "1ターンの間、自分の現在HPの20%に相当する数値を{water}{cardType:attack}カード基本攻撃力に加算します。{buff:mass}バフ獲得。"
+        },
+        "torrent": {
+          "name": "激流",
+          "description": "1ターンの間、{water}{cardType:attack}カードの発動回数を{buff:torrent}回数だけ増やします。"
         }
       },
       "buffs": {
@@ -434,7 +438,9 @@
         "breath": "呼吸",
         "breath_description": "火属性バフカードの発動が必ず成功します。",
         "mass": "質量",
-        "mass_description": "水属性攻撃カードの攻撃力に現在HPの20%が重複回数分だけ追加されます。1ターン持続します。"
+        "mass_description": "水属性攻撃カードの攻撃力に現在HPの20%が重複回数分だけ追加されます。1ターン持続します。",
+        "torrent": "激流",
+        "torrent_description": "水属性攻撃カードの発動回数が増加します。"
       },
       "elements": {
         "fire": "火",
@@ -518,7 +524,8 @@
         "karura_strike_effect": "自分に{selfDamage}ダメージ！相手に{damage}ダメージ！",
         "red_pendant_effect": "🛡️ 防御力 +{defense}、💪 力 +{strength}",
         "powder_keg_effect": "💥 ドカン！-{damage}",
-        "scent_buff_gained": "🔥 匂い +{value}({turns})!"
+        "scent_buff_gained": "🔥 匂い +{value}({turns})!",
+        "torrent_buff_gained": "🌊 激流 +{value}({turns})!"
       },
       "card_selection": {
         "initial_title": "スタートカード選択",
