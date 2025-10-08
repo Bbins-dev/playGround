@@ -415,6 +415,14 @@
         "torrent": {
           "name": "Torrent",
           "description": "For one turn, increases {water}{cardType:attack} card activation count by {buff:torrent} count."
+        },
+        "water_play": {
+          "name": "Water Play",
+          "description": "Makes yourself {status:wet}."
+        },
+        "moisture_absorption": {
+          "name": "Moisture Absorption",
+          "description": "Gain Absorption +1. Restore {hp} equal to Absorption value at turn start. Healing doubles when {status:wet}."
         }
       },
       "buffs": {
@@ -440,7 +448,9 @@
         "mass": "Mass",
         "mass_description": "Adds 20% of current HP to water element attack card power per stack. Lasts 1 turn.",
         "torrent": "TRN",
-        "torrent_description": "Increases the activation count of water element attack cards."
+        "torrent_description": "Increases the activation count of water element attack cards.",
+        "absorption": "ABS",
+        "absorption_description": "Restore HP equal to Absorption value at turn start. Healing doubles when wet."
       },
       "elements": {
         "fire": "Fire",
@@ -525,7 +535,9 @@
         "red_pendant_effect": "🛡️ Defense +{defense}, 💪 Strength +{strength}",
         "powder_keg_effect": "💥 Boom!-{damage}",
         "scent_buff_gained": "🔥 Scent +{value}({turns})!",
-        "torrent_buff_gained": "🌊 Torrent +{value}({turns})!"
+        "torrent_buff_gained": "🌊 Torrent +{value}({turns})!",
+        "absorption_heal": "💧 ABS +{value}!",
+        "absorption_heal_wet": "💦 ABS +{value}!"
       },
       "card_selection": {
         "initial_title": "Start Card Selection",

@@ -160,7 +160,8 @@ const GameConfig = {
             lithium: '#00CED1',       // Li⁺ - 다크 터쿼이즈 (배터리 에너지 느낌)
             breath: '#F0F0F0',        // 호흡 - 흰색 계열 (확 구분되는 색상)
             mass: '#87CEEB',          // 질량 - 하늘색 (물 속성 색상)
-            torrent: '#4682B4'        // 급류 - 스틸 블루 (물결/파도 느낌)
+            torrent: '#4682B4',       // 급류 - 스틸 블루 (물결/파도 느낌)
+            absorption: '#20B2AA'     // 흡수 - 라이트 시그린 (물 치유 느낌)
         },
 
         // 체력 라벨 색상
@@ -897,6 +898,25 @@ const GameConfig = {
             effect: {
                 activationBonus: 1  // 카드당 추가 횟수
             }
+        },
+        absorption: {
+            nameKey: 'auto_battle_card_game.ui.buffs.absorption',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.absorption_description',
+            name: '흡수',
+            emoji: '💧',
+            description: '턴 시작 시 HP +{value}',
+            get color() { return GameConfig.masterColors.buffs.absorption; }, // 흡수 - 라이트 시그린
+            get maxStack() { return GameConfig.constants.limits.maxBuffStacks; }, // 최대 중첩 수
+            targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'intensity', // 강도 추가 방식 (absorptionBonus)
+            display: {
+                showValue: true,
+                format: '+{value}'  // 예: +2
+            },
+            effect: {
+                baseHeal: 1,  // 기본 회복량 (스택당) - 흡수+1당 1 HP 회복
+                wetMultiplier: 2  // 젖음 상태일 때 배율
+            }
         }
     },
 
@@ -998,12 +1018,9 @@ const GameConfig = {
             1: {
                 hp: 50,
                 cards: [
-                    { id: 'torrent', count: 1 },         // 급류 (물 속성 공격카드 발동횟수 +1)
-                    { id: 'massive_weight', count: 2 },  // 상당한 질량 (질량 버프 획득)
-                    { id: 'heavy_strike', count: 1 },    // 세게치기 (노멀 속성 공격)
-                    { id: 'water_bomb', count: 1 },      // 물폭탄 (물 속성 공격)
-                    { id: 'freezing_wind', count: 1 },   // 냉동바람 (젖음 턴 × 10 대미지 + 얼음)
-                    { id: 'ice_breaker', count: 1 }      // 얼음깨기 (얼음 시 최대 HP 20% 고정 피해)
+                    { id: 'tsunami', count: 1 },              // 쓰나미 (자신과 상대 젖음 + 15 대미지)
+                    { id: 'moisture_absorption', count: 1 },  // 수분흡수 (흡수 버프 획득)
+                    { id: 'water_bomb', count: 1 }            // 물폭탄 (물 속성 공격)
                 ]
             },
             2: {
@@ -2441,10 +2458,21 @@ const GameConfig = {
         healingSpring: {
             healAmount: 10    // 젖음 상태일 때 회복량
         },
+        // 물장구 카드 설정
+        waterPlay: {
+            wetChance: 80,    // 젖음 적용 확률 80%
+            duration: 1       // 지속 시간 1턴
+        },
         // 상당한 질량 카드 설정
         massiveWeight: {
             hpPercent: 20,    // 현재 체력의 20%
             fixedTurns: 1     // 1턴 고정 지속
+        },
+        // 수분흡수 카드 설정
+        moistureAbsorption: {
+            baseHeal: 8,         // 기본 회복량 (스택당)
+            wetMultiplier: 2,    // 젖음 상태일 때 배율
+            fixedTurns: 1        // 1턴 고정 지속 (스테이지 내내 유지)
         }
     },
 

@@ -2175,6 +2175,67 @@ const CardDatabase = {
                 };
             }
         });
+
+        // 물장구 카드 (물 속성 버프 카드, 자신에게 젖음 상태이상 적용)
+        this.addCard({
+            id: 'water_play',
+            nameKey: 'auto_battle_card_game.ui.cards.water_play.name',
+            type: 'buff',
+            element: 'water',
+            power: 0, // 버프 카드지만 상태이상 적용
+            accuracy: 80,
+            activationCount: 1,
+            usageLimit: 1, // 1회만 사용 가능
+            descriptionKey: 'auto_battle_card_game.ui.cards.water_play.description',
+            wetChance: GameConfig?.cardEffects?.waterPlay?.wetChance || 80,
+            effect: function(user, target, battleSystem) {
+                // 자신에게 젖음 상태이상 적용 (통합 상태이상 시스템)
+                return {
+                    success: true,
+                    statusEffectSelf: {
+                        type: 'wet',
+                        chance: this.wetChance,
+                        power: null,
+                        duration: GameConfig?.cardEffects?.waterPlay?.duration || 1
+                    },
+                    element: this.element
+                };
+            }
+        });
+
+        // 수분흡수 카드 (물 속성 버프 카드, 흡수 버프 획득)
+        this.addCard({
+            id: 'moisture_absorption',
+            nameKey: 'auto_battle_card_game.ui.cards.moisture_absorption.name',
+            type: 'buff',
+            element: 'water',
+            power: 0, // 버프 카드는 파워가 없음
+            accuracy: 80,
+            activationCount: 1,
+            usageLimit: 1, // 1회만 사용 가능
+            descriptionKey: 'auto_battle_card_game.ui.cards.moisture_absorption.description',
+            effect: function(user, target, battleSystem) {
+                // 흡수 버프 1 스택 획득
+                const absorptionGain = 1;
+                user.addAbsorptionBuff(absorptionGain);
+
+                // 버프 라벨 즉시 업데이트
+                const isPlayer = (user === battleSystem.player);
+                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
+                    buffType: 'absorption',
+                    absorptionGain: absorptionGain,
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig.buffs.absorption.name,
+                        value: user.absorptionBonus
+                    }
+                };
+            }
+        });
     }
 };
 

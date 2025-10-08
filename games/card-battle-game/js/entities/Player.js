@@ -41,6 +41,8 @@ class Player {
         this.massTurns = 0; // 질량 버프 남은 턴 수 (항상 1턴 고정)
         this.torrentBonus = 0; // 급류 추가 발동횟수
         this.torrentTurns = 0; // 급류 버프 남은 턴 수 (항상 1턴 고정)
+        this.absorptionBonus = 0; // 흡수 버프 스택 수
+        this.absorptionTurns = 0; // 흡수 버프 남은 턴 수 (스테이지 내내 유지)
 
         // 턴 관련
         this.currentCardIndex = 0;
@@ -443,6 +445,59 @@ class Player {
         return bonus;
     }
 
+    // 흡수 버프 관련 메서드
+    hasAbsorptionBuff() {
+        return this.absorptionBonus > 0; // 스테이지 내내 유지되므로 스택만 체크
+    }
+
+    addAbsorptionBuff(stacks) {
+        this.absorptionBonus += stacks;
+        // 스테이지 내내 유지되므로 turnsLeft는 999로 설정 (실질적으로 무한)
+        this.absorptionTurns = 999;
+        this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
+        return stacks;
+    }
+
+    getAbsorptionHeal() {
+        // 흡수 버프가 없으면 0 반환
+        if (!this.hasAbsorptionBuff()) {
+            return 0;
+        }
+
+        // GameConfig에서 설정 가져오기 (안전한 접근)
+        const baseHeal = GameConfig?.buffs?.absorption?.effect?.baseHeal || 8;
+        const wetMultiplier = GameConfig?.buffs?.absorption?.effect?.wetMultiplier || 2;
+
+        // 기본 회복량 계산
+        let healAmount = this.absorptionBonus * baseHeal;
+
+        // 젖음 상태 체크
+        const isWet = this.hasStatusEffect('wet');
+
+        // 디버그 로그
+        if (GameConfig?.debugMode?.showDamageCalculation) {
+            console.log('[DEBUG] 흡수 회복 계산:', {
+                플레이어: this.name,
+                흡수스택: this.absorptionBonus,
+                기본회복량: baseHeal,
+                젖음상태: isWet,
+                젖음배율: wetMultiplier,
+                상태이상목록: this.statusEffects.map(e => `${e.type}(턴:${e.turnsLeft})`).join(', '),
+                계산전회복량: healAmount
+            });
+        }
+
+        // 젖음 상태이면 회복량 2배
+        if (isWet) {
+            healAmount *= wetMultiplier;
+            if (GameConfig?.debugMode?.showDamageCalculation) {
+                console.log('[DEBUG] 젖음 2배 적용 후:', healAmount);
+            }
+        }
+
+        return healAmount;
+    }
+
     clearBuffs() {
         this.strength = 0;
         this.enhanceTurns = 0;
@@ -458,6 +513,8 @@ class Player {
         this.massTurns = 0;
         this.torrentBonus = 0;
         this.torrentTurns = 0;
+        this.absorptionBonus = 0;
+        this.absorptionTurns = 0;
     }
 
     // 런타임 카드 스탯 업데이트 (버프/상태이상 반영)

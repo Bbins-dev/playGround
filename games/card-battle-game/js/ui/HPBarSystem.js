@@ -645,6 +645,42 @@ class HPBarSystem {
             buffsContainer.appendChild(buffElement);
         }
 
+        // 흡수 버프 표시
+        if (player.hasAbsorptionBuff && player.hasAbsorptionBuff()) {
+            const absorptionBonus = player.absorptionBonus;
+            const buffConfig = GameConfig.buffs.absorption;
+
+            // 버프가 있는 경우 컨테이너 활성화
+            effectsContainer.classList.add('active');
+
+            const buffElement = document.createElement('div');
+            buffElement.className = 'buff-label';
+
+            // 다국어 지원 - I18nHelper 사용
+            const buffName = buffConfig.nameKey ?
+                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
+                buffConfig.name;
+            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} +${absorptionBonus}`;
+
+            // 버프별 색상 적용
+            buffElement.style.borderColor = buffConfig.color;
+            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
+
+            // 클릭 이벤트 추가 (툴팁 모달 표시)
+            buffElement.style.cursor = 'pointer';
+            buffElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.BuffStatusTooltipModal) {
+                    window.BuffStatusTooltipModal.show('buff', 'absorption');
+                }
+            });
+
+            // Flexbox column-reverse/column으로 방향 제어
+            // 플레이어: column-reverse로 아래→위 자동 처리
+            // 적: column으로 위→아래 자동 처리
+            buffsContainer.appendChild(buffElement);
+        }
+
         // 버프가 없고 상태이상도 없으면 컨테이너 숨김
         const statusContainer = isPlayer ? this.playerStatusGrid : this.enemyStatusGrid;
         if (!buffsContainer.children.length && !statusContainer.children.length) {
