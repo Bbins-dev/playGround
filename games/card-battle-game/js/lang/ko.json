@@ -277,7 +277,7 @@
           "description": "현재 {hp}이 최대 {hp}의 30% 미만일 경우 최대 {hp}의 50%를 회복합니다."
         },
         "one_times_hundred": {
-          "name": "1x100=?",
+          "name": "1x100",
           "description": "현재 {hp}이 1일 경우 {hp}을 가득 채워줍니다."
         },
         "push_back": {
@@ -423,6 +423,10 @@
         "moisture_absorption": {
           "name": "수분흡수",
           "description": "흡수 +1을 얻습니다. 흡수 수치만큼 턴 시작 시 {hp}을 회복합니다. {status:wet}상태일 경우 회복력이 두 배가 됩니다."
+        },
+        "purification": {
+          "name": "정화",
+          "description": "현재 걸려있는 모든 {cardType:status}를 제거합니다."
         }
       },
       "buffs": {
@@ -537,7 +541,9 @@
         "scent_buff_gained": "🔥 냄새 +{value}({turns})!",
         "torrent_buff_gained": "🌊 급류 +{value}({turns})!",
         "absorption_heal": "💧 흡수 +{value}!",
-        "absorption_heal_wet": "💦 흡수 +{value}!"
+        "absorption_heal_wet": "💦 흡수 +{value}!",
+        "purification_success": "✨ 정화!",
+        "purification_no_status": "제거할 상태이상이 없습니다."
       },
       "card_selection": {
         "initial_title": "시작 카드 선택",

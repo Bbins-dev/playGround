@@ -277,7 +277,7 @@
           "description": "現在の{hp}が最大{hp}の30%未満の場合、最大{hp}の50%を回復します。"
         },
         "one_times_hundred": {
-          "name": "1x100=?",
+          "name": "1x100",
           "description": "現在の{hp}が1の場合、{hp}を最大まで回復します。"
         },
         "push_back": {
@@ -423,6 +423,10 @@
         "moisture_absorption": {
           "name": "水分吸収",
           "description": "吸収+1を得ます。ターン開始時に吸収値分{hp}を回復します。{status:wet}状態の場合、回復量が2倍になります。"
+        },
+        "purification": {
+          "name": "浄化",
+          "description": "現在かかっているすべての{cardType:status}を除去します。"
         }
       },
       "buffs": {
@@ -537,7 +541,9 @@
         "scent_buff_gained": "🔥 匂い +{value}({turns})!",
         "torrent_buff_gained": "🌊 激流 +{value}({turns})!",
         "absorption_heal": "💧 吸収 +{value}!",
-        "absorption_heal_wet": "💦 吸収 +{value}!"
+        "absorption_heal_wet": "💦 吸収 +{value}!",
+        "purification_success": "✨ 浄化!",
+        "purification_no_status": "除去する状態異常がありません。"
       },
       "card_selection": {
         "initial_title": "スタートカード選択",

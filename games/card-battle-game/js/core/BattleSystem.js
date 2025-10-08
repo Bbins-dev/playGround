@@ -619,6 +619,36 @@ class BattleSystem {
             await this.effectSystem.showBuffEffect('absorption', user, result.absorptionGain);
         }
 
+        // 정화 효과 처리 (정화 카드)
+        if (result.purified) {
+            const userPosition = user.isPlayer ?
+                this.effectSystem.getPlayerPosition() :
+                this.effectSystem.getEnemyPosition();
+
+            // 정화 메시지 표시
+            const template = I18nHelper.getText(result.messageKey);
+            await this.effectSystem.showDamageNumber(0, userPosition, 'heal', template);
+
+            // 상태이상 UI 즉시 업데이트
+            const isPlayer = (user === this.player);
+            this.hpBarSystem.updateStatusEffects(user, isPlayer);
+
+            // 플레이어의 상태이상 테두리 효과 제거
+            if (isPlayer && this.gameManager?.uiManager) {
+                this.gameManager.uiManager.updateStatusBorder();
+            }
+        }
+
+        // 상태이상이 없는 경우 메시지 (정화 카드)
+        if (result.noStatusEffects) {
+            const userPosition = user.isPlayer ?
+                this.effectSystem.getPlayerPosition() :
+                this.effectSystem.getEnemyPosition();
+
+            const template = I18nHelper.getText(result.messageKey);
+            await this.effectSystem.showDamageNumber(0, userPosition, 'conditionFailed', template);
+        }
+
         // 자신에게 상태이상 적용 처리 (물장구 카드 등 - 버프 카드지만 자신에게 상태이상 적용)
         if (result.statusEffectSelf) {
             const userPosition = user.isPlayer ?
