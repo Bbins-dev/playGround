@@ -158,7 +158,8 @@ const GameConfig = {
             sharpen: '#708090',       // 벼리기 - 슬레이트 그레이 (금속 느낌)
             hotWind: '#FF6B6B',       // 열풍 - 코랄/주황색 (불 속성 색상)
             lithium: '#00CED1',       // Li⁺ - 다크 터쿼이즈 (배터리 에너지 느낌)
-            breath: '#F0F0F0'         // 호흡 - 흰색 계열 (확 구분되는 색상)
+            breath: '#F0F0F0',        // 호흡 - 흰색 계열 (확 구분되는 색상)
+            mass: '#87CEEB'           // 질량 - 하늘색 (물 속성 색상)
         },
 
         // 체력 라벨 색상
@@ -859,6 +860,24 @@ const GameConfig = {
                 showValue: false,  // 턴 표시 없음 (항상 1턴이므로)
                 format: ''  // 빈 문자열 (이모지 + 이름만)
             }
+        },
+        mass: {
+            nameKey: 'auto_battle_card_game.ui.buffs.mass',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.mass_description',
+            name: '질량',
+            emoji: '⚓',
+            description: '물 속성 공격카드 공격력에 현재 체력의 20%×강도 추가',
+            get color() { return GameConfig.masterColors.buffs.mass; }, // 질량 - 하늘색 (물 속성)
+            get maxStack() { return GameConfig.constants.limits.maxBuffStacks; }, // 최대 중첩 수
+            targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'intensity', // 강도 추가 방식 (massBonus)
+            display: {
+                showValue: true,  // 강도 표시 (턴 표시 없음)
+                format: '+{value}'  // 예: +3 (항상 1턴이므로 턴 표시 제거)
+            },
+            effect: {
+                hpPercent: 20  // 현재 체력의 20%
+            }
         }
     },
 
@@ -960,14 +979,11 @@ const GameConfig = {
             1: {
                 hp: 50,
                 cards: [
-                    { id: 'rain', count: 1 },            // 비내리기 (자신과 상대 모두 젖음 1턴)
-                    { id: 'cold_snap', count: 1 },       // 혹한기 (젖음 상태일 때만 얼음 적용)
-                    { id: 'mud_bath', count: 1 },        // 진흙탕 (모래 상태 1턴 적용)
-                    { id: 'cold_burn', count: 1 },       // 저온화상 (젖음/얼음 상태일 때 화상 추가)
-                    { id: 'sleet', count: 1 },           // 진눈깨비 (물 속성, 대미지 2 + 젖음)
+                    { id: 'massive_weight', count: 2 },  // 상당한 질량 (질량 버프 획득)
+                    { id: 'heavy_strike', count: 1 },    // 세게치기 (노멀 속성 공격)
+                    { id: 'water_bomb', count: 1 },      // 물폭탄 (물 속성 공격)
                     { id: 'freezing_wind', count: 1 },   // 냉동바람 (젖음 턴 × 10 대미지 + 얼음)
-                    { id: 'ice_breaker', count: 1 },     // 얼음깨기 (얼음 시 최대 HP 20% 고정 피해)
-                    { id: 'liquify', count: 1 }          // 액체화 (잃은 체력 50% 회복 + 젖음 제거)
+                    { id: 'ice_breaker', count: 1 }      // 얼음깨기 (얼음 시 최대 HP 20% 고정 피해)
                 ]
             },
             2: {
@@ -2406,6 +2422,11 @@ const GameConfig = {
         // 회복의 샘 카드 설정
         healingSpring: {
             healAmount: 10    // 젖음 상태일 때 회복량
+        },
+        // 상당한 질량 카드 설정
+        massiveWeight: {
+            hpPercent: 20,    // 현재 체력의 20%
+            fixedTurns: 1     // 1턴 고정 지속
         }
     },
 
