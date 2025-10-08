@@ -603,6 +603,11 @@ class BattleSystem {
             await this.effectSystem.showBuffEffect('mass', user, result.massGain);
         }
 
+        // 급류 버프 획득 처리 (급류 카드) - 새로운 통합 메서드 사용
+        if (result.torrentGain && result.torrentGain > 0) {
+            await this.effectSystem.showBuffEffect('torrent', user, result.torrentGain);
+        }
+
         // 버프 획득 후 HPBar 버프 라벨 즉시 업데이트
         const isPlayer = (user === this.player);
         this.hpBarSystem.updateBuffs(user, isPlayer);
