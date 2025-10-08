@@ -52,6 +52,46 @@ hasStatusEffect(type) {
 - [ ] xxxChance 속성 정의 (하드코딩 금지)
 - [ ] statusEffect 구조 사용 (통합 시스템)
 
+### 카드 데미지 계산 패턴 (중요!)
+**원칙**: UI 계산(updateRuntimeCardStats)과 실제 데미지(effect 함수) 반드시 일치
+
+#### 1. 일반 공격 카드 패턴
+```javascript
+let baseDamage = this.power + user.getStrength() * 1;
+baseDamage += user.getScentBonus(this.element);  // 불 속성만
+baseDamage += user.getMassBonus(this.element);   // 물 속성만
+if (user.hasEnhanceBuff()) baseDamage = Math.floor(baseDamage * 1.5);
+if (user.hasLithiumBuff()) baseDamage = Math.floor(baseDamage * user.getLithiumTurns());
+```
+
+#### 2. buffedPower 사용 카드 (조건부/동적 공격력)
+```javascript
+// ❌ 금지: buffedPower에 이미 모든 버프 포함됨
+let baseDamage = this.buffedPower || 0;
+baseDamage += user.getStrength();  // ❌ 중복!
+
+// ✅ 필수: buffedPower만 사용
+let baseDamage = this.buffedPower || 0;
+// 추가 버프 계산 금지 (freezing_wind, ice_breaker 등)
+```
+
+#### 3. 조건부 카드 처리 (Player.updateRuntimeCardStats)
+```javascript
+if (card.id === 'freezing_wind' && target) {
+    const wetTurns = target.statusEffects?.find(e => e.type === 'wet')?.turnsLeft || 0;
+    buffedPower = wetTurns * 10;
+    if (wetTurns === 0) {
+        card.buffedPower = 0;
+        return;  // 조건 미충족 시 버프 계산 스킵
+    }
+}
+```
+
+**버프 계산 순서 (변경 금지!)**
+1. Base power
+2. 덧셈 버프: strength (+1/스택), scent (불), mass (물)
+3. 곱셈 버프: enhance (×1.5), Li⁺ (×턴수)
+
 ## 🎮 게임 시스템
 
 ### 통합 상태이상 시스템

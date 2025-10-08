@@ -407,6 +407,10 @@
         "cold_burn": {
           "name": "Cold Burn",
           "description": "If the enemy is {status:wet} or {status:frozen}, apply {status:burn} for 1 turn."
+        },
+        "massive_weight": {
+          "name": "Massive Weight",
+          "description": "For 1 turn, adds 20% of your current HP to {water}{cardType:attack} card base power. Gain {buff:mass} buff."
         }
       },
       "buffs": {
@@ -428,7 +432,9 @@
         "lithium": "Li⁺",
         "lithium_description": "Fire element attack card damage is multiplied by remaining Li⁺ turns.",
         "breath": "BRE",
-        "breath_description": "Fire element buff cards always activate successfully."
+        "breath_description": "Fire element buff cards always activate successfully.",
+        "mass": "Mass",
+        "mass_description": "Adds 20% of current HP to water element attack card power per stack. Lasts 1 turn."
       },
       "elements": {
         "fire": "Fire",

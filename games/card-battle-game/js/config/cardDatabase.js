@@ -540,6 +540,9 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
 
+                // 질량 버프 적용 (물 속성만)
+                baseDamage += (user.getMassBonus ? user.getMassBonus(this.element) : 0);
+
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
                     baseDamage = Math.floor(baseDamage * 1.5);
@@ -571,6 +574,9 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.water_bomb.description',
             effect: function(user, target, battleSystem) {
                 let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
+
+                // 질량 버프 적용 (물 속성만)
+                baseDamage += (user.getMassBonus ? user.getMassBonus(this.element) : 0);
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
@@ -620,6 +626,9 @@ const CardDatabase = {
                 // 여기서는 카드의 본연의 효과만 처리 (상대에게 공격 + 젖음)
                 let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
 
+                // 질량 버프 적용 (물 속성만)
+                baseDamage += (user.getMassBonus ? user.getMassBonus(this.element) : 0);
+
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
                     baseDamage = Math.floor(baseDamage * 1.5);
@@ -658,14 +667,8 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.freezing_wind.description',
             effect: function(user, target, battleSystem) {
                 // 동적 공격력: 적의 젖음 잔여 턴 × 10 (Player.updateRuntimeCardStats()에서 이미 계산됨)
-                // 여기서는 카드의 buffedPower를 사용
+                // buffedPower에 이미 모든 버프 포함 (힘, 냄새, 질량, 강화) - 중복 적용 방지
                 let baseDamage = this.buffedPower || 0;
-                baseDamage += (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
-
-                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
-                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
-                    baseDamage = Math.floor(baseDamage * 1.5);
-                }
 
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
@@ -2105,6 +2108,36 @@ const CardDatabase = {
                         duration: 1
                     },
                     element: this.element
+                };
+            }
+        });
+
+        // 상당한 질량 카드 (물 속성 버프 카드, 질량 버프 획득)
+        this.addCard({
+            id: 'massive_weight',
+            nameKey: 'auto_battle_card_game.ui.cards.massive_weight.name',
+            type: 'buff',
+            element: 'water',
+            power: 0, // 버프 카드는 파워가 없음
+            accuracy: 80,
+            activationCount: 1,
+            usageLimit: 1, // 1회만 사용 가능
+            descriptionKey: 'auto_battle_card_game.ui.cards.massive_weight.description',
+            effect: function(user, target, battleSystem) {
+                // 질량 버프 1 스택 획득
+                const stacksGain = 1;
+                user.addMassBuff(stacksGain);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
+                    buffType: 'mass',
+                    massGain: stacksGain,
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig.buffs.mass.name,
+                        value: user.massBonus
+                    }
                 };
             }
         });

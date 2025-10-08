@@ -37,6 +37,8 @@ class Player {
         this.hotWindTurns = 0; // 열풍 버프 남은 턴 수
         this.lithiumTurns = 0; // Li⁺ 버프 남은 턴 수 (곱셈 배율)
         this.breathTurns = 0; // 호흡 버프 남은 턴 수 (불 속성 버프카드 100% 발동)
+        this.massBonus = 0; // 질량 버프 스택 수
+        this.massTurns = 0; // 질량 버프 남은 턴 수 (항상 1턴 고정)
 
         // 턴 관련
         this.currentCardIndex = 0;
@@ -398,6 +400,27 @@ class Player {
         return turns;
     }
 
+    // 질량 버프 관련 메서드
+    hasMassBuff() {
+        return this.massTurns > 0;
+    }
+
+    addMassBuff(stacks) {
+        this.massBonus += stacks;
+        this.massTurns = 1;  // 항상 1턴으로 고정
+        this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
+        return stacks;
+    }
+
+    getMassBonus(element) {
+        // 물 속성 공격카드일 때만 추가 대미지 반환
+        if (element === 'water' && this.hasMassBuff()) {
+            const percent = GameConfig?.cardEffects?.massiveWeight?.hpPercent || 20;
+            return Math.floor(this.hp * (percent / 100) * this.massBonus);
+        }
+        return 0;
+    }
+
     clearBuffs() {
         this.strength = 0;
         this.enhanceTurns = 0;
@@ -409,6 +432,8 @@ class Player {
         this.hotWindTurns = 0;
         this.lithiumTurns = 0;
         this.breathTurns = 0;
+        this.massBonus = 0;
+        this.massTurns = 0;
     }
 
     // 런타임 카드 스탯 업데이트 (버프/상태이상 반영)
@@ -428,6 +453,13 @@ class Player {
                     const wetEffect = target.statusEffects?.find(e => e.type === 'wet');
                     const wetTurns = wetEffect ? wetEffect.turnsLeft : 0;
                     buffedPower = wetTurns * 10;
+
+                    // 조건 미충족 시 버프 계산 건너뛰기 (질량 버프 등 미적용)
+                    if (wetTurns === 0) {
+                        card.buffedPower = 0;
+                        return;
+                    }
+                    // 조건 충족 시 계속 진행하여 버프 적용
                 }
 
                 // ice_breaker 카드: 적이 frozen 상태일 때 적 최대 HP의 20% (고정 피해)
@@ -438,11 +470,14 @@ class Player {
                     return; // 고정 피해이므로 버프 계산 건너뛰기
                 }
 
-                // 힘 버프 적용 (+3/스택)
-                buffedPower += this.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 3);
+                // 힘 버프 적용 (+1/스택)
+                buffedPower += this.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1);
 
                 // 냄새 버프 적용 (불 속성만)
                 buffedPower += this.getScentBonus(card.element);
+
+                // 질량 버프 적용 (물 속성만, 현재 HP의 20% × 스택)
+                buffedPower += this.getMassBonus(card.element);
 
                 // 강화 버프 적용 (1.5배)
                 if (this.hasEnhanceBuff()) {
@@ -644,6 +679,14 @@ class Player {
         // 호흡 버프 턴수 차감
         if (this.breathTurns > 0) {
             this.breathTurns--;
+        }
+
+        // 질량 버프 턴수 차감 (1턴 고정, 스택과 무관하게 제거)
+        if (this.massTurns > 0) {
+            this.massTurns--;
+            if (this.massTurns === 0) {
+                this.massBonus = 0;  // 스택도 함께 초기화
+            }
         }
 
         // 런타임 스탯 업데이트 (버프가 차감되었으므로)
