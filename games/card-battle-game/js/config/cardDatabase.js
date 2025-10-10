@@ -741,7 +741,7 @@ const CardDatabase = {
             nameKey: 'auto_battle_card_game.ui.cards.thunder_strike.name',
             type: 'attack',
             element: 'electric',
-            power: 5,
+            power: 7,
             accuracy: 50,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.thunder_strike.description',
