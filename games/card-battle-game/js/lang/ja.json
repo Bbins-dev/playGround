@@ -370,7 +370,7 @@
         },
         "battery_explosion": {
           "name": "バッテリー爆発",
-          "description": "{buff:lithium}を1ターン獲得。{fire}{cardType:attack}カードの現在の攻撃力に{buff:lithium}残りターン数が乗算されます。"
+          "description": "{buff:lithium}を1ターン獲得。{fire}、{electric}{cardType:attack}カードの現在の攻撃力に{buff:lithium}残りターン数が乗算されます。"
         },
         "fire_breath": {
           "name": "炎の呼吸",
@@ -446,7 +446,7 @@
         "hotWind": "熱風",
         "hotWind_description": "火属性攻撃カードの発動回数が熱風バフの残りターン数分増加します。",
         "lithium": "Li⁺",
-        "lithium_description": "火属性攻撃カードの攻撃力がLi⁺残りターン数分だけ乗算されます。",
+        "lithium_description": "火、電気属性攻撃カードの攻撃力がLi⁺残りターン数分だけ乗算されます。",
         "breath": "呼吸",
         "breath_description": "火属性バフカードの発動が必ず成功します。",
         "mass": "質量",
