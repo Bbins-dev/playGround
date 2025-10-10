@@ -524,6 +524,13 @@ class Player {
                     // 조건 충족 시 계속 진행하여 버프 적용
                 }
 
+                // electric_shock 카드: 적이 젖음 상태일 때 기본 공격력 3배 (3 → 9)
+                if (card.id === 'electric_shock' && target) {
+                    const hasWet = target.hasStatusEffect('wet');
+                    buffedPower = hasWet ? 9 : 3;  // 조건부 기본 공격력
+                    // 이후 일반 버프 계산 계속 진행 (힘 → 강화 → Li⁺)
+                }
+
                 // ice_breaker 카드: 적이 frozen 상태일 때 적 최대 HP의 20% (고정 피해)
                 if (card.id === 'ice_breaker' && target) {
                     const hasFrozen = target.hasStatusEffect('frozen');

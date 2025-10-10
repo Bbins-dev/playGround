@@ -1486,6 +1486,11 @@ const GameConfig = {
             positionOffset: {
                 damageFromStatus: -40,  // 피격 데미지가 상태이상 메시지보다 위에 표시되도록 Y 오프셋
                 statusDamageFromApplied: -80 // 상태이상 대미지가 상태이상 적용 메시지보다 위에 표시되도록 Y 오프셋
+            },
+            // 텍스트 화면 경계 여백 설정 (픽셀 단위) - 긴 메시지가 화면 밖으로 나가는 것 방지
+            textMargins: {
+                left: 20,   // 왼쪽 최소 여백
+                right: 20   // 오른쪽 최소 여백
             }
         },
 

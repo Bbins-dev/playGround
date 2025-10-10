@@ -264,6 +264,10 @@
           "name": "번개일격",
           "description": "적에게 번개같은 일격을 가합니다."
         },
+        "electric_shock": {
+          "name": "감전",
+          "description": "{status:wet} 상태의 적에게는 기본공격력이 세 배가 됩니다."
+        },
         "smog": {
           "name": "스모그",
           "description": "적을 스모그로 감싸 2의 피해를 입히고 일정확률로 {status:poisoned}시킵니다."
@@ -543,7 +547,7 @@
         "absorption_heal": "💧 흡수 +{value}!",
         "absorption_heal_wet": "💦 흡수 +{value}!",
         "purification_success": "✨ 정화!",
-        "purification_no_status": "제거할 상태이상이 없습니다."
+        "purification_no_status": "상태이상 없음!"
       },
       "card_selection": {
         "initial_title": "시작 카드 선택",

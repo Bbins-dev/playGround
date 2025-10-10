@@ -627,7 +627,7 @@ class BattleSystem {
 
             // 정화 메시지 표시
             const template = I18nHelper.getText(result.messageKey);
-            await this.effectSystem.showDamageNumber(0, userPosition, 'heal', template);
+            await this.effectSystem.showDamageNumber(0, userPosition, 'status', template);
 
             // 상태이상 UI 즉시 업데이트
             const isPlayer = (user === this.player);
@@ -646,7 +646,7 @@ class BattleSystem {
                 this.effectSystem.getEnemyPosition();
 
             const template = I18nHelper.getText(result.messageKey);
-            await this.effectSystem.showDamageNumber(0, userPosition, 'conditionFailed', template);
+            await this.effectSystem.showDamageNumber(0, userPosition, 'status', template);
         }
 
         // 자신에게 상태이상 적용 처리 (물장구 카드 등 - 버프 카드지만 자신에게 상태이상 적용)
