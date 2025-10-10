@@ -742,7 +742,7 @@ const CardDatabase = {
             type: 'attack',
             element: 'electric',
             power: 7,
-            accuracy: 50,
+            accuracy: 60,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.thunder_strike.description',
             effect: function(user, target, battleSystem) {
@@ -752,6 +752,34 @@ const CardDatabase = {
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
                     baseDamage = Math.floor(baseDamage * 1.5);
                 }
+
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
+        // 감전 카드 (전기 속성, 젖음 상태의 적에게 기본공격력 3배)
+        this.addCard({
+            id: 'electric_shock',
+            nameKey: 'auto_battle_card_game.ui.cards.electric_shock.name',
+            type: 'attack',
+            element: 'electric',
+            power: 3,  // 기본 공격력 (젖음 상태이면 9로 동적 계산)
+            accuracy: 70,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.electric_shock.description',
+            effect: function(user, target, battleSystem) {
+                // 동적 공격력: Player.updateRuntimeCardStats()에서 이미 계산됨
+                // buffedPower에 이미 모든 버프 포함 (조건부 기본 → 덧셈 → 곱셈)
+                let baseDamage = this.buffedPower || 3;
 
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);

@@ -264,6 +264,10 @@
           "name": "Thunder Strike",
           "description": "Deliver a thunderous strike to the enemy."
         },
+        "electric_shock": {
+          "name": "Electric Shock",
+          "description": "Base power triples against {status:wet} enemies."
+        },
         "smog": {
           "name": "Smog",
           "description": "Envelop the enemy in smog, dealing 2 damage with a chance to {status:poisoned}."
@@ -543,7 +547,7 @@
         "absorption_heal": "💧 ABS +{value}!",
         "absorption_heal_wet": "💦 ABS +{value}!",
         "purification_success": "✨ Purified!",
-        "purification_no_status": "No status effects to remove."
+        "purification_no_status": "No Status Effects!"
       },
       "card_selection": {
         "initial_title": "Start Card Selection",

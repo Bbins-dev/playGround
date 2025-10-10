@@ -361,8 +361,8 @@ class EffectSystem {
         const fontSize = GameConfig.cardSelection.damageNumber.fontSize;
         numberElement.style.fontSize = fontSize + 'px';
 
-        // 버프 메시지의 경우 텍스트 끝 기준으로 정렬 (화면 밖으로 나가지 않게)
-        if (messageType === 'buff') {
+        // 커스텀 텍스트가 있는 모든 메시지는 화면 경계 체크 (Configuration-Driven)
+        if (customText) {
             // 텍스트 너비 측정을 위해 임시로 DOM에 추가
             numberElement.style.visibility = 'hidden';
             this.numbersContainer.appendChild(numberElement);
@@ -370,9 +370,20 @@ class EffectSystem {
             numberElement.remove();
             numberElement.style.visibility = 'visible';
 
-            // 텍스트 끝이 화면 밖으로 나가지 않도록 조정
-            const maxX = GameConfig.canvas.width - textWidth - 20; // 20px 여백
-            const adjustedX = Math.min(finalPosition.x, maxX);
+            // GameConfig에서 여백 설정 가져오기 (안전한 접근)
+            const margins = GameConfig?.cardSelection?.damageNumber?.textMargins || { left: 20, right: 20 };
+
+            // 텍스트 끝이 화면 밖으로 나가지 않도록 조정 (오른쪽 경계)
+            const textEndX = finalPosition.x + textWidth;
+            let adjustedX = finalPosition.x;
+
+            // 텍스트 끝이 화면 밖으로 나가면 왼쪽으로 이동
+            if (textEndX > GameConfig.canvas.width - margins.right) {
+                adjustedX = GameConfig.canvas.width - textWidth - margins.right;
+            }
+
+            // 왼쪽 경계도 체크 (음수 방지)
+            adjustedX = Math.max(margins.left, adjustedX);
 
             numberElement.style.left = adjustedX + 'px';
         } else {

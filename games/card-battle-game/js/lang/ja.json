@@ -264,6 +264,10 @@
           "name": "サンダーストライク",
           "description": "敵に稲妻のような一撃を加えます。"
         },
+        "electric_shock": {
+          "name": "感電",
+          "description": "{status:wet}状態の敵に対して基本攻撃力が3倍になります。"
+        },
         "smog": {
           "name": "スモッグ",
           "description": "敵をスモッグで包み、2のダメージを与え、一定確率で{status:poisoned}状態にします。"
@@ -543,7 +547,7 @@
         "absorption_heal": "💧 吸収 +{value}!",
         "absorption_heal_wet": "💦 吸収 +{value}!",
         "purification_success": "✨ 浄化!",
-        "purification_no_status": "除去する状態異常がありません。"
+        "purification_no_status": "状態異常なし!"
       },
       "card_selection": {
         "initial_title": "スタートカード選択",
