@@ -286,7 +286,7 @@
         },
         "sand_throw": {
           "name": "Sand Throw",
-          "description": "Throw {status:sand} in opponent's eyes, reducing {cardType:attack} card accuracy by 30% for 2 turns"
+          "description": "Throw {status:sand} in opponent's eyes, reducing {cardType:attack} card accuracy by 30% for 1 turn"
         },
         "mud_bath": {
           "name": "Mud Bath",
@@ -310,11 +310,11 @@
         },
         "insult": {
           "name": "Insult",
-          "description": "{status:insult}s the opponent, reducing {cardType:defense} card activation rate by 30% for 2 turns."
+          "description": "{status:insult}s the opponent, reducing {cardType:defense} card activation rate by 30% for 1 turn."
         },
         "net_throw": {
           "name": "Net Throw",
-          "description": "{status:slow}s the opponent, reducing {cardType:status} card activation rate by 30% for 2 turns."
+          "description": "{status:slow}s the opponent, reducing {cardType:status} card activation rate by 30% for 1 turn."
         },
         "oil_pour": {
           "name": "Pour Oil",
