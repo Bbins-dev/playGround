@@ -286,7 +286,7 @@
         },
         "sand_throw": {
           "name": "砂投げ",
-          "description": "相手の目に砂を投げて2ターン間{cardType:attack}カードの命中率30%減少"
+          "description": "相手の目に砂を投げて1ターン間{cardType:attack}カードの命中率30%減少"
         },
         "mud_bath": {
           "name": "泥沼",
@@ -310,11 +310,11 @@
         },
         "insult": {
           "name": "侮辱",
-          "description": "相手を侮辱し、2ターンの間{cardType:defense}カードの発動率を30%減少させます。"
+          "description": "相手を侮辱し、1ターンの間{cardType:defense}カードの発動率を30%減少させます。"
         },
         "net_throw": {
           "name": "網投げ",
-          "description": "相手を鈍化させ、2ターンの間{cardType:status}カードの発動率を30%減少させます。"
+          "description": "相手を鈍化させ、1ターンの間{cardType:status}カードの発動率を30%減少させます。"
         },
         "oil_pour": {
           "name": "油を注ぐ",

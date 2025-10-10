@@ -286,7 +286,7 @@
         },
         "sand_throw": {
           "name": "모래뿌리기",
-          "description": "상대의 눈에 {status:sand}를 뿌려 2턴간 {cardType:attack} 카드의 명중률 30% 감소"
+          "description": "상대의 눈에 {status:sand}를 뿌려 1턴간 {cardType:attack} 카드의 명중률 30% 감소"
         },
         "mud_bath": {
           "name": "진흙탕",
@@ -310,11 +310,11 @@
         },
         "insult": {
           "name": "모욕",
-          "description": "상대를 {status:insult}하여 2턴간 {cardType:defense} 카드의 발동률 30% 감소시킵니다."
+          "description": "상대를 {status:insult}하여 1턴간 {cardType:defense} 카드의 발동률 30% 감소시킵니다."
         },
         "net_throw": {
           "name": "그물투척",
-          "description": "상대를 {status:slow}시켜 2턴간 {cardType:status} 카드의 발동률을 30% 감소시킵니다."
+          "description": "상대를 {status:slow}시켜 1턴간 {cardType:status} 카드의 발동률을 30% 감소시킵니다."
         },
         "oil_pour": {
           "name": "기름붓기",

@@ -941,7 +941,7 @@ const CardDatabase = {
             type: 'status',
             element: 'normal',
             power: 0,
-            accuracy: 70,
+            accuracy: 80,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.sand_throw.description',
             sandChance: 100,
@@ -953,7 +953,7 @@ const CardDatabase = {
                         type: 'sand',
                         chance: this.sandChance,
                         power: GameConfig.statusEffects.sand.defaultReduction,
-                        duration: 2
+                        duration: 1
                     },
                     element: this.element
                 };
@@ -1252,7 +1252,7 @@ const CardDatabase = {
             type: 'status',
             element: 'normal',
             power: 0,
-            accuracy: 70,
+            accuracy: 80,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.insult.description',
             insultChance: 100,
@@ -1264,7 +1264,7 @@ const CardDatabase = {
                         type: 'insult',
                         chance: this.insultChance,
                         power: GameConfig.statusEffects.insult.defaultReduction,
-                        duration: 2
+                        duration: 1
                     },
                     element: this.element
                 };
@@ -1278,7 +1278,7 @@ const CardDatabase = {
             type: 'status',
             element: 'normal',
             power: 0,
-            accuracy: 70,
+            accuracy: 80,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.net_throw.description',
             slowChance: 100,
@@ -1290,7 +1290,7 @@ const CardDatabase = {
                         type: 'slow',
                         chance: this.slowChance,
                         power: GameConfig.statusEffects.slow.defaultReduction,
-                        duration: 2
+                        duration: 1
                     },
                     element: this.element
                 };
