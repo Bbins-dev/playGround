@@ -546,8 +546,8 @@ class Player {
                     buffedPower = Math.floor(buffedPower * (GameConfig?.constants?.multipliers?.buffMultiplier || 1.5));
                 }
 
-                // Li⁺ 버프 적용 (불 속성 공격 카드만, 턴수만큼 곱셈)
-                if (card.element === 'fire' && this.hasLithiumBuff && this.hasLithiumBuff()) {
+                // Li⁺ 버프 적용 (불, 전기 속성 공격 카드, 턴수만큼 곱셈)
+                if ((card.element === 'fire' || card.element === 'electric') && this.hasLithiumBuff && this.hasLithiumBuff()) {
                     const lithiumMultiplier = this.getLithiumTurns();
                     buffedPower = Math.floor(buffedPower * lithiumMultiplier);
                 }

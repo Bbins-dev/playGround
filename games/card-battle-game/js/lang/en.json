@@ -370,7 +370,7 @@
         },
         "battery_explosion": {
           "name": "Battery Blast",
-          "description": "Gain {buff:lithium} for 1 turn. {fire} {cardType:attack} cards' current damage is multiplied by {buff:lithium} remaining turns."
+          "description": "Gain {buff:lithium} for 1 turn. {fire} and {electric} {cardType:attack} cards' current damage is multiplied by {buff:lithium} remaining turns."
         },
         "fire_breath": {
           "name": "Fire Breath",
@@ -446,7 +446,7 @@
         "hotWind": "HTW",
         "hotWind_description": "Increases fire element attack card activation count by remaining Hot Wind buff turns.",
         "lithium": "Li⁺",
-        "lithium_description": "Fire element attack card damage is multiplied by remaining Li⁺ turns.",
+        "lithium_description": "Fire and Electric element attack card damage is multiplied by remaining Li⁺ turns.",
         "breath": "BRE",
         "breath_description": "Fire element buff cards always activate successfully.",
         "mass": "Mass",
