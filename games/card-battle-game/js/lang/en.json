@@ -449,6 +449,34 @@
         "purification": {
           "name": "Purification",
           "description": "Removes all current {cardType:status} effects."
+        },
+        "current_shield": {
+          "name": "Current Shield",
+          "description": "Adds 5 {defense} to yourself."
+        },
+        "electromagnetic_barrier": {
+          "name": "Electromagnetic Barrier",
+          "description": "Adds 8 {defense} to yourself."
+        },
+        "current_wall": {
+          "name": "Current Wall",
+          "description": "Adds 10 {defense} to yourself."
+        },
+        "conductive_armor": {
+          "name": "Conductive Armor",
+          "description": "When activated, gain {defense} equal to the opponent's current {defense}."
+        },
+        "high_voltage_gloves": {
+          "name": "High Voltage Gloves",
+          "description": "If the opponent has {status:paralysis}, gain 15 {defense}."
+        },
+        "blinding_flash": {
+          "name": "Blinding Flash",
+          "description": "Inflicts {status:slow} on the opponent for 1 turn."
+        },
+        "phase_shock": {
+          "name": "Phase Shock",
+          "description": "Inflicts {status:phase} on the opponent for 1 turn."
         }
       },
       "buffs": {
@@ -551,6 +579,7 @@
         "burn_extended": "🔥 Burn+{value}T!",
         "poisoned_extended": "☠️ Poison+{value}T!",
         "wet_extended": "💧 Wet+{value}T!",
+        "paralysis_extended": "⚡ Paralysis+{value}T!",
         "burn_damage": "🔥 {value} burn damage!",
         "buff_gained": "{name} +{value}",
         "buff_gained_turns": "{name} +{value}T!",
@@ -664,7 +693,14 @@
       "defense_line3": "• Elements with equal card counts cancel out, resulting in Normal element",
       "defense_line6": "• Normal defense takes 1.0x damage from all element attacks (no strengths/weaknesses)",
       "neutral": "Balanced 1.0x",
-      "all_elements": "All Elements"
+      "all_elements": "All Elements",
+      "immunity_system": "🛡️ Elemental Special Abilities - Status Immunity",
+      "immunity_description": "When your defense element matches the element type, you become completely immune to related status effects",
+      "immunity_note": "💡 Immunity effects change immediately when defense element changes",
+      "immunity_none": "(No Immunity)",
+      "immunity_burn": "Burn Immune",
+      "immunity_paralysis": "Paralysis Immune",
+      "immunity_poison": "Poison Immune"
     }
   },
   "upcoming_games": {
