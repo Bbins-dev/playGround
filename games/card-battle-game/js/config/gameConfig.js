@@ -127,6 +127,7 @@ const GameConfig = {
             taunt: '#E74C3C',         // 도발 - 빨간색
             stun: '#8E44AD',          // 기절 - 보라색
             paralysis: '#F39C12',     // 마비 - 주황색
+            phase: '#00FFFF',         // 위상 - 형광 하늘색 (cyan)
             burn: '#E67E22',          // 화상 - 주황색
             poisoned: '#9B59B6',      // 중독 - 보라색
             sand: '#D4A76A',          // 모래 - 베이지색
@@ -584,6 +585,17 @@ const GameConfig = {
             get defaultChance() { return GameConfig.constants.probabilities.paralysisChance; },
             get color() { return GameConfig.masterColors.statusEffects.paralysis; }
         },
+        phase: {
+            nameKey: 'auto_battle_card_game.ui.status_effects.phase',
+            descriptionKey: 'auto_battle_card_game.ui.status_effects.phase_description',
+            name: '위상',
+            emoji: '🌀',
+            description: '30% 확률로 공격이 자신에게 향함',
+            defaultChance: 30,
+            duration: 1,
+            canExtend: false,  // 중복 불가
+            get color() { return GameConfig.masterColors.statusEffects.phase; }
+        },
         burn: {
             nameKey: 'auto_battle_card_game.ui.status_effects.burn',
             descriptionKey: 'auto_battle_card_game.ui.status_effects.burn_description',
@@ -1018,11 +1030,11 @@ const GameConfig = {
             1: {
                 hp: 50,
                 cards: [
-                    { id: 'tsunami', count: 1 },              // 쓰나미 (자신과 상대 젖음 + 15 대미지)
-                    { id: 'moisture_absorption', count: 1 },  // 수분흡수 (흡수 버프 획득)
-                    { id: 'water_bomb', count: 1 },           // 물폭탄 (물 속성 공격)
-                    { id: 'purification', count: 1 },         // 정화 (모든 상태이상 제거)
-                    { id: 'purification', count: 1 }          // 정화 (모든 상태이상 제거)
+                    { id: 'lightning_storm', count: 1 },      // 번개폭풍 (전기 속성, 랜덤 상태이상)
+                    { id: 'electric_shock', count: 1 },       // 감전 (젖음 상태에 3배 데미지)
+                    { id: 'overload', count: 1 },             // 과부하 (화상 상태에 2배 데미지)
+                    { id: 'short_circuit', count: 1 },        // 쇼트 (마비 상태에 10배 데미지)
+                    { id: 'paralysis_trap', count: 1 }        // 마비 덫 (마비 부여)
                 ]
             },
             2: {

@@ -107,7 +107,9 @@
         "stun": "Stun",
         "stun_description": "No cards activate on the next turn. Completely skips the turn.",
         "paralysis": "Paralysis",
-        "paralysis_description": "30% chance to skip turn. When paralysis triggers, cards do not activate for that turn.",
+        "paralysis_description": "30% chance for no cards to activate. Skips that turn.",
+        "phase": "Phase",
+        "phase_description": "30% chance for attacks to target yourself. You may attack yourself.",
         "burn": "Burn",
         "burn_description": "Takes 5 burn damage at turn start. Ignores defense.",
         "poisoned": "Poison",
@@ -267,6 +269,22 @@
         "electric_shock": {
           "name": "Electric Shock",
           "description": "Base power triples against {status:wet} enemies."
+        },
+        "overload": {
+          "name": "Overload",
+          "description": "Base power doubles against {status:burn} enemies."
+        },
+        "short_circuit": {
+          "name": "Short Circuit",
+          "description": "Base power is multiplied by 10 against {status:paralysis} enemies."
+        },
+        "paralysis_trap": {
+          "name": "Paralysis Trap",
+          "description": "Inflicts {status:paralysis} on the opponent for 1 turn."
+        },
+        "lightning_storm": {
+          "name": "Lightning Storm",
+          "description": "Deal 3 damage to the enemy and randomly inflict one of {status:paralysis}, {status:burn}, or {status:wet} on hit."
         },
         "smog": {
           "name": "Smog",
@@ -528,6 +546,8 @@
         "status_applied": "{name}!!",
         "already_status": "Already {name}!",
         "status_immune": "{name} Immune!",
+        "paralysis_triggered": "⚡ Paralyzed!",
+        "phase_self_attack": "🌀 Self Attack!",
         "burn_extended": "🔥 Burn+{value}T!",
         "poisoned_extended": "☠️ Poison+{value}T!",
         "wet_extended": "💧 Wet+{value}T!",

@@ -531,6 +531,20 @@ class Player {
                     // 이후 일반 버프 계산 계속 진행 (힘 → 강화 → Li⁺)
                 }
 
+                // overload 카드: 적이 화상 상태일 때 기본 공격력 2배 (5 → 10)
+                if (card.id === 'overload' && target) {
+                    const hasBurn = target.hasStatusEffect('burn');
+                    buffedPower = hasBurn ? 10 : 5;  // 조건부 기본 공격력
+                    // 이후 일반 버프 계산 계속 진행 (힘 → 강화 → Li⁺)
+                }
+
+                // short_circuit 카드: 적이 마비 상태일 때 기본 공격력 10배 (1 → 10)
+                if (card.id === 'short_circuit' && target) {
+                    const hasParalysis = target.hasStatusEffect('paralysis');
+                    buffedPower = hasParalysis ? 10 : 1;  // 조건부 기본 공격력
+                    // 이후 일반 버프 계산 계속 진행 (힘 → 강화 → Li⁺)
+                }
+
                 // ice_breaker 카드: 적이 frozen 상태일 때 적 최대 HP의 20% (고정 피해)
                 if (card.id === 'ice_breaker' && target) {
                     const hasFrozen = target.hasStatusEffect('frozen');

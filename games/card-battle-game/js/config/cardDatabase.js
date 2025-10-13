@@ -794,6 +794,152 @@ const CardDatabase = {
             }
         });
 
+        // 과부하 카드 (전기 속성, 화상 상태의 적에게 기본공격력 2배)
+        this.addCard({
+            id: 'overload',
+            nameKey: 'auto_battle_card_game.ui.cards.overload.name',
+            type: 'attack',
+            element: 'electric',
+            power: 5,  // 기본 공격력 (화상 상태이면 10으로 동적 계산)
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.overload.description',
+            effect: function(user, target, battleSystem) {
+                // 동적 공격력: Player.updateRuntimeCardStats()에서 이미 계산됨
+                // buffedPower에 이미 모든 버프 포함 (조건부 기본 → 덧셈 → 곱셈)
+                let baseDamage = this.buffedPower || 5;
+
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
+        // 쇼트 카드 (전기 속성, 마비 상태의 적에게 기본공격력 10배)
+        this.addCard({
+            id: 'short_circuit',
+            nameKey: 'auto_battle_card_game.ui.cards.short_circuit.name',
+            type: 'attack',
+            element: 'electric',
+            power: 1,  // 기본 공격력 (마비 상태이면 10으로 동적 계산)
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.short_circuit.description',
+            effect: function(user, target, battleSystem) {
+                // 동적 공격력: Player.updateRuntimeCardStats()에서 이미 계산됨
+                // buffedPower에 이미 모든 버프 포함 (조건부 기본 → 덧셈 → 곱셈)
+                let baseDamage = this.buffedPower || 1;
+
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
+        // 마비 덫 카드 (전기 속성, 순수 마비 효과)
+        this.addCard({
+            id: 'paralysis_trap',
+            nameKey: 'auto_battle_card_game.ui.cards.paralysis_trap.name',
+            type: 'status',
+            element: 'electric',
+            power: 0,
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.paralysis_trap.description',
+            paralysisChance: 80,
+            effect: function(user, target, battleSystem) {
+                // 마비 적용 (통합 시스템 - 면역 메시지 지원)
+                return {
+                    success: true,
+                    statusEffect: {
+                        type: 'paralysis',
+                        chance: this.paralysisChance,
+                        power: GameConfig.statusEffects.paralysis.defaultChance,
+                        duration: 1
+                    },
+                    element: this.element
+                };
+            }
+        });
+
+        // 번개폭풍 카드 (전기 속성, 랜덤 상태이상 부여)
+        this.addCard({
+            id: 'lightning_storm',
+            nameKey: 'auto_battle_card_game.ui.cards.lightning_storm.name',
+            type: 'attack',
+            element: 'electric',
+            power: 3,
+            accuracy: 70,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.lightning_storm.description',
+            effect: function(user, target, battleSystem) {
+                // 일반 공격 데미지 계산 (힘 버프 적용)
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
+                // Li⁺ 버프 적용 (전기 속성 공격 카드)
+                if (user.hasLithiumBuff && user.hasLithiumBuff()) {
+                    baseDamage = Math.floor(baseDamage * user.getLithiumTurns());
+                }
+
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                // 랜덤 상태이상 선택 (마비, 화상, 젖음 중 하나)
+                const statusOptions = [
+                    {
+                        type: 'paralysis',
+                        chance: 100,
+                        power: GameConfig?.statusEffects?.paralysis?.defaultChance || 30,
+                        duration: 1
+                    },
+                    {
+                        type: 'burn',
+                        chance: 100,
+                        power: GameConfig?.statusEffects?.burn?.defaultPercent || 5,
+                        duration: 1
+                    },
+                    {
+                        type: 'wet',
+                        chance: 100,
+                        power: null,
+                        duration: 1
+                    }
+                ];
+
+                // 랜덤으로 하나 선택
+                const randomStatus = statusOptions[Math.floor(Math.random() * statusOptions.length)];
+
+                // 데미지 + 랜덤 상태이상 반환
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    element: this.element,
+                    effectiveness: effectiveness,
+                    statusEffect: randomStatus
+                };
+            }
+        });
+
         // 스모그 카드 (독 속성, 중독 확률)
         this.addCard({
             id: 'smog',
