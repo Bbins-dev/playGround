@@ -595,7 +595,7 @@ const GameConfig = {
             description: '30% 확률로 공격이 자신에게 향함',
             defaultChance: 30,
             duration: 1,
-            canExtend: false,  // 중복 불가
+            canExtend: true,  // 턴 연장 가능 (중복 적용 시 누적)
             get color() { return GameConfig.masterColors.statusEffects.phase; }
         },
         burn: {
@@ -2505,6 +2505,12 @@ const GameConfig = {
                 effectColor: '#4ECDC4',  // 청록색 (정화 효과)
                 particleCount: 20
             }
+        },
+        // 고압 전류 카드 설정
+        highVoltageCurrent: {
+            activationChance: 70,  // 70% 발동률
+            successKey: 'auto_battle_card_game.ui.templates.high_voltage_current_success',
+            noBuffsKey: 'auto_battle_card_game.ui.condition_failed'
         }
     },
 

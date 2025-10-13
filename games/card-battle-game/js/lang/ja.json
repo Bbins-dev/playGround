@@ -477,6 +477,10 @@
         "phase_shock": {
           "name": "位相ショック",
           "description": "相手を1ターンの間{status:phase}状態にします。"
+        },
+        "high_voltage_current": {
+          "name": "高圧電流",
+          "description": "相手のバフをすべて除去します。"
         }
       },
       "buffs": {
@@ -596,7 +600,8 @@
         "absorption_heal": "💧 吸収 +{value}!",
         "absorption_heal_wet": "💦 吸収 +{value}!",
         "purification_success": "✨ 浄化!",
-        "purification_no_status": "状態異常なし!"
+        "purification_no_status": "状態異常なし!",
+        "high_voltage_current_success": "⚡ 高圧電流!"
       },
       "card_selection": {
         "initial_title": "スタートカード選択",

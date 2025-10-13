@@ -477,6 +477,10 @@
         "phase_shock": {
           "name": "위상 쇼크",
           "description": "상대를 한 턴 간 {status:phase} 상태로 만듭니다."
+        },
+        "high_voltage_current": {
+          "name": "고압 전류",
+          "description": "상대방의 버프를 모두 제거합니다."
         }
       },
       "buffs": {
@@ -596,7 +600,8 @@
         "absorption_heal": "💧 흡수 +{value}!",
         "absorption_heal_wet": "💦 흡수 +{value}!",
         "purification_success": "✨ 정화!",
-        "purification_no_status": "상태이상 없음!"
+        "purification_no_status": "상태이상 없음!",
+        "high_voltage_current_success": "⚡ 고압 전류!"
       },
       "card_selection": {
         "initial_title": "시작 카드 선택",

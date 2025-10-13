@@ -377,7 +377,7 @@ class BattleSystem {
         // 카드 타입별 처리
         switch (card.type) {
             case 'attack':
-                await this.processAttackResult(result, card, target, targetPosition);
+                await this.processAttackResult(result, card, user, target, targetPosition);
                 break;
 
             case 'heal':
@@ -397,7 +397,7 @@ class BattleSystem {
                 break;
 
             case 'status':
-                await this.processStatusResult(result, target, targetPosition, card);
+                await this.processStatusResult(result, user, target, targetPosition, card);
                 break;
 
             case 'defense':
@@ -423,7 +423,7 @@ class BattleSystem {
     }
 
     // 공격 결과 처리
-    async processAttackResult(result, card, target, targetPosition) {
+    async processAttackResult(result, card, user, target, targetPosition) {
         const damage = result.damage || 0;
 
         if (damage > 0) {
@@ -443,7 +443,7 @@ class BattleSystem {
 
             // GameManager 중앙 통계 시스템 업데이트 (원래 대미지 사용)
             if (this.gameManager && this.gameManager.recordDamage) {
-                const source = target === this.enemy ? 'player' : 'enemy';
+                const source = user === this.player ? 'player' : 'enemy';
                 const targetType = target === this.enemy ? 'enemy' : 'player';
                 this.gameManager.recordDamage(source, targetType, damage, 'normal');
             }
@@ -695,7 +695,27 @@ class BattleSystem {
     }
 
     // 상태이상 결과 처리
-    async processStatusResult(result, target, targetPosition, card) {
+    async processStatusResult(result, user, target, targetPosition, card) {
+        // 버프 제거 효과 처리 (고압 전류 카드)
+        if (result.buffsCleared) {
+            // 고압 전류 메시지 표시
+            const template = I18nHelper.getText(result.messageKey);
+            await this.effectSystem.showDamageNumber(0, targetPosition, 'status', template);
+
+            // 버프 UI 즉시 업데이트
+            const isTargetPlayer = (target === this.player);
+            this.hpBarSystem.updateBuffs(target, isTargetPlayer);
+
+            return; // 버프 제거 완료
+        }
+
+        // 버프가 없는 경우 메시지 (고압 전류 카드)
+        if (result.noBuffs) {
+            const template = I18nHelper.getText(result.messageKey);
+            await this.effectSystem.showDamageNumber(0, targetPosition, 'conditionFailed', template);
+            return;
+        }
+
         // 조건 실패 체크 (명중했지만 조건 미달)
         if (result.conditionFailed) {
             // "실패!" 메시지 표시
@@ -735,7 +755,7 @@ class BattleSystem {
 
             // GameManager 중앙 통계 시스템 업데이트
             if (this.gameManager && this.gameManager.recordDamage) {
-                const source = target === this.enemy ? 'player' : 'enemy';
+                const source = user === this.player ? 'player' : 'enemy';
                 const targetType = target === this.enemy ? 'enemy' : 'player';
                 this.gameManager.recordDamage(source, targetType, damage, 'normal');
             }
