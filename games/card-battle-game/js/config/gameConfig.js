@@ -582,6 +582,8 @@ const GameConfig = {
             name: '마비',
             emoji: '⚡',
             description: '확률적으로 턴을 넘김',
+            duration: 1,
+            canExtend: true,  // 턴 연장 가능 (중복 적용 시 누적)
             get defaultChance() { return GameConfig.constants.probabilities.paralysisChance; },
             get color() { return GameConfig.masterColors.statusEffects.paralysis; }
         },
