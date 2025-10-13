@@ -604,8 +604,29 @@ class Player {
                 // 향후 회복 관련 버프 추가 가능 (예: 회복량 증가 버프)
 
                 card.buffedPower = buffedHealAmount;  // power에 할당하여 UI 통합
+            } else if (card.type === 'defense') {
+                // 방어 카드 동적 방어력 계산
+                let buffedDefense = card.power || 0;
+
+                // conductive_armor 카드: 상대방의 현재 방어력만큼 방어력 획득
+                if (card.id === 'conductive_armor' && target) {
+                    buffedDefense = target.defense || 0;
+                    card.buffedPower = buffedDefense;
+                    return;
+                }
+
+                // high_voltage_gloves 카드: 상대가 마비 상태일 경우 15 방어력 획득
+                if (card.id === 'high_voltage_gloves' && target) {
+                    const hasParalysis = target.hasStatusEffect('paralysis');
+                    buffedDefense = hasParalysis ? 15 : 0;
+                    card.buffedPower = buffedDefense;
+                    return;
+                }
+
+                // 일반 방어 카드는 buffedPower 초기화
+                card.buffedPower = undefined;
             } else {
-                // 방어/버프/상태이상 카드는 buffedPower 초기화
+                // 버프/상태이상 카드는 buffedPower 초기화
                 card.buffedPower = undefined;
             }
 

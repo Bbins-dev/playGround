@@ -940,6 +940,170 @@ const CardDatabase = {
             }
         });
 
+        // 전류 방패 카드 (전기속성 방어력 5 추가, 90% 발동률)
+        this.addCard({
+            id: 'current_shield',
+            nameKey: 'auto_battle_card_game.ui.cards.current_shield.name',
+            type: 'defense',
+            element: 'electric',
+            power: 5,
+            accuracy: 90,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.current_shield.description',
+            effect: function(user, target, battleSystem) {
+                const defenseValue = this.power;
+                user.addDefense(defenseValue);
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.defense_gained',
+                    defenseGain: defenseValue,
+                    element: this.element
+                };
+            }
+        });
+
+        // 전자기 방호 카드 (전기속성 방어력 8 추가, 80% 발동률)
+        this.addCard({
+            id: 'electromagnetic_barrier',
+            nameKey: 'auto_battle_card_game.ui.cards.electromagnetic_barrier.name',
+            type: 'defense',
+            element: 'electric',
+            power: 8,
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.electromagnetic_barrier.description',
+            effect: function(user, target, battleSystem) {
+                const defenseValue = this.power;
+                user.addDefense(defenseValue);
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.defense_gained',
+                    defenseGain: defenseValue,
+                    element: this.element
+                };
+            }
+        });
+
+        // 전류 벽 카드 (전기속성 방어력 10 추가, 70% 발동률)
+        this.addCard({
+            id: 'current_wall',
+            nameKey: 'auto_battle_card_game.ui.cards.current_wall.name',
+            type: 'defense',
+            element: 'electric',
+            power: 10,
+            accuracy: 70,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.current_wall.description',
+            effect: function(user, target, battleSystem) {
+                const defenseValue = this.power;
+                user.addDefense(defenseValue);
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.defense_gained',
+                    defenseGain: defenseValue,
+                    element: this.element
+                };
+            }
+        });
+
+        // 전도갑옷 카드 (전기속성, 상대 방어력만큼 방어력 획득, 80% 발동률)
+        this.addCard({
+            id: 'conductive_armor',
+            nameKey: 'auto_battle_card_game.ui.cards.conductive_armor.name',
+            type: 'defense',
+            element: 'electric',
+            power: 0,  // 동적 계산: Player.updateRuntimeCardStats()에서 상대 방어력으로 설정
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.conductive_armor.description',
+            effect: function(user, target, battleSystem) {
+                // 동적 방어력: 상대의 현재 방어력만큼 (Player.updateRuntimeCardStats()에서 계산됨)
+                const defenseValue = this.buffedPower || 0;
+                user.addDefense(defenseValue);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.defense_gained',
+                    defenseGain: defenseValue,
+                    element: this.element
+                };
+            }
+        });
+
+        // 고전압 장갑 카드 (전기속성, 상대 마비 시 15 방어력, 80% 발동률)
+        this.addCard({
+            id: 'high_voltage_gloves',
+            nameKey: 'auto_battle_card_game.ui.cards.high_voltage_gloves.name',
+            type: 'defense',
+            element: 'electric',
+            power: 0,  // 동적 계산: Player.updateRuntimeCardStats()에서 상대 마비 상태 체크
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.high_voltage_gloves.description',
+            effect: function(user, target, battleSystem) {
+                // 동적 방어력: 상대가 마비 상태일 때 15 (Player.updateRuntimeCardStats()에서 계산됨)
+                const defenseValue = this.buffedPower || 0;
+                user.addDefense(defenseValue);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.defense_gained',
+                    defenseGain: defenseValue,
+                    element: this.element
+                };
+            }
+        });
+
+        // 눈부신 섬광 카드 (전기 속성, 순수 둔화 효과)
+        this.addCard({
+            id: 'blinding_flash',
+            nameKey: 'auto_battle_card_game.ui.cards.blinding_flash.name',
+            type: 'status',
+            element: 'electric',
+            power: 0,
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.blinding_flash.description',
+            slowChance: 80,
+            effect: function(user, target, battleSystem) {
+                // 둔화 적용 (통합 시스템 - 면역 메시지 지원)
+                return {
+                    success: true,
+                    statusEffect: {
+                        type: 'slow',
+                        chance: this.slowChance,
+                        power: null,
+                        duration: GameConfig?.statusEffects?.slow?.duration || 2
+                    }
+                };
+            }
+        });
+
+        // 위상 쇼크 카드 (전기 속성, 순수 위상 효과)
+        this.addCard({
+            id: 'phase_shock',
+            nameKey: 'auto_battle_card_game.ui.cards.phase_shock.name',
+            type: 'status',
+            element: 'electric',
+            power: 0,
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.phase_shock.description',
+            phaseChance: 80,
+            effect: function(user, target, battleSystem) {
+                // 위상 적용 (통합 시스템 - 면역 메시지 지원)
+                return {
+                    success: true,
+                    statusEffect: {
+                        type: 'phase',
+                        chance: this.phaseChance,
+                        power: null,
+                        duration: GameConfig?.statusEffects?.phase?.duration || 1
+                    }
+                };
+            }
+        });
+
         // 스모그 카드 (독 속성, 중독 확률)
         this.addCard({
             id: 'smog',
