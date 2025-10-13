@@ -193,7 +193,8 @@ class BattleSystem {
                     this.effectSystem.getPlayerPosition() :
                     this.effectSystem.getEnemyPosition();
 
-                this.effectSystem.showStatusEffect('debuff', position, 0);
+                // 마비 발동 메시지 표시 (템플릿 기반)
+                await this.effectSystem.showEffectMessage('paralysis', position, 'paralysis_triggered');
 
                 // 턴 종료
                 await this.endTurn();
@@ -272,7 +273,7 @@ class BattleSystem {
 
     // 개별 카드 발동
     async activateCard(card, user) {
-        const target = user === this.player ? this.enemy : this.player;
+        let target = user === this.player ? this.enemy : this.player; // let으로 변경 (위상으로 타겟 변경 가능)
         const isPlayerCard = user === this.player;
 
         // 현재 발동 중인 카드 설정
@@ -298,6 +299,24 @@ class BattleSystem {
             }
         }
 
+        // ===== 위상 상태 체크 (30% 확률로 타겟 자신으로 변경) =====
+        if (user.hasStatusEffect('phase')) {
+            const phaseConfig = GameConfig.statusEffects?.phase;
+            const phaseChance = phaseConfig?.defaultChance || 30;
+
+            if (Math.random() * 100 < phaseChance) {
+                // 위상 발동! 타겟을 자신으로 변경
+                target = user;
+
+                const userPosition = isPlayerCard ?
+                    this.effectSystem.getPlayerPosition() :
+                    this.effectSystem.getEnemyPosition();
+
+                // 위상 발동 메시지 표시
+                await this.effectSystem.showEffectMessage('phase', userPosition, 'phase_self_attack');
+            }
+        }
+
         // 카드 효과 실행 (명중 체크 포함)
         const result = card.activate(user, target, this);
 
@@ -313,9 +332,10 @@ class BattleSystem {
             await this.processCardResult(result, card, user, target, selfDamageProcessed);
         } else if (result.conditionFailed) {
             // 조건 실패 (명중했지만 조건 미달)
-            const targetPosition = isPlayerCard ?
-                this.effectSystem.getEnemyPosition() :
-                this.effectSystem.getPlayerPosition();
+            // 위상으로 인한 타겟 변경을 반영하기 위해 실제 target 기준으로 위치 계산
+            const targetPosition = target === this.player ?
+                this.effectSystem.getPlayerPosition() :
+                this.effectSystem.getEnemyPosition();
 
             // "실패!" 메시지 표시
             this.effectSystem.showDamageNumber(0, targetPosition, 'conditionFailed');
@@ -328,9 +348,10 @@ class BattleSystem {
                 this.gameManager.updateStatsOnMiss();
             }
 
-            const targetPosition = isPlayerCard ?
-                this.effectSystem.getEnemyPosition() :
-                this.effectSystem.getPlayerPosition();
+            // 위상으로 인한 타겟 변경을 반영하기 위해 실제 target 기준으로 위치 계산
+            const targetPosition = target === this.player ?
+                this.effectSystem.getPlayerPosition() :
+                this.effectSystem.getEnemyPosition();
 
             // "빗나감!" 표시
             this.effectSystem.showDamageNumber(0, targetPosition, 'miss');
@@ -348,9 +369,10 @@ class BattleSystem {
     // 카드 결과 처리
     async processCardResult(result, card, user, target, selfDamageProcessed = false) {
         const isPlayerCard = user === this.player;
-        const targetPosition = isPlayerCard ?
-            this.effectSystem.getEnemyPosition() :
-            this.effectSystem.getPlayerPosition();
+        // 위상으로 인한 타겟 변경을 반영하기 위해 실제 target 기준으로 위치 계산
+        const targetPosition = target === this.player ?
+            this.effectSystem.getPlayerPosition() :
+            this.effectSystem.getEnemyPosition();
 
         // 카드 타입별 처리
         switch (card.type) {
@@ -927,6 +949,7 @@ class BattleSystem {
         currentPlayer.removeStatusEffect('taunt');
         currentPlayer.removeStatusEffect('stun'); // 안전장치
         currentPlayer.removeStatusEffect('frozen'); // 얼음 즉시 해제
+        currentPlayer.removeStatusEffect('phase'); // 위상 즉시 해제
 
         // 2. 턴 종료 시 데미지 처리 (독 등)
         const poisonDamageApplied = await this.processPoisonDamage(currentPlayer, isPlayerTurn);
