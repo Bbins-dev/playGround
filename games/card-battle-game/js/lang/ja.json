@@ -682,6 +682,8 @@
       "line4": "最大手札は10枚です！ステージクリア時にカードを追加、手札のカードと交換、次のステージへスキップから選択できます！",
       "line5": "何ステージまで行けるでしょうか！あなたの運を試してみてください！",
       "element_system": "⚔️ 属性相性システム",
+      "attack_card_element": "攻撃カード属性",
+      "defense_element": "防御属性",
       "strong": "有利 1.5倍",
       "weakness_note": "⚠️ 弱点で攻撃すると0.5倍ダメージに減少します！",
       "normal_note": "💯 ノーマルタイプは全ての属性に1.0倍ダメージ（有利・不利なし）",
@@ -697,9 +699,9 @@
       "immunity_description": "防御属性がその属性タイプと一致する場合、関連する状態異常に完全に免疫されます",
       "immunity_note": "💡 免疫効果は防御属性が変更されると即座に変更されます",
       "immunity_none": "（免疫なし）",
-      "immunity_burn": "火傷免疫",
-      "immunity_paralysis": "麻痺免疫",
-      "immunity_poison": "毒免疫"
+      "immunity_burn": "火傷🚫",
+      "immunity_paralysis": "麻痺🚫",
+      "immunity_poison": "毒🚫"
     }
   },
   "upcoming_games": {
