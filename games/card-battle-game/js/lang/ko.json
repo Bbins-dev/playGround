@@ -449,6 +449,34 @@
         "purification": {
           "name": "정화",
           "description": "현재 걸려있는 모든 {cardType:status}를 제거합니다."
+        },
+        "current_shield": {
+          "name": "전류 방패",
+          "description": "자신에게 {defense}을 5 추가합니다."
+        },
+        "electromagnetic_barrier": {
+          "name": "전자기 방호",
+          "description": "자신에게 {defense}을 8 추가합니다."
+        },
+        "current_wall": {
+          "name": "전류 벽",
+          "description": "자신에게 {defense}을 10 추가합니다."
+        },
+        "conductive_armor": {
+          "name": "전도갑옷",
+          "description": "발동 시 상대방의 현재 {defense} 만큼의 {defense}을 얻습니다."
+        },
+        "high_voltage_gloves": {
+          "name": "고전압 장갑",
+          "description": "상대가 {status:paralysis} 상태일 경우 15 {defense}을 얻습니다."
+        },
+        "blinding_flash": {
+          "name": "눈부신 섬광",
+          "description": "상대를 한 턴 간 {status:slow} 상태로 만듭니다."
+        },
+        "phase_shock": {
+          "name": "위상 쇼크",
+          "description": "상대를 한 턴 간 {status:phase} 상태로 만듭니다."
         }
       },
       "buffs": {
@@ -551,6 +579,7 @@
         "burn_extended": "🔥 화상+{value}턴!",
         "poisoned_extended": "☠️ 중독+{value}턴!",
         "wet_extended": "💧 젖음+{value}턴!",
+        "paralysis_extended": "⚡ 마비+{value}턴!",
         "burn_damage": "🔥 화상으로 {value} 피해!",
         "buff_gained": "{name} +{value}",
         "buff_gained_turns": "{name} +{value}턴!",
@@ -663,7 +692,14 @@
       "defense_line3": "• 같은 수의 카드를 가진 속성끼리는 상쇄되어 노멀속성이 됩니다",
       "defense_line6": "• 노멀 방어는 모든 속성 공격에 1.0배 피해 (강점/약점 없음)",
       "neutral": "균형 1.0배",
-      "all_elements": "모든 속성"
+      "all_elements": "모든 속성",
+      "immunity_system": "🛡️ 속성별 특수 능력 - 상태이상 면역",
+      "immunity_description": "방어속성이 해당 속성일 때, 연관된 상태이상에 완전히 면역됩니다",
+      "immunity_note": "💡 면역 효과는 방어속성이 변경되면 즉시 변경됩니다",
+      "immunity_none": "(면역 없음)",
+      "immunity_burn": "화상 면역",
+      "immunity_paralysis": "마비 면역",
+      "immunity_poison": "중독 면역"
     }
   },
   "upcoming_games": {
