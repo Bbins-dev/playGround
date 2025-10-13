@@ -825,6 +825,59 @@
     margin: 15px 0;
 }
 
+/* 헤더 라벨 row */
+.element-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px 15px 15px;
+    margin-bottom: 0px;
+    background: transparent;
+}
+
+.header-label-left,
+.header-label-right {
+    color: var(--glass-text-secondary);
+    font-size: 18px;
+    font-weight: 600;
+    text-shadow: var(--glass-text-shadow);
+    letter-spacing: 0.3px;
+    flex: 1;
+}
+
+.header-label-left {
+    text-align: left;
+    padding-right: 40px;
+}
+
+.header-label-right {
+    text-align: left;
+    padding-left: 40px;
+}
+
+.header-arrow {
+    font-size: 24px;
+    color: var(--glass-text-secondary);
+    margin: 0 15px;
+    text-shadow: var(--glass-text-shadow);
+}
+
+/* 언어별 헤더 라벨 폰트 크기 조정 */
+.lang-ko .header-label-left,
+.lang-ko .header-label-right {
+    font-size: 18px;
+}
+
+.lang-ja .header-label-left,
+.lang-ja .header-label-right {
+    font-size: 19px;
+}
+
+.lang-en .header-label-left,
+.lang-en .header-label-right {
+    font-size: 17px;
+}
+
 /* 속성 효과 각 행 */
 .effectiveness-row {
     display: flex;
@@ -841,10 +894,11 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 8px;
-    min-width: 80px;
-    text-align: center;
+    gap: 5px;
+    min-width: 220px;
+    text-align: left;
     flex-wrap: wrap;
+    flex: 0 0 auto;
 }
 
 .element-emoji {
@@ -863,13 +917,13 @@
 /* 인라인 면역 배지 스타일 */
 /* =============================================== */
 
-/* 인라인 면역 배지 - 가독성 있는 크기 */
+/* 인라인 면역 배지 - 간결한 크기 */
 .immunity-badge-inline {
     display: inline-block;
-    padding: 5px 12px;
-    border-radius: 12px;
+    padding: 3px 8px;
+    border-radius: 8px;
     border: 1px solid;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 600;
     margin-left: 4px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
@@ -878,15 +932,15 @@
 
 /* 언어별 인라인 배지 폰트 크기 조정 */
 .lang-ko .immunity-badge-inline {
-    font-size: 18px;
+    font-size: 17px;
 }
 
 .lang-ja .immunity-badge-inline {
-    font-size: 19px;
+    font-size: 18px;
 }
 
 .lang-en .immunity-badge-inline {
-    font-size: 17px;
+    font-size: 16px;
 }
 
 /* 인라인 배지 호버 효과 (최소화) */
@@ -942,7 +996,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin: 0 10px;
+    margin: 0 auto;
+    flex: 0 0 auto;
 }
 
 .effectiveness-center .effectiveness-arrow {
@@ -1025,8 +1080,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-width: 80px;
+    min-width: 220px;
     padding: 8px;
+    flex: 0 0 auto;
 }
 
 .element-emojis-small {

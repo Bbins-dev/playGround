@@ -683,6 +683,8 @@
       "line4": "Maximum hand size is 10 cards! When clearing stages, you can choose to add a card, replace cards in your hand, or skip to the next stage!",
       "line5": "How many stages can you reach? Test your luck!",
       "element_system": "⚔️ Element Type System",
+      "attack_card_element": "Attack Card Element",
+      "defense_element": "Defense Element",
       "strong": "Strong 1.5x",
       "weakness_note": "⚠️ Attacking with weakness deals 0.5x damage!",
       "normal_note": "💯 Normal type has no strengths/weaknesses (1.0x damage to all)",
@@ -698,9 +700,9 @@
       "immunity_description": "When your defense element matches the element type, you become completely immune to related status effects",
       "immunity_note": "💡 Immunity effects change immediately when defense element changes",
       "immunity_none": "(No Immunity)",
-      "immunity_burn": "Burn Immune",
-      "immunity_paralysis": "Paralysis Immune",
-      "immunity_poison": "Poison Immune"
+      "immunity_burn": "Burn🚫",
+      "immunity_paralysis": "Paralysis🚫",
+      "immunity_poison": "Poison🚫"
     }
   },
   "upcoming_games": {

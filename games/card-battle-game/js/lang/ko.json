@@ -682,6 +682,8 @@
       "line4": "최대 손패 카드는 10장입니다! 스테이지 클리어시 카드를 선택하여 추가, 손패의 카드와 교체, 다음 스테이지로 스킵 중에 선택 가능합니다!",
       "line5": "몇 스테이지까지 갈 수 있을까요! 당신의 운을 시험해보세요!",
       "element_system": "⚔️ 속성 상성 시스템",
+      "attack_card_element": "공격카드 속성",
+      "defense_element": "방어속성",
       "strong": "강점 1.5배",
       "weakness_note": "⚠️ 약점으로 공격하면 0.5배 피해로 감소합니다!",
       "normal_note": "💯 노멀 속성은 모든 속성에 1.0배 피해(강점/약점 없음)",
@@ -697,9 +699,9 @@
       "immunity_description": "방어속성이 해당 속성일 때, 연관된 상태이상에 완전히 면역됩니다",
       "immunity_note": "💡 면역 효과는 방어속성이 변경되면 즉시 변경됩니다",
       "immunity_none": "(면역 없음)",
-      "immunity_burn": "화상 면역",
-      "immunity_paralysis": "마비 면역",
-      "immunity_poison": "중독 면역"
+      "immunity_burn": "화상🚫",
+      "immunity_paralysis": "마비🚫",
+      "immunity_poison": "중독🚫"
     }
   },
   "upcoming_games": {
