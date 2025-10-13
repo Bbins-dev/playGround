@@ -477,6 +477,10 @@
         "phase_shock": {
           "name": "Phase Shock",
           "description": "Inflicts {status:phase} on the opponent for 1 turn."
+        },
+        "high_voltage_current": {
+          "name": "High Voltage Current",
+          "description": "Removes all buffs from the opponent."
         }
       },
       "buffs": {
@@ -596,7 +600,8 @@
         "absorption_heal": "💧 ABS +{value}!",
         "absorption_heal_wet": "💦 ABS +{value}!",
         "purification_success": "✨ Purified!",
-        "purification_no_status": "No Status Effects!"
+        "purification_no_status": "No Status Effects!",
+        "high_voltage_current_success": "⚡ High Voltage!"
       },
       "card_selection": {
         "initial_title": "Start Card Selection",

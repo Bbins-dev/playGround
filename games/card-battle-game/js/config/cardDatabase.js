@@ -2623,6 +2623,61 @@ const CardDatabase = {
                 };
             }
         });
+
+        // 고압 전류 카드 (전기 속성 상태이상 카드, 상대의 모든 버프 제거)
+        this.addCard({
+            id: 'high_voltage_current',
+            nameKey: 'auto_battle_card_game.ui.cards.high_voltage_current.name',
+            type: 'status',
+            element: 'electric',
+            power: 0, // 상태이상 카드는 파워가 없음
+            accuracy: GameConfig?.cardEffects?.highVoltageCurrent?.activationChance || 70,
+            activationCount: 1,
+            usageLimit: 1, // 1회만 사용 가능
+            descriptionKey: 'auto_battle_card_game.ui.cards.high_voltage_current.description',
+            effect: function(user, target, battleSystem) {
+                // 상대의 버프 존재 여부 체크
+                const hasAnyBuff = target.strength > 0 ||
+                                  target.enhanceTurns > 0 ||
+                                  target.focusTurns > 0 ||
+                                  target.speedTurns > 0 ||
+                                  target.scentTurns > 0 ||
+                                  target.sharpenTurns > 0 ||
+                                  target.hotWindTurns > 0 ||
+                                  target.lithiumTurns > 0 ||
+                                  target.breathTurns > 0 ||
+                                  target.massTurns > 0 ||
+                                  target.torrentTurns > 0 ||
+                                  target.absorptionBonus > 0;
+
+                // 버프가 없는 경우 실패
+                if (!hasAnyBuff) {
+                    return {
+                        success: true,
+                        noBuffs: true,
+                        messageKey: GameConfig?.cardEffects?.highVoltageCurrent?.noBuffsKey ||
+                                   'auto_battle_card_game.ui.condition_failed'
+                    };
+                }
+
+                // 모든 버프 제거
+                target.clearBuffs();
+
+                // 즉시 런타임 스탯 재계산 (중요!)
+                target.updateRuntimeCardStats();
+
+                // 사용자의 런타임 스탯도 재계산
+                user.updateRuntimeCardStats();
+
+                return {
+                    success: true,
+                    buffsCleared: true,
+                    messageKey: GameConfig?.cardEffects?.highVoltageCurrent?.successKey ||
+                               'auto_battle_card_game.ui.templates.high_voltage_current_success',
+                    element: this.element
+                };
+            }
+        });
     }
 };
 
