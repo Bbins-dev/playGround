@@ -1011,8 +1011,9 @@ const GameConfig = {
 
     // 체력 회복 시스템
     healing: {
-        stageHealing: 5,        // 매 스테이지 회복량
-        fullHealInterval: 10    // 10의 배수 스테이지마다 완전 회복
+        stageHealing: 5,            // 매 스테이지 회복량
+        fullHealInterval: 10,       // 10의 배수 스테이지마다 완전 회복
+        maxHPIncreasePerStage: 5    // 스테이지 클리어 시 최대 체력 증가량
     },
 
     // 플레이어 이름 설정

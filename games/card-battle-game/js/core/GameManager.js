@@ -831,6 +831,10 @@ class GameManager {
     applyStageHealing() {
         if (!this.player) return;
 
+        // 최대 체력 증가 (스테이지 클리어마다)
+        const maxHPIncrease = GameConfig.healing.maxHPIncreasePerStage || 5;
+        this.player.maxHP += maxHPIncrease;
+
         // 이전 스테이지 기준으로 체크 (클리어한 스테이지)
         const previousStage = this.currentStage - 1;
         const isFullHealStage = previousStage > 0 && previousStage % GameConfig.healing.fullHealInterval === 0;
