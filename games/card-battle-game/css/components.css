@@ -60,19 +60,19 @@
 
 /* 플레이어 이름 입력 모달 스타일 */
 .name-input-container {
-    margin: 40px 0;
+    margin: 30px 0 20px 0;
     text-align: center;
     width: 100%;
 }
 
 .name-input {
-    width: var(--input-width, 300px);
-    padding: 16px 20px;
-    font-size: 18px;
-    font-weight: 500;
+    width: var(--input-width, 450px);
+    padding: 20px 24px;
+    font-size: 24px;
+    font-weight: 600;
     border: none;
     border-radius: 16px;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.85);
     color: #2c3e50;
     text-align: center;
     outline: none;
@@ -94,9 +94,27 @@
 }
 
 .name-input::placeholder {
-    color: rgba(44, 62, 80, 0.6);
+    color: rgba(44, 62, 80, 0.5);
     font-style: normal;
     font-weight: 400;
+}
+
+/* 이름 길이 카운터 */
+.name-length-counter {
+    margin-top: 10px;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.name-length-counter.warning {
+    color: #f39c12;
+    font-weight: 600;
+}
+
+.name-length-counter.error {
+    color: #e74c3c;
+    font-weight: 700;
 }
 
 .modal-buttons {

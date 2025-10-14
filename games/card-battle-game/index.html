@@ -240,7 +240,10 @@
                 <div class="name-input-container">
                     <input type="text" id="player-name-input" class="name-input"
                            data-i18n-placeholder="auto_battle_card_game.ui.name_placeholder"
-                           placeholder="이름을 입력하세요" maxlength="12">
+                           placeholder="이름을 입력하세요" maxlength="20">
+                    <div class="name-length-counter">
+                        <span id="current-name-length">0</span> / <span id="max-name-length">20</span>
+                    </div>
                 </div>
                 <div class="modal-buttons">
                     <button id="confirm-name" class="ui-button primary" data-i18n="auto_battle_card_game.ui.confirm">확인</button>
