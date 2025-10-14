@@ -141,6 +141,9 @@ class BattleSystem {
         // ===== 3-1. 흡수 버프 회복 처리 =====
         await this.processAbsorptionHeal(currentPlayer, isPlayerTurn);
 
+        // ===== 3-2. 팩 버프 회복 처리 (회복 후 즉시 제거) =====
+        await this.processPackHeal(currentPlayer, isPlayerTurn);
+
         // ===== 4. Player.startTurn() 호출 (카드 초기화만) =====
         currentPlayer.startTurn();
 
@@ -317,6 +320,10 @@ class BattleSystem {
             }
         }
 
+        // ===== 피뢰침 버프 체크 (전기 공격 카드 발동 전) =====
+        const hadLightningRod = card.type === 'attack' && card.element === 'electric' &&
+                                user.hasLightningRodBuff && user.hasLightningRodBuff();
+
         // 카드 효과 실행 (명중 체크 포함)
         const result = card.activate(user, target, this);
 
@@ -327,6 +334,12 @@ class BattleSystem {
 
         if (result.success) {
             // 성공 로그
+
+            // ===== 피뢰침 버프 즉시 제거 (전기 공격 명중 성공 시) =====
+            if (hadLightningRod) {
+                user.lightningRodTurns = 0;
+                this.hpBarSystem.updateBuffs(user, isPlayerCard);
+            }
 
             // 효과별 후처리
             await this.processCardResult(result, card, user, target, selfDamageProcessed);
@@ -644,6 +657,21 @@ class BattleSystem {
         // 광속 버프 획득 처리 (빛의 속도 카드) - 새로운 통합 메서드 사용
         if (result.lightSpeedGain && result.lightSpeedGain > 0) {
             await this.effectSystem.showBuffEffect('lightSpeed', user, result.lightSpeedGain);
+        }
+
+        // 초전도 버프 획득 처리 (초전도 카드) - 새로운 통합 메서드 사용
+        if (result.superConductivityGain && result.superConductivityGain > 0) {
+            await this.effectSystem.showBuffEffect('superConductivity', user, result.superConductivityGain);
+        }
+
+        // 피뢰침 버프 획득 처리 (피뢰침 카드) - 새로운 통합 메서드 사용
+        if (result.lightningRodGain && result.lightningRodGain > 0) {
+            await this.effectSystem.showBuffEffect('lightningRod', user, result.lightningRodGain);
+        }
+
+        // 팩 버프 획득 처리 (건전지 팩 카드) - 새로운 통합 메서드 사용
+        if (result.packGain && result.packGain > 0) {
+            await this.effectSystem.showBuffEffect('pack', user, result.packGain);
         }
 
         // 정화 효과 처리 (정화 카드)
@@ -1324,6 +1352,56 @@ class BattleSystem {
 
             if (GameConfig?.debugMode?.showDamageCalculation) {
                 console.log(`[HEAL] 흡수: +${actualHeal} HP (${player.name}) [젖음: ${isWet}]`);
+            }
+            return actualHeal > 0;
+        }
+        return false;
+    }
+
+    // 팩 버프 회복 처리 (턴 시작 시 - 회복 후 즉시 제거)
+    async processPackHeal(player, isPlayerTurn) {
+        // 팩 버프가 없으면 리턴
+        if (!player.hasPackBuff()) {
+            return false;
+        }
+
+        const healAmount = player.getPackHeal();
+
+        if (healAmount > 0) {
+            const position = isPlayerTurn ?
+                this.effectSystem.getPlayerPosition() :
+                this.effectSystem.getEnemyPosition();
+
+            // 회복 전 HP 저장
+            const beforeHP = player.hp;
+
+            // 실제 회복 적용
+            const actualHeal = player.heal(healAmount);
+
+            // 회복 메시지 표시 (템플릿 기반)
+            const templateKey = 'auto_battle_card_game.ui.templates.pack_heal';
+            const template = I18nHelper.getText(templateKey);
+            const message = template.replace('{value}', actualHeal);
+
+            // 회복 이펙트 표시 (읽기 시간 포함)
+            await this.effectSystem.showDamageNumber(actualHeal, position, 'heal', message);
+
+            // HP바 업데이트
+            if (this.hpBarSystem) {
+                this.hpBarSystem.updateHP(player, isPlayerTurn);
+            }
+
+            // 회복 후 즉시 팩 버프 제거 (핵심 차이점!)
+            player.clearPackBuff();
+
+            // 버프 UI 즉시 업데이트 (팩 버프 사라짐)
+            this.hpBarSystem.updateBuffs(player, isPlayerTurn);
+
+            // 회복 후 런타임 스탯 재계산
+            player.updateRuntimeCardStats();
+
+            if (GameConfig?.debugMode?.showDamageCalculation) {
+                console.log(`[HEAL] 팩: +${actualHeal} HP (${player.name}) [제거됨]`);
             }
             return actualHeal > 0;
         }

@@ -99,6 +99,11 @@ class Card {
             actualAccuracy = 100;
         }
 
+        // 피뢰침 버프 체크 (전기 공격 카드만) - 명중률 100% 보장
+        if (this.type === 'attack' && this.element === 'electric' && user && user.hasLightningRodBuff && user.hasLightningRodBuff()) {
+            actualAccuracy = 100;
+        }
+
         // 명중률 상한 100% 제한
         actualAccuracy = Math.min(100, actualAccuracy);
 

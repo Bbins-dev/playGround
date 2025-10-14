@@ -394,6 +394,10 @@
           "name": "バッテリー爆発",
           "description": "{buff:lithium}を1ターン獲得。{fire}、{electric}{cardType:attack}カードの現在の攻撃力に{buff:lithium}残りターン数が乗算されます。"
         },
+        "overcharge_battery": {
+          "name": "過充電",
+          "description": "{buff:lithium}バフが存在する場合、{buff:lithium}を1ターン追加。{buff:lithium}バフがない場合は失敗します。"
+        },
         "fire_breath": {
           "name": "炎の呼吸",
           "description": "1ターンの間、{fire}{cardType:buff}カードの発動が必ず成功します。{buff:breath}は重複しません。"
@@ -482,6 +486,14 @@
           "name": "除細動器",
           "description": "健康な対象は{status:stun}する可能性があります。"
         },
+        "lightning_rod": {
+          "name": "避雷針",
+          "description": "次の{electric}{cardType:attack}カードが外れません。{buff:lightningRod}は重複しません。"
+        },
+        "battery_pack": {
+          "name": "バッテリーパック",
+          "description": "{buff:pack} +1を得ます。ターン開始時に{buff:pack}値 × 8の{hp}を回復します。回復後に{buff:pack}は消えます。"
+        },
         "high_voltage_current": {
           "name": "高圧電流",
           "description": "相手のバフをすべて除去します。"
@@ -489,6 +501,10 @@
         "light_speed": {
           "name": "光速",
           "description": "1ターンの間、{electric}{cardType:attack}カードの発動回数が{buff:lightSpeed}回増加します。スタック可能です。"
+        },
+        "super_conductivity": {
+          "name": "超電導",
+          "description": "1ターンの間、{electric}{cardType:attack}カードの命中率が40%増加します。{buff:superConductivity}は重複しません。"
         }
       },
       "buffs": {
@@ -518,7 +534,13 @@
         "absorption": "吸収",
         "absorption_description": "ターン開始時に吸収値分HPを回復します。濡れ状態の場合、回復量が2倍になります。",
         "lightSpeed": "光速",
-        "lightSpeed_description": "電気属性の攻撃カードの発動回数が増加します。"
+        "lightSpeed_description": "電気属性の攻撃カードの発動回数が増加します。",
+        "superConductivity": "超電導",
+        "superConductivity_description": "電気属性攻撃カードの命中率が40%増加します。",
+        "lightningRod": "避雷針",
+        "lightningRod_description": "次の電気属性攻撃カードが必ず命中します。一回限りで重複しません。",
+        "pack": "パック",
+        "pack_description": "ターン開始時にパック値 × 8のHPを回復します。回復後すぐに消えます。スタック可能です。"
       },
       "elements": {
         "fire": "火",
@@ -612,7 +634,8 @@
         "purification_success": "✨ 浄化!",
         "purification_no_status": "状態異常なし!",
         "high_voltage_current_success": "⚡ 高圧電流!",
-        "light_speed_buff_gained": "⚡ 光速 +{value}({turns})!"
+        "light_speed_buff_gained": "⚡ 光速 +{value}({turns})!",
+        "pack_heal": "🔋 パック +{value}!"
       },
       "card_selection": {
         "initial_title": "スタートカード選択",

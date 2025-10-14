@@ -394,6 +394,10 @@
           "name": "배터리폭발",
           "description": "{buff:lithium} 1턴 획득. {fire}, {electric} {cardType:attack}카드의 현재 공격력에 {buff:lithium} 잔여 턴 수가 곱해집니다."
         },
+        "overcharge_battery": {
+          "name": "과충전",
+          "description": "{buff:lithium} 버프가 존재하는 경우, {buff:lithium} 1턴 추가. {buff:lithium} 버프가 없으면 실패합니다."
+        },
         "fire_breath": {
           "name": "불의 호흡",
           "description": "한 턴 간 {fire} {cardType:buff} 카드의 발동이 항상 성공합니다. {buff:breath}은 중첩되지 않습니다."
@@ -482,6 +486,14 @@
           "name": "제세동기",
           "description": "멀쩡한 대상은 {status:stun}할 수도 있습니다."
         },
+        "lightning_rod": {
+          "name": "피뢰침",
+          "description": "다음 {electric}{cardType:attack} 카드 발동 시 빗나가지 않습니다. {buff:lightningRod}은 중첩되지 않습니다."
+        },
+        "battery_pack": {
+          "name": "건전지 팩",
+          "description": "{buff:pack} +1을 얻습니다. 턴 시작 시 {buff:pack} 수치 × 8만큼 {hp}을 회복합니다. 회복 후 {buff:pack}은 사라집니다."
+        },
         "high_voltage_current": {
           "name": "고압 전류",
           "description": "상대방의 버프를 모두 제거합니다."
@@ -489,6 +501,10 @@
         "light_speed": {
           "name": "빛의 속도",
           "description": "한 턴 간 {electric}{cardType:attack} 카드의 발동 횟수를 {buff:lightSpeed} 횟수 만큼 더합니다. 중첩 가능합니다."
+        },
+        "super_conductivity": {
+          "name": "초전도",
+          "description": "한 턴 간 {electric}{cardType:attack} 카드의 명중률이 40% 증가합니다. {buff:superConductivity}은 중첩되지 않습니다."
         }
       },
       "buffs": {
@@ -518,7 +534,13 @@
         "absorption": "흡수",
         "absorption_description": "턴 시작 시 흡수 수치만큼 HP를 회복합니다. 젖음 상태일 경우 회복량이 두 배가 됩니다.",
         "lightSpeed": "광속",
-        "lightSpeed_description": "전기 속성 공격 카드의 발동 횟수가 증가합니다."
+        "lightSpeed_description": "전기 속성 공격 카드의 발동 횟수가 증가합니다.",
+        "superConductivity": "초전도",
+        "superConductivity_description": "전기 속성 공격 카드의 명중률이 40% 증가합니다.",
+        "lightningRod": "피뢰침",
+        "lightningRod_description": "다음 전기 속성 공격 카드가 반드시 명중합니다. 일회용이며 중첩되지 않습니다.",
+        "pack": "팩",
+        "pack_description": "턴 시작 시 팩 수치 × 8만큼 HP를 회복합니다. 회복 후 즉시 사라집니다. 중첩 가능합니다."
       },
       "elements": {
         "fire": "불",
@@ -609,6 +631,7 @@
         "torrent_buff_gained": "🌊 급류 +{value}({turns})!",
         "absorption_heal": "💧 흡수 +{value}!",
         "absorption_heal_wet": "💦 흡수 +{value}!",
+        "pack_heal": "🔋 팩 +{value}!",
         "purification_success": "✨ 정화!",
         "purification_no_status": "상태이상 없음!",
         "high_voltage_current_success": "⚡ 고압 전류!",
