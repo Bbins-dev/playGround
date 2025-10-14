@@ -1232,7 +1232,7 @@ const CardDatabase = {
                         type: 'poisoned',
                         chance: this.poisonChance,
                         power: null,
-                        duration: 3
+                        duration: 1  // 기본 1턴 중독 (추후 중독 턴 추가/곱셈 카드로 확장 가능)
                     },
                     element: this.element,
                     effectiveness: effectiveness
