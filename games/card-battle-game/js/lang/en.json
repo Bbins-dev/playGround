@@ -84,6 +84,8 @@
       "skip": "Skip",
       "cancel": "Cancel",
       "close": "Close",
+      "total_cards": "Total",
+      "cards_unit": "cards",
       "enter_player_name": "Enter Player Name",
       "name_placeholder": "Player",
       "confirm": "Confirm",

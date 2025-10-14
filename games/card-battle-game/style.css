@@ -2455,3 +2455,88 @@ body[data-game-state="menu"] .game-wrapper.status-border-slow {
     transform: scale(1.15);
     box-shadow: 0 5px 15px rgba(76, 175, 80, 0.6);
 }
+
+/* ====================================
+   카드 갤러리 필터 UI (Card Gallery Filter)
+   ==================================== */
+
+/* 카드 갤러리 제목 - 상단 중앙 배치 */
+.card-gallery-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--glass-text-primary, #FFFFFF);
+    text-shadow: var(--glass-text-shadow, 0 2px 8px rgba(0, 0, 0, 0.8)), var(--glass-text-glow);
+    text-align: center;
+    margin: 0 0 15px 0;
+    padding-top: 10px;
+}
+
+/* 카드 갤러리 컨트롤 바 - 2단 레이아웃 (왼쪽: 카드 개수, 오른쪽: 필터) */
+.card-gallery-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px 15px 20px;
+    flex-shrink: 0;
+}
+
+/* 왼쪽: 카드 개수 표시 */
+.card-count-display {
+    font-size: var(--card-count-font-size, 20px);
+    font-weight: var(--card-count-font-weight, bold);
+    color: var(--card-count-color, #FFFFFF);
+    text-shadow: var(--card-count-text-shadow, 0 2px 4px rgba(0, 0, 0, 0.8));
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* 오른쪽: 필터 버튼 컨테이너 */
+.element-filter-container {
+    display: flex;
+    gap: var(--filter-button-gap, 10px);
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* 필터 버튼 기본 스타일 */
+.element-filter-btn {
+    width: var(--filter-button-size, 65px);
+    height: var(--filter-button-size, 65px);
+    font-size: var(--filter-emoji-size, 38px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    border-radius: var(--filter-button-border-radius, 12px);
+    transition: all 0.3s ease;
+
+    /* 기본 상태 스타일 (GameConfig 기반) */
+    background: var(--filter-default-bg, rgba(255, 255, 255, 0.15));
+    border: var(--filter-default-border, 2px solid rgba(255, 255, 255, 0.3));
+    box-shadow: var(--filter-default-shadow, 0 2px 6px rgba(0, 0, 0, 0.3));
+    opacity: var(--filter-default-opacity, 0.7);
+}
+
+/* 필터 버튼 호버 상태 */
+.element-filter-btn:hover {
+    background: var(--filter-hover-bg, rgba(255, 255, 255, 0.25));
+    border: var(--filter-hover-border, 2px solid rgba(255, 255, 255, 0.5));
+    box-shadow: var(--filter-hover-shadow, 0 4px 12px rgba(0, 0, 0, 0.4));
+    opacity: var(--filter-hover-opacity, 1);
+    transform: var(--filter-hover-transform, scale(1.05));
+}
+
+/* 필터 버튼 활성화 상태 */
+.element-filter-btn.active {
+    background: var(--filter-active-bg, rgba(255, 215, 0, 0.3));
+    border: var(--filter-active-border, 3px solid #FFD700);
+    box-shadow: var(--filter-active-shadow, 0 0 15px rgba(255, 215, 0, 0.8));
+    opacity: var(--filter-active-opacity, 1);
+    transform: var(--filter-active-transform, scale(1.1));
+}
+
+/* 필터 버튼 클릭 효과 */
+.element-filter-btn:active {
+    transform: scale(0.95);
+}

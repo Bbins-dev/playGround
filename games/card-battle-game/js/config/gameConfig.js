@@ -2156,7 +2156,62 @@ const GameConfig = {
         cardGallery: {
             width: 720,      // 96% of 750px canvas width
             height: 1150,    // 96% of 1200px canvas height
-            padding: 25
+            padding: 25,
+
+            // 카드 갤러리 헤더 레이아웃
+            header: {
+                height: 80,             // 헤더 높이
+                padding: {
+                    vertical: 15,       // 상하 패딩
+                    horizontal: 20      // 좌우 패딩
+                }
+            },
+
+            // 카드 개수 표시 설정 (왼쪽)
+            cardCount: {
+                fontSize: 20,           // 폰트 크기
+                fontWeight: 'bold',     // 폰트 굵기
+                color: '#FFFFFF',       // 텍스트 색상
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' // 텍스트 그림자
+            },
+
+            // 속성 필터 설정 (오른쪽)
+            filter: {
+                // 속성 순서: 노멀 → 불 → 물 → 전기 → 독 → 특수
+                elementOrder: ['normal', 'fire', 'water', 'electric', 'poison', 'special'],
+
+                // 필터 버튼 크기 (터치 최적화)
+                buttonSize: 65,         // 버튼 크기 (정사각형)
+                gap: 10,                // 버튼 간격
+                borderRadius: 12,       // 모서리 둥글기
+                fontSize: 38,           // 이모지 폰트 크기
+
+                // 기본 상태 스타일
+                default: {
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    border: '2px solid rgba(255, 255, 255, 0.3)',
+                    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.3)',
+                    opacity: 0.7
+                },
+
+                // 호버 상태 스타일
+                hover: {
+                    background: 'rgba(255, 255, 255, 0.25)',
+                    border: '2px solid rgba(255, 255, 255, 0.5)',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
+                    opacity: 1,
+                    transform: 'scale(1.05)'
+                },
+
+                // 활성화 상태 스타일
+                active: {
+                    background: 'rgba(255, 215, 0, 0.3)',  // 금색 배경
+                    border: '3px solid #FFD700',           // 금색 테두리
+                    boxShadow: '0 0 15px rgba(255, 215, 0, 0.8)', // 금색 글로우
+                    opacity: 1,
+                    transform: 'scale(1.1)'
+                }
+            }
         },
 
         // 카드 선택 모달 - 카드 선택을 위한 충분한 공간

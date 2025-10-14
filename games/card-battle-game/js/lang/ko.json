@@ -84,6 +84,8 @@
       "skip": "건너뛰기",
       "cancel": "취소",
       "close": "닫기",
+      "total_cards": "총",
+      "cards_unit": "장",
       "enter_player_name": "플레이어 이름 입력",
       "name_placeholder": "플레이어",
       "confirm": "확인",
