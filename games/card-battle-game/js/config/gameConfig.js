@@ -1108,13 +1108,16 @@ const GameConfig = {
             1: {
                 hp: 50,
                 cards: [
-                    { id: 'phase_shock', count: 1 },          // 위상쇼크 (위상 상태이상)
-                    { id: 'light_speed', count: 1 },          // 빛의속도 (광속 버프)
-                    { id: 'lightning_storm', count: 1 },      // 번개폭풍 (전기 속성, 랜덤 상태이상)
-                    { id: 'electric_shock', count: 1 },       // 감전 (젖음 상태에 3배 데미지)
-                    { id: 'overload', count: 1 },             // 과부하 (화상 상태에 2배 데미지)
-                    { id: 'short_circuit', count: 1 },        // 쇼트 (마비 상태에 10배 데미지)
-                    { id: 'paralysis_trap', count: 1 }        // 마비 덫 (마비 부여)
+                    { id: 'battery_pack', count: 1 },          // 건전지 팩 (팩 버프 획득)
+                    { id: 'lightning_rod', count: 1 },         // 피뢰침 (다음 전기 공격 100% 명중)
+                    { id: 'thunder_strike', count: 1 },        // 번개일격 (강력한 전기 공격)
+                    { id: 'super_conductivity', count: 1 },    // 초전도 (전기 공격 명중률 40% 증가)
+                    { id: 'thunder_strike', count: 1 },        // 번개일격 (2번째)
+                    { id: 'battery_explosion', count: 1 },     // 배터리폭발 (Li⁺ 버프 획득)
+                    { id: 'overcharge_battery', count: 1 },    // 과충전 (Li⁺ 버프 연장)
+                    { id: 'phase_shock', count: 1 },           // 위상 쇼크 (위상 상태이상)
+                    { id: 'high_voltage_current', count: 1 },  // 고압전류 (상대 버프 제거)
+                    { id: 'lightning_rod', count: 1 }          // 피뢰침 (2번째)
                 ]
             },
             2: {
