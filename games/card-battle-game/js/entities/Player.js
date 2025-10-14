@@ -45,6 +45,10 @@ class Player {
         this.absorptionTurns = 0; // 흡수 버프 남은 턴 수 (스테이지 내내 유지)
         this.lightSpeedBonus = 0; // 광속 추가 발동횟수
         this.lightSpeedTurns = 0; // 광속 버프 남은 턴 수 (항상 1턴 고정)
+        this.superConductivityTurns = 0; // 초전도 버프 남은 턴 수 (중첩 불가, 1턴 고정)
+        this.lightningRodTurns = 0; // 피뢰침 버프 남은 턴 수 (일회용, 중첩 불가)
+        this.packBonus = 0; // 팩 버프 스택 수
+        this.packTurns = 0; // 팩 버프 턴 수 (회복 직후 즉시 제거)
 
         // 턴 관련
         this.currentCardIndex = 0;
@@ -501,6 +505,53 @@ class Player {
         return bonus;
     }
 
+    // 초전도 버프 관련 메서드
+    hasSuperConductivityBuff() {
+        return this.superConductivityTurns > 0;
+    }
+
+    addSuperConductivityBuff(turns) {
+        this.superConductivityTurns = turns;  // 중복 불가이므로 덮어쓰기 (1턴만 유지)
+        this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
+        return turns;
+    }
+
+    // 피뢰침 버프 관련 메서드
+    hasLightningRodBuff() {
+        return this.lightningRodTurns > 0;
+    }
+
+    addLightningRodBuff(turns) {
+        this.lightningRodTurns = turns;  // 중복 불가이므로 덮어쓰기 (일회용)
+        this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
+        return turns;
+    }
+
+    // 팩 버프 관련 메서드
+    hasPackBuff() {
+        return this.packBonus > 0;
+    }
+
+    addPackBuff(stacks) {
+        this.packBonus += stacks;
+        this.packTurns = 1;  // Set to 1 to indicate active
+        this.updateRuntimeCardStats();
+        return stacks;
+    }
+
+    getPackHeal() {
+        if (!this.hasPackBuff()) {
+            return 0;
+        }
+        const baseHeal = GameConfig?.buffs?.pack?.effect?.baseHeal || 8;
+        return this.packBonus * baseHeal;
+    }
+
+    clearPackBuff() {
+        this.packBonus = 0;
+        this.packTurns = 0;
+    }
+
     clearBuffs() {
         this.strength = 0;
         this.enhanceTurns = 0;
@@ -520,6 +571,10 @@ class Player {
         this.absorptionTurns = 0;
         this.lightSpeedBonus = 0;
         this.lightSpeedTurns = 0;
+        this.superConductivityTurns = 0;
+        this.lightningRodTurns = 0;
+        this.packBonus = 0;
+        this.packTurns = 0;
     }
 
     // 런타임 카드 스탯 업데이트 (버프/상태이상 반영)
@@ -695,6 +750,12 @@ class Player {
                 modifiedAccuracy = Math.floor(modifiedAccuracy * (1 + focusEffect / 100));
             }
 
+            // 초전도 버프 체크 (전기 공격 카드만) - 상태이상 적용 후 곱셈 방식으로 증가 (소수점 버림)
+            if (card.type === 'attack' && card.element === 'electric' && this.hasSuperConductivityBuff()) {
+                const superConductivityEffect = GameConfig?.buffs?.superConductivity?.effect?.accuracy || 40; // 40%
+                modifiedAccuracy = Math.floor(modifiedAccuracy * (1 + superConductivityEffect / 100));
+            }
+
             // 명중률 상한 100% 제한
             modifiedAccuracy = Math.min(100, modifiedAccuracy);
 
@@ -851,6 +912,11 @@ class Player {
                     }
                 });
             }
+        }
+
+        // 초전도 버프 턴수 차감
+        if (this.superConductivityTurns > 0) {
+            this.superConductivityTurns--;
         }
 
         // 런타임 스탯 업데이트 (버프가 차감되었으므로)

@@ -163,7 +163,9 @@ const GameConfig = {
             mass: '#87CEEB',          // 질량 - 하늘색 (물 속성 색상)
             torrent: '#4682B4',       // 급류 - 스틸 블루 (물결/파도 느낌)
             absorption: '#20B2AA',    // 흡수 - 라이트 시그린 (물 치유 느낌)
-            lightSpeed: '#FFD700'     // 광속 - 금색 (전기 속성 색상, 빛의 속도)
+            lightSpeed: '#FFD700',    // 광속 - 금색 (전기 속성 색상, 빛의 속도)
+            lightningRod: '#FFA500',  // 피뢰침 - 오렌지 (전기 속성 색상, 번개봉)
+            pack: '#00CED1'           // 팩 - 다크 터쿼이즈 (전기 에너지, 배터리 느낌)
         },
 
         // 체력 라벨 색상
@@ -949,6 +951,60 @@ const GameConfig = {
             },
             effect: {
                 activationBonus: 2  // 카드당 추가 횟수 +2
+            }
+        },
+        superConductivity: {
+            nameKey: 'auto_battle_card_game.ui.buffs.superConductivity',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.superConductivity_description',
+            name: '초전도',
+            emoji: '⚡',
+            description: '전기 공격카드 명중률 40% 증가',
+            get color() { return GameConfig.masterColors.buffs.focus; }, // 파란색 계열 (명중률 버프)
+            get maxStack() { return 1; }, // 중첩 불가 (항상 1)
+            targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'duration', // 턴 추가 방식 (superConductivityTurns)
+            display: {
+                showValue: false, // 턴 표기 없음 (항상 1턴이므로)
+                format: ''
+            },
+            effect: {
+                accuracy: 40  // 40% 증가 (곱셈 계산)
+            }
+        },
+        lightningRod: {
+            nameKey: 'auto_battle_card_game.ui.buffs.lightningRod',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.lightningRod_description',
+            name: '피뢰침',
+            emoji: '🗼',
+            description: '다음 전기 공격카드가 반드시 명중',
+            get color() { return GameConfig.masterColors.buffs.lightningRod; }, // 오렌지 계열 (전기 속성)
+            get maxStack() { return 1; }, // 중첩 불가 (항상 1)
+            targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'consumable', // 일회용 (전기 공격 발동 시 즉시 소모)
+            display: {
+                showValue: false, // 턴 표기 없음 (일회용 버프)
+                format: ''
+            },
+            effect: {
+                guaranteedHit: true  // 전기 공격카드 100% 명중 보장
+            }
+        },
+        pack: {
+            nameKey: 'auto_battle_card_game.ui.buffs.pack',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.pack_description',
+            name: '팩',
+            emoji: '🔋',
+            description: '턴 시작 시 HP +{value}, 회복 후 즉시 제거',
+            get color() { return GameConfig.masterColors.buffs.pack; }, // 다크 터쿼이즈 (전기 에너지)
+            get maxStack() { return GameConfig.constants.limits.maxBuffStacks; }, // 최대 중첩 수
+            targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'intensity', // 강도 추가 방식 (packBonus)
+            display: {
+                showValue: true,
+                format: '+{value}'  // 예: +2
+            },
+            effect: {
+                baseHeal: 8  // 기본 회복량 (스택당) - 충전+1당 8 HP 회복
             }
         }
     },

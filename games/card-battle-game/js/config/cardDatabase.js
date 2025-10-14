@@ -1130,6 +1130,72 @@ const CardDatabase = {
             }
         });
 
+        // 피뢰침 카드 (전기 속성, 다음 전기 공격카드 100% 명중 보장)
+        this.addCard({
+            id: 'lightning_rod',
+            nameKey: 'auto_battle_card_game.ui.cards.lightning_rod.name',
+            type: 'buff',
+            element: 'electric',
+            power: 0,
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.lightning_rod.description',
+            effect: function(user, target, battleSystem) {
+                // 중복 체크 (이미 피뢰침 버프가 있으면 실패)
+                if (user.hasLightningRodBuff && user.hasLightningRodBuff()) {
+                    return {
+                        success: true,
+                        conditionFailed: true,
+                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        element: this.element
+                    };
+                }
+
+                // 피뢰침 버프 획득 (1턴, 중복 불가)
+                user.addLightningRodBuff(1);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
+                    buffType: 'lightningRod',
+                    lightningRodGain: 1,
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig?.buffs?.lightningRod?.name || '피뢰침',
+                        value: user.lightningRodTurns
+                    }
+                };
+            }
+        });
+
+        // 건전지 팩 카드 (전기 속성, 팩 버프 획득)
+        this.addCard({
+            id: 'battery_pack',
+            nameKey: 'auto_battle_card_game.ui.cards.battery_pack.name',
+            type: 'buff',
+            element: 'electric',
+            power: 0,
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.battery_pack.description',
+            effect: function(user, target, battleSystem) {
+                // 팩 버프 획득 (+1 스택)
+                user.addPackBuff(1);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
+                    buffType: 'pack',
+                    packGain: 1,
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig?.buffs?.pack?.name || '팩',
+                        value: user.packBonus
+                    }
+                };
+            }
+        });
+
         // 스모그 카드 (독 속성, 중독 확률)
         this.addCard({
             id: 'smog',
@@ -2192,6 +2258,46 @@ const CardDatabase = {
             }
         });
 
+        // 과충전 카드 (Li⁺ 버프 연장 카드, Li⁺ 버프 존재 시만 발동)
+        this.addCard({
+            id: 'overcharge_battery',
+            nameKey: 'auto_battle_card_game.ui.cards.overcharge_battery.name',
+            type: 'buff',
+            element: 'electric',
+            power: 0,
+            accuracy: 70,
+            activationCount: 1,
+            usageLimit: 1, // 1회만 사용 가능
+            descriptionKey: 'auto_battle_card_game.ui.cards.overcharge_battery.description',
+            effect: function(user, target, battleSystem) {
+                // Li⁺ 버프 존재 여부 체크
+                if (!user.hasLithiumBuff || !user.hasLithiumBuff()) {
+                    // Li⁺ 버프가 없으면 조건 실패
+                    return {
+                        success: true,
+                        conditionFailed: true,
+                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        element: this.element
+                    };
+                }
+
+                // Li⁺ 버프 1턴 추가 (기존 버프에 누적)
+                user.addLithiumBuff(1);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
+                    buffType: 'lithium',
+                    lithiumGain: 1,
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig?.buffs?.lithium?.name || 'Li⁺',
+                        value: user.lithiumTurns
+                    }
+                };
+            }
+        });
+
         // 물의 치유 카드 (물 속성 회복 카드, 물 방어속성일 때만 발동)
         this.addCard({
             id: 'water_healing',
@@ -2735,6 +2841,47 @@ const CardDatabase = {
                         name: GameConfig.buffs.lightSpeed.name,
                         value: user.lightSpeedBonus,
                         turns: user.lightSpeedTurns
+                    }
+                };
+            }
+        });
+
+        // 초전도 카드 (전기 속성 버프 카드, 전기 공격카드 명중률 40% 증가, 1턴, 중첩 불가)
+        this.addCard({
+            id: 'super_conductivity',
+            nameKey: 'auto_battle_card_game.ui.cards.super_conductivity.name',
+            type: 'buff',
+            element: 'electric',
+            power: 0, // 버프 카드는 파워가 없음
+            accuracy: 90,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.super_conductivity.description',
+            effect: function(user, target, battleSystem) {
+                // 중복 체크 (이미 초전도 버프가 있으면 실패)
+                if (user.hasSuperConductivityBuff && user.hasSuperConductivityBuff()) {
+                    return {
+                        success: true,
+                        conditionFailed: true,
+                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        element: this.element
+                    };
+                }
+
+                // 초전도 버프 획득 (1턴, 전기 공격 명중률 40% 증가)
+                user.addSuperConductivityBuff(1);
+
+                // 버프 라벨 즉시 업데이트
+                const isPlayer = (user === battleSystem.player);
+                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
+                    buffType: 'superConductivity',
+                    superConductivityGain: 1,
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig?.buffs?.superConductivity?.name || '초전도'
                     }
                 };
             }
