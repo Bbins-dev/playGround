@@ -84,6 +84,8 @@
       "skip": "スキップ",
       "cancel": "キャンセル",
       "close": "閉じる",
+      "total_cards": "全",
+      "cards_unit": "枚",
       "enter_player_name": "プレイヤー名入力",
       "name_placeholder": "プレイヤー",
       "confirm": "確認",

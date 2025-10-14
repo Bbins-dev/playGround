@@ -21,6 +21,9 @@ class UIManager {
         // 갤러리에서 전투 일시정지 상태 추적
         this.battleWasPaused = false;
 
+        // 카드 갤러리 필터링 상태
+        this.activeElementFilters = new Set(); // 활성화된 속성 필터 (Set)
+
         // 렌더링 최적화
         this.renderCount = 0;
         this.lastLogTime = 0;
@@ -563,6 +566,9 @@ class UIManager {
                 this.battleWasPaused = false;
             }
 
+            // 필터 초기화 및 버튼 생성
+            this.initializeCardGalleryFilters();
+
             // 갤러리 내용 생성
             this.populateCardGallery(grid);
             this.showModal(modal);
@@ -578,10 +584,22 @@ class UIManager {
 
         const allCards = cardManager.getAllCardsForGallery();
 
-        allCards.forEach(cardData => {
+        // 필터링 적용 (필터가 활성화된 경우만 필터링)
+        let filteredCards = allCards;
+        if (this.activeElementFilters.size > 0) {
+            filteredCards = allCards.filter(card =>
+                this.activeElementFilters.has(card.element)
+            );
+        }
+
+        // 필터링된 카드 렌더링
+        filteredCards.forEach(cardData => {
             const cardElement = this.createCardGalleryElement(cardData);
             container.appendChild(cardElement);
         });
+
+        // 카드 개수 업데이트
+        this.updateCardGalleryCount(allCards.length, filteredCards.length);
     }
 
     // 갤러리 카드 요소 생성 (통일된 DOMCardRenderer 사용)
@@ -624,6 +642,144 @@ class UIManager {
         if (this.battleWasPaused && this.gameManager.gameState === 'battle' && this.gameManager.battleSystem) {
             this.gameManager.battleSystem.resume();
             this.battleWasPaused = false;
+        }
+    }
+
+    // 카드 갤러리 필터 초기화
+    initializeCardGalleryFilters() {
+        const filterContainer = document.getElementById('element-filter-container');
+        if (!filterContainer) return;
+
+        // 필터 상태 초기화 (모든 필터 비활성화)
+        this.activeElementFilters.clear();
+
+        // 기존 필터 버튼 제거
+        filterContainer.innerHTML = '';
+
+        // GameConfig에서 필터 설정 가져오기
+        const filterConfig = GameConfig?.modals?.cardGallery?.filter;
+        if (!filterConfig || !filterConfig.elementOrder) return;
+
+        // 속성별 이모지 매핑 (GameConfig.elements 사용)
+        const elementEmojis = {
+            normal: GameConfig?.elements?.normal?.emoji || '👊',
+            fire: GameConfig?.elements?.fire?.emoji || '🔥',
+            water: GameConfig?.elements?.water?.emoji || '💧',
+            electric: GameConfig?.elements?.electric?.emoji || '⚡',
+            poison: GameConfig?.elements?.poison?.emoji || '☠️',
+            special: GameConfig?.elements?.special?.emoji || '✨'
+        };
+
+        // 필터 버튼 생성 (GameConfig 순서대로)
+        filterConfig.elementOrder.forEach(element => {
+            const button = document.createElement('div');
+            button.className = 'element-filter-btn';
+            button.dataset.element = element;
+            button.textContent = elementEmojis[element] || '?';
+            button.setAttribute('title', element); // 툴팁으로 속성 이름 표시
+
+            // 클릭 이벤트 핸들러
+            button.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.toggleElementFilter(element, button);
+            });
+
+            filterContainer.appendChild(button);
+        });
+
+        // CSS 변수 동기화 (필터 버튼 스타일)
+        this.syncFilterCSSVariables();
+    }
+
+    // 속성 필터 토글
+    toggleElementFilter(element, buttonElement) {
+        // 필터 토글
+        if (this.activeElementFilters.has(element)) {
+            this.activeElementFilters.delete(element);
+            buttonElement.classList.remove('active');
+        } else {
+            this.activeElementFilters.add(element);
+            buttonElement.classList.add('active');
+        }
+
+        // 갤러리 내용 다시 렌더링
+        const grid = document.getElementById('card-gallery-grid');
+        if (grid) {
+            this.populateCardGallery(grid);
+        }
+    }
+
+    // 카드 개수 업데이트
+    updateCardGalleryCount(totalCount, filteredCount) {
+        const countNumber = document.getElementById('card-count-number');
+        if (countNumber) {
+            // 필터가 활성화된 경우 "X/Y" 형식으로 표시
+            if (this.activeElementFilters.size > 0) {
+                countNumber.textContent = `${filteredCount}/${totalCount}`;
+            } else {
+                // 필터가 없으면 전체 개수만 표시
+                countNumber.textContent = totalCount;
+            }
+        }
+    }
+
+    // 필터 버튼 CSS 변수 동기화 (GameConfig 기반)
+    syncFilterCSSVariables() {
+        const root = document.documentElement;
+        const filterConfig = GameConfig?.modals?.cardGallery?.filter;
+
+        if (!filterConfig) return;
+
+        // 필터 버튼 크기 및 간격
+        root.style.setProperty('--filter-button-size', (filterConfig.buttonSize || 50) + 'px');
+        root.style.setProperty('--filter-button-gap', (filterConfig.gap || 8) + 'px');
+        root.style.setProperty('--filter-button-border-radius', (filterConfig.borderRadius || 10) + 'px');
+        root.style.setProperty('--filter-emoji-size', (filterConfig.fontSize || 28) + 'px');
+
+        // 기본 상태 스타일
+        if (filterConfig.default) {
+            root.style.setProperty('--filter-default-bg', filterConfig.default.background || 'rgba(255, 255, 255, 0.15)');
+            root.style.setProperty('--filter-default-border', (filterConfig.default.border || '2px solid rgba(255, 255, 255, 0.3)'));
+            root.style.setProperty('--filter-default-shadow', filterConfig.default.boxShadow || '0 2px 6px rgba(0, 0, 0, 0.3)');
+            root.style.setProperty('--filter-default-opacity', filterConfig.default.opacity || 0.7);
+        }
+
+        // 호버 상태 스타일
+        if (filterConfig.hover) {
+            root.style.setProperty('--filter-hover-bg', filterConfig.hover.background || 'rgba(255, 255, 255, 0.25)');
+            root.style.setProperty('--filter-hover-border', filterConfig.hover.border || '2px solid rgba(255, 255, 255, 0.5)');
+            root.style.setProperty('--filter-hover-shadow', filterConfig.hover.boxShadow || '0 4px 12px rgba(0, 0, 0, 0.4)');
+            root.style.setProperty('--filter-hover-opacity', filterConfig.hover.opacity || 1);
+            root.style.setProperty('--filter-hover-transform', filterConfig.hover.transform || 'scale(1.05)');
+        }
+
+        // 활성화 상태 스타일
+        if (filterConfig.active) {
+            root.style.setProperty('--filter-active-bg', filterConfig.active.background || 'rgba(255, 215, 0, 0.3)');
+            root.style.setProperty('--filter-active-border', filterConfig.active.border || '3px solid #FFD700');
+            root.style.setProperty('--filter-active-shadow', filterConfig.active.boxShadow || '0 0 15px rgba(255, 215, 0, 0.8)');
+            root.style.setProperty('--filter-active-opacity', filterConfig.active.opacity || 1);
+            root.style.setProperty('--filter-active-transform', filterConfig.active.transform || 'scale(1.1)');
+        }
+
+        // 카드 개수 표시 스타일
+        const cardCountConfig = GameConfig?.modals?.cardGallery?.cardCount;
+        if (cardCountConfig) {
+            root.style.setProperty('--card-count-font-size', (cardCountConfig.fontSize || 18) + 'px');
+            root.style.setProperty('--card-count-font-weight', cardCountConfig.fontWeight || 'bold');
+            root.style.setProperty('--card-count-color', cardCountConfig.color || '#FFFFFF');
+            root.style.setProperty('--card-count-text-shadow', cardCountConfig.textShadow || '0 2px 4px rgba(0, 0, 0, 0.8)');
+        }
+
+        // 헤더 레이아웃
+        const headerConfig = GameConfig?.modals?.cardGallery?.header;
+        if (headerConfig) {
+            root.style.setProperty('--card-gallery-header-height', (headerConfig.height || 80) + 'px');
+            root.style.setProperty('--card-gallery-header-padding-vertical', (headerConfig.padding?.vertical || 15) + 'px');
+            root.style.setProperty('--card-gallery-header-padding-horizontal', (headerConfig.padding?.horizontal || 20) + 'px');
         }
     }
 
