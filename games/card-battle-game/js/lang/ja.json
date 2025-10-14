@@ -478,9 +478,17 @@
           "name": "位相ショック",
           "description": "相手を1ターンの間{status:phase}状態にします。"
         },
+        "defibrillator": {
+          "name": "除細動器",
+          "description": "健康な対象は{status:stun}する可能性があります。"
+        },
         "high_voltage_current": {
           "name": "高圧電流",
           "description": "相手のバフをすべて除去します。"
+        },
+        "light_speed": {
+          "name": "光速",
+          "description": "1ターンの間、{electric}{cardType:attack}カードの発動回数が{buff:lightSpeed}回増加します。スタック可能です。"
         }
       },
       "buffs": {
@@ -508,7 +516,9 @@
         "torrent": "激流",
         "torrent_description": "水属性攻撃カードの発動回数が増加します。",
         "absorption": "吸収",
-        "absorption_description": "ターン開始時に吸収値分HPを回復します。濡れ状態の場合、回復量が2倍になります。"
+        "absorption_description": "ターン開始時に吸収値分HPを回復します。濡れ状態の場合、回復量が2倍になります。",
+        "lightSpeed": "光速",
+        "lightSpeed_description": "電気属性の攻撃カードの発動回数が増加します。"
       },
       "elements": {
         "fire": "火",
@@ -601,7 +611,8 @@
         "absorption_heal_wet": "💦 吸収 +{value}!",
         "purification_success": "✨ 浄化!",
         "purification_no_status": "状態異常なし!",
-        "high_voltage_current_success": "⚡ 高圧電流!"
+        "high_voltage_current_success": "⚡ 高圧電流!",
+        "light_speed_buff_gained": "⚡ 光速 +{value}({turns})!"
       },
       "card_selection": {
         "initial_title": "スタートカード選択",

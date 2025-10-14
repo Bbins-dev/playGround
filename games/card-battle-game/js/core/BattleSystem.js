@@ -641,6 +641,11 @@ class BattleSystem {
             await this.effectSystem.showBuffEffect('absorption', user, result.absorptionGain);
         }
 
+        // 광속 버프 획득 처리 (빛의 속도 카드) - 새로운 통합 메서드 사용
+        if (result.lightSpeedGain && result.lightSpeedGain > 0) {
+            await this.effectSystem.showBuffEffect('lightSpeed', user, result.lightSpeedGain);
+        }
+
         // 정화 효과 처리 (정화 카드)
         if (result.purified) {
             const userPosition = user.isPlayer ?

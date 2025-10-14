@@ -162,7 +162,8 @@ const GameConfig = {
             breath: '#F0F0F0',        // 호흡 - 흰색 계열 (확 구분되는 색상)
             mass: '#87CEEB',          // 질량 - 하늘색 (물 속성 색상)
             torrent: '#4682B4',       // 급류 - 스틸 블루 (물결/파도 느낌)
-            absorption: '#20B2AA'     // 흡수 - 라이트 시그린 (물 치유 느낌)
+            absorption: '#20B2AA',    // 흡수 - 라이트 시그린 (물 치유 느낌)
+            lightSpeed: '#FFD700'     // 광속 - 금색 (전기 속성 색상, 빛의 속도)
         },
 
         // 체력 라벨 색상
@@ -931,6 +932,24 @@ const GameConfig = {
                 baseHeal: 1,  // 기본 회복량 (스택당) - 흡수+1당 1 HP 회복
                 wetMultiplier: 2  // 젖음 상태일 때 배율
             }
+        },
+        lightSpeed: {
+            nameKey: 'auto_battle_card_game.ui.buffs.lightSpeed',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.lightSpeed_description',
+            name: '광속',
+            emoji: '⚡',
+            description: '전기 속성 공격카드 발동횟수 +{value}',
+            get color() { return GameConfig.masterColors.buffs.lightSpeed; }, // 광속 - 금색 (전기)
+            get maxStack() { return GameConfig.constants.limits.maxBuffStacks; }, // 최대 중첩 수
+            targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'intensity', // 강도 추가 방식 (lightSpeedBonus)
+            display: {
+                showValue: true,
+                format: '+{value}'  // 예: +2 (항상 1턴이므로 턴 표시 제거)
+            },
+            effect: {
+                activationBonus: 2  // 카드당 추가 횟수 +2
+            }
         }
     },
 
@@ -1033,6 +1052,8 @@ const GameConfig = {
             1: {
                 hp: 50,
                 cards: [
+                    { id: 'phase_shock', count: 1 },          // 위상쇼크 (위상 상태이상)
+                    { id: 'light_speed', count: 1 },          // 빛의속도 (광속 버프)
                     { id: 'lightning_storm', count: 1 },      // 번개폭풍 (전기 속성, 랜덤 상태이상)
                     { id: 'electric_shock', count: 1 },       // 감전 (젖음 상태에 3배 데미지)
                     { id: 'overload', count: 1 },             // 과부하 (화상 상태에 2배 데미지)
@@ -2439,6 +2460,11 @@ const GameConfig = {
             stunChance: 40     // 기절 확률 (40%)
         },
 
+        // 제세동기 카드 설정
+        defibrillator: {
+            stunChance: 100    // 기절 확률 (100%, 발동 시 확정)
+        },
+
         // 웅크리기 카드 설정
         crouch: {
             defenseGain: 30    // 방어력 증가량
@@ -2511,6 +2537,11 @@ const GameConfig = {
             activationChance: 70,  // 70% 발동률
             successKey: 'auto_battle_card_game.ui.templates.high_voltage_current_success',
             noBuffsKey: 'auto_battle_card_game.ui.condition_failed'
+        },
+        // 빛의 속도 카드 설정
+        lightSpeed: {
+            activationBonus: 2,    // 발동 횟수 +2
+            fixedTurns: 1          // 1턴 고정 지속
         }
     },
 
