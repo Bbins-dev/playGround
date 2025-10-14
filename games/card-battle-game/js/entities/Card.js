@@ -88,6 +88,14 @@ class Card {
             }
         }
 
+        // 얼음 상태이상 체크 (공격 카드만) - 곱셈 방식으로 감소 (소수점 버림)
+        if (this.type === 'attack' && user && user.hasStatusEffect('frozen')) {
+            const frozenEffect = user.statusEffects.find(e => e.type === 'frozen');
+            if (frozenEffect) {
+                actualAccuracy = Math.max(0, Math.floor(actualAccuracy * (1 - frozenEffect.power / 100)));
+            }
+        }
+
         // 집중 버프 체크 (노멀 공격 카드만) - 상태이상 적용 후 곱셈 방식으로 증가 (소수점 버림)
         if (this.type === 'attack' && this.element === 'normal' && user && user.hasFocusBuff && user.hasFocusBuff()) {
             const focusEffect = GameConfig.buffs.focus.effect.accuracy; // 30%
@@ -102,6 +110,12 @@ class Card {
         // 피뢰침 버프 체크 (전기 공격 카드만) - 명중률 100% 보장
         if (this.type === 'attack' && this.element === 'electric' && user && user.hasLightningRodBuff && user.hasLightningRodBuff()) {
             actualAccuracy = 100;
+        }
+
+        // 초전도 버프 체크 (전기 공격 카드만) - 상태이상 적용 후 곱셈 방식으로 증가 (소수점 버림)
+        if (this.type === 'attack' && this.element === 'electric' && user && user.hasSuperConductivityBuff && user.hasSuperConductivityBuff()) {
+            const superConductivityEffect = GameConfig?.buffs?.superConductivity?.effect?.accuracy || 40; // 40%
+            actualAccuracy = Math.floor(actualAccuracy * (1 + superConductivityEffect / 100));
         }
 
         // 명중률 상한 100% 제한

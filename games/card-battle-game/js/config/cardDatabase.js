@@ -753,6 +753,11 @@ const CardDatabase = {
                     baseDamage = Math.floor(baseDamage * 1.5);
                 }
 
+                // Li⁺ 버프 적용 (전기 속성 공격 카드)
+                if (user.hasLithiumBuff && user.hasLithiumBuff()) {
+                    baseDamage = Math.floor(baseDamage * user.getLithiumTurns());
+                }
+
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
