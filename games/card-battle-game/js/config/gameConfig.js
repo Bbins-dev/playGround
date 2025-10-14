@@ -957,7 +957,7 @@ const GameConfig = {
             nameKey: 'auto_battle_card_game.ui.buffs.superConductivity',
             descriptionKey: 'auto_battle_card_game.ui.buffs.superConductivity_description',
             name: '초전도',
-            emoji: '⚡',
+            emoji: '🎯',
             description: '전기 공격카드 명중률 40% 증가',
             get color() { return GameConfig.masterColors.buffs.focus; }, // 파란색 계열 (명중률 버프)
             get maxStack() { return 1; }, // 중첩 불가 (항상 1)
@@ -1108,16 +1108,10 @@ const GameConfig = {
             1: {
                 hp: 50,
                 cards: [
-                    { id: 'battery_pack', count: 1 },          // 건전지 팩 (팩 버프 획득)
-                    { id: 'lightning_rod', count: 1 },         // 피뢰침 (다음 전기 공격 100% 명중)
-                    { id: 'thunder_strike', count: 1 },        // 번개일격 (강력한 전기 공격)
-                    { id: 'super_conductivity', count: 1 },    // 초전도 (전기 공격 명중률 40% 증가)
-                    { id: 'thunder_strike', count: 1 },        // 번개일격 (2번째)
-                    { id: 'battery_explosion', count: 1 },     // 배터리폭발 (Li⁺ 버프 획득)
-                    { id: 'overcharge_battery', count: 1 },    // 과충전 (Li⁺ 버프 연장)
-                    { id: 'phase_shock', count: 1 },           // 위상 쇼크 (위상 상태이상)
-                    { id: 'high_voltage_current', count: 1 },  // 고압전류 (상대 버프 제거)
-                    { id: 'lightning_rod', count: 1 }          // 피뢰침 (2번째)
+                    { id: 'defibrillator', count: 1 },  // 제세동기 (기절 상태이상)
+                    { id: 'defibrillator', count: 1 },  // 제세동기 (2번째)
+                    { id: 'battery_pack', count: 1 },   // 건전지 팩 (팩 버프 획득)
+                    { id: 'battery_pack', count: 1 }    // 건전지 팩 (2번째)
                 ]
             },
             2: {

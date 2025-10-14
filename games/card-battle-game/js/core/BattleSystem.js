@@ -468,13 +468,13 @@ class BattleSystem {
         // 힘 버프 획득 처리 (attack 타입 카드에서 힘 버프를 얻는 경우 - 화염승천 등)
         // 데미지 처리 직후에 표시 (동시 연출)
         if (result.strengthGain && result.strengthGain > 0) {
-            // 공격자 확인 (target의 반대)
-            const attacker = target === this.player ? this.enemy : this.player;
-            await this.effectSystem.showBuffEffect('strength', attacker, result.strengthGain);
+            // user를 직접 사용 (셀프 타겟팅 상황에서도 올바른 위치 보장)
+            // user = 실제 카드 사용자 = 버프 획득자
+            await this.effectSystem.showBuffEffect('strength', user, result.strengthGain);
 
             // 버프 라벨 즉시 업데이트 (메시지와 동시에)
-            const isAttackerPlayer = (attacker === this.player);
-            this.hpBarSystem.updateBuffs(attacker, isAttackerPlayer);
+            const isUserPlayer = (user === this.player);
+            this.hpBarSystem.updateBuffs(user, isUserPlayer);
         }
 
         // 기절 처리
