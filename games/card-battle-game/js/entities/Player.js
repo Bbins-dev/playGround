@@ -43,6 +43,8 @@ class Player {
         this.torrentTurns = 0; // 급류 버프 남은 턴 수 (항상 1턴 고정)
         this.absorptionBonus = 0; // 흡수 버프 스택 수
         this.absorptionTurns = 0; // 흡수 버프 남은 턴 수 (스테이지 내내 유지)
+        this.lightSpeedBonus = 0; // 광속 추가 발동횟수
+        this.lightSpeedTurns = 0; // 광속 버프 남은 턴 수 (항상 1턴 고정)
 
         // 턴 관련
         this.currentCardIndex = 0;
@@ -479,6 +481,26 @@ class Player {
         return healAmount;
     }
 
+    // 광속 버프 관련 메서드
+    hasLightSpeedBuff() {
+        return this.lightSpeedTurns > 0;
+    }
+
+    addLightSpeedBuff(bonus) {
+        this.lightSpeedBonus += bonus;
+        this.lightSpeedTurns = 1; // 항상 1턴
+
+        // 즉시 현재 손패의 전기 속성 공격카드들에 적용
+        this.hand.forEach(card => {
+            if (card.type === 'attack' && card.element === 'electric') {
+                card.modifiedActivationCount = card.activationCount + this.lightSpeedBonus;
+            }
+        });
+
+        this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
+        return bonus;
+    }
+
     clearBuffs() {
         this.strength = 0;
         this.enhanceTurns = 0;
@@ -496,6 +518,8 @@ class Player {
         this.torrentTurns = 0;
         this.absorptionBonus = 0;
         this.absorptionTurns = 0;
+        this.lightSpeedBonus = 0;
+        this.lightSpeedTurns = 0;
     }
 
     // 런타임 카드 스탯 업데이트 (버프/상태이상 반영)
@@ -711,6 +735,10 @@ class Player {
             else if (this.hasTorrentBuff() && card.type === 'attack' && card.element === 'water') {
                 card.modifiedActivationCount = card.activationCount + this.torrentBonus;
             }
+            // 광속 버프 적용 (전기 속성 공격카드만)
+            else if (this.hasLightSpeedBuff() && card.type === 'attack' && card.element === 'electric') {
+                card.modifiedActivationCount = card.activationCount + this.lightSpeedBonus;
+            }
             else {
                 // 버프가 없거나 적용 대상이 아닌 경우 초기화
                 card.modifiedActivationCount = undefined;
@@ -805,6 +833,20 @@ class Player {
                 // 버프 해제 시 모든 카드의 modifiedActivationCount 초기화
                 this.hand.forEach(card => {
                     if (card.type === 'attack' && card.element === 'water') {
+                        card.modifiedActivationCount = undefined;
+                    }
+                });
+            }
+        }
+
+        // 광속 버프 턴수 차감
+        if (this.lightSpeedTurns > 0) {
+            this.lightSpeedTurns--;
+            if (this.lightSpeedTurns === 0) {
+                this.lightSpeedBonus = 0;
+                // 버프 해제 시 모든 카드의 modifiedActivationCount 초기화
+                this.hand.forEach(card => {
+                    if (card.type === 'attack' && card.element === 'electric') {
                         card.modifiedActivationCount = undefined;
                     }
                 });

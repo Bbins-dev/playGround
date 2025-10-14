@@ -478,9 +478,17 @@
           "name": "Phase Shock",
           "description": "Inflicts {status:phase} on the opponent for 1 turn."
         },
+        "defibrillator": {
+          "name": "Defibrillator",
+          "description": "Healthy targets may be {status:stun}ned."
+        },
         "high_voltage_current": {
           "name": "High Voltage Current",
           "description": "Removes all buffs from the opponent."
+        },
+        "light_speed": {
+          "name": "Light Speed",
+          "description": "Increases {electric} {cardType:attack} card activation count by {buff:lightSpeed} for one turn. Stackable."
         }
       },
       "buffs": {
@@ -508,7 +516,9 @@
         "torrent": "TRN",
         "torrent_description": "Increases the activation count of water element attack cards.",
         "absorption": "ABS",
-        "absorption_description": "Restore HP equal to Absorption value at turn start. Healing doubles when wet."
+        "absorption_description": "Restore HP equal to Absorption value at turn start. Healing doubles when wet.",
+        "lightSpeed": "L.SPEED",
+        "lightSpeed_description": "Increases electric attack card activation count."
       },
       "elements": {
         "fire": "Fire",
@@ -601,7 +611,8 @@
         "absorption_heal_wet": "💦 ABS +{value}!",
         "purification_success": "✨ Purified!",
         "purification_no_status": "No Status Effects!",
-        "high_voltage_current_success": "⚡ High Voltage!"
+        "high_voltage_current_success": "⚡ High Voltage!",
+        "light_speed_buff_gained": "⚡ L.SPEED +{value}({turns})!"
       },
       "card_selection": {
         "initial_title": "Start Card Selection",

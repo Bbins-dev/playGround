@@ -1089,7 +1089,7 @@ const CardDatabase = {
             accuracy: 80,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.phase_shock.description',
-            phaseChance: 80,
+            phaseChance: 100,
             effect: function(user, target, battleSystem) {
                 // 위상 적용 (통합 시스템 - 면역 메시지 지원)
                 return {
@@ -1100,6 +1100,32 @@ const CardDatabase = {
                         power: null,
                         duration: GameConfig?.statusEffects?.phase?.duration || 1
                     }
+                };
+            }
+        });
+
+        // 제세동기 카드 (전기 속성, 기절 효과)
+        this.addCard({
+            id: 'defibrillator',
+            nameKey: 'auto_battle_card_game.ui.cards.defibrillator.name',
+            type: 'status',
+            element: 'electric',
+            power: 0,
+            accuracy: 40,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.defibrillator.description',
+            stunChance: 100,
+            effect: function(user, target, battleSystem) {
+                // 기절 적용 (통합 시스템 - 면역 메시지 지원)
+                return {
+                    success: true,
+                    statusEffect: {
+                        type: 'stun',
+                        chance: this.stunChance,
+                        power: null,
+                        duration: 1
+                    },
+                    element: this.element
                 };
             }
         });
@@ -2675,6 +2701,41 @@ const CardDatabase = {
                     messageKey: GameConfig?.cardEffects?.highVoltageCurrent?.successKey ||
                                'auto_battle_card_game.ui.templates.high_voltage_current_success',
                     element: this.element
+                };
+            }
+        });
+
+        // 빛의 속도 카드 (전기 속성 버프 카드, 광속 버프 획득)
+        this.addCard({
+            id: 'light_speed',
+            nameKey: 'auto_battle_card_game.ui.cards.light_speed.name',
+            type: 'buff',
+            element: 'electric',
+            power: 0, // 버프 카드는 파워가 없음
+            accuracy: 70,
+            activationCount: 1,
+            usageLimit: 1, // 1회만 사용 가능
+            descriptionKey: 'auto_battle_card_game.ui.cards.light_speed.description',
+            effect: function(user, target, battleSystem) {
+                // 광속 버프 획득
+                const lightSpeedGain = 2;
+                user.addLightSpeedBuff(lightSpeedGain);
+
+                // 버프 라벨 즉시 업데이트
+                const isPlayer = (user === battleSystem.player);
+                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.light_speed_buff_gained',
+                    buffType: 'lightSpeed',
+                    lightSpeedGain: lightSpeedGain,
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig.buffs.lightSpeed.name,
+                        value: user.lightSpeedBonus,
+                        turns: user.lightSpeedTurns
+                    }
                 };
             }
         });

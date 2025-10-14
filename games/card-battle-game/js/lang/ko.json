@@ -478,9 +478,17 @@
           "name": "위상 쇼크",
           "description": "상대를 한 턴 간 {status:phase} 상태로 만듭니다."
         },
+        "defibrillator": {
+          "name": "제세동기",
+          "description": "멀쩡한 대상은 {status:stun}할 수도 있습니다."
+        },
         "high_voltage_current": {
           "name": "고압 전류",
           "description": "상대방의 버프를 모두 제거합니다."
+        },
+        "light_speed": {
+          "name": "빛의 속도",
+          "description": "한 턴 간 {electric}{cardType:attack} 카드의 발동 횟수를 {buff:lightSpeed} 횟수 만큼 더합니다. 중첩 가능합니다."
         }
       },
       "buffs": {
@@ -508,7 +516,9 @@
         "torrent": "급류",
         "torrent_description": "물 속성 공격 카드의 발동 횟수가 증가합니다.",
         "absorption": "흡수",
-        "absorption_description": "턴 시작 시 흡수 수치만큼 HP를 회복합니다. 젖음 상태일 경우 회복량이 두 배가 됩니다."
+        "absorption_description": "턴 시작 시 흡수 수치만큼 HP를 회복합니다. 젖음 상태일 경우 회복량이 두 배가 됩니다.",
+        "lightSpeed": "광속",
+        "lightSpeed_description": "전기 속성 공격 카드의 발동 횟수가 증가합니다."
       },
       "elements": {
         "fire": "불",
@@ -601,7 +611,8 @@
         "absorption_heal_wet": "💦 흡수 +{value}!",
         "purification_success": "✨ 정화!",
         "purification_no_status": "상태이상 없음!",
-        "high_voltage_current_success": "⚡ 고압 전류!"
+        "high_voltage_current_success": "⚡ 고압 전류!",
+        "light_speed_buff_gained": "⚡ 광속 +{value}({turns})!"
       },
       "card_selection": {
         "initial_title": "시작 카드 선택",
