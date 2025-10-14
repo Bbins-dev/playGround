@@ -2460,49 +2460,61 @@ body[data-game-state="menu"] .game-wrapper.status-border-slow {
    카드 갤러리 필터 UI (Card Gallery Filter)
    ==================================== */
 
-/* 카드 갤러리 제목 - 상단 중앙 배치 */
+/* 카드 갤러리 제목 행 - 제목(중앙) + 카드 개수(오른쪽) */
+.card-gallery-title-row {
+    position: relative;
+    text-align: center;
+    padding: 10px 15px 12px 15px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 제목 - 중앙 배치 */
 .card-gallery-title {
     font-size: 32px;
     font-weight: 700;
     color: var(--glass-text-primary, #FFFFFF);
     text-shadow: var(--glass-text-shadow, 0 2px 8px rgba(0, 0, 0, 0.8)), var(--glass-text-glow);
-    text-align: center;
-    margin: 0 0 15px 0;
-    padding-top: 10px;
+    margin: 0;
 }
 
-/* 카드 갤러리 컨트롤 바 - 2단 레이아웃 (왼쪽: 카드 개수, 오른쪽: 필터) */
-.card-gallery-controls {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px 15px 20px;
-    flex-shrink: 0;
-}
-
-/* 왼쪽: 카드 개수 표시 */
+/* 카드 개수 표시 - 오른쪽 상단 절대 배치 */
 .card-count-display {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
     font-size: var(--card-count-font-size, 20px);
     font-weight: var(--card-count-font-weight, bold);
     color: var(--card-count-color, #FFFFFF);
     text-shadow: var(--card-count-text-shadow, 0 2px 4px rgba(0, 0, 0, 0.8));
     white-space: nowrap;
+}
+
+/* 필터 컨트롤 영역 - 필터 버튼만 중앙 배치 */
+.card-gallery-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 15px 12px 15px;
     flex-shrink: 0;
 }
 
-/* 오른쪽: 필터 버튼 컨테이너 */
+/* 필터 버튼 컨테이너 */
 .element-filter-container {
     display: flex;
-    gap: var(--filter-button-gap, 10px);
+    gap: var(--filter-button-gap, 14px);
     align-items: center;
     flex-shrink: 0;
 }
 
 /* 필터 버튼 기본 스타일 */
 .element-filter-btn {
-    width: var(--filter-button-size, 65px);
-    height: var(--filter-button-size, 65px);
-    font-size: var(--filter-emoji-size, 38px);
+    width: var(--filter-button-size, 72px);
+    height: var(--filter-button-size, 72px);
+    font-size: var(--filter-emoji-size, 42px);
     display: flex;
     align-items: center;
     justify-content: center;

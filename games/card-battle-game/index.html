@@ -171,17 +171,16 @@
         <!-- 카드 갤러리 모달 -->
         <div id="card-gallery-modal" class="modal hidden">
             <div class="modal-content glass-morphism">
-                <!-- 카드 갤러리 제목 (상단 중앙) -->
-                <h2 class="card-gallery-title" data-i18n="auto_battle_card_game.ui.card_gallery_title">카드 갤러리</h2>
-
-                <!-- 카드 갤러리 컨트롤 바 (왼쪽: 카드 개수, 오른쪽: 속성 필터) -->
-                <div class="card-gallery-controls">
-                    <!-- 왼쪽: 카드 개수 표시 -->
+                <!-- 카드 갤러리 제목 행 (제목: 중앙, 카드 개수: 오른쪽) -->
+                <div class="card-gallery-title-row">
+                    <h2 class="card-gallery-title" data-i18n="auto_battle_card_game.ui.card_gallery_title">카드 갤러리</h2>
                     <div class="card-count-display" id="card-count-display">
                         <span data-i18n="auto_battle_card_game.ui.total_cards">총</span> <span id="card-count-number">0</span><span data-i18n="auto_battle_card_game.ui.cards_unit">장</span>
                     </div>
+                </div>
 
-                    <!-- 오른쪽: 속성 필터 버튼들 (JavaScript로 동적 생성) -->
+                <!-- 카드 갤러리 필터 컨트롤 (중앙 정렬) -->
+                <div class="card-gallery-controls">
                     <div class="element-filter-container" id="element-filter-container">
                         <!-- 속성 필터 버튼들이 동적으로 생성됨 -->
                     </div>

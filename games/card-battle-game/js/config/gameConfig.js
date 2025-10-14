@@ -2181,10 +2181,10 @@ const GameConfig = {
                 elementOrder: ['normal', 'fire', 'water', 'electric', 'poison', 'special'],
 
                 // 필터 버튼 크기 (터치 최적화)
-                buttonSize: 65,         // 버튼 크기 (정사각형)
-                gap: 10,                // 버튼 간격
+                buttonSize: 72,         // 버튼 크기 (정사각형)
+                gap: 14,                // 버튼 간격
                 borderRadius: 12,       // 모서리 둥글기
-                fontSize: 38,           // 이모지 폰트 크기
+                fontSize: 42,           // 이모지 폰트 크기
 
                 // 기본 상태 스타일
                 default: {
