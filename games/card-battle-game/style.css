@@ -474,6 +474,19 @@ body {
     padding: var(--modal-card-gallery-padding);
 }
 
+/* 카드 갤러리 닫기 버튼 - 크고 명확하게 */
+#card-gallery-modal #close-gallery {
+    padding: 14px 28px;
+    font-size: 20px;
+    font-weight: 700;
+    border-radius: 12px;
+
+    /* Flex 컨테이너 내에서 중앙 정렬 & 너비 자동 조절 */
+    align-self: center;
+    width: fit-content;
+    margin-top: 15px;
+}
+
 /* 카드 선택 모달 전용 스타일 - Configuration-Driven */
 #card-selection-modal .modal-content {
     width: var(--modal-card-selection-width);
@@ -489,12 +502,14 @@ body {
 /* 플레이어 이름 모달 전용 스타일 - Configuration-Driven */
 #player-name-modal .modal-content {
     width: var(--modal-player-name-width);
-    height: var(--modal-player-name-height);
-    padding: var(--modal-player-name-padding);
+    height: auto;
+    min-height: var(--modal-player-name-height);
+    padding: 40px 30px 30px 30px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 0;
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(245, 245, 245, 0.95));
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -506,9 +521,9 @@ body {
 /* 플레이어 이름 모달 제목 스타일 */
 #player-name-modal h2 {
     color: #2c3e50;
-    font-size: 28px;
+    font-size: 42px;
     font-weight: 700;
-    margin-bottom: 10px;
+    margin-bottom: 0;
     text-shadow: none;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     -webkit-background-clip: text;
@@ -518,17 +533,19 @@ body {
 
 /* 플레이어 이름 모달 버튼 스타일 */
 #player-name-modal .ui-button {
-    padding: 14px 28px;
-    font-size: 16px;
-    font-weight: 600;
+    padding: 18px 40px;
+    font-size: 22px;
+    font-weight: 700;
     border: none;
-    border-radius: 12px;
+    border-radius: 14px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     text-transform: none;
     letter-spacing: 0.3px;
+    min-width: 160px;
+    margin-top: 10px;
 }
 
 #player-name-modal .ui-button.primary {
@@ -2464,16 +2481,16 @@ body[data-game-state="menu"] .game-wrapper.status-border-slow {
 .card-gallery-title-row {
     position: relative;
     text-align: center;
-    padding: 10px 15px 12px 15px;
+    padding: 2px 15px 12px 15px;
     min-height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* 제목 - 중앙 배치 */
-.card-gallery-title {
-    font-size: 32px;
+/* 제목 - 중앙 배치 (더 구체적인 선택자로 우선순위 확보) */
+.modal-content .card-gallery-title {
+    font-size: 52px;
     font-weight: 700;
     color: var(--glass-text-primary, #FFFFFF);
     text-shadow: var(--glass-text-shadow, 0 2px 8px rgba(0, 0, 0, 0.8)), var(--glass-text-glow);
