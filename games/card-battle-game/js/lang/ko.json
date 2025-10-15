@@ -115,7 +115,7 @@
         "burn": "화상",
         "burn_description": "턴 시작 시 5의 화상 대미지를 받습니다. 방어력을 무시합니다.",
         "poisoned": "중독",
-        "poisoned_description": "턴 종료 시 5의 중독 대미지를 받습니다.",
+        "poisoned_description": "턴 종료 시 남은 턴수만큼 피해를 받습니다.",
         "sand": "모래",
         "sand_description": "공격 카드의 명중률이 30% 감소합니다. 2턴 동안 지속됩니다.",
         "insult": "모욕",
@@ -506,7 +506,7 @@
         },
         "super_conductivity": {
           "name": "초전도",
-          "description": "한 턴 간 {electric}{cardType:attack} 카드의 명중률이 40% 증가합니다. {buff:superConductivity}은 중첩되지 않습니다."
+          "description": "한 턴 간 {electric}{cardType:attack} 카드의 명중률이 40% 증가합니다. {buff:superConductivity}는 중첩되지 않습니다."
         }
       },
       "buffs": {

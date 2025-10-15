@@ -1235,9 +1235,9 @@ class BattleSystem {
             return false;
         }
 
-        const damage = poisonEffect.power; // 고정 데미지 (기본 5, 증폭 가능)
+        const damage = poisonEffect.turnsLeft; // 남은 턴수만큼 데미지 (동적 계산)
         if (GameConfig?.debugMode?.showDamageCalculation) {
-            console.log(`[DOT] 독: -${damage} HP (${player.name})`);
+            console.log(`[DOT] 독: -${damage} HP (${player.name}) [턴: ${poisonEffect.turnsLeft}]`);
         }
 
         if (damage > 0) {

@@ -115,7 +115,7 @@
         "burn": "火傷",
         "burn_description": "ターン開始時に5の火傷ダメージを受けます。防御力を無視します。",
         "poisoned": "毒",
-        "poisoned_description": "ターン終了時に5の毒ダメージを受けます。",
+        "poisoned_description": "ターン終了時に残りターン数分のダメージを受けます。",
         "sand": "砂",
         "sand_description": "攻撃カードの命中率が30%減少します。2ターン持続します。",
         "insult": "侮辱",

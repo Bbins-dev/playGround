@@ -115,7 +115,7 @@
         "burn": "Burn",
         "burn_description": "Takes 5 burn damage at turn start. Ignores defense.",
         "poisoned": "Poison",
-        "poisoned_description": "Takes 5 poison damage at turn end.",
+        "poisoned_description": "Take damage equal to remaining turns at turn end.",
         "sand": "Sand",
         "sand_description": "Reduces attack card accuracy by 30%. Lasts for 2 turns.",
         "insult": "Insult",

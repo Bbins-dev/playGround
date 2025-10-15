@@ -617,8 +617,8 @@ const GameConfig = {
             descriptionKey: 'auto_battle_card_game.ui.status_effects.poisoned_description',
             name: '중독',
             emoji: '☠️',
-            description: '턴 종료 시 기본 피해 5',
-            defaultDamage: 5,
+            description: '턴 종료 시 남은 턴수만큼 피해',
+            defaultDamage: 5,  // 하위 호환용 유지 (실제로는 turnsLeft 사용)
             canExtend: true,  // 턴 연장 가능 (중복 적용 시 누적)
             get color() { return GameConfig.masterColors.statusEffects.poisoned; }
         },
