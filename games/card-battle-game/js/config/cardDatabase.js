@@ -1240,6 +1240,157 @@ const CardDatabase = {
             }
         });
 
+        // 독극물 투척 카드 (독 속성, 명중 시 100% 중독 3턴)
+        this.addCard({
+            id: 'poison_throw',
+            nameKey: 'auto_battle_card_game.ui.cards.poison_throw.name',
+            type: 'attack',
+            element: 'poison',
+            power: 3,
+            accuracy: 70,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.poison_throw.description',
+            poisonChance: 100,
+            effect: function(user, target, battleSystem) {
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                // 중독 적용 (통합 시스템 - 명중 시 100% 확률로 3턴 중독)
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    statusEffect: {
+                        type: 'poisoned',
+                        chance: this.poisonChance,
+                        power: null,
+                        duration: 3  // 3턴 중독
+                    },
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
+        // 독 이빨 카드 (독 속성, 명중 시 100% 확률로 5턴 중독)
+        this.addCard({
+            id: 'poison_fang',
+            nameKey: 'auto_battle_card_game.ui.cards.poison_fang.name',
+            type: 'attack',
+            element: 'poison',
+            power: 3,
+            accuracy: 70,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.poison_fang.description',
+            poisonChance: 100,
+            effect: function(user, target, battleSystem) {
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                // 중독 적용 (통합 시스템 - 명중 시 100% 확률로 5턴 중독)
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    statusEffect: {
+                        type: 'poisoned',
+                        chance: this.poisonChance,
+                        power: null,
+                        duration: 5  // 5턴 중독
+                    },
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
+        // 독침 연발 카드 (독 속성, 2-5회 연속 공격 + 각 타격마다 10% 중독)
+        this.addCard({
+            id: 'poison_barrage',
+            nameKey: 'auto_battle_card_game.ui.cards.poison_barrage.name',
+            type: 'attack',
+            element: 'poison',
+            power: 1,
+            accuracy: 100,
+            activationCount: 2, // 기본값, 턴 시작 시 동적으로 2-5로 설정됨
+            descriptionKey: 'auto_battle_card_game.ui.cards.poison_barrage.description',
+            isRandomBash: true, // 랜덤 연속 공격 카드임을 표시
+            minActivation: 2, // 최소 발동 횟수
+            maxActivation: 5, // 최대 발동 횟수
+            poisonChance: 10, // 각 타격마다 10% 확률로 중독
+            getRandomActivationCount: function() {
+                return Math.floor(Math.random() * (this.maxActivation - this.minActivation + 1)) + this.minActivation;
+            },
+            effect: function(user, target, battleSystem) {
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                // 중독 적용 (통합 시스템 - 각 타격마다 10% 확률로 2턴 중독)
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    statusEffect: {
+                        type: 'poisoned',
+                        chance: this.poisonChance,
+                        power: null,
+                        duration: 2  // 2턴 중독
+                    },
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
+        // 맹독 폭발 카드 (독 속성, 중독 턴 기반 동적 공격력)
+        this.addCard({
+            id: 'toxic_blast',
+            nameKey: 'auto_battle_card_game.ui.cards.toxic_blast.name',
+            type: 'attack',
+            element: 'poison',
+            power: 0,  // 동적 계산: 적의 중독 잔여 턴 × 5
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.toxic_blast.description',
+            effect: function(user, target, battleSystem) {
+                // 동적 공격력: 적의 중독 잔여 턴 × 5 (Player.updateRuntimeCardStats()에서 이미 계산됨)
+                // buffedPower에 이미 모든 버프 포함 (힘, 강화) - 중복 적용 방지
+                let baseDamage = this.buffedPower || 0;
+
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
         // 붕대감기 카드 (회복 카드, 체력 회복)
         this.addCard({
             id: 'bandage',
