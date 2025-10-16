@@ -1363,6 +1363,59 @@ const CardDatabase = {
             }
         });
 
+        // 가스 흡수 카드 (독 속성 회복 카드, 중독 턴 기반 동적 회복량)
+        this.addCard({
+            id: 'gas_absorption',
+            nameKey: 'auto_battle_card_game.ui.cards.gas_absorption.name',
+            type: 'heal',
+            element: 'poison',
+            power: 0,  // 동적 계산: 적의 중독 잔여 턴 × 1
+            healAmount: 0,  // 사용하지 않음, buffedPower만 사용
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.gas_absorption.description',
+            effect: function(user, target, battleSystem) {
+                // buffedPower 사용 (실시간 동적 계산됨: 중독 잔여 턴 × 1)
+                const healAmount = this.buffedPower || 0;
+                const actualHealing = user.heal ? user.heal(healAmount) : 0;
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.heal_effect',
+                    healAmount: actualHealing,
+                    element: this.element,
+                    effectType: 'heal',
+                    templateData: { value: actualHealing }
+                };
+            }
+        });
+
+        // 유독가스 카드 (독 속성, 순수 중독 효과)
+        this.addCard({
+            id: 'toxic_gas',
+            nameKey: 'auto_battle_card_game.ui.cards.toxic_gas.name',
+            type: 'status',
+            element: 'poison',
+            power: 0,
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.toxic_gas.description',
+            poisonChance: 100,
+            effect: function(user, target, battleSystem) {
+                // 중독 적용 (통합 시스템 - 명중 시 100% 확률로 1턴 중독)
+                return {
+                    success: true,
+                    statusEffect: {
+                        type: 'poisoned',
+                        chance: this.poisonChance,
+                        power: null,
+                        duration: 1  // 1턴 중독
+                    },
+                    element: this.element
+                };
+            }
+        });
+
         // 맹독 폭발 카드 (독 속성, 중독 턴 기반 동적 공격력)
         this.addCard({
             id: 'toxic_blast',
@@ -1387,6 +1440,103 @@ const CardDatabase = {
                     damage: finalDamage,
                     element: this.element,
                     effectiveness: effectiveness
+                };
+            }
+        });
+
+        // 액체갑옷 카드 (독 속성 방어력 3 추가, 100% 발동률)
+        this.addCard({
+            id: 'liquid_armor',
+            nameKey: 'auto_battle_card_game.ui.cards.liquid_armor.name',
+            type: 'defense',
+            element: 'poison',
+            power: 3,
+            accuracy: 100,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.liquid_armor.description',
+            effect: function(user, target, battleSystem) {
+                const defenseValue = this.power;
+                user.addDefense(defenseValue);
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.defense_gained',
+                    defenseGain: defenseValue,
+                    element: this.element
+                };
+            }
+        });
+
+        // 독극물 장벽 카드 (독 속성 방어력 8 추가, 80% 발동률)
+        this.addCard({
+            id: 'toxic_barrier',
+            nameKey: 'auto_battle_card_game.ui.cards.toxic_barrier.name',
+            type: 'defense',
+            element: 'poison',
+            power: 8,
+            accuracy: 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.toxic_barrier.description',
+            effect: function(user, target, battleSystem) {
+                const defenseValue = this.power;
+                user.addDefense(defenseValue);
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.defense_gained',
+                    defenseGain: defenseValue,
+                    element: this.element
+                };
+            }
+        });
+
+        // 이관능성 방패 카드 (독 속성, HP 3 회복 + 방어력 5, 80% 발동률)
+        this.addCard({
+            id: 'bifunctional_shield',
+            nameKey: 'auto_battle_card_game.ui.cards.bifunctional_shield.name',
+            type: 'defense',
+            element: 'poison',
+            power: 5,  // 스탯 표시 (방어력만)
+            accuracy: GameConfig.cardEffects.bifunctionalShield.activationChance * 100,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.bifunctional_shield.description',
+            effect: function(user, target, battleSystem) {
+                const healAmount = GameConfig.cardEffects.bifunctionalShield.healAmount;
+                const defenseValue = GameConfig.cardEffects.bifunctionalShield.defenseGain;
+
+                // HP 회복
+                const actualHealing = user.heal ? user.heal(healAmount) : 0;
+
+                // 방어력 추가
+                user.addDefense(defenseValue);
+
+                return {
+                    success: true,
+                    healAmount: actualHealing,
+                    defenseGain: defenseValue,
+                    element: this.element
+                };
+            }
+        });
+
+        // 거울 반응 카드 (독 속성, 상대 중독 잔여 턴 만큼 방어력, 80% 발동률)
+        this.addCard({
+            id: 'mirror_reaction',
+            nameKey: 'auto_battle_card_game.ui.cards.mirror_reaction.name',
+            type: 'defense',
+            element: 'poison',
+            power: 0,  // 동적 계산: Player.updateRuntimeCardStats()에서 상대 중독 잔여 턴으로 설정
+            accuracy: GameConfig.cardEffects.mirrorReaction.activationChance * 100,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.mirror_reaction.description',
+            effect: function(user, target, battleSystem) {
+                // 동적 방어력: 상대의 중독 잔여 턴수만큼 (Player.updateRuntimeCardStats()에서 계산됨)
+                const defenseValue = this.buffedPower || 0;
+                user.addDefense(defenseValue);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.defense_gained',
+                    defenseGain: defenseValue,
+                    element: this.element
                 };
             }
         });
@@ -1916,6 +2066,47 @@ const CardDatabase = {
                         type: 'burn',
                         chance: this.burnChance,
                         power: GameConfig.statusEffects.burn.defaultPercent,
+                        duration: turnsToExtend
+                    },
+                    element: this.element
+                };
+            }
+        });
+
+        // 맹독 변성 카드 (독 속성, 중독 턴수 2배 증가)
+        this.addCard({
+            id: 'poison_mutation',
+            nameKey: 'auto_battle_card_game.ui.cards.poison_mutation.name',
+            type: 'status',
+            element: 'poison',
+            power: 0,
+            accuracy: 60,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.poison_mutation.description',
+            poisonChance: 100,
+            effect: function(user, target, battleSystem) {
+                // 상대가 중독 상태인지 확인
+                const poisonedEffect = target.statusEffects?.find(e => e.type === 'poisoned');
+                const hasPoisoned = poisonedEffect && poisonedEffect.turnsLeft > 0;
+
+                if (!hasPoisoned) {
+                    // 명중했지만 조건 실패 (중독 상태 아님)
+                    return {
+                        success: true,           // 명중은 성공
+                        conditionFailed: true,   // 조건 실패
+                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        element: this.element
+                    };
+                }
+
+                // 중독 2배 증가 (현재 턴수만큼 추가)
+                const turnsToExtend = poisonedEffect.turnsLeft;
+                return {
+                    success: true,
+                    statusEffect: {
+                        type: 'poisoned',
+                        chance: this.poisonChance,
+                        power: null,
                         duration: turnsToExtend
                     },
                     element: this.element
