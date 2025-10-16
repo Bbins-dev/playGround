@@ -292,6 +292,22 @@
           "name": "スモッグ",
           "description": "敵をスモッグで包み、2のダメージを与え、一定確率で{status:poisoned}状態にします。"
         },
+        "poison_throw": {
+          "name": "毒物投擲",
+          "description": "毒物を投げて3のダメージを与え、3ターンの間{status:poisoned}状態にします。"
+        },
+        "poison_fang": {
+          "name": "毒牙",
+          "description": "小さいが致命的です。3のダメージを与え、5ターンの間{status:poisoned}状態にします。"
+        },
+        "poison_barrage": {
+          "name": "ポイズンバラージ",
+          "description": "毒針を2-5回連発で発射します。命中するたびに低確率で2ターンの間{status:poisoned}状態にします。"
+        },
+        "toxic_blast": {
+          "name": "猛毒爆発",
+          "description": "敵の{status:poisoned}残りターンごとに5ダメージを与えます。"
+        },
         "bandage": {
           "name": "包帯巻き",
           "description": "包帯を巻いて3 {hp}を回復します。"

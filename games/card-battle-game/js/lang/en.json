@@ -292,6 +292,22 @@
           "name": "Smog",
           "description": "Envelop the enemy in smog, dealing 2 damage with a chance to {status:poisoned}."
         },
+        "poison_throw": {
+          "name": "Poison Throw",
+          "description": "Throw poison to deal 3 damage and inflict {status:poisoned} for 3 turns."
+        },
+        "poison_fang": {
+          "name": "Poison Fang",
+          "description": "Small but deadly. Deal 3 damage and inflict {status:poisoned} for 5 turns."
+        },
+        "poison_barrage": {
+          "name": "Poison Barrage",
+          "description": "Rapidly fires poison needles 2-5 times. Each hit has a low chance to inflict {status:poisoned} for 2 turns."
+        },
+        "toxic_blast": {
+          "name": "Toxic Blast",
+          "description": "Deal 5 damage per {status:poisoned} turn remaining on the enemy."
+        },
         "bandage": {
           "name": "Bandage",
           "description": "Wrap bandages to restore 3 {hp}."

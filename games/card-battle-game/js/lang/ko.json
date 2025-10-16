@@ -292,6 +292,22 @@
           "name": "스모그",
           "description": "적을 스모그로 감싸 2의 피해를 입히고 일정확률로 {status:poisoned}시킵니다."
         },
+        "poison_throw": {
+          "name": "독극물 투척",
+          "description": "적에게 3의 피해를 주는 독극물을 투척하고 3턴 간 {status:poisoned}시킵니다."
+        },
+        "poison_fang": {
+          "name": "독 이빨",
+          "description": "작지만 치명적입니다. 3의 피해를 입히고 5턴 간 {status:poisoned}시킵니다."
+        },
+        "poison_barrage": {
+          "name": "독침 연발",
+          "description": "독침을 2-5회 연발로 발사합니다. 명중 시마다 낮은 확률로 2턴 간 {status:poisoned}시킵니다."
+        },
+        "toxic_blast": {
+          "name": "맹독 폭발",
+          "description": "적의 {status:poisoned} 잔여 턴 당 5의 강한 피해를 입힙니다."
+        },
         "bandage": {
           "name": "붕대감기",
           "description": "붕대를 감아 3 {hp}을 회복합니다."
