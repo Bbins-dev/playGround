@@ -300,13 +300,41 @@
           "name": "독 이빨",
           "description": "작지만 치명적입니다. 3의 피해를 입히고 5턴 간 {status:poisoned}시킵니다."
         },
+        "toxic_gas": {
+          "name": "유독가스",
+          "description": "유독가스를 뿌려 상대를 {status:poisoned} 상태로 만듭니다."
+        },
         "poison_barrage": {
           "name": "독침 연발",
           "description": "독침을 2-5회 연발로 발사합니다. 명중 시마다 낮은 확률로 2턴 간 {status:poisoned}시킵니다."
         },
+        "poison_mutation": {
+          "name": "맹독 변성",
+          "description": "상대가 {status:poisoned} 상태라면 잔여 턴 수를 두 배로 증가시킵니다."
+        },
+        "gas_absorption": {
+          "name": "가스 흡수",
+          "description": "상대의 {status:poisoned} 잔여 턴 만큼 {hp}을 회복합니다."
+        },
         "toxic_blast": {
           "name": "맹독 폭발",
           "description": "적의 {status:poisoned} 잔여 턴 당 5의 강한 피해를 입힙니다."
+        },
+        "liquid_armor": {
+          "name": "액체갑옷",
+          "description": "자신에게 {defense} 3을 추가합니다."
+        },
+        "toxic_barrier": {
+          "name": "독극물 장벽",
+          "description": "자신에게 {defense} 8을 추가합니다."
+        },
+        "bifunctional_shield": {
+          "name": "이관능성 방패",
+          "description": "자신의 {hp}을 3 회복하고 {defense}을 5 얻습니다."
+        },
+        "mirror_reaction": {
+          "name": "거울 반응",
+          "description": "상대의 {status:poisoned} 잔여 턴 만큼 {defense}을 얻습니다."
         },
         "bandage": {
           "name": "붕대감기",

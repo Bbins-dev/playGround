@@ -300,13 +300,41 @@
           "name": "Poison Fang",
           "description": "Small but deadly. Deal 3 damage and inflict {status:poisoned} for 5 turns."
         },
+        "toxic_gas": {
+          "name": "Toxic Gas",
+          "description": "Spray toxic gas to inflict {status:poisoned} on the opponent."
+        },
         "poison_barrage": {
           "name": "Poison Barrage",
           "description": "Rapidly fires poison needles 2-5 times. Each hit has a low chance to inflict {status:poisoned} for 2 turns."
         },
+        "poison_mutation": {
+          "name": "Toxic Mutation",
+          "description": "If the target is {status:poisoned}, doubles the remaining poison turns."
+        },
+        "gas_absorption": {
+          "name": "Gas Absorption",
+          "description": "Restore {hp} equal to opponent's remaining {status:poisoned} turns."
+        },
         "toxic_blast": {
           "name": "Toxic Blast",
           "description": "Deal 5 damage per {status:poisoned} turn remaining on the enemy."
+        },
+        "liquid_armor": {
+          "name": "Liquid Armor",
+          "description": "Add 3 {defense} to yourself."
+        },
+        "toxic_barrier": {
+          "name": "Toxic Barrier",
+          "description": "Add 8 {defense} to yourself."
+        },
+        "bifunctional_shield": {
+          "name": "Bifunctional Shield",
+          "description": "Restore 3 {hp} and gain 5 {defense}."
+        },
+        "mirror_reaction": {
+          "name": "Mirror Reaction",
+          "description": "Gain {defense} equal to remaining {status:poisoned} turns on the opponent."
         },
         "bandage": {
           "name": "Bandage",

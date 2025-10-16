@@ -105,7 +105,9 @@ const GameConfig = {
         enabled: false,                         // 프로덕션에서는 false
         showAccuracyRolls: true,               // 명중률 체크 표시
         showStatusEffects: true,               // 상태이상 적용 표시
-        showDamageCalculation: false,          // 데미지 계산 숨김
+        showDamageCalculation: true,           // DOT 데미지 표시
+        showRandomBashCounts: true,            // 랜덤배시 횟수 표시
+        showStatusRolls: true,                 // 상태이상 확률 롤 표시
         showUIEvents: false,                   // UI 이벤트 숨김
         showSystemInitialization: false       // 시스템 초기화 숨김
     },
@@ -2591,6 +2593,10 @@ const GameConfig = {
         oilPour: {
             turnsExtended: 2   // 화상 연장 턴 수
         },
+        // 맹독 변성 카드 설정
+        poisonMutation: {
+            multiplier: 2      // 중독 턴수 배율 (2배 = 현재 턴수만큼 추가)
+        },
         // 화약통 투척 카드 설정
         powderKeg: {
             damage: 10,        // 폭발 데미지
@@ -2609,6 +2615,18 @@ const GameConfig = {
             selfDamage: 15,    // 자해 데미지 15
             power: 15,         // 공격력 15
             wetChance: 100     // 젖음 확률 100%
+        },
+        // 맹독 폭발 카드 설정
+        toxicBlast: {
+            damagePerTurn: 5   // 중독 잔여 턴당 데미지
+        },
+        // 가스 흡수 카드 설정
+        gasAbsorption: {
+            healPerTurn: 1     // 중독 잔여 턴당 회복량
+        },
+        // 거울 반응 카드 설정
+        mirrorReaction: {
+            activationChance: 0.8   // 80% 발동률
         },
         // 회복의 샘 카드 설정
         healingSpring: {
@@ -2650,6 +2668,12 @@ const GameConfig = {
         lightSpeed: {
             activationBonus: 2,    // 발동 횟수 +2
             fixedTurns: 1          // 1턴 고정 지속
+        },
+        // 이관능성 방패 카드 설정
+        bifunctionalShield: {
+            healAmount: 3,         // 회복량
+            defenseGain: 5,        // 방어력 증가량
+            activationChance: 0.8  // 80% 발동률
         }
     },
 

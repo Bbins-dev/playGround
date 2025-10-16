@@ -300,13 +300,41 @@
           "name": "毒牙",
           "description": "小さいが致命的です。3のダメージを与え、5ターンの間{status:poisoned}状態にします。"
         },
+        "toxic_gas": {
+          "name": "有毒ガス",
+          "description": "有毒ガスを噴射して相手を{status:poisoned}状態にします。"
+        },
         "poison_barrage": {
           "name": "ポイズンバラージ",
           "description": "毒針を2-5回連発で発射します。命中するたびに低確率で2ターンの間{status:poisoned}状態にします。"
         },
+        "poison_mutation": {
+          "name": "猛毒変異",
+          "description": "相手が{status:poisoned}状態なら残りターン数を2倍にします。"
+        },
+        "gas_absorption": {
+          "name": "ガス吸収",
+          "description": "相手の{status:poisoned}残りターン分{hp}を回復します。"
+        },
         "toxic_blast": {
           "name": "猛毒爆発",
           "description": "敵の{status:poisoned}残りターンごとに5ダメージを与えます。"
+        },
+        "liquid_armor": {
+          "name": "液体鎧",
+          "description": "自分に{defense}3を追加します。"
+        },
+        "toxic_barrier": {
+          "name": "毒物バリア",
+          "description": "自分に{defense}8を追加します。"
+        },
+        "bifunctional_shield": {
+          "name": "二官能性盾",
+          "description": "自分の{hp}を3回復し、{defense}を5獲得します。"
+        },
+        "mirror_reaction": {
+          "name": "ミラーリアクション",
+          "description": "相手の{status:poisoned}残りターン分の{defense}を得ます。"
         },
         "bandage": {
           "name": "包帯巻き",
