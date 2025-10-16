@@ -141,7 +141,6 @@ class GameManager {
     async waitForI18nReady() {
         // i18n 시스템이 이미 준비되어 있는지 확인
         if (window.i18nSystem && window.i18nSystem.isReady) {
-            console.log('[GameManager] i18n system already ready');
             return;
         }
 
@@ -152,7 +151,6 @@ class GameManager {
         return new Promise((resolve) => {
             const checkI18n = () => {
                 if (window.i18nSystem && window.i18nSystem.isReady) {
-                    console.log('[GameManager] i18n system is ready');
                     resolve();
                 } else if (Date.now() - startTime > maxWaitTime) {
                     console.warn('[GameManager] i18n system timeout, proceeding anyway');
@@ -183,7 +181,6 @@ class GameManager {
                 },
                 // 완료 콜백
                 () => {
-                    console.log('[GameManager] All audio assets loaded');
                     resolve();
                 }
             );
@@ -207,7 +204,6 @@ class GameManager {
 
     // 레이아웃 안정화 대기
     async waitForLayoutStabilization() {
-
         return new Promise((resolve) => {
             // requestAnimationFrame을 두 번 호출하여 레이아웃 재계산 완료 보장
             requestAnimationFrame(() => {
@@ -364,7 +360,6 @@ class GameManager {
 
     // 화면 전환
     switchScreen(screenName) {
-
         this.gameState = screenName;
 
         switch (screenName) {
@@ -499,7 +494,6 @@ class GameManager {
 
     // 새 게임 초기화
     initializeNewGame() {
-
         // 게임 통계 초기화
         this.initializeGameStats();
 
@@ -521,7 +515,6 @@ class GameManager {
 
     // 새 게임 시작 (메인 메뉴에서 호출)
     startNewGame() {
-
         // 게임 통계 초기화
         this.initializeGameStats();
 
@@ -540,7 +533,6 @@ class GameManager {
 
     // 플레이어 이름 확정 후 처리
     onPlayerNameConfirmed(playerName) {
-
         // 플레이어 생성
         this.player = new Player(playerName, true);
 
@@ -569,7 +561,6 @@ class GameManager {
 
     // 초기 카드 설정
     async setInitialCards(cardIds) {
-
         // 플레이어가 없으면 생성 (기본 이름 사용)
         if (!this.player) {
             const defaultName = I18nHelper.getText('auto_battle_card_game.ui.default_player_name') || '플레이어';
@@ -588,7 +579,6 @@ class GameManager {
 
     // 보상 카드 추가 (손패 왼쪽에 추가)
     async addRewardCard(cardId) {
-
         if (this.player && this.cardManager) {
             // 'left' 옵션으로 손패 왼쪽에 추가
             this.cardManager.addCardToPlayer(this.player, cardId, 'left');
@@ -688,7 +678,6 @@ class GameManager {
 
     // 전투 종료
     endBattle(winner) {
-
         if (winner === this.player) {
             // 플레이어 승리
             this.handlePlayerVictory();
@@ -805,7 +794,6 @@ class GameManager {
      */
     async proceedToNextStage() {
         try {
-
             // 스테이지 증가
             this.currentStage++;
 
@@ -1079,7 +1067,6 @@ class GameManager {
         if (this.uiManager) {
             this.uiManager.handleResize();
         }
-
     }
 
     // Canvas 크기 동적 업데이트 (Configuration-Driven)
@@ -1098,7 +1085,6 @@ class GameManager {
             x: 1,
             y: 1
         };
-
     }
 
     // CSS 변수와 GameConfig 동기화 - Configuration-Driven Development
@@ -1388,7 +1374,6 @@ class GameManager {
 
         // CSS 변수로 설정
         root.style.setProperty('--viewport-scale', optimalScale);
-
     }
 
     // 윈도우 리사이즈 핸들러
@@ -1424,8 +1409,6 @@ class GameManager {
         if (this.uiManager) {
             this.uiManager.updateSpeedButton(speed);
         }
-
-        // 게임 속도 설정 완료
     }
 
     // 게임 데이터 로드 (저장된 게임)
@@ -1489,7 +1472,6 @@ class GameManager {
         this.boundEventListeners.forEach(({ element, event, handler, useCapture = false }) => {
             element.removeEventListener(event, handler, useCapture);
         });
-
     }
 
     // 게임 통계 초기화
@@ -1817,11 +1799,8 @@ class GameManager {
     // 중앙 대미지 기록 시스템 (확장성과 정확성을 위한 통합 메서드)
     recordDamage(source, target, amount, damageType = 'normal') {
         if (!this.gameStats || typeof amount !== 'number' || amount < 0) {
-            console.warn('GameManager.recordDamage: Invalid parameters', { source, target, amount, damageType });
             return;
         }
-
-        console.log(`[STATS] Recording damage: ${source} → ${target}, ${amount} (${damageType})`);
 
         // 플레이어가 받은 모든 대미지 기록 (방어력으로 막힌 것도 포함)
         if (target === 'player') {

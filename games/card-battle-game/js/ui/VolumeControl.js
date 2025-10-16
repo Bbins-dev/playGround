@@ -46,8 +46,6 @@ class VolumeControl {
 
         // 초기화
         this.init();
-
-        console.log('[VolumeControl] Initialized');
     }
 
     /**
@@ -62,8 +60,6 @@ class VolumeControl {
 
         // AudioSystem에 초기 볼륨 적용
         this.applyVolumesToAudioSystem();
-
-        console.log(`[VolumeControl] Initialized with volumes: BGM ${this.volumes.bgm}%, SFX ${this.volumes.sfx}%`);
     }
 
     /**
@@ -245,8 +241,6 @@ class VolumeControl {
 
         // LocalStorage에 저장
         this.saveVolume(type, value);
-
-        console.log(`[VolumeControl] ${type.toUpperCase()} volume changed to ${value}%`);
     }
 
     /**
@@ -256,7 +250,6 @@ class VolumeControl {
         if (!this.settingsModal) return;
 
         this.settingsModal.classList.remove('hidden');
-        console.log('[VolumeControl] Settings modal shown');
     }
 
     /**
@@ -266,7 +259,6 @@ class VolumeControl {
         if (!this.settingsModal) return;
 
         this.settingsModal.classList.add('hidden');
-        console.log('[VolumeControl] Settings modal hidden');
     }
 
     /**
@@ -292,7 +284,6 @@ class VolumeControl {
 
         this.volumePopupPanel.classList.remove('hidden');
         this.volumeControlBtn.classList.add('active');
-        console.log('[VolumeControl] Volume popup shown');
     }
 
     /**
@@ -303,7 +294,6 @@ class VolumeControl {
 
         this.volumePopupPanel.classList.add('hidden');
         this.volumeControlBtn.classList.remove('active');
-        console.log('[VolumeControl] Volume popup hidden');
     }
 
     /**
@@ -333,7 +323,5 @@ class VolumeControl {
         // 팝업 닫기
         this.hideVolumePopup();
         this.hideSettingsModal();
-
-        console.log('[VolumeControl] Disposed');
     }
 }

@@ -603,6 +603,20 @@ class Player {
                     // 조건 충족 시 계속 진행하여 버프 적용
                 }
 
+                // toxic_blast 카드: 적의 중독 잔여 턴 × 5 (동적 계산)
+                if (card.id === 'toxic_blast' && target) {
+                    const poisonedEffect = target.statusEffects?.find(e => e.type === 'poisoned');
+                    const poisonedTurns = poisonedEffect ? poisonedEffect.turnsLeft : 0;
+                    buffedPower = poisonedTurns * (GameConfig?.cardEffects?.toxicBlast?.damagePerTurn || 5);
+
+                    // 조건 미충족 시 버프 계산 건너뛰기 (질량 버프 등 미적용)
+                    if (poisonedTurns === 0) {
+                        card.buffedPower = 0;
+                        return;
+                    }
+                    // 조건 충족 시 계속 진행하여 버프 적용
+                }
+
                 // electric_shock 카드: 적이 젖음 상태일 때 기본 공격력 3배 (3 → 9)
                 if (card.id === 'electric_shock' && target) {
                     const hasWet = target.hasStatusEffect('wet');
@@ -680,6 +694,19 @@ class Player {
                     buffedHealAmount = this.lastDamageTaken || 0;
                 }
 
+                // gas_absorption 카드: 적의 중독 잔여 턴 × 1 (동적 계산)
+                if (card.id === 'gas_absorption' && target) {
+                    const poisonedEffect = target.statusEffects?.find(e => e.type === 'poisoned');
+                    const poisonedTurns = poisonedEffect ? poisonedEffect.turnsLeft : 0;
+                    buffedHealAmount = poisonedTurns * (GameConfig?.cardEffects?.gasAbsorption?.healPerTurn || 1);
+
+                    // 조건 미충족 시 버프 계산 건너뛰기
+                    if (poisonedTurns === 0) {
+                        card.buffedPower = 0;
+                        return;
+                    }
+                }
+
                 // 향후 회복 관련 버프 추가 가능 (예: 회복량 증가 버프)
 
                 card.buffedPower = buffedHealAmount;  // power에 할당하여 UI 통합
@@ -698,6 +725,15 @@ class Player {
                 if (card.id === 'high_voltage_gloves' && target) {
                     const hasParalysis = target.hasStatusEffect('paralysis');
                     buffedDefense = hasParalysis ? 15 : 0;
+                    card.buffedPower = buffedDefense;
+                    return;
+                }
+
+                // mirror_reaction 카드: 상대의 중독 잔여 턴수만큼 방어력 획득
+                if (card.id === 'mirror_reaction' && target) {
+                    const poisonEffect = target.statusEffects?.find(e => e.type === 'poisoned');
+                    const poisonTurns = poisonEffect ? poisonEffect.turnsLeft : 0;
+                    buffedDefense = poisonTurns;
                     card.buffedPower = buffedDefense;
                     return;
                 }
@@ -775,9 +811,9 @@ class Player {
                 card.activationCount = card.getRandomActivationCount();
                 card.currentActivations = 0;
 
-                // 거품타격 카드 발동 횟수 디버그 로그
-                if (card.id === 'bubble_strike') {
-                    console.log(`거품타격 카드 발동 횟수: ${card.activationCount}회`);
+                // 랜덤배시 카드 발동 횟수 디버그 로그
+                if (GameConfig?.debugMode?.showRandomBashCounts) {
+                    console.log(`[RANDOM BASH] ${card.name || card.id}: ${card.activationCount}회 발동`);
                 }
             } else {
                 // 일반 카드들은 currentActivations만 리셋
