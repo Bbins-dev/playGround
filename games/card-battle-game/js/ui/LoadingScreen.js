@@ -28,8 +28,6 @@ class LoadingScreen {
 
         // 최소 로딩 시간 (GameConfig에서 가져오기)
         this.minimumLoadTime = GameConfig?.audio?.loading?.minimumLoadTime || 500;
-
-        console.log('[LoadingScreen] Initialized');
     }
 
     /**
@@ -51,8 +49,6 @@ class LoadingScreen {
         if (this.loadingProgressText) {
             this.loadingProgressText.textContent = '0/0 files loaded';
         }
-
-        console.log('[LoadingScreen] Showing loading screen');
     }
 
     /**
@@ -84,8 +80,6 @@ class LoadingScreen {
 
         // 진행률 텍스트 업데이트
         this.loadingProgressText.textContent = `${loaded}/${total} files loaded`;
-
-        console.log(`[LoadingScreen] Progress: ${loaded}/${total} (${progress.toFixed(1)}%)`);
     }
 
     /**
@@ -103,8 +97,6 @@ class LoadingScreen {
         const elapsedTime = Date.now() - this.startTime;
         const remainingTime = Math.max(0, this.minimumLoadTime - elapsedTime);
 
-        console.log(`[LoadingScreen] Elapsed: ${elapsedTime}ms, Remaining: ${remainingTime}ms`);
-
         // 최소 로딩 시간이 남았으면 대기
         if (remainingTime > 0) {
             await new Promise(resolve => setTimeout(resolve, remainingTime));
@@ -119,8 +111,6 @@ class LoadingScreen {
         // 완전히 숨기기
         this.loadingScreen.classList.add('hidden');
 
-        console.log('[LoadingScreen] Hidden');
-
         // 콜백 실행
         if (onHidden) {
             onHidden();
@@ -133,7 +123,6 @@ class LoadingScreen {
     hideImmediately() {
         if (this.loadingScreen) {
             this.loadingScreen.classList.add('hidden');
-            console.log('[LoadingScreen] Hidden immediately');
         }
     }
 
@@ -147,7 +136,6 @@ class LoadingScreen {
         }
 
         this.startButton.classList.remove('hidden');
-        console.log('[LoadingScreen] Start button shown');
     }
 
     /**
@@ -168,7 +156,6 @@ class LoadingScreen {
                     this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
                 }
                 this.startButton.removeEventListener('click', clickHandler);
-                console.log('[LoadingScreen] User clicked start button');
                 resolve();
             };
 

@@ -41,8 +41,6 @@ class AudioSystem {
         this.isLoading = false;
         this.loadedCount = 0;
         this.totalCount = 0;
-
-        console.log('[AudioSystem] Initialized');
     }
 
     /**
@@ -90,8 +88,6 @@ class AudioSystem {
             // 캐시에 저장
             this.audioCache[bgmKey] = audio;
 
-            console.log(`[AudioSystem] Created audio for '${bgmKey}': ${fullPath}`);
-
             return audio;
         } catch (error) {
             console.error(`[AudioSystem] Error creating audio for '${bgmKey}':`, error);
@@ -121,7 +117,6 @@ class AudioSystem {
         try {
             // 이미 같은 BGM이 재생 중이면 무시
             if (this.currentBGMKey === bgmKey && this.currentBGM && !this.currentBGM.paused) {
-                console.log(`[AudioSystem] BGM '${bgmKey}' is already playing`);
                 return true;
             }
 
@@ -165,7 +160,6 @@ class AudioSystem {
             this.currentBGM = audio;
             this.currentBGMKey = bgmKey;
 
-            console.log(`[AudioSystem] Playing BGM: ${bgmKey} (loop: ${loop}, fade: ${fade})`);
             return true;
 
         } catch (error) {
@@ -194,8 +188,6 @@ class AudioSystem {
             audio.pause();
             audio.currentTime = 0;
 
-            console.log(`[AudioSystem] Stopped BGM: ${this.currentBGMKey}`);
-
             this.currentBGM = null;
             this.currentBGMKey = null;
 
@@ -211,7 +203,6 @@ class AudioSystem {
      */
     pauseAndSaveBGM() {
         if (!this.currentBGM || !this.currentBGMKey) {
-            console.log('[AudioSystem] No BGM to pause');
             return false;
         }
 
@@ -227,8 +218,6 @@ class AudioSystem {
 
             // 일시정지
             this.currentBGM.pause();
-
-            console.log(`[AudioSystem] Paused and saved BGM: ${this.currentBGMKey} (time: ${savedState.currentTime})`);
 
             // 현재 BGM 초기화 (새 BGM 재생 가능하도록)
             this.currentBGM = null;
@@ -249,7 +238,6 @@ class AudioSystem {
      */
     async restorePreviousBGM() {
         if (this.bgmStack.length === 0) {
-            console.log('[AudioSystem] No previous BGM to restore');
             return false;
         }
 
@@ -287,7 +275,6 @@ class AudioSystem {
             this.currentBGM = audio;
             this.currentBGMKey = savedState.key;
 
-            console.log(`[AudioSystem] Restored BGM: ${savedState.key} (time: ${savedState.currentTime})`);
             return true;
 
         } catch (error) {
@@ -323,8 +310,6 @@ class AudioSystem {
                 this.currentBGM.volume = this.getEffectiveVolume('bgm');
             }
         }
-
-        console.log(`[AudioSystem] Volume ${type} set to ${clampedValue.toFixed(2)}`);
     }
 
     /**
@@ -392,7 +377,6 @@ class AudioSystem {
      */
     async preloadAll(onProgress, onComplete) {
         if (this.isLoading) {
-            console.warn('[AudioSystem] Already loading');
             return;
         }
 
@@ -414,8 +398,6 @@ class AudioSystem {
             const bgmKeys = Object.keys(GameConfig?.audio?.bgm || {});
             const sfxKeys = Object.keys(GameConfig?.audio?.sfx || {});
             this.totalCount = bgmKeys.length + sfxKeys.length;
-
-            console.log(`[AudioSystem] Preloading ${bgmKeys.length} BGM + ${sfxKeys.length} SFX files (${this.totalCount} total)...`);
 
             // 초기 진행률 표시 (0/total)
             if (onProgress) {
@@ -465,8 +447,6 @@ class AudioSystem {
                         onProgress(this.loadedCount, this.totalCount);
                     }
 
-                    console.log(`[AudioSystem] Loaded ${type.toUpperCase()}: ${key} (${this.loadedCount}/${this.totalCount})`);
-
                 } catch (error) {
                     console.error(`[AudioSystem] Failed to load ${type} '${key}':`, error);
                     // 실패해도 계속 진행
@@ -479,8 +459,6 @@ class AudioSystem {
 
             // 모든 로드 대기
             await Promise.all(loadPromises);
-
-            console.log('[AudioSystem] All audio files loaded');
 
             // 완료 콜백 호출
             if (onComplete) {
@@ -529,8 +507,6 @@ class AudioSystem {
 
             // 캐시에 저장
             this.audioCache[cacheKey] = audio;
-
-            console.log(`[AudioSystem] Created SFX for '${sfxKey}': ${fullPath}`);
 
             return audio;
         } catch (error) {
@@ -587,7 +563,5 @@ class AudioSystem {
 
         // 스택 초기화
         this.bgmStack = [];
-
-        console.log('[AudioSystem] Disposed');
     }
 }

@@ -855,6 +855,27 @@ class BattleSystem {
         const defenseGain = result.defenseGain || 0;
         const selfDamage = result.selfDamage || 0;
 
+        // 회복 처리 (이관능성 방패 등 회복+방어력 복합 카드)
+        const healAmount = result.healAmount || 0;
+        if (healAmount > 0) {
+            // 회복 메시지 표시
+            let template = I18nHelper.getText('auto_battle_card_game.ui.templates.heal_effect');
+            if (!template) {
+                template = '❤️ HP +{value}'; // fallback
+            }
+            const message = template.replace('{value}', healAmount);
+            await this.effectSystem.showDamageNumber(healAmount, userPosition, 'heal', message);
+
+            // HP바 즉시 업데이트
+            const isPlayer = (user === this.player);
+            if (this.hpBarSystem) {
+                this.hpBarSystem.updateHP(user, isPlayer);
+            }
+
+            // 회복 후 런타임 스탯 재계산 (질량 버프 등 HP 기반 계산 즉시 반영)
+            user.updateRuntimeCardStats();
+        }
+
         if (defenseGain > 0) {
             // 방어력 숫자 연출 표시 - 기존 방어력 전용 메서드 사용 (은색 표시)
             await this.effectSystem.showDefenseGainMessage(userPosition, defenseGain);
@@ -916,6 +937,10 @@ class BattleSystem {
         // 1. 확률 체크
         if (statusInfo.chance < 100) {
             const roll = Math.random() * 100;
+            if (GameConfig?.debugMode?.showStatusRolls) {
+                const result = roll < statusInfo.chance ? '✓' : '✗';
+                console.log(`[STATUS ROLL] ${statusInfo.type} → ${target.name}: ${statusInfo.chance.toFixed(1)}% (roll: ${roll.toFixed(1)}) ${result}`);
+            }
             if (roll >= statusInfo.chance) {
                 // 확률 실패 - 메시지 없음
                 return { success: false, reason: 'missed_chance' };
