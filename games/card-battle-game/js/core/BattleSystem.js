@@ -684,6 +684,50 @@ class BattleSystem {
             await this.effectSystem.showBuffEffect('poisonNeedle', user, result.poisonNeedleGain);
         }
 
+        // 유황 버프 획득 처리 (유황 온천 카드) - 새로운 통합 메서드 사용
+        if (result.sulfurGain && result.sulfurGain > 0) {
+            await this.effectSystem.showBuffEffect('sulfur', user, result.sulfurGain);
+
+            // ★ 선제적 정화: 얼음 상태이상 제거 시 UI 즉시 동기화
+            if (result.frozenCleansed) {
+                const isUserPlayer = (user === this.player);
+                this.hpBarSystem.updateStatusEffects(user, isUserPlayer);
+
+                // 플레이어의 상태이상 테두리 효과 업데이트
+                if (isUserPlayer && this.gameManager?.uiManager) {
+                    this.gameManager.uiManager.updateStatusBorder();
+                }
+
+                // 정화 메시지 표시 (시각적 피드백)
+                const userPosition = isUserPlayer ?
+                    this.effectSystem.getPlayerPosition() :
+                    this.effectSystem.getEnemyPosition();
+                await this.effectSystem.showEffectMessage('frozen', userPosition, 'status_cleansed');
+            }
+        }
+
+        // 코팅 버프 획득 처리 (액체 코팅 카드) - 새로운 통합 메서드 사용
+        if (result.coatingGain && result.coatingGain > 0) {
+            await this.effectSystem.showBuffEffect('coating', user, result.coatingGain);
+
+            // ★ 선제적 정화: 화상 상태이상 제거 시 UI 즉시 동기화
+            if (result.burnCleansed) {
+                const isUserPlayer = (user === this.player);
+                this.hpBarSystem.updateStatusEffects(user, isUserPlayer);
+
+                // 플레이어의 상태이상 테두리 효과 업데이트
+                if (isUserPlayer && this.gameManager?.uiManager) {
+                    this.gameManager.uiManager.updateStatusBorder();
+                }
+
+                // 정화 메시지 표시 (시각적 피드백)
+                const userPosition = isUserPlayer ?
+                    this.effectSystem.getPlayerPosition() :
+                    this.effectSystem.getEnemyPosition();
+                await this.effectSystem.showEffectMessage('burn', userPosition, 'status_cleansed');
+            }
+        }
+
         // 정화 효과 처리 (정화 카드)
         if (result.purified) {
             const userPosition = user.isPlayer ?
@@ -1043,6 +1087,12 @@ class BattleSystem {
             // 면역 - 방어속성으로 인한 면역
             await this.effectSystem.showEffectMessage(statusInfo.type, targetPosition, 'status_immune');
             return { success: false, immune: true, statusType: statusInfo.type };
+        } else if (result.reason === 'buff_immune') {
+            // 버프 면역 - 유황/코팅 버프로 인한 면역
+            const buffType = result.buffType; // 'sulfur' or 'coating'
+            const messageKey = `${buffType}_immune`; // 'sulfur_immune' or 'coating_immune'
+            await this.effectSystem.showEffectMessage(buffType, targetPosition, messageKey);
+            return { success: false, buffImmune: true, buffType: buffType };
         }
 
         // 기타 실패 (invalid_input, invalid_status 등)

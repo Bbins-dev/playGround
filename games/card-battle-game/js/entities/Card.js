@@ -12,6 +12,7 @@ class Card {
         this.activationCount = cardData.activationCount || 1;
         this.description = cardData.description || ''; // 백업용
         this.isRandomBash = cardData.isRandomBash || false;
+        this.isRandomHeal = cardData.isRandomHeal || false;
 
         // 카드 효과 (함수)
         this.effect = cardData.effect || this.defaultEffect;
@@ -207,7 +208,7 @@ class Card {
 
             // 발동횟수 - 랜덤 카드는 범위 표시
             if (this.modifiedActivationCount !== undefined) {
-                if (this.isRandomBash && this.minActivation !== undefined && this.maxActivation !== undefined) {
+                if ((this.isRandomBash || this.isRandomHeal) && this.minActivation !== undefined && this.maxActivation !== undefined) {
                     // 랜덤 카드: 버프 적용된 범위 표시 (예: "2-5" → "3-6")
                     const bonus = this.modifiedActivationCount - this.activationCount;
                     stats.activation = `${this.minActivation + bonus}-${this.maxActivation + bonus}`;
@@ -217,14 +218,14 @@ class Card {
                 }
             } else {
                 // 버프 없을 때: 기본 표시
-                stats.activation = this.isRandomBash ? this.getDisplayActivationCount() : this.activationCount;
+                stats.activation = (this.isRandomBash || this.isRandomHeal) ? this.getDisplayActivationCount() : this.activationCount;
             }
         } else {
             // 기본값 - 원래 카드 스펙
             stats.power = this.power;
             stats.accuracy = this.accuracy;
             // 랜덤 발동 카드는 범위 문자열 반환 (예: "1-3")
-            stats.activation = this.isRandomBash ? this.getDisplayActivationCount() : this.activationCount;
+            stats.activation = (this.isRandomBash || this.isRandomHeal) ? this.getDisplayActivationCount() : this.activationCount;
         }
 
         return stats;
@@ -239,7 +240,7 @@ class Card {
 
     // 발동횟수 표시용 (랜덤 발동 카드는 "2-5", 일반 카드는 숫자)
     getDisplayActivationCount() {
-        if (this.isRandomBash) {
+        if (this.isRandomBash || this.isRandomHeal) {
             // 자동으로 범위 생성 (Configuration-Driven - 하드코딩 제거)
             if (this.minActivation !== undefined && this.maxActivation !== undefined) {
                 return `${this.minActivation}-${this.maxActivation}`;

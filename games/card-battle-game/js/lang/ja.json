@@ -338,6 +338,14 @@
           "name": "毒針",
           "description": "1ターンの間{buff:poisonNeedle}を得る。{poison}{cardType:attack}カードの{accuracy}が20%増加する。"
         },
+        "sulfur_spring": {
+          "name": "硫黄温泉",
+          "description": "1ターンの間{buff:sulfur}バフを得る。{status:frozen}状態にならない。"
+        },
+        "liquid_coating": {
+          "name": "液コート",
+          "description": "1ターンの間{buff:coating}バフを得る。{status:burn}状態にならない。"
+        },
         "gas_absorption": {
           "name": "ガス吸収",
           "description": "相手の{status:poisoned}残りターン分{hp}を回復します。"
@@ -365,6 +373,14 @@
         "bandage": {
           "name": "包帯巻き",
           "description": "包帯を巻いて3 {hp}を回復します。"
+        },
+        "first_aid": {
+          "name": "応急処置",
+          "description": "8 {hp}を回復します。"
+        },
+        "nutrient_supplement": {
+          "name": "栄養剤",
+          "description": "3 {hp}を1-3回回復します。"
         },
         "miracle_revival": {
           "name": "起死回生",
@@ -616,7 +632,11 @@
         "propagation": "伝播",
         "propagation_description": "毒属性攻撃カードの発動回数が増加します。1ターン持続します。",
         "poisonNeedle": "毒針",
-        "poisonNeedle_description": "毒属性攻撃カードの命中率が20%増加します。1ターン持続します。"
+        "poisonNeedle_description": "毒属性攻撃カードの命中率が20%増加します。1ターン持続します。",
+        "sulfur": "硫黄",
+        "sulfur_description": "氷結状態異常を無効化します。",
+        "coating": "コート",
+        "coating_description": "火傷状態異常を無効化します。"
       },
       "elements": {
         "fire": "火",
@@ -687,6 +707,9 @@
         "status_applied": "{name}!!",
         "already_status": "すでに{name}!",
         "status_immune": "{name} 無効!",
+        "sulfur_immune": "硫黄!",
+        "coating_immune": "コート!",
+        "status_cleansed": "浄化！",
         "paralysis_triggered": "⚡ 麻痺！",
         "phase_self_attack": "🌀 自分攻撃！",
         "burn_extended": "🔥 火傷+{value}ターン!",

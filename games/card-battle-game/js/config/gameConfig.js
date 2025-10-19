@@ -169,7 +169,9 @@ const GameConfig = {
             lightSpeed: '#FFD700',    // 광속 - 금색 (전기 속성 색상, 빛의 속도)
             lightningRod: '#FFA500',  // 피뢰침 - 오렌지 (전기 속성 색상, 번개봉)
             pack: '#00CED1',          // 팩 - 다크 터쿼이즈 (전기 에너지, 배터리 느낌)
-            propagation: '#9B59B6'    // 연쇄 - 보라색 (독 속성, 화학 반응 전파)
+            propagation: '#9B59B6',   // 연쇄 - 보라색 (독 속성, 화학 반응 전파)
+            sulfur: '#FFD700',        // 유황 - 황금색 (온천, 얼음 면역)
+            coating: '#4682B4'        // 코팅 - 스틸 블루 (방어막, 화상 면역)
         },
 
         // 체력 라벨 색상
@@ -1062,6 +1064,36 @@ const GameConfig = {
             },
             effect: {
                 accuracy: 20  // 20% 증가 (곱셈 계산)
+            }
+        },
+        sulfur: {
+            nameKey: 'auto_battle_card_game.ui.buffs.sulfur',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.sulfur_description',
+            name: '유황',
+            emoji: '♨️',
+            description: '얼음 상태이상에 면역',
+            get color() { return GameConfig.masterColors.buffs.sulfur; }, // 황금색
+            get maxStack() { return GameConfig.constants.limits.maxBuffStacks; }, // 최대 중첩 수 (턴수 누적)
+            targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'duration', // 턴 추가 방식 (sulfurTurns)
+            display: {
+                showValue: true,
+                format: '({value})'
+            }
+        },
+        coating: {
+            nameKey: 'auto_battle_card_game.ui.buffs.coating',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.coating_description',
+            name: '코팅',
+            emoji: '🛡️',
+            description: '화상 상태이상에 면역',
+            get color() { return GameConfig.masterColors.buffs.coating; }, // 스틸 블루
+            get maxStack() { return GameConfig.constants.limits.maxBuffStacks; }, // 최대 중첩 수 (턴수 누적)
+            targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'duration', // 턴 추가 방식 (coatingTurns)
+            display: {
+                showValue: true,
+                format: '({value})'
             }
         }
     },
@@ -2668,6 +2700,16 @@ const GameConfig = {
         poisonNeedle: {
             poisonNeedleGain: 1,  // 독침 버프 획득량 (턴수)
             accuracy: 80          // 명중률 (80%)
+        },
+        // 유황 온천 카드 설정
+        sulfurSpring: {
+            sulfurGain: 1,  // 유황 버프 획득량 (턴수)
+            accuracy: 80    // 명중률 (80%)
+        },
+        // 액체 코팅 카드 설정
+        liquidCoating: {
+            coatingGain: 1,  // 코팅 버프 획득량 (턴수)
+            accuracy: 80     // 명중률 (80%)
         },
         // 화약통 투척 카드 설정
         powderKeg: {
