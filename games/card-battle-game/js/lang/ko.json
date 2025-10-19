@@ -736,7 +736,8 @@
         "purification_no_status": "상태이상 없음!",
         "high_voltage_current_success": "⚡ 고압 전류!",
         "light_speed_buff_gained": "⚡ 광속 +{value}({turns})!",
-        "catalyst_success": "☠️ 촉진!"
+        "catalyst_success": "☠️ 촉진!",
+        "mirror_reaction_no_poison": "중독 없음!"
       },
       "card_selection": {
         "initial_title": "시작 카드 선택",

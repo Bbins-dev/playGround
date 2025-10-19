@@ -737,7 +737,8 @@
         "light_speed_buff_gained": "⚡ 光速 +{value}({turns})!",
         "pack_heal": "🔋 パック +{value}!",
         "catalyst_success": "☠️ 触媒!",
-        "inhibitor_success": "☠️ 抑制!"
+        "inhibitor_success": "☠️ 抑制!",
+        "mirror_reaction_no_poison": "毒なし!"
       },
       "card_selection": {
         "initial_title": "スタートカード選択",
