@@ -117,7 +117,7 @@
         "poisoned": "Poison",
         "poisoned_description": "Take damage equal to remaining turns at turn end.",
         "sand": "Sand",
-        "sand_description": "Reduces attack card accuracy by 30%. Lasts for 2 turns.",
+        "sand_description": "Reduces attack card {accuracy} by 30%. Lasts for 2 turns.",
         "insult": "Insult",
         "insult_description": "Reduces defense card activation rate by 30%. Lasts for 2 turns.",
         "slow": "Slow",
@@ -127,7 +127,9 @@
         "wet": "Wet",
         "wet_description": "Soaking wet.",
         "frozen": "Frozen",
-        "frozen_description": "Attack card accuracy is reduced by 50%. Lasts for 1 turn."
+        "frozen_description": "Attack card {accuracy} is reduced by 50%. Lasts for 1 turn.",
+        "oblivion": "Oblivion",
+        "oblivion_description": "Activation count buffs are not applied for 1 turn. Cards activate at their base activation count."
       },
       "buffs": {
       },
@@ -304,6 +306,14 @@
           "name": "Toxic Gas",
           "description": "Spray toxic gas to inflict {status:poisoned} on the opponent."
         },
+        "sticky_liquid": {
+          "name": "Sticky Liquid",
+          "description": "Wrap the enemy in sticky liquid, causing {status:slow} status for 1 turn."
+        },
+        "oblivion_draught": {
+          "name": "Oblivion Draught",
+          "description": "Makes the opponent {status:oblivion} for 1 turn. {status:oblivion} does not stack."
+        },
         "poison_barrage": {
           "name": "Poison Barrage",
           "description": "Rapidly fires poison needles 2-5 times. Each hit has a low chance to inflict {status:poisoned} for 2 turns."
@@ -311,6 +321,22 @@
         "poison_mutation": {
           "name": "Toxic Mutation",
           "description": "If the target is {status:poisoned}, doubles the remaining poison turns."
+        },
+        "catalyst": {
+          "name": "Catalyst",
+          "description": "Adds 1 turn to all turn-based {cardType:status} effects currently on the opponent."
+        },
+        "inhibitor": {
+          "name": "Inhibitor",
+          "description": "Reduces 1 turn from all turn-based {cardType:status} effects currently on yourself."
+        },
+        "chain_reaction": {
+          "name": "Chain Reaction",
+          "description": "Gain {buff:propagation} for 1 turn. {poison} {cardType:attack} cards gain +1 activation."
+        },
+        "poison_needle": {
+          "name": "Poison Needle",
+          "description": "Gain {buff:poisonNeedle} for 1 turn. Increases {accuracy} of {poison} {cardType:attack} cards by 20%."
         },
         "gas_absorption": {
           "name": "Gas Absorption",
@@ -354,7 +380,7 @@
         },
         "sand_throw": {
           "name": "Sand Throw",
-          "description": "Throw {status:sand} in opponent's eyes, reducing {cardType:attack} card accuracy by 30% for 1 turn"
+          "description": "Throw {status:sand} in opponent's eyes, reducing {cardType:attack} card {accuracy} by 30% for 1 turn"
         },
         "mud_bath": {
           "name": "Mud Bath",
@@ -402,7 +428,7 @@
         },
         "focus": {
           "name": "Focus",
-          "description": "Increases {normal} {cardType:attack} card accuracy by 30% for one turn."
+          "description": "Increases {normal} {cardType:attack} card {accuracy} by 30% for one turn."
         },
         "fast_attack": {
           "name": "Fast Attack",
@@ -550,7 +576,7 @@
         },
         "super_conductivity": {
           "name": "Superconductivity",
-          "description": "Increases {electric}{cardType:attack} card accuracy by 40% for one turn. {buff:superConductivity} does not stack."
+          "description": "Increases {electric}{cardType:attack} card {accuracy} by 40% for one turn. {buff:superConductivity} does not stack."
         }
       },
       "buffs": {
@@ -560,7 +586,7 @@
         "enhance": "ENH",
         "enhance_description": "Increases attack card damage by 50%. Effect disappears after turn ends.",
         "focus": "FOC",
-        "focus_description": "Increases normal element attack card accuracy by 30%.",
+        "focus_description": "Increases normal element attack card {accuracy} by 30%.",
         "speed": "SPD",
         "speed_description": "Increases the activation count of normal element attack cards.",
         "scent": "SCN",
@@ -582,11 +608,15 @@
         "lightSpeed": "L.SPEED",
         "lightSpeed_description": "Increases electric attack card activation count.",
         "superConductivity": "S.COND",
-        "superConductivity_description": "Increases electric attack card accuracy by 40%.",
+        "superConductivity_description": "Increases electric attack card {accuracy} by 40%.",
         "lightningRod": "L.ROD",
         "lightningRod_description": "Next electric attack card is guaranteed to hit. One-time use, does not stack.",
         "pack": "PACK",
-        "pack_description": "Restore HP equal to Pack value × 8 at turn start. Disappears immediately after healing. Stackable."
+        "pack_description": "Restore HP equal to Pack value × 8 at turn start. Disappears immediately after healing. Stackable.",
+        "propagation": "PROP",
+        "propagation_description": "Poison attack cards gain additional activations. Lasts for 1 turn.",
+        "poisonNeedle": "P.NDL",
+        "poisonNeedle_description": "Increases accuracy of poison attack cards by 20%. Lasts for 1 turn."
       },
       "elements": {
         "fire": "Fire",
@@ -620,7 +650,8 @@
       "hp_label": "HP",
       "stats": {
         "defense_description": "Defense that reduces incoming damage. When attacked, defense is consumed first, and HP decreases only when defense reaches 0.",
-        "hp_description": "Character's life force. Defeat occurs when it reaches 0."
+        "hp_description": "Character's life force. Defeat occurs when it reaches 0.",
+        "accuracy_description": "Probability of attack cards being activated."
       },
       "defense_element_descriptions": {
         "fire": "Fire defense attribute active. Take 1.5x damage from Water attacks, 0.5x from Poison attacks.",
@@ -681,7 +712,9 @@
         "purification_success": "✨ Purified!",
         "purification_no_status": "No Status Effects!",
         "high_voltage_current_success": "⚡ High Voltage!",
-        "light_speed_buff_gained": "⚡ L.SPEED +{value}({turns})!"
+        "light_speed_buff_gained": "⚡ L.SPEED +{value}({turns})!",
+        "catalyst_success": "☠️ Catalyzed!",
+        "inhibitor_success": "☠️ Suppressed!"
       },
       "card_selection": {
         "initial_title": "Start Card Selection",

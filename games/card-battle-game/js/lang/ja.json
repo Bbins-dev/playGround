@@ -117,7 +117,7 @@
         "poisoned": "毒",
         "poisoned_description": "ターン終了時に残りターン数分のダメージを受けます。",
         "sand": "砂",
-        "sand_description": "攻撃カードの命中率が30%減少します。2ターン持続します。",
+        "sand_description": "攻撃カードの{accuracy}が30%減少します。2ターン持続します。",
         "insult": "侮辱",
         "insult_description": "防御カードの発動率が30%減少します。2ターン持続します。",
         "slow": "鈍化",
@@ -127,7 +127,9 @@
         "wet": "濡れ",
         "wet_description": "びしょ濡れです。",
         "frozen": "氷",
-        "frozen_description": "攻撃カードの命中率が50%減少します。1ターン持続します。"
+        "frozen_description": "攻撃カードの{accuracy}が50%減少します。1ターン持続します。",
+        "oblivion": "忘却",
+        "oblivion_description": "1ターンの間、発動回数バフが適用されません。カードは基本発動回数でのみ発動されます。"
       },
       "buffs": {
       },
@@ -304,6 +306,14 @@
           "name": "有毒ガス",
           "description": "有毒ガスを噴射して相手を{status:poisoned}状態にします。"
         },
+        "sticky_liquid": {
+          "name": "粘着液体",
+          "description": "粘着液体で敵を包み、1ターン間{status:slow}状態にします。"
+        },
+        "oblivion_draught": {
+          "name": "忘却の薬",
+          "description": "相手を1ターンの間{status:oblivion}状態にします。{status:oblivion}は重複しません。"
+        },
         "poison_barrage": {
           "name": "ポイズンバラージ",
           "description": "毒針を2-5回連発で発射します。命中するたびに低確率で2ターンの間{status:poisoned}状態にします。"
@@ -311,6 +321,22 @@
         "poison_mutation": {
           "name": "猛毒変異",
           "description": "相手が{status:poisoned}状態なら残りターン数を2倍にします。"
+        },
+        "catalyst": {
+          "name": "触媒剤",
+          "description": "現在相手に存在するターン数ベースの{cardType:status}のターンをすべて1ターン追加します。"
+        },
+        "inhibitor": {
+          "name": "抑制剤",
+          "description": "現在自分に存在するターン数ベースの{cardType:status}のターンをすべて1ターン減少させます。"
+        },
+        "chain_reaction": {
+          "name": "連鎖反応",
+          "description": "1ターンの間{buff:propagation}を得る。{poison}{cardType:attack}カードの発動回数が1回増加する。"
+        },
+        "poison_needle": {
+          "name": "毒針",
+          "description": "1ターンの間{buff:poisonNeedle}を得る。{poison}{cardType:attack}カードの{accuracy}が20%増加する。"
         },
         "gas_absorption": {
           "name": "ガス吸収",
@@ -354,7 +380,7 @@
         },
         "sand_throw": {
           "name": "砂投げ",
-          "description": "相手の目に砂を投げて1ターン間{cardType:attack}カードの命中率30%減少"
+          "description": "相手の目に砂を投げて1ターン間{cardType:attack}カードの{accuracy}30%減少"
         },
         "mud_bath": {
           "name": "泥沼",
@@ -402,7 +428,7 @@
         },
         "focus": {
           "name": "集中",
-          "description": "1ターンの間、{normal}{cardType:attack}カードの命中率を30%増加させます。"
+          "description": "1ターンの間、{normal}{cardType:attack}カードの{accuracy}を30%増加させます。"
         },
         "fast_attack": {
           "name": "高速攻撃",
@@ -550,7 +576,7 @@
         },
         "super_conductivity": {
           "name": "超電導",
-          "description": "1ターンの間、{electric}{cardType:attack}カードの命中率が40%増加します。{buff:superConductivity}は重複しません。"
+          "description": "1ターンの間、{electric}{cardType:attack}カードの{accuracy}が40%増加します。{buff:superConductivity}は重複しません。"
         }
       },
       "buffs": {
@@ -560,7 +586,7 @@
         "enhance": "強化",
         "enhance_description": "攻撃カードのダメージが50%増加します。ターン終了後、効果は消えます。",
         "focus": "集中",
-        "focus_description": "ノーマル属性攻撃カードの命中率が30%増加します。",
+        "focus_description": "ノーマル属性攻撃カードの{accuracy}が30%増加します。",
         "speed": "高速",
         "speed_description": "ノーマル属性攻撃カードの発動回数が増加します。",
         "scent": "匂い",
@@ -582,11 +608,15 @@
         "lightSpeed": "光速",
         "lightSpeed_description": "電気属性の攻撃カードの発動回数が増加します。",
         "superConductivity": "超電導",
-        "superConductivity_description": "電気属性攻撃カードの命中率が40%増加します。",
+        "superConductivity_description": "電気属性攻撃カードの{accuracy}が40%増加します。",
         "lightningRod": "避雷針",
         "lightningRod_description": "次の電気属性攻撃カードが必ず命中します。一回限りで重複しません。",
         "pack": "パック",
-        "pack_description": "ターン開始時にパック値 × 8のHPを回復します。回復後すぐに消えます。スタック可能です。"
+        "pack_description": "ターン開始時にパック値 × 8のHPを回復します。回復後すぐに消えます。スタック可能です。",
+        "propagation": "伝播",
+        "propagation_description": "毒属性攻撃カードの発動回数が増加します。1ターン持続します。",
+        "poisonNeedle": "毒針",
+        "poisonNeedle_description": "毒属性攻撃カードの命中率が20%増加します。1ターン持続します。"
       },
       "elements": {
         "fire": "火",
@@ -620,7 +650,8 @@
       "hp_label": "HP",
       "stats": {
         "defense_description": "受けるダメージを軽減する防御力です。攻撃を受けると、まず防御力が消費され、防御力が0になるとHPが減少します。",
-        "hp_description": "キャラクターの生命力です。0になると戦闘で敗北します。"
+        "hp_description": "キャラクターの生命力です。0になると戦闘で敗北します。",
+        "accuracy_description": "攻撃カードが発動する確率です。"
       },
       "defense_element_descriptions": {
         "fire": "火属性防御状態です。水属性攻撃に1.5倍、毒属性攻撃に0.5倍のダメージを受けます。",
@@ -681,7 +712,9 @@
         "purification_no_status": "状態異常なし!",
         "high_voltage_current_success": "⚡ 高圧電流!",
         "light_speed_buff_gained": "⚡ 光速 +{value}({turns})!",
-        "pack_heal": "🔋 パック +{value}!"
+        "pack_heal": "🔋 パック +{value}!",
+        "catalyst_success": "☠️ 触媒!",
+        "inhibitor_success": "☠️ 抑制!"
       },
       "card_selection": {
         "initial_title": "スタートカード選択",

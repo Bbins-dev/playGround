@@ -137,7 +137,8 @@ const GameConfig = {
             slow: '#6C757D',          // 둔화 - 회색
             chains: '#FF4500',        // 사슬 - 오렌지-레드
             wet: '#5DADE2',           // 젖음 - 밝은 파란색
-            frozen: '#B0E0E6'         // 얼음 - 파우더 블루
+            frozen: '#B0E0E6',        // 얼음 - 파우더 블루
+            oblivion: '#8B008B'       // 망각 - 다크 마젠타 (혼란/기억상실 느낌)
         },
 
         // 카드 타입 색상
@@ -167,11 +168,15 @@ const GameConfig = {
             absorption: '#20B2AA',    // 흡수 - 라이트 시그린 (물 치유 느낌)
             lightSpeed: '#FFD700',    // 광속 - 금색 (전기 속성 색상, 빛의 속도)
             lightningRod: '#FFA500',  // 피뢰침 - 오렌지 (전기 속성 색상, 번개봉)
-            pack: '#00CED1'           // 팩 - 다크 터쿼이즈 (전기 에너지, 배터리 느낌)
+            pack: '#00CED1',          // 팩 - 다크 터쿼이즈 (전기 에너지, 배터리 느낌)
+            propagation: '#9B59B6'    // 연쇄 - 보라색 (독 속성, 화학 반응 전파)
         },
 
         // 체력 라벨 색상
         hp: '#4CAF50',                // 체력 - Material Green (생명력 상징, 특수 카드보다 진한 초록)
+
+        // 명중률 라벨 색상
+        accuracy: '#F5F5DC',          // 명중률 - 베이지/아이보리 (🎯 타겟 색상과 조화)
 
         // 스탯 표시 색상
         stats: {
@@ -682,6 +687,15 @@ const GameConfig = {
             defaultReduction: 50,
             duration: 1,
             get color() { return GameConfig.masterColors.statusEffects.frozen; }
+        },
+        oblivion: {
+            nameKey: 'auto_battle_card_game.ui.status_effects.oblivion',
+            descriptionKey: 'auto_battle_card_game.ui.status_effects.oblivion_description',
+            name: '망각',
+            emoji: '🌀',
+            description: '1턴 간 발동횟수 버프가 적용되지 않음',
+            duration: 1,
+            get color() { return GameConfig.masterColors.statusEffects.oblivion; }
         }
     },
 
@@ -726,6 +740,11 @@ const GameConfig = {
             className: 'status-border-frozen',
             get color() { return GameConfig.masterColors.statusEffects.frozen; },
             priority: 8
+        },
+        oblivion: {
+            className: 'status-border-oblivion',
+            get color() { return GameConfig.masterColors.statusEffects.oblivion; },
+            priority: 9
         }
     },
 
@@ -1008,6 +1027,42 @@ const GameConfig = {
             effect: {
                 baseHeal: 8  // 기본 회복량 (스택당) - 충전+1당 8 HP 회복
             }
+        },
+        propagation: {
+            nameKey: 'auto_battle_card_game.ui.buffs.propagation',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.propagation_description',
+            name: '연쇄',
+            emoji: '🧪',
+            description: '독 속성 공격카드 발동횟수 +{value}',
+            get color() { return GameConfig.masterColors.buffs.propagation; }, // 보라색 (독 속성, 화학 반응 전파)
+            get maxStack() { return GameConfig.constants.limits.maxBuffStacks; }, // 최대 중첩 수
+            targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'intensity', // 강도 추가 방식 (propagationBonus)
+            display: {
+                showValue: true,
+                format: '+{value}'  // 예: +2 (항상 1턴이므로 턴 표시 제거)
+            },
+            effect: {
+                activationBonus: 1  // 카드당 추가 횟수
+            }
+        },
+        poisonNeedle: {
+            nameKey: 'auto_battle_card_game.ui.buffs.poisonNeedle',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.poisonNeedle_description',
+            name: '독침',
+            emoji: '🎯',
+            description: '독 속성 공격카드 명중률 20% 증가',
+            get color() { return GameConfig.masterColors.buffs.focus; }, // 파란색 계열 (명중률 버프)
+            get maxStack() { return 1; }, // 중첩 불가 (항상 1턴)
+            targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'duration', // 턴 추가 방식 (poisonNeedleTurns)
+            display: {
+                showValue: true, // 턴 표기 필요
+                format: '({value})'
+            },
+            effect: {
+                accuracy: 20  // 20% 증가 (곱셈 계산)
+            }
         }
     },
 
@@ -1077,6 +1132,14 @@ const GameConfig = {
         name: '체력',
         emoji: '❤️',
         get color() { return GameConfig.masterColors.hp; }
+    },
+
+    // 명중률 라벨 (인라인 라벨 시스템용)
+    accuracyLabel: {
+        nameKey: 'auto_battle_card_game.ui.accuracy',
+        name: '명중률',
+        emoji: '🎯',
+        get color() { return GameConfig.masterColors.accuracy; }
     },
 
     // 플레이어 설정
@@ -2092,7 +2155,7 @@ const GameConfig = {
 
     // 카드 스탯 표시 시스템
     statDisplay: {
-        emojiSpacing: '', // 이모지와 수치 사이 간격 제거 (모든 카드 통일)
+        emojiSpacing: '\u200A', // 이모지와 수치 사이 Hair-space (1px 상당) - 모든 카드 통일
         // 모든 카드에 동일 적용되는 스탯 위치 설정
         statPositions: {
             leftRatio: 0.05,    // 왼쪽 스탯을 카드 폭의 5% 위치에 배치 (더 왼쪽 가장자리에 가깝게)
@@ -2597,6 +2660,15 @@ const GameConfig = {
         poisonMutation: {
             multiplier: 2      // 중독 턴수 배율 (2배 = 현재 턴수만큼 추가)
         },
+        // 연쇄 반응 카드 설정
+        chainReaction: {
+            propagationGain: 1,  // 연쇄 버프 획득량
+            accuracy: 70         // 명중률 (70%)
+        },
+        poisonNeedle: {
+            poisonNeedleGain: 1,  // 독침 버프 획득량 (턴수)
+            accuracy: 80          // 명중률 (80%)
+        },
         // 화약통 투척 카드 설정
         powderKeg: {
             damage: 10,        // 폭발 데미지
@@ -2619,6 +2691,11 @@ const GameConfig = {
         // 맹독 폭발 카드 설정
         toxicBlast: {
             damagePerTurn: 5   // 중독 잔여 턴당 데미지
+        },
+        // 망각제 카드 설정
+        oblivionDraught: {
+            hitChance: 70,      // 명중률 70%
+            oblivionChance: 100 // 명중 시 망각 적용 확률 100%
         },
         // 가스 흡수 카드 설정
         gasAbsorption: {
