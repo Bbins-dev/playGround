@@ -624,7 +624,7 @@
         "lightSpeed": "光速",
         "lightSpeed_description": "電気属性の攻撃カードの発動回数が増加します。",
         "superConductivity": "超電導",
-        "superConductivity_description": "電気属性攻撃カードの{accuracy}が40%増加します。",
+        "superConductivity_description": "電気属性攻撃カードの命中率が40%増加します。",
         "lightningRod": "避雷針",
         "lightningRod_description": "次の電気属性攻撃カードが必ず命中します。一回限りで重複しません。",
         "pack": "パック",

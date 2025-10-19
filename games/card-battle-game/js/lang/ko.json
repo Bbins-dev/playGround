@@ -624,7 +624,7 @@
         "lightSpeed": "광속",
         "lightSpeed_description": "전기 속성 공격 카드의 발동 횟수가 증가합니다.",
         "superConductivity": "초전도",
-        "superConductivity_description": "전기 속성 공격 카드의 {accuracy}이 40% 증가합니다.",
+        "superConductivity_description": "전기 속성 공격 카드의 명중률이 40% 증가합니다.",
         "lightningRod": "피뢰침",
         "lightningRod_description": "다음 전기 속성 공격 카드가 반드시 명중합니다. 일회용이며 중첩되지 않습니다.",
         "pack": "팩",

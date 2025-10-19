@@ -624,7 +624,7 @@
         "lightSpeed": "L.SPEED",
         "lightSpeed_description": "Increases electric attack card activation count.",
         "superConductivity": "S.COND",
-        "superConductivity_description": "Increases electric attack card {accuracy} by 40%.",
+        "superConductivity_description": "Increases electric attack card accuracy by 40%.",
         "lightningRod": "L.ROD",
         "lightningRod_description": "Next electric attack card is guaranteed to hit. One-time use, does not stack.",
         "pack": "PACK",
