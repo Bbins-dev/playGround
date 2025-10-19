@@ -213,12 +213,15 @@ class BuffStatusTooltipModal {
      * @returns {string|null} 설명 텍스트
      */
     getDescription(labelType, labelKey) {
-        // defense, hp 특별 처리
+        // defense, hp, accuracy 특별 처리
         if (labelType === 'defense') {
             return this.getStatDescription('defense');
         }
         if (labelType === 'hp') {
             return this.getStatDescription('hp');
+        }
+        if (labelType === 'accuracy') {
+            return this.getStatDescription('accuracy');
         }
 
         // 방어속성 배지 처리 (defenseElement)
@@ -272,7 +275,8 @@ class BuffStatusTooltipModal {
         // 폴백
         const fallbacks = {
             defense: '받는 피해를 줄여주는 방어력입니다. 공격을 받으면 먼저 방어력이 소모됩니다.',
-            hp: '캐릭터의 생명력입니다. 0이 되면 패배합니다.'
+            hp: '캐릭터의 생명력입니다. 0이 되면 패배합니다.',
+            accuracy: '공격카드가 발동될 확률입니다.'
         };
         return fallbacks[statType] || '';
     }

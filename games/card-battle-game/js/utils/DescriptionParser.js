@@ -10,8 +10,8 @@ class DescriptionParser {
     static parse(text) {
         if (!text) return [];
 
-        // 마커 형식: {buff:strength}, {status:burn}, {cardType:attack}, {defense}, {hp}, {fire}, {water}, {electric}, {poison}, {normal}
-        const regex = /\{(buff|status|cardType):(\w+)\}|\{(defense|hp|fire|water|electric|poison|normal)\}/g;
+        // 마커 형식: {buff:strength}, {status:burn}, {cardType:attack}, {defense}, {hp}, {accuracy}, {fire}, {water}, {electric}, {poison}, {normal}
+        const regex = /\{(buff|status|cardType):(\w+)\}|\{(defense|hp|accuracy|fire|water|electric|poison|normal)\}/g;
         const segments = [];
         let lastIndex = 0;
 
@@ -26,8 +26,8 @@ class DescriptionParser {
             }
 
             // 라벨 세그먼트
-            if (match[3] === 'defense' || match[3] === 'hp' || match[3] === 'fire' || match[3] === 'water' || match[3] === 'electric' || match[3] === 'poison' || match[3] === 'normal') {
-                // {defense}, {hp}, {fire}, {water}, {electric}, {poison}, {normal} 단독 마커
+            if (match[3] === 'defense' || match[3] === 'hp' || match[3] === 'accuracy' || match[3] === 'fire' || match[3] === 'water' || match[3] === 'electric' || match[3] === 'poison' || match[3] === 'normal') {
+                // {defense}, {hp}, {accuracy}, {fire}, {water}, {electric}, {poison}, {normal} 단독 마커
                 segments.push({
                     type: 'label',
                     labelType: match[3],
@@ -95,6 +95,24 @@ class DescriptionParser {
                 emoji: GameConfig?.hpLabel?.emoji || '❤️',
                 name: name,
                 color: GameConfig?.masterColors?.hp || '#4CAF50'  // Material Green
+            };
+        }
+
+        // accuracy는 특별 처리 (주황색 라벨)
+        if (labelType === 'accuracy') {
+            const langSelect = document.getElementById('languageSelect');
+            const currentLang = langSelect ? langSelect.value : 'ko';
+
+            // GameConfig에서 다국어 이름 가져오기
+            let name = GameConfig?.accuracyLabel?.name || '명중률';
+            if (GameConfig?.accuracyLabel?.nameKey && typeof I18nHelper !== 'undefined') {
+                name = I18nHelper.getText(GameConfig.accuracyLabel.nameKey) || name;
+            }
+
+            return {
+                emoji: GameConfig?.accuracyLabel?.emoji || '🎯',
+                name: name,
+                color: GameConfig?.masterColors?.accuracy || '#FF8C00'  // 다크 오렌지
             };
         }
 

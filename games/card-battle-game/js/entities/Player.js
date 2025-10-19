@@ -49,6 +49,9 @@ class Player {
         this.lightningRodTurns = 0; // 피뢰침 버프 남은 턴 수 (일회용, 중첩 불가)
         this.packBonus = 0; // 팩 버프 스택 수
         this.packTurns = 0; // 팩 버프 턴 수 (회복 직후 즉시 제거)
+        this.propagationBonus = 0; // 연쇄 추가 발동횟수
+        this.propagationTurns = 0; // 연쇄 버프 남은 턴 수 (항상 1턴 고정)
+        this.poisonNeedleTurns = 0; // 독침 버프 남은 턴 수 (1턴 고정, 독 공격 명중률 20% 증가)
 
         // 턴 관련
         this.currentCardIndex = 0;
@@ -290,6 +293,11 @@ class Player {
             return 0;
         }
         return this.strength;
+    }
+
+    // 망각 디버프 체크
+    hasOblivionDebuff() {
+        return this.hasStatusEffect('oblivion');
     }
 
     // 강화 버프 관련 메서드
@@ -552,6 +560,37 @@ class Player {
         this.packTurns = 0;
     }
 
+    // 연쇄 버프 관련 메서드
+    hasPropagationBuff() {
+        return this.propagationBonus > 0 && this.propagationTurns > 0;
+    }
+
+    addPropagationBuff(bonus) {
+        this.propagationBonus += bonus;
+        this.propagationTurns = 1;  // 항상 1턴 고정
+
+        // 독 속성 공격카드의 발동횟수 즉시 업데이트
+        this.hand.forEach(card => {
+            if (card.type === 'attack' && card.element === 'poison') {
+                card.modifiedActivationCount = card.activationCount + this.propagationBonus;
+            }
+        });
+
+        this.updateRuntimeCardStats();
+        return bonus;
+    }
+
+    // 독침 버프 관련 메서드
+    hasPoisonNeedleBuff() {
+        return this.poisonNeedleTurns > 0;
+    }
+
+    addPoisonNeedleBuff(turns) {
+        this.poisonNeedleTurns = turns;  // 중첩 불가이므로 덮어쓰기 (1턴만 유지)
+        this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
+        return turns;
+    }
+
     clearBuffs() {
         this.strength = 0;
         this.enhanceTurns = 0;
@@ -567,6 +606,8 @@ class Player {
         this.massTurns = 0;
         this.torrentBonus = 0;
         this.torrentTurns = 0;
+        this.propagationBonus = 0;
+        this.propagationTurns = 0;
         this.absorptionBonus = 0;
         this.absorptionTurns = 0;
         this.lightSpeedBonus = 0;
@@ -575,6 +616,7 @@ class Player {
         this.lightningRodTurns = 0;
         this.packBonus = 0;
         this.packTurns = 0;
+        this.poisonNeedleTurns = 0;
     }
 
     // 런타임 카드 스탯 업데이트 (버프/상태이상 반영)
@@ -792,6 +834,12 @@ class Player {
                 modifiedAccuracy = Math.floor(modifiedAccuracy * (1 + superConductivityEffect / 100));
             }
 
+            // 독침 버프 체크 (독 공격 카드만) - 상태이상 적용 후 곱셈 방식으로 증가 (소수점 버림)
+            if (card.type === 'attack' && card.element === 'poison' && this.hasPoisonNeedleBuff()) {
+                const poisonNeedleEffect = GameConfig?.buffs?.poisonNeedle?.effect?.accuracy || 20; // 20%
+                modifiedAccuracy = Math.floor(modifiedAccuracy * (1 + poisonNeedleEffect / 100));
+            }
+
             // 명중률 상한 100% 제한
             modifiedAccuracy = Math.min(100, modifiedAccuracy);
 
@@ -820,24 +868,34 @@ class Player {
                 card.currentActivations = 0;
             }
 
-            // 고속 버프 적용 (노멀 공격카드만)
-            if (this.hasSpeedBuff() && card.type === 'attack' && card.element === 'normal') {
-                card.modifiedActivationCount = card.activationCount + this.speedBonus;
-            }
-            // 열풍 버프 적용 (불 속성 공격카드만)
-            else if (this.hasHotWindBuff() && card.type === 'attack' && card.element === 'fire') {
-                card.modifiedActivationCount = card.activationCount + this.hotWindTurns;
-            }
-            // 급류 버프 적용 (물 속성 공격카드만)
-            else if (this.hasTorrentBuff() && card.type === 'attack' && card.element === 'water') {
-                card.modifiedActivationCount = card.activationCount + this.torrentBonus;
-            }
-            // 광속 버프 적용 (전기 속성 공격카드만)
-            else if (this.hasLightSpeedBuff() && card.type === 'attack' && card.element === 'electric') {
-                card.modifiedActivationCount = card.activationCount + this.lightSpeedBonus;
-            }
-            else {
-                // 버프가 없거나 적용 대상이 아닌 경우 초기화
+            // 망각 상태가 아닐 때만 발동횟수 버프 적용
+            if (!this.hasOblivionDebuff()) {
+                // 고속 버프 적용 (노멀 공격카드만)
+                if (this.hasSpeedBuff() && card.type === 'attack' && card.element === 'normal') {
+                    card.modifiedActivationCount = card.activationCount + this.speedBonus;
+                }
+                // 열풍 버프 적용 (불 속성 공격카드만)
+                else if (this.hasHotWindBuff() && card.type === 'attack' && card.element === 'fire') {
+                    card.modifiedActivationCount = card.activationCount + this.hotWindTurns;
+                }
+                // 급류 버프 적용 (물 속성 공격카드만)
+                else if (this.hasTorrentBuff() && card.type === 'attack' && card.element === 'water') {
+                    card.modifiedActivationCount = card.activationCount + this.torrentBonus;
+                }
+                // 광속 버프 적용 (전기 속성 공격카드만)
+                else if (this.hasLightSpeedBuff() && card.type === 'attack' && card.element === 'electric') {
+                    card.modifiedActivationCount = card.activationCount + this.lightSpeedBonus;
+                }
+                // 연쇄 버프 적용 (독 속성 공격카드만)
+                else if (this.hasPropagationBuff() && card.type === 'attack' && card.element === 'poison') {
+                    card.modifiedActivationCount = card.activationCount + this.propagationBonus;
+                }
+                else {
+                    // 버프가 없거나 적용 대상이 아닌 경우 초기화
+                    card.modifiedActivationCount = undefined;
+                }
+            } else {
+                // 망각 상태일 때는 모든 발동횟수 버프 무시 (기본값 사용)
                 card.modifiedActivationCount = undefined;
             }
         });
@@ -950,9 +1008,28 @@ class Player {
             }
         }
 
+        // 연쇄 버프 턴수 차감
+        if (this.propagationTurns > 0) {
+            this.propagationTurns--;
+            if (this.propagationTurns === 0) {
+                this.propagationBonus = 0;
+                // 버프 해제 시 모든 카드의 modifiedActivationCount 초기화
+                this.hand.forEach(card => {
+                    if (card.type === 'attack' && card.element === 'poison') {
+                        card.modifiedActivationCount = undefined;
+                    }
+                });
+            }
+        }
+
         // 초전도 버프 턴수 차감
         if (this.superConductivityTurns > 0) {
             this.superConductivityTurns--;
+        }
+
+        // 독침 버프 턴수 차감
+        if (this.poisonNeedleTurns > 0) {
+            this.poisonNeedleTurns--;
         }
 
         // 런타임 스탯 업데이트 (버프가 차감되었으므로)

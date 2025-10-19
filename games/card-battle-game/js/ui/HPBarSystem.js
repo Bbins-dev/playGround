@@ -215,7 +215,7 @@ class HPBarSystem {
 
             // 지속 턴수가 있는 경우 카운트다운 표시 (즉시 해제 상태는 제외)
             let countdownHtml = '';
-            const instantReleaseStatuses = ['frozen', 'stun', 'taunt'];
+            const instantReleaseStatuses = ['frozen', 'stun', 'taunt', 'oblivion'];
             if (effect.turnsLeft && effect.turnsLeft > 0 && !instantReleaseStatuses.includes(effect.type)) {
                 countdownHtml = `(${effect.turnsLeft})`;
             }
@@ -251,9 +251,9 @@ class HPBarSystem {
         // 기존 버프 라벨 제거
         buffsContainer.innerHTML = '';
 
-        // 힘 버프 표시
-        if (player.getStrength && player.getStrength() > 0) {
-            const strengthValue = player.getStrength();
+        // 힘 버프 표시 (사슬 상태이상 무시 - 버프 값 직접 체크)
+        if (player.strength > 0) {
+            const strengthValue = player.strength;  // UI 표시용 - 실제 버프 값
             const buffConfig = GameConfig.buffs.strength;
 
             // 버프가 있는 경우 컨테이너 활성화
@@ -815,6 +815,78 @@ class HPBarSystem {
                 e.stopPropagation();
                 if (window.BuffStatusTooltipModal) {
                     window.BuffStatusTooltipModal.show('buff', 'pack');
+                }
+            });
+
+            // Flexbox column-reverse/column으로 방향 제어
+            // 플레이어: column-reverse로 아래→위 자동 처리
+            // 적: column으로 위→아래 자동 처리
+            buffsContainer.appendChild(buffElement);
+        }
+
+        // 연쇄 버프 표시
+        if (player.hasPropagationBuff && player.hasPropagationBuff()) {
+            const propagationBonus = player.propagationBonus;
+            const buffConfig = GameConfig.buffs.propagation;
+
+            // 버프가 있는 경우 컨테이너 활성화
+            effectsContainer.classList.add('active');
+
+            const buffElement = document.createElement('div');
+            buffElement.className = 'buff-label';
+
+            // 다국어 지원 - I18nHelper 사용
+            const buffName = buffConfig.nameKey ?
+                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
+                buffConfig.name;
+            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} +${propagationBonus}`;
+
+            // 버프별 색상 적용
+            buffElement.style.borderColor = buffConfig.color;
+            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
+
+            // 클릭 이벤트 추가 (툴팁 모달 표시)
+            buffElement.style.cursor = 'pointer';
+            buffElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.BuffStatusTooltipModal) {
+                    window.BuffStatusTooltipModal.show('buff', 'propagation');
+                }
+            });
+
+            // Flexbox column-reverse/column으로 방향 제어
+            // 플레이어: column-reverse로 아래→위 자동 처리
+            // 적: column으로 위→아래 자동 처리
+            buffsContainer.appendChild(buffElement);
+        }
+
+        // 독침 버프 표시
+        if (player.hasPoisonNeedleBuff && player.hasPoisonNeedleBuff()) {
+            const poisonNeedleTurns = player.poisonNeedleTurns;
+            const buffConfig = GameConfig.buffs.poisonNeedle;
+
+            // 버프가 있는 경우 컨테이너 활성화
+            effectsContainer.classList.add('active');
+
+            const buffElement = document.createElement('div');
+            buffElement.className = 'buff-label';
+
+            // 다국어 지원 - I18nHelper 사용
+            const buffName = buffConfig.nameKey ?
+                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
+                buffConfig.name;
+            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} (${poisonNeedleTurns})`;
+
+            // 버프별 색상 적용
+            buffElement.style.borderColor = buffConfig.color;
+            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
+
+            // 클릭 이벤트 추가 (툴팁 모달 표시)
+            buffElement.style.cursor = 'pointer';
+            buffElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.BuffStatusTooltipModal) {
+                    window.BuffStatusTooltipModal.show('buff', 'poisonNeedle');
                 }
             });
 

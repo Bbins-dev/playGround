@@ -1416,6 +1416,59 @@ const CardDatabase = {
             }
         });
 
+        // 끈끈한 액체 카드 (독 속성, 순수 둔화 효과)
+        this.addCard({
+            id: 'sticky_liquid',
+            nameKey: 'auto_battle_card_game.ui.cards.sticky_liquid.name',
+            type: 'status',
+            element: 'poison',
+            power: 0,
+            accuracy: 70,
+            activationCount: 1,
+            usageLimit: 1,  // 1회만 사용 가능
+            descriptionKey: 'auto_battle_card_game.ui.cards.sticky_liquid.description',
+            slowChance: 100,
+            effect: function(user, target, battleSystem) {
+                // 둔화 적용 (통합 시스템 - 명중 시 100% 확률로 1턴 둔화)
+                return {
+                    success: true,
+                    statusEffect: {
+                        type: 'slow',
+                        chance: this.slowChance,
+                        power: GameConfig?.statusEffects?.slow?.defaultReduction || 30,
+                        duration: 1  // 1턴 둔화
+                    },
+                    element: this.element
+                };
+            }
+        });
+
+        // 망각제 카드 (독 속성, 발동횟수 버프 무효화)
+        this.addCard({
+            id: 'oblivion_draught',
+            nameKey: 'auto_battle_card_game.ui.cards.oblivion_draught.name',
+            type: 'status',
+            element: 'poison',
+            power: 0,
+            accuracy: GameConfig?.cardEffects?.oblivionDraught?.hitChance || 70,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.oblivion_draught.description',
+            oblivionChance: GameConfig?.cardEffects?.oblivionDraught?.oblivionChance || 100,
+            effect: function(user, target, battleSystem) {
+                // 망각 적용 (통합 시스템 - 명중 시 100% 확률로 1턴 망각)
+                return {
+                    success: true,
+                    statusEffect: {
+                        type: 'oblivion',
+                        chance: this.oblivionChance,
+                        power: null,
+                        duration: 1  // 1턴 망각 (턴 표시 없음)
+                    },
+                    element: this.element
+                };
+            }
+        });
+
         // 맹독 폭발 카드 (독 속성, 중독 턴 기반 동적 공격력)
         this.addCard({
             id: 'toxic_blast',
@@ -2110,6 +2163,159 @@ const CardDatabase = {
                         duration: turnsToExtend
                     },
                     element: this.element
+                };
+            }
+        });
+
+        // 촉진제 카드 (독 속성, 상태이상 턴 연장)
+        this.addCard({
+            id: 'catalyst',
+            nameKey: 'auto_battle_card_game.ui.cards.catalyst.name',
+            type: 'status',
+            element: 'poison',
+            power: 0,
+            accuracy: 70,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.catalyst.description',
+            catalystChance: 100,
+            effect: function(user, target, battleSystem) {
+                // 턴 기반 상태이상 목록 (즉시 해제 상태이상 제외)
+                const turnBasedStatuses = ['burn', 'poisoned', 'wet', 'paralysis', 'sand', 'insult', 'slow', 'chains', 'frozen'];
+
+                // 상대의 턴 기반 상태이상 찾기
+                const statusesToExtend = target.statusEffects?.filter(e =>
+                    turnBasedStatuses.includes(e.type) && e.turnsLeft > 0
+                ) || [];
+
+                if (statusesToExtend.length === 0) {
+                    // 명중했지만 조건 실패 (적용 가능한 상태이상 없음)
+                    return {
+                        success: true,           // 명중은 성공
+                        conditionFailed: true,   // 조건 실패
+                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        element: this.element
+                    };
+                }
+
+                // 각 상태이상의 턴을 1씩 증가
+                statusesToExtend.forEach(status => {
+                    status.turnsLeft += 1;
+                });
+
+                // 성공 메시지와 함께 반환
+                return {
+                    success: true,
+                    catalystApplied: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.catalyst_success',
+                    affectedStatusCount: statusesToExtend.length,
+                    element: this.element
+                };
+            }
+        });
+
+        // 억제제 카드 (독 속성, 버프카드이지만 자신의 상태이상 턴 감소)
+        this.addCard({
+            id: 'inhibitor',
+            nameKey: 'auto_battle_card_game.ui.cards.inhibitor.name',
+            type: 'buff',
+            element: 'poison',
+            power: 0,
+            accuracy: 70,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.inhibitor.description',
+            inhibitorChance: 100,
+            effect: function(user, target, battleSystem) {
+                // 턴 기반 상태이상 목록 (즉시 해제 상태이상 제외)
+                const turnBasedStatuses = ['burn', 'poisoned', 'wet', 'paralysis', 'sand', 'insult', 'slow', 'chains', 'frozen'];
+
+                // 자신(user)의 턴 기반 상태이상 찾기
+                const statusesToReduce = user.statusEffects?.filter(e =>
+                    turnBasedStatuses.includes(e.type) && e.turnsLeft > 0
+                ) || [];
+
+                if (statusesToReduce.length === 0) {
+                    // 명중했지만 조건 실패 (적용 가능한 상태이상 없음)
+                    return {
+                        success: true,           // 명중은 성공
+                        conditionFailed: true,   // 조건 실패
+                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        element: this.element
+                    };
+                }
+
+                // 각 상태이상의 턴을 1씩 감소
+                statusesToReduce.forEach(status => {
+                    status.turnsLeft -= 1;
+                });
+
+                // 0턴이 된 상태이상 제거 (즉시 제거)
+                user.statusEffects = user.statusEffects.filter(e => e.turnsLeft > 0);
+
+                // 성공 메시지와 함께 반환
+                return {
+                    success: true,
+                    inhibitorApplied: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.inhibitor_success',
+                    affectedStatusCount: statusesToReduce.length,
+                    element: this.element
+                };
+            }
+        });
+
+        // 연쇄 반응 카드 (독 속성, 연쇄 버프 획득)
+        this.addCard({
+            id: 'chain_reaction',
+            nameKey: 'auto_battle_card_game.ui.cards.chain_reaction.name',
+            type: 'buff',
+            element: 'poison',
+            power: 0,
+            accuracy: GameConfig?.cardEffects?.chainReaction?.accuracy || 70,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.chain_reaction.description',
+            effect: function(user, target, battleSystem) {
+                // 연쇄 버프 획득 (+1 스택)
+                const gain = GameConfig?.cardEffects?.chainReaction?.propagationGain || 1;
+                user.addPropagationBuff(gain);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
+                    buffType: 'propagation',
+                    propagationGain: gain,
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig?.buffs?.propagation?.name || '연쇄',
+                        value: user.propagationBonus
+                    }
+                };
+            }
+        });
+
+        // 독침 카드 (독 속성, 독침 버프 획득 - 독 공격 명중률 20% 증가)
+        this.addCard({
+            id: 'poison_needle',
+            nameKey: 'auto_battle_card_game.ui.cards.poison_needle.name',
+            type: 'buff',
+            element: 'poison',
+            power: 0,
+            accuracy: GameConfig?.cardEffects?.poisonNeedle?.accuracy || 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.poison_needle.description',
+            effect: function(user, target, battleSystem) {
+                // 독침 버프 획득 (1턴)
+                const gain = GameConfig?.cardEffects?.poisonNeedle?.poisonNeedleGain || 1;
+                user.addPoisonNeedleBuff(gain);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
+                    buffType: 'poisonNeedle',
+                    poisonNeedleGain: gain,
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig?.buffs?.poisonNeedle?.name || '독침',
+                        value: gain  // 턴 수 표시
+                    }
                 };
             }
         });

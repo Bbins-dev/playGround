@@ -674,6 +674,16 @@ class BattleSystem {
             await this.effectSystem.showBuffEffect('pack', user, result.packGain);
         }
 
+        // 연쇄 버프 획득 처리 (연쇄 반응 카드) - 새로운 통합 메서드 사용
+        if (result.propagationGain && result.propagationGain > 0) {
+            await this.effectSystem.showBuffEffect('propagation', user, result.propagationGain);
+        }
+
+        // 독침 버프 획득 처리 (독침 카드) - 새로운 통합 메서드 사용
+        if (result.poisonNeedleGain && result.poisonNeedleGain > 0) {
+            await this.effectSystem.showBuffEffect('poisonNeedle', user, result.poisonNeedleGain);
+        }
+
         // 정화 효과 처리 (정화 카드)
         if (result.purified) {
             const userPosition = user.isPlayer ?
@@ -692,6 +702,37 @@ class BattleSystem {
             if (isPlayer && this.gameManager?.uiManager) {
                 this.gameManager.uiManager.updateStatusBorder();
             }
+        }
+
+        // 억제제 효과 처리 (턴 기반 상태이상 턴수 감소)
+        if (result.inhibitorApplied) {
+            // user의 위치에서 메시지 표시 (버프카드지만 상태이상 관련)
+            const userPosition = user.isPlayer ?
+                this.effectSystem.getPlayerPosition() :
+                this.effectSystem.getEnemyPosition();
+
+            // 억제제 메시지 표시
+            const template = I18nHelper.getText(result.messageKey);
+            await this.effectSystem.showDamageNumber(0, userPosition, 'status', template);
+
+            // 상태이상 UI 즉시 업데이트 (감소된 턴수 표시 + 제거된 상태 반영)
+            const isPlayer = (user === this.player);
+            this.hpBarSystem.updateStatusEffects(user, isPlayer);
+
+            // 플레이어의 상태이상 테두리 효과 업데이트
+            if (isPlayer && this.gameManager?.uiManager) {
+                this.gameManager.uiManager.updateStatusBorder();
+            }
+
+            // 자신의 런타임 스탯 즉시 업데이트
+            user.updateRuntimeCardStats();
+
+            // 상대방의 런타임 스탯 즉시 업데이트 (냉동바람 등 동적 계산)
+            if (user.opponent) {
+                user.opponent.updateRuntimeCardStats();
+            }
+
+            return; // 억제제 처리 완료
         }
 
         // 상태이상이 없는 경우 메시지 (정화 카드)
@@ -747,6 +788,19 @@ class BattleSystem {
             const template = I18nHelper.getText(result.messageKey);
             await this.effectSystem.showDamageNumber(0, targetPosition, 'conditionFailed', template);
             return;
+        }
+
+        // 촉진제 효과 처리 (턴 기반 상태이상 턴수 연장)
+        if (result.catalystApplied) {
+            // 촉진제 메시지 표시
+            const template = I18nHelper.getText(result.messageKey);
+            await this.effectSystem.showDamageNumber(0, targetPosition, 'status', template);
+
+            // 상태이상 UI 즉시 업데이트 (연장된 턴수 표시)
+            const isTargetPlayer = (target === this.player);
+            this.hpBarSystem.updateStatusEffects(target, isTargetPlayer);
+
+            return; // 촉진제 처리 완료
         }
 
         // 조건 실패 체크 (명중했지만 조건 미달)
