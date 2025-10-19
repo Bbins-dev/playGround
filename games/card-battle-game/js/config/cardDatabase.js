@@ -1619,6 +1619,62 @@ const CardDatabase = {
             }
         });
 
+        // 응급처치 카드 (회복 카드, HP 8 회복, 70% accuracy)
+        this.addCard({
+            id: 'first_aid',
+            nameKey: 'auto_battle_card_game.ui.cards.first_aid.name',
+            type: 'heal',
+            element: 'special',
+            power: 8, // 스탯 표시 (고정 회복량 8)
+            healAmount: 8, // 회복량
+            accuracy: 70,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.first_aid.description',
+            effect: function(user, target, battleSystem) {
+                const maxHeal = this.healAmount;
+                const actualHealing = user.heal ? user.heal(maxHeal) : 0;
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.heal_effect',
+                    healAmount: actualHealing,
+                    element: this.element,
+                    templateData: { value: actualHealing }
+                };
+            }
+        });
+
+        // 영양제 카드 (회복 카드, HP 3을 1-3회 랜덤 회복)
+        this.addCard({
+            id: 'nutrient_supplement',
+            nameKey: 'auto_battle_card_game.ui.cards.nutrient_supplement.name',
+            type: 'heal',
+            element: 'special',
+            power: 3, // 스탯 표시 (고정 회복량 3)
+            healAmount: 3, // 회복량
+            accuracy: 100,
+            activationCount: 1, // 기본값, 턴 시작 시 동적으로 1-3으로 설정됨
+            descriptionKey: 'auto_battle_card_game.ui.cards.nutrient_supplement.description',
+            isRandomHeal: true, // 랜덤 회복 카드임을 표시
+            minActivation: 1, // 최소 발동 횟수
+            maxActivation: 3, // 최대 발동 횟수
+            getRandomActivationCount: function() {
+                return Math.floor(Math.random() * (this.maxActivation - this.minActivation + 1)) + this.minActivation;
+            },
+            effect: function(user, target, battleSystem) {
+                const maxHeal = this.healAmount;
+                const actualHealing = user.heal ? user.heal(maxHeal) : 0;
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.heal_effect',
+                    healAmount: actualHealing,
+                    element: this.element,
+                    templateData: { value: actualHealing }
+                };
+            }
+        });
+
         // 기사회생 카드 (회복 카드, 조건부 대량 회복)
         this.addCard({
             id: 'miracle_revival',
@@ -2315,6 +2371,66 @@ const CardDatabase = {
                     templateData: {
                         name: GameConfig?.buffs?.poisonNeedle?.name || '독침',
                         value: gain  // 턴 수 표시
+                    }
+                };
+            }
+        });
+
+        // 유황 온천 카드 (독 속성, 유황 버프 - 얼음 면역)
+        this.addCard({
+            id: 'sulfur_spring',
+            nameKey: 'auto_battle_card_game.ui.cards.sulfur_spring.name',
+            type: 'buff',
+            element: 'poison',
+            power: 0,
+            accuracy: GameConfig?.cardEffects?.sulfurSpring?.accuracy || 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.sulfur_spring.description',
+            effect: function(user, target, battleSystem) {
+                // 유황 버프 획득 (선제적 정화 포함)
+                const gain = GameConfig?.cardEffects?.sulfurSpring?.sulfurGain || 1;
+                const result = user.addSulfurBuff(gain);  // ★ 반환값 받기
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
+                    buffType: 'sulfur',
+                    sulfurGain: result.turns,
+                    frozenCleansed: result.cleansed,  // ★ 정화 여부 전달
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig?.buffs?.sulfur?.name || '유황',
+                        value: user.sulfurTurns  // 현재 총 턴 수 표시
+                    }
+                };
+            }
+        });
+
+        // 액체 코팅 카드 (독 속성, 코팅 버프 - 화상 면역)
+        this.addCard({
+            id: 'liquid_coating',
+            nameKey: 'auto_battle_card_game.ui.cards.liquid_coating.name',
+            type: 'buff',
+            element: 'poison',
+            power: 0,
+            accuracy: GameConfig?.cardEffects?.liquidCoating?.accuracy || 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.liquid_coating.description',
+            effect: function(user, target, battleSystem) {
+                // 코팅 버프 획득 (선제적 정화 포함)
+                const gain = GameConfig?.cardEffects?.liquidCoating?.coatingGain || 1;
+                const result = user.addCoatingBuff(gain);  // ★ 반환값 받기
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
+                    buffType: 'coating',
+                    coatingGain: result.turns,
+                    burnCleansed: result.cleansed,  // ★ 정화 여부 전달
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig?.buffs?.coating?.name || '코팅',
+                        value: user.coatingTurns  // 현재 총 턴 수 표시
                     }
                 };
             }

@@ -52,6 +52,8 @@ class Player {
         this.propagationBonus = 0; // 연쇄 추가 발동횟수
         this.propagationTurns = 0; // 연쇄 버프 남은 턴 수 (항상 1턴 고정)
         this.poisonNeedleTurns = 0; // 독침 버프 남은 턴 수 (1턴 고정, 독 공격 명중률 20% 증가)
+        this.sulfurTurns = 0; // 유황 버프 남은 턴 수 (얼음 면역)
+        this.coatingTurns = 0; // 코팅 버프 남은 턴 수 (화상 면역)
 
         // 턴 관련
         this.currentCardIndex = 0;
@@ -184,13 +186,28 @@ class Player {
             return { success: false, reason: 'invalid_input' };
         }
 
-        // 면역 체크
+        // 면역 체크 (속성 기반)
         const isImmune = GameConfig.utils.isImmuneToStatus(this.defenseElement, statusType);
         if (isImmune) {
             if (GameConfig?.debugMode?.showStatusEffects) {
                 console.log(`[STATUS] ${this.name} 면역: ${statusType}`);
             }
             return { success: false, reason: 'immune' };
+        }
+
+        // 버프 기반 면역 체크
+        if (statusType === 'frozen' && this.hasSulfurBuff()) {
+            if (GameConfig?.debugMode?.showStatusEffects) {
+                console.log(`[STATUS] ${this.name} 유황 버프로 얼음 면역`);
+            }
+            return { success: false, reason: 'buff_immune', buffType: 'sulfur' };
+        }
+
+        if (statusType === 'burn' && this.hasCoatingBuff()) {
+            if (GameConfig?.debugMode?.showStatusEffects) {
+                console.log(`[STATUS] ${this.name} 코팅 버프로 화상 면역`);
+            }
+            return { success: false, reason: 'buff_immune', buffType: 'coating' };
         }
 
         // 상태이상 설정 확인
@@ -591,6 +608,52 @@ class Player {
         return turns;
     }
 
+    // 유황 버프 관련 메서드
+    hasSulfurBuff() {
+        return this.sulfurTurns > 0;
+    }
+
+    addSulfurBuff(turns) {
+        this.sulfurTurns += turns;  // 턴 추가 방식
+
+        // ★ 선제적 정화: 이미 얼음 상태이상이 걸려있다면 즉시 제거
+        const hadFrozen = this.hasStatusEffect('frozen');
+        if (hadFrozen) {
+            if (GameConfig?.debugMode?.showStatusEffects) {
+                console.log(`[CLEANSE] ${this.name} 유황 버프로 얼음 정화됨`);
+            }
+            this.removeStatusEffect('frozen');
+            // removeStatusEffect 내부에서 updateRuntimeCardStats() 자동 호출됨 (자기 자신 + 상대방)
+        } else {
+            this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
+        }
+
+        return { turns, cleansed: hadFrozen };
+    }
+
+    // 코팅 버프 관련 메서드
+    hasCoatingBuff() {
+        return this.coatingTurns > 0;
+    }
+
+    addCoatingBuff(turns) {
+        this.coatingTurns += turns;  // 턴 추가 방식
+
+        // ★ 선제적 정화: 이미 화상 상태이상이 걸려있다면 즉시 제거
+        const hadBurn = this.hasStatusEffect('burn');
+        if (hadBurn) {
+            if (GameConfig?.debugMode?.showStatusEffects) {
+                console.log(`[CLEANSE] ${this.name} 코팅 버프로 화상 정화됨`);
+            }
+            this.removeStatusEffect('burn');
+            // removeStatusEffect 내부에서 updateRuntimeCardStats() 자동 호출됨 (자기 자신 + 상대방)
+        } else {
+            this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
+        }
+
+        return { turns, cleansed: hadBurn };
+    }
+
     clearBuffs() {
         this.strength = 0;
         this.enhanceTurns = 0;
@@ -853,15 +916,15 @@ class Player {
         this.currentCardIndex = 0;
         this.cardsActivatedThisTurn = 0;
 
-        // 턴 시작 시 마구때리기 카드 activationCount 리셋
+        // 턴 시작 시 랜덤 발동 카드 activationCount 리셋 (마구때리기, 영양제 등)
         this.hand.forEach(card => {
-            if (card.isRandomBash && card.getRandomActivationCount) {
+            if ((card.isRandomBash || card.isRandomHeal) && card.getRandomActivationCount) {
                 card.activationCount = card.getRandomActivationCount();
                 card.currentActivations = 0;
 
-                // 랜덤배시 카드 발동 횟수 디버그 로그
+                // 랜덤 발동 카드 발동 횟수 디버그 로그
                 if (GameConfig?.debugMode?.showRandomBashCounts) {
-                    console.log(`[RANDOM BASH] ${card.name || card.id}: ${card.activationCount}회 발동`);
+                    console.log(`[RANDOM ACTIVATION] ${card.name || card.id}: ${card.activationCount}회 발동`);
                 }
             } else {
                 // 일반 카드들은 currentActivations만 리셋
@@ -1030,6 +1093,16 @@ class Player {
         // 독침 버프 턴수 차감
         if (this.poisonNeedleTurns > 0) {
             this.poisonNeedleTurns--;
+        }
+
+        // 유황 버프 턴수 차감
+        if (this.sulfurTurns > 0) {
+            this.sulfurTurns--;
+        }
+
+        // 코팅 버프 턴수 차감
+        if (this.coatingTurns > 0) {
+            this.coatingTurns--;
         }
 
         // 런타임 스탯 업데이트 (버프가 차감되었으므로)

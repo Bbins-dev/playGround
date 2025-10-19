@@ -338,6 +338,14 @@
           "name": "Poison Needle",
           "description": "Gain {buff:poisonNeedle} for 1 turn. Increases {accuracy} of {poison} {cardType:attack} cards by 20%."
         },
+        "sulfur_spring": {
+          "name": "Sulfur Spring",
+          "description": "Gain {buff:sulfur} for 1 turn. Prevents {status:frozen} status."
+        },
+        "liquid_coating": {
+          "name": "Liquid Coating",
+          "description": "Gain {buff:coating} for 1 turn. Prevents {status:burn} status."
+        },
         "gas_absorption": {
           "name": "Gas Absorption",
           "description": "Restore {hp} equal to opponent's remaining {status:poisoned} turns."
@@ -365,6 +373,14 @@
         "bandage": {
           "name": "Bandage",
           "description": "Wrap bandages to restore 3 {hp}."
+        },
+        "first_aid": {
+          "name": "First Aid",
+          "description": "Restore 8 {hp}."
+        },
+        "nutrient_supplement": {
+          "name": "Nutrient Supplement",
+          "description": "Restore 3 {hp} 1-3 times."
         },
         "miracle_revival": {
           "name": "Miracle Revival",
@@ -616,7 +632,11 @@
         "propagation": "PROP",
         "propagation_description": "Poison attack cards gain additional activations. Lasts for 1 turn.",
         "poisonNeedle": "P.NDL",
-        "poisonNeedle_description": "Increases accuracy of poison attack cards by 20%. Lasts for 1 turn."
+        "poisonNeedle_description": "Increases accuracy of poison attack cards by 20%. Lasts for 1 turn.",
+        "sulfur": "SULFR",
+        "sulfur_description": "Grants immunity to Frozen status.",
+        "coating": "COAT",
+        "coating_description": "Grants immunity to Burn status."
       },
       "elements": {
         "fire": "Fire",
@@ -687,6 +707,9 @@
         "status_applied": "{name}!!",
         "already_status": "Already {name}!",
         "status_immune": "{name} Immune!",
+        "sulfur_immune": "Sulfur!",
+        "coating_immune": "Coating!",
+        "status_cleansed": "Cleansed!",
         "paralysis_triggered": "⚡ Paralyzed!",
         "phase_self_attack": "🌀 Self Attack!",
         "burn_extended": "🔥 Burn+{value}T!",

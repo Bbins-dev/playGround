@@ -338,6 +338,14 @@
           "name": "독침",
           "description": "한 턴 간 {buff:poisonNeedle}을 얻습니다. {poison} {cardType:attack} 카드의 {accuracy}을 20% 증가시킵니다."
         },
+        "sulfur_spring": {
+          "name": "유황 온천",
+          "description": "한 턴 간 {buff:sulfur}버프를 얻습니다. {status:frozen}상태가 되지 않습니다."
+        },
+        "liquid_coating": {
+          "name": "액체 코팅",
+          "description": "한 턴 간 {buff:coating}버프를 얻습니다. {status:burn}상태가 되지 않습니다."
+        },
         "gas_absorption": {
           "name": "가스 흡수",
           "description": "상대의 {status:poisoned} 잔여 턴 만큼 {hp}을 회복합니다."
@@ -365,6 +373,14 @@
         "bandage": {
           "name": "붕대감기",
           "description": "붕대를 감아 3 {hp}을 회복합니다."
+        },
+        "first_aid": {
+          "name": "응급처치",
+          "description": "{hp}을 8 회복합니다."
+        },
+        "nutrient_supplement": {
+          "name": "영양제",
+          "description": "{hp} 3을 1-3회 회복합니다."
         },
         "miracle_revival": {
           "name": "기사회생",
@@ -616,7 +632,11 @@
         "propagation": "연쇄",
         "propagation_description": "독 속성 공격 카드의 발동 횟수가 증가합니다. 1턴 동안 지속됩니다.",
         "poisonNeedle": "독침",
-        "poisonNeedle_description": "독 속성 공격 카드의 명중률이 20% 증가합니다. 1턴 동안 지속됩니다."
+        "poisonNeedle_description": "독 속성 공격 카드의 명중률이 20% 증가합니다. 1턴 동안 지속됩니다.",
+        "sulfur": "유황",
+        "sulfur_description": "얼음 상태이상에 면역됩니다.",
+        "coating": "코팅",
+        "coating_description": "화상 상태이상에 면역됩니다."
       },
       "elements": {
         "fire": "불",
@@ -687,6 +707,9 @@
         "status_applied": "{name}!!",
         "already_status": "이미 {name}!",
         "status_immune": "{name} 면역!",
+        "sulfur_immune": "유황!",
+        "coating_immune": "코팅!",
+        "status_cleansed": "정화!",
         "paralysis_triggered": "⚡ 마비!",
         "phase_self_attack": "🌀 자신을 공격!",
         "burn_extended": "🔥 화상+{value}턴!",
