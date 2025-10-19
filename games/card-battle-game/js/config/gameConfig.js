@@ -1205,10 +1205,16 @@ const GameConfig = {
             1: {
                 hp: 50,
                 cards: [
-                    { id: 'defibrillator', count: 1 },  // 제세동기 (기절 상태이상)
-                    { id: 'defibrillator', count: 1 },  // 제세동기 (2번째)
-                    { id: 'battery_pack', count: 1 },   // 건전지 팩 (팩 버프 획득)
-                    { id: 'battery_pack', count: 1 }    // 건전지 팩 (2번째)
+                    { id: 'poison_fang', count: 1 },           // 독 이빨
+                    { id: 'toxic_blast', count: 1 },           // 맹독 폭발
+                    { id: 'mirror_reaction', count: 1 },       // 거울반응
+                    { id: 'bifunctional_shield', count: 1 },   // 이관능성 방패
+                    { id: 'gas_absorption', count: 1 },        // 가스 흡수
+                    { id: 'toxic_gas', count: 1 },             // 유독가스
+                    { id: 'poison_mutation', count: 1 },       // 맹독 변성
+                    { id: 'sticky_liquid', count: 1 },         // 끈끈한 액체
+                    { id: 'oblivion_draught', count: 1 },      // 망각제
+                    { id: 'catalyst', count: 1 }               // 촉진제
                 ]
             },
             2: {
