@@ -950,6 +950,13 @@ class BattleSystem {
 
     // 방어 결과 처리
     async processDefenseResult(result, user, userPosition) {
+        // 조건 미충족 시 특별 메시지 처리 (거울반응 카드 등)
+        if (result.conditionNotMet && result.messageKey) {
+            const template = I18nHelper.getText(result.messageKey);
+            await this.effectSystem.showDamageNumber(0, userPosition, 'status', template);
+            return; // 조건 미충족이면 추가 처리 중단
+        }
+
         const defenseGain = result.defenseGain || 0;
         const selfDamage = result.selfDamage || 0;
 

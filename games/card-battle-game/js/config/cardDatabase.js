@@ -1581,8 +1581,23 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.mirror_reaction.description',
             effect: function(user, target, battleSystem) {
-                // 동적 방어력: 상대의 중독 잔여 턴수만큼 (Player.updateRuntimeCardStats()에서 계산됨)
+                // 상대의 중독 상태 확인
+                const poisonedEffect = target.statusEffects?.find(e => e.type === 'poisoned');
+                const hasPoisoned = poisonedEffect && poisonedEffect.turnsLeft > 0;
+
                 const defenseValue = this.buffedPower || 0;
+
+                // 중독 없으면 특별 메시지
+                if (!hasPoisoned) {
+                    return {
+                        success: true,
+                        conditionNotMet: true,
+                        messageKey: 'auto_battle_card_game.ui.templates.mirror_reaction_no_poison',
+                        element: this.element
+                    };
+                }
+
+                // 중독 있으면 방어력 획득
                 user.addDefense(defenseValue);
 
                 return {

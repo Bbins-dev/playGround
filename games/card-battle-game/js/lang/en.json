@@ -737,7 +737,8 @@
         "high_voltage_current_success": "⚡ High Voltage!",
         "light_speed_buff_gained": "⚡ L.SPEED +{value}({turns})!",
         "catalyst_success": "☠️ Catalyzed!",
-        "inhibitor_success": "☠️ Suppressed!"
+        "inhibitor_success": "☠️ Suppressed!",
+        "mirror_reaction_no_poison": "No Poison!"
       },
       "card_selection": {
         "initial_title": "Start Card Selection",
