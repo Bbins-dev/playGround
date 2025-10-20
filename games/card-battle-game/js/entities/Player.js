@@ -891,6 +891,16 @@ class Player {
                 modifiedAccuracy = Math.floor(modifiedAccuracy * (1 + focusEffect / 100));
             }
 
+            // 호흡 버프 체크 (불 속성 버프 카드만) - 발동률 100% 보장
+            if (card.type === 'buff' && card.element === 'fire' && this.hasBreathBuff()) {
+                modifiedAccuracy = 100;
+            }
+
+            // 피뢰침 버프 체크 (전기 공격 카드만) - 명중률 100% 보장
+            if (card.type === 'attack' && card.element === 'electric' && this.hasLightningRodBuff()) {
+                modifiedAccuracy = 100;
+            }
+
             // 초전도 버프 체크 (전기 공격 카드만) - 상태이상 적용 후 곱셈 방식으로 증가 (소수점 버림)
             if (card.type === 'attack' && card.element === 'electric' && this.hasSuperConductivityBuff()) {
                 const superConductivityEffect = GameConfig?.buffs?.superConductivity?.effect?.accuracy || 40; // 40%
@@ -918,14 +928,10 @@ class Player {
 
         // 턴 시작 시 랜덤 발동 카드 activationCount 리셋 (마구때리기, 영양제 등)
         this.hand.forEach(card => {
-            if ((card.isRandomBash || card.isRandomHeal) && card.getRandomActivationCount) {
-                card.activationCount = card.getRandomActivationCount();
+            if (card.isRandomBash || card.isRandomHeal) {
+                // Random activation 카드는 activationCount를 null로 설정 (지연 초기화 - 발동 시점에 결정)
+                card.activationCount = null;
                 card.currentActivations = 0;
-
-                // 랜덤 발동 카드 발동 횟수 디버그 로그
-                if (GameConfig?.debugMode?.showRandomBashCounts) {
-                    console.log(`[RANDOM ACTIVATION] ${card.name || card.id}: ${card.activationCount}회 발동`);
-                }
             } else {
                 // 일반 카드들은 currentActivations만 리셋
                 card.currentActivations = 0;
