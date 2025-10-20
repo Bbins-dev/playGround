@@ -536,7 +536,7 @@
         },
         "moisture_absorption": {
           "name": "水分吸収",
-          "description": "吸収+1を得ます。ターン開始時に吸収値分{hp}を回復します。{status:wet}状態の場合、回復量が2倍になります。"
+          "description": "{buff:absorption}を1得ます。ターン開始時に{buff:absorption}値分{hp}を回復します。{status:wet}状態の場合、回復量が2倍になります。"
         },
         "purification": {
           "name": "浄化",

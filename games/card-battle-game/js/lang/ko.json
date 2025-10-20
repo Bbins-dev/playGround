@@ -536,7 +536,7 @@
         },
         "moisture_absorption": {
           "name": "수분흡수",
-          "description": "흡수 +1을 얻습니다. 흡수 수치만큼 턴 시작 시 {hp}을 회복합니다. {status:wet}상태일 경우 회복력이 두 배가 됩니다."
+          "description": "{buff:absorption} +1을 얻습니다. {buff:absorption} 수치만큼 턴 시작 시 {hp}을 회복합니다. {status:wet}상태일 경우 회복력이 두 배가 됩니다."
         },
         "purification": {
           "name": "정화",

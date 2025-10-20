@@ -536,7 +536,7 @@
         },
         "moisture_absorption": {
           "name": "Moisture Absorption",
-          "description": "Gain Absorption +1. Restore {hp} equal to Absorption value at turn start. Healing doubles when {status:wet}."
+          "description": "Gain {buff:absorption} +1. Restore {hp} equal to {buff:absorption} value at turn start. Healing doubles when {status:wet}."
         },
         "purification": {
           "name": "Purification",
