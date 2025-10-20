@@ -304,6 +304,23 @@ window.addEventListener('error', (event) => {
 
 // 처리되지 않은 Promise 거부 처리 (강화 버전)
 window.addEventListener('unhandledrejection', (event) => {
+    // 브라우저 확장 프로그램 관련 오류 필터링 (무시)
+    if (event.reason && event.reason.message) {
+        const message = event.reason.message;
+        const extensionErrorPatterns = [
+            'message channel closed',           // 확장 프로그램 메시지 채널 오류
+            'Extension context invalidated',    // 확장 프로그램 컨텍스트 무효화
+            'chrome-extension://',              // Chrome 확장 프로그램 URL
+            'moz-extension://',                 // Firefox 확장 프로그램 URL
+        ];
+
+        // 확장 프로그램 관련 오류인 경우 조용히 무시
+        if (extensionErrorPatterns.some(pattern => message.includes(pattern))) {
+            event.preventDefault();
+            return;
+        }
+    }
+
     console.error('처리되지 않은 Promise 거부:', event.reason);
 
     // 게임 관련 에러인 경우 메뉴로 이동
