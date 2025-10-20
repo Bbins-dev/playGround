@@ -120,6 +120,22 @@ class BattleSystem {
             this.hpBarSystem.updateBuffs(currentPlayer, isPlayerTurn);
         }
 
+        // 유황 버프 차감 (턴 시작 시 - "다음 턴 시작까지" 지속)
+        if (currentPlayer.sulfurTurns > 0) {
+            currentPlayer.sulfurTurns--;
+
+            // 버프 UI 즉시 업데이트
+            this.hpBarSystem.updateBuffs(currentPlayer, isPlayerTurn);
+        }
+
+        // 코팅 버프 차감 (턴 시작 시 - "다음 턴 시작까지" 지속)
+        if (currentPlayer.coatingTurns > 0) {
+            currentPlayer.coatingTurns--;
+
+            // 버프 UI 즉시 업데이트
+            this.hpBarSystem.updateBuffs(currentPlayer, isPlayerTurn);
+        }
+
         // ===== 2. 방어력 초기화 =====
         if (currentPlayer.defense > 0) {
             // 방어력 감소 애니메이션 실행

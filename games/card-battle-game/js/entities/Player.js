@@ -386,7 +386,7 @@ class Player {
     }
 
     addSharpenBuff(turns) {
-        this.sharpenTurns += turns;
+        this.sharpenTurns = turns;  // 중첩 불가이므로 덮어쓰기 (카드에 중복 체크 있음)
         return turns;
     }
 
@@ -603,7 +603,7 @@ class Player {
     }
 
     addPoisonNeedleBuff(turns) {
-        this.poisonNeedleTurns = turns;  // 중첩 불가이므로 덮어쓰기 (1턴만 유지)
+        this.poisonNeedleTurns += turns;  // 턴 추가 방식 (스택 가능)
         this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
         return turns;
     }
@@ -1093,16 +1093,6 @@ class Player {
         // 독침 버프 턴수 차감
         if (this.poisonNeedleTurns > 0) {
             this.poisonNeedleTurns--;
-        }
-
-        // 유황 버프 턴수 차감
-        if (this.sulfurTurns > 0) {
-            this.sulfurTurns--;
-        }
-
-        // 코팅 버프 턴수 차감
-        if (this.coatingTurns > 0) {
-            this.coatingTurns--;
         }
 
         // 런타임 스탯 업데이트 (버프가 차감되었으므로)

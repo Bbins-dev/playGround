@@ -340,11 +340,11 @@
         },
         "sulfur_spring": {
           "name": "硫黄温泉",
-          "description": "1ターンの間{buff:sulfur}バフを得る。{status:frozen}状態にならない。"
+          "description": "1ターンの間{buff:sulfur}バフを得る。{status:frozen}状態にならない。ターン開始時に減少する。"
         },
         "liquid_coating": {
           "name": "液コート",
-          "description": "1ターンの間{buff:coating}バフを得る。{status:burn}状態にならない。"
+          "description": "1ターンの間{buff:coating}バフを得る。{status:burn}状態にならない。ターン開始時に減少する。"
         },
         "gas_absorption": {
           "name": "ガス吸収",
@@ -634,9 +634,9 @@
         "poisonNeedle": "毒針",
         "poisonNeedle_description": "毒属性攻撃カードの命中率が20%増加します。1ターン持続します。",
         "sulfur": "硫黄",
-        "sulfur_description": "氷結状態異常を無効化します。",
+        "sulfur_description": "氷結状態異常を無効化します。ターン開始時に減少します。",
         "coating": "コート",
-        "coating_description": "火傷状態異常を無効化します。"
+        "coating_description": "火傷状態異常を無効化します。ターン開始時に減少します。"
       },
       "elements": {
         "fire": "火",
