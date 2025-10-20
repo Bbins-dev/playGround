@@ -119,6 +119,12 @@ class Card {
             actualAccuracy = Math.floor(actualAccuracy * (1 + superConductivityEffect / 100));
         }
 
+        // 독침 버프 체크 (독 공격 카드만) - 상태이상 적용 후 곱셈 방식으로 증가 (소수점 버림)
+        if (this.type === 'attack' && this.element === 'poison' && user && user.hasPoisonNeedleBuff && user.hasPoisonNeedleBuff()) {
+            const poisonNeedleEffect = GameConfig?.buffs?.poisonNeedle?.effect?.accuracy || 20; // 20%
+            actualAccuracy = Math.floor(actualAccuracy * (1 + poisonNeedleEffect / 100));
+        }
+
         // 명중률 상한 100% 제한
         actualAccuracy = Math.min(100, actualAccuracy);
 
@@ -191,6 +197,20 @@ class Card {
 
     // 카드가 발동 가능한지 체크
     canActivate() {
+        // Random activation 카드: 첫 체크 시점에 횟수 결정 (Lazy Initialization)
+        if ((this.isRandomBash || this.isRandomHeal) && this.activationCount === null) {
+            if (this.getRandomActivationCount) {
+                this.activationCount = this.getRandomActivationCount();
+
+                // 디버그 로그: 첫 발동 결정 시점
+                if (GameConfig?.debugMode?.showRandomBashCounts) {
+                    console.log(`[RANDOM ACTIVATION] ${this.name || this.id}: ${this.activationCount}회로 결정됨`);
+                }
+            } else {
+                this.activationCount = 1; // fallback
+            }
+        }
+
         // 고속 버프가 적용된 경우 modifiedActivationCount 사용
         const effectiveCount = this.modifiedActivationCount !== undefined ?
             this.modifiedActivationCount : this.activationCount;

@@ -305,6 +305,14 @@ class BattleSystem {
         // 현재 발동 중인 카드 설정
         this.activatingCard = card;
 
+        // 랜덤 발동 카드 진행 로그 (각 발동마다)
+        if ((card.isRandomBash || card.isRandomHeal) && GameConfig?.debugMode?.showRandomBashCounts) {
+            const currentCount = card.currentActivations + 1;
+            const totalCount = card.modifiedActivationCount !== undefined ?
+                card.modifiedActivationCount : card.activationCount;
+            console.log(`[RANDOM ACTIVATION] ${card.name || card.id}: ${currentCount}/${totalCount}번째 발동 중`);
+        }
+
         // 카드 발동 애니메이션
         const cardDuration = GameConfig.utils.applyGameSpeed(
             GameConfig.animations.cardActivation,

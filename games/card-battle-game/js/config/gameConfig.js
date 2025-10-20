@@ -2918,7 +2918,7 @@ const GameConfig = {
             attackWater: 'sfx/snd_attack_effect_water.mp3',
 
             // 방어/버프/상태이상
-            defenseGain: 'sfx/snd_deffence_gain.mp3',
+            defenseGain: 'sfx/snd_deffense_gain.mp3',
             buffGain: 'sfx/snd_buff_gain.mp3',
             statusGain: 'sfx/snd_status_gain.mp3',
             heal: 'sfx/snd_heal.mp3',
