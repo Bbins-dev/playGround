@@ -179,6 +179,61 @@ class HPBarSystem {
         });
     }
 
+    // Configuration-Driven 버프 엘리먼트 생성 헬퍼
+    _createBuffElement(buffsContainer, effectsContainer, buffType, value, isPlayer) {
+        const buffConfig = GameConfig.buffs[buffType];
+        if (!buffConfig) {
+            console.warn(`HPBarSystem._createBuffElement: 알 수 없는 버프 타입: ${buffType}`);
+            return;
+        }
+
+        // 버프가 있는 경우 컨테이너 활성화
+        effectsContainer.classList.add('active');
+
+        const buffElement = document.createElement('div');
+        buffElement.className = 'buff-label';
+
+        // 다국어 지원 - I18nHelper 사용
+        const buffName = buffConfig.nameKey ?
+            I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
+            buffConfig.name;
+
+        // Configuration-Driven 값 표시 결정
+        let displayText = `${buffConfig.emoji} ${buffName}`;
+        if (buffConfig.display?.showValue && value !== undefined) {
+            // format 패턴 사용: '({value})', '+{value}', '×{value}'
+            const format = buffConfig.display.format || '';
+            if (format.includes('{value}')) {
+                const formattedValue = format.replace('{value}', value);
+                displayText += formattedValue;
+            } else {
+                // fallback: format에 {value} 플레이스홀더가 없는 경우
+                console.warn(`HPBarSystem._createBuffElement: ${buffType}의 format에 {value} 플레이스홀더가 없습니다.`);
+                displayText += ` ${value}`;  // 기본 형식으로 표시
+            }
+        }
+
+        buffElement.innerHTML = displayText;
+
+        // 버프별 색상 적용
+        buffElement.style.borderColor = buffConfig.color;
+        buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
+
+        // 클릭 이벤트 추가 (툴팁 모달 표시)
+        buffElement.style.cursor = 'pointer';
+        buffElement.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (window.BuffStatusTooltipModal) {
+                window.BuffStatusTooltipModal.show('buff', buffType);
+            }
+        });
+
+        // Flexbox column-reverse/column으로 방향 제어
+        // 플레이어: column-reverse로 아래→위 자동 처리
+        // 적: column으로 위→아래 자동 처리
+        buffsContainer.appendChild(buffElement);
+    }
+
     // 상태이상 표시 업데이트 (새로운 그리드 시스템)
     updateStatusEffects(player, isPlayer = true) {
         const statusContainer = isPlayer ? this.playerStatusGrid : this.enemyStatusGrid;
@@ -253,719 +308,222 @@ class HPBarSystem {
 
         // 힘 버프 표시 (사슬 상태이상 무시 - 버프 값 직접 체크)
         if (player.strength > 0) {
-            const strengthValue = player.strength;  // UI 표시용 - 실제 버프 값
-            const buffConfig = GameConfig.buffs.strength;
-
-            // 버프가 있는 경우 컨테이너 활성화
-            effectsContainer.classList.add('active');
-
-            const buffElement = document.createElement('div');
-            buffElement.className = 'buff-label';
-
-            // 다국어 지원 - I18nHelper 사용
-            const buffName = buffConfig.nameKey ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} +${strengthValue}`;
-
-            // 버프별 색상 적용
-            buffElement.style.borderColor = buffConfig.color;
-            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
-
-            // 클릭 이벤트 추가 (툴팁 모달 표시)
-            buffElement.style.cursor = 'pointer';
-            buffElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (window.BuffStatusTooltipModal) {
-                    window.BuffStatusTooltipModal.show('buff', 'strength');
-                }
-            });
-
-            // Flexbox column-reverse/column으로 방향 제어
-            // 플레이어: column-reverse로 아래→위 자동 처리
-            // 적: column으로 위→아래 자동 처리
-            buffsContainer.appendChild(buffElement);
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'strength',
+                player.strength,
+                isPlayer
+            );
         }
 
         // 강화 버프 표시
         if (player.hasEnhanceBuff && player.hasEnhanceBuff()) {
-            const enhanceTurns = player.enhanceTurns;
-            const buffConfig = GameConfig.buffs.enhance;
-
-            // 버프가 있는 경우 컨테이너 활성화
-            effectsContainer.classList.add('active');
-
-            const buffElement = document.createElement('div');
-            buffElement.className = 'buff-label';
-
-            // 다국어 지원 - I18nHelper 사용
-            const buffName = buffConfig.nameKey ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} (${enhanceTurns})`;
-
-            // 버프별 색상 적용
-            buffElement.style.borderColor = buffConfig.color;
-            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
-
-            // 클릭 이벤트 추가 (툴팁 모달 표시)
-            buffElement.style.cursor = 'pointer';
-            buffElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (window.BuffStatusTooltipModal) {
-                    window.BuffStatusTooltipModal.show('buff', 'enhance');
-                }
-            });
-
-            // Flexbox column-reverse/column으로 방향 제어
-            // 플레이어: column-reverse로 아래→위 자동 처리
-            // 적: column으로 위→아래 자동 처리
-            buffsContainer.appendChild(buffElement);
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'enhance',
+                player.enhanceTurns,
+                isPlayer
+            );
         }
 
         // 집중 버프 표시
         if (player.hasFocusBuff && player.hasFocusBuff()) {
-            const focusTurns = player.focusTurns;
-            const buffConfig = GameConfig.buffs.focus;
-
-            // 버프가 있는 경우 컨테이너 활성화
-            effectsContainer.classList.add('active');
-
-            const buffElement = document.createElement('div');
-            buffElement.className = 'buff-label';
-
-            // 다국어 지원 - I18nHelper 사용
-            const buffName = buffConfig.nameKey ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} (${focusTurns})`;
-
-            // 버프별 색상 적용
-            buffElement.style.borderColor = buffConfig.color;
-            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
-
-            // 클릭 이벤트 추가 (툴팁 모달 표시)
-            buffElement.style.cursor = 'pointer';
-            buffElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (window.BuffStatusTooltipModal) {
-                    window.BuffStatusTooltipModal.show('buff', 'focus');
-                }
-            });
-
-            // Flexbox column-reverse/column으로 방향 제어
-            // 플레이어: column-reverse로 아래→위 자동 처리
-            // 적: column으로 위→아래 자동 처리
-            buffsContainer.appendChild(buffElement);
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'focus',
+                player.focusTurns,
+                isPlayer
+            );
         }
 
         // 고속 버프 표시
         if (player.hasSpeedBuff && player.hasSpeedBuff()) {
-            const speedBonus = player.speedBonus;
-            const speedTurns = player.speedTurns;
-            const buffConfig = GameConfig.buffs.speed;
-
-            // 버프가 있는 경우 컨테이너 활성화
-            effectsContainer.classList.add('active');
-
-            const buffElement = document.createElement('div');
-            buffElement.className = 'buff-label';
-
-            // 다국어 지원 - I18nHelper 사용
-            const buffName = buffConfig.nameKey ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} +${speedBonus}`;
-
-            // 버프별 색상 적용
-            buffElement.style.borderColor = buffConfig.color;
-            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
-
-            // 클릭 이벤트 추가 (툴팁 모달 표시)
-            buffElement.style.cursor = 'pointer';
-            buffElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (window.BuffStatusTooltipModal) {
-                    window.BuffStatusTooltipModal.show('buff', 'speed');
-                }
-            });
-
-            // Flexbox column-reverse/column으로 방향 제어
-            // 플레이어: column-reverse로 아래→위 자동 처리
-            // 적: column으로 위→아래 자동 처리
-            buffsContainer.appendChild(buffElement);
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'speed',
+                player.speedBonus,
+                isPlayer
+            );
         }
 
         // 냄새 버프 표시
         if (player.hasScentBuff && player.hasScentBuff()) {
-            const scentBonus = player.scentBonus;
-            const buffConfig = GameConfig.buffs.scent;
-
-            // 버프가 있는 경우 컨테이너 활성화
-            effectsContainer.classList.add('active');
-
-            const buffElement = document.createElement('div');
-            buffElement.className = 'buff-label';
-
-            // 다국어 지원 - I18nHelper 사용
-            const buffName = buffConfig.nameKey ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} +${scentBonus}`;
-
-            // 버프별 색상 적용
-            buffElement.style.borderColor = buffConfig.color;
-            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
-
-            // 클릭 이벤트 추가 (툴팁 모달 표시)
-            buffElement.style.cursor = 'pointer';
-            buffElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (window.BuffStatusTooltipModal) {
-                    window.BuffStatusTooltipModal.show('buff', 'scent');
-                }
-            });
-
-            // Flexbox column-reverse/column으로 방향 제어
-            // 플레이어: column-reverse로 아래→위 자동 처리
-            // 적: column으로 위→아래 자동 처리
-            buffsContainer.appendChild(buffElement);
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'scent',
+                player.scentBonus,
+                isPlayer
+            );
         }
 
-        // 벼리기 버프 표시
+        // 벼리기 버프 표시 (showValue: false - 턴 표시 없음)
         if (player.hasSharpenBuff && player.hasSharpenBuff()) {
-            const buffConfig = GameConfig.buffs.sharpen;
-
-            // 버프가 있는 경우 컨테이너 활성화
-            effectsContainer.classList.add('active');
-
-            const buffElement = document.createElement('div');
-            buffElement.className = 'buff-label';
-
-            // 다국어 지원 - I18nHelper 사용
-            const buffName = buffConfig.nameKey ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName}`;  // 턴 표시 없음
-
-            // 버프별 색상 적용
-            buffElement.style.borderColor = buffConfig.color;
-            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
-
-            // 클릭 이벤트 추가 (툴팁 모달 표시)
-            buffElement.style.cursor = 'pointer';
-            buffElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (window.BuffStatusTooltipModal) {
-                    window.BuffStatusTooltipModal.show('buff', 'sharpen');
-                }
-            });
-
-            // Flexbox column-reverse/column으로 방향 제어
-            // 플레이어: column-reverse로 아래→위 자동 처리
-            // 적: column으로 위→아래 자동 처리
-            buffsContainer.appendChild(buffElement);
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'sharpen',
+                player.sharpenTurns,
+                isPlayer
+            );
         }
 
         // 열풍 버프 표시
         if (player.hasHotWindBuff && player.hasHotWindBuff()) {
-            const hotWindTurns = player.hotWindTurns;
-            const buffConfig = GameConfig.buffs.hotWind;
-
-            // 버프가 있는 경우 컨테이너 활성화
-            effectsContainer.classList.add('active');
-
-            const buffElement = document.createElement('div');
-            buffElement.className = 'buff-label';
-
-            // 다국어 지원 - I18nHelper 사용
-            const buffName = buffConfig.nameKey ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} (${hotWindTurns})`;
-
-            // 버프별 색상 적용
-            buffElement.style.borderColor = buffConfig.color;
-            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
-
-            // 클릭 이벤트 추가 (툴팁 모달 표시)
-            buffElement.style.cursor = 'pointer';
-            buffElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (window.BuffStatusTooltipModal) {
-                    window.BuffStatusTooltipModal.show('buff', 'hotWind');
-                }
-            });
-
-            // Flexbox column-reverse/column으로 방향 제어
-            // 플레이어: column-reverse로 아래→위 자동 처리
-            // 적: column으로 위→아래 자동 처리
-            buffsContainer.appendChild(buffElement);
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'hotWind',
+                player.hotWindTurns,
+                isPlayer
+            );
         }
 
         // Li⁺ 버프 표시
         if (player.hasLithiumBuff && player.hasLithiumBuff()) {
-            const lithiumTurns = player.lithiumTurns;
-            const buffConfig = GameConfig.buffs.lithium;
-
-            // 버프가 있는 경우 컨테이너 활성화
-            effectsContainer.classList.add('active');
-
-            const buffElement = document.createElement('div');
-            buffElement.className = 'buff-label';
-
-            // 다국어 지원 - I18nHelper 사용
-            const buffName = buffConfig.nameKey ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} ×${lithiumTurns}`;
-
-            // 버프별 색상 적용
-            buffElement.style.borderColor = buffConfig.color;
-            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
-
-            // 클릭 이벤트 추가 (툴팁 모달 표시)
-            buffElement.style.cursor = 'pointer';
-            buffElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (window.BuffStatusTooltipModal) {
-                    window.BuffStatusTooltipModal.show('buff', 'lithium');
-                }
-            });
-
-            // Flexbox column-reverse/column으로 방향 제어
-            // 플레이어: column-reverse로 아래→위 자동 처리
-            // 적: column으로 위→아래 자동 처리
-            buffsContainer.appendChild(buffElement);
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'lithium',
+                player.lithiumTurns,
+                isPlayer
+            );
         }
 
-        // 호흡 버프 표시
+        // 호흡 버프 표시 (showValue: false - 턴 표시 없음)
         if (player.hasBreathBuff && player.hasBreathBuff()) {
-            const buffConfig = GameConfig.buffs.breath;
-
-            // 버프가 있는 경우 컨테이너 활성화
-            effectsContainer.classList.add('active');
-
-            const buffElement = document.createElement('div');
-            buffElement.className = 'buff-label';
-
-            // 다국어 지원 - I18nHelper 사용
-            const buffName = buffConfig.nameKey ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName}`;
-
-            // 버프별 색상 적용
-            buffElement.style.borderColor = buffConfig.color;
-            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
-
-            // 클릭 이벤트 추가 (툴팁 모달 표시)
-            buffElement.style.cursor = 'pointer';
-            buffElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (window.BuffStatusTooltipModal) {
-                    window.BuffStatusTooltipModal.show('buff', 'breath');
-                }
-            });
-
-            // Flexbox column-reverse/column으로 방향 제어
-            // 플레이어: column-reverse로 아래→위 자동 처리
-            // 적: column으로 위→아래 자동 처리
-            buffsContainer.appendChild(buffElement);
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'breath',
+                player.breathTurns,
+                isPlayer
+            );
         }
 
         // 질량 버프 표시
         if (player.hasMassBuff && player.hasMassBuff()) {
-            const massBonus = player.massBonus;
-            const buffConfig = GameConfig.buffs.mass;
-
-            // 버프가 있는 경우 컨테이너 활성화
-            effectsContainer.classList.add('active');
-
-            const buffElement = document.createElement('div');
-            buffElement.className = 'buff-label';
-
-            // 다국어 지원 - I18nHelper 사용
-            const buffName = buffConfig.nameKey ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} +${massBonus}`;
-
-            // 버프별 색상 적용
-            buffElement.style.borderColor = buffConfig.color;
-            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
-
-            // 클릭 이벤트 추가 (툴팁 모달 표시)
-            buffElement.style.cursor = 'pointer';
-            buffElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (window.BuffStatusTooltipModal) {
-                    window.BuffStatusTooltipModal.show('buff', 'mass');
-                }
-            });
-
-            // Flexbox column-reverse/column으로 방향 제어
-            // 플레이어: column-reverse로 아래→위 자동 처리
-            // 적: column으로 위→아래 자동 처리
-            buffsContainer.appendChild(buffElement);
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'mass',
+                player.massBonus,
+                isPlayer
+            );
         }
 
         // 급류 버프 표시
         if (player.hasTorrentBuff && player.hasTorrentBuff()) {
-            const torrentBonus = player.torrentBonus;
-            const buffConfig = GameConfig.buffs.torrent;
-
-            // 버프가 있는 경우 컨테이너 활성화
-            effectsContainer.classList.add('active');
-
-            const buffElement = document.createElement('div');
-            buffElement.className = 'buff-label';
-
-            // 다국어 지원 - I18nHelper 사용
-            const buffName = buffConfig.nameKey ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} +${torrentBonus}`;
-
-            // 버프별 색상 적용
-            buffElement.style.borderColor = buffConfig.color;
-            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
-
-            // 클릭 이벤트 추가 (툴팁 모달 표시)
-            buffElement.style.cursor = 'pointer';
-            buffElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (window.BuffStatusTooltipModal) {
-                    window.BuffStatusTooltipModal.show('buff', 'torrent');
-                }
-            });
-
-            // Flexbox column-reverse/column으로 방향 제어
-            // 플레이어: column-reverse로 아래→위 자동 처리
-            // 적: column으로 위→아래 자동 처리
-            buffsContainer.appendChild(buffElement);
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'torrent',
+                player.torrentBonus,
+                isPlayer
+            );
         }
 
         // 흡수 버프 표시
         if (player.hasAbsorptionBuff && player.hasAbsorptionBuff()) {
-            const absorptionBonus = player.absorptionBonus;
-            const buffConfig = GameConfig.buffs.absorption;
-
-            // 버프가 있는 경우 컨테이너 활성화
-            effectsContainer.classList.add('active');
-
-            const buffElement = document.createElement('div');
-            buffElement.className = 'buff-label';
-
-            // 다국어 지원 - I18nHelper 사용
-            const buffName = buffConfig.nameKey ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} +${absorptionBonus}`;
-
-            // 버프별 색상 적용
-            buffElement.style.borderColor = buffConfig.color;
-            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
-
-            // 클릭 이벤트 추가 (툴팁 모달 표시)
-            buffElement.style.cursor = 'pointer';
-            buffElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (window.BuffStatusTooltipModal) {
-                    window.BuffStatusTooltipModal.show('buff', 'absorption');
-                }
-            });
-
-            // Flexbox column-reverse/column으로 방향 제어
-            // 플레이어: column-reverse로 아래→위 자동 처리
-            // 적: column으로 위→아래 자동 처리
-            buffsContainer.appendChild(buffElement);
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'absorption',
+                player.absorptionBonus,
+                isPlayer
+            );
         }
 
         // 광속 버프 표시
         if (player.hasLightSpeedBuff && player.hasLightSpeedBuff()) {
-            const lightSpeedBonus = player.lightSpeedBonus;
-            const buffConfig = GameConfig.buffs.lightSpeed;
-
-            // 버프가 있는 경우 컨테이너 활성화
-            effectsContainer.classList.add('active');
-
-            const buffElement = document.createElement('div');
-            buffElement.className = 'buff-label';
-
-            // 다국어 지원 - I18nHelper 사용
-            const buffName = buffConfig.nameKey ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} +${lightSpeedBonus}`;
-
-            // 버프별 색상 적용
-            buffElement.style.borderColor = buffConfig.color;
-            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
-
-            // 클릭 이벤트 추가 (툴팁 모달 표시)
-            buffElement.style.cursor = 'pointer';
-            buffElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (window.BuffStatusTooltipModal) {
-                    window.BuffStatusTooltipModal.show('buff', 'lightSpeed');
-                }
-            });
-
-            // Flexbox column-reverse/column으로 방향 제어
-            // 플레이어: column-reverse로 아래→위 자동 처리
-            // 적: column으로 위→아래 자동 처리
-            buffsContainer.appendChild(buffElement);
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'lightSpeed',
+                player.lightSpeedBonus,
+                isPlayer
+            );
         }
 
-        // 초전도 버프 표시
+        // 초전도 버프 표시 (showValue: false - 턴 표시 없음)
         if (player.hasSuperConductivityBuff && player.hasSuperConductivityBuff()) {
-            const buffConfig = GameConfig.buffs.superConductivity;
-
-            // 버프가 있는 경우 컨테이너 활성화
-            effectsContainer.classList.add('active');
-
-            const buffElement = document.createElement('div');
-            buffElement.className = 'buff-label';
-
-            // 다국어 지원 - I18nHelper 사용
-            const buffName = buffConfig.nameKey ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName}`;  // 턴 표시 없음 (항상 1턴 고정)
-
-            // 버프별 색상 적용
-            buffElement.style.borderColor = buffConfig.color;
-            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
-
-            // 클릭 이벤트 추가 (툴팁 모달 표시)
-            buffElement.style.cursor = 'pointer';
-            buffElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (window.BuffStatusTooltipModal) {
-                    window.BuffStatusTooltipModal.show('buff', 'superConductivity');
-                }
-            });
-
-            // Flexbox column-reverse/column으로 방향 제어
-            // 플레이어: column-reverse로 아래→위 자동 처리
-            // 적: column으로 위→아래 자동 처리
-            buffsContainer.appendChild(buffElement);
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'superConductivity',
+                player.superConductivityTurns,
+                isPlayer
+            );
         }
 
-        // 피뢰침 버프 표시
+        // 피뢰침 버프 표시 (showValue: false - 일회용)
         if (player.hasLightningRodBuff && player.hasLightningRodBuff()) {
-            const buffConfig = GameConfig.buffs.lightningRod;
-
-            // 버프가 있는 경우 컨테이너 활성화
-            effectsContainer.classList.add('active');
-
-            const buffElement = document.createElement('div');
-            buffElement.className = 'buff-label';
-
-            // 다국어 지원 - I18nHelper 사용
-            const buffName = buffConfig.nameKey ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName}`;  // 턴 표시 없음 (일회용)
-
-            // 버프별 색상 적용
-            buffElement.style.borderColor = buffConfig.color;
-            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
-
-            // 클릭 이벤트 추가 (툴팁 모달 표시)
-            buffElement.style.cursor = 'pointer';
-            buffElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (window.BuffStatusTooltipModal) {
-                    window.BuffStatusTooltipModal.show('buff', 'lightningRod');
-                }
-            });
-
-            // Flexbox column-reverse/column으로 방향 제어
-            // 플레이어: column-reverse로 아래→위 자동 처리
-            // 적: column으로 위→아래 자동 처리
-            buffsContainer.appendChild(buffElement);
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'lightningRod',
+                player.lightningRodTurns,
+                isPlayer
+            );
         }
 
         // 팩 버프 표시
         if (player.hasPackBuff && player.hasPackBuff()) {
-            const packBonus = player.packBonus;
-            const buffConfig = GameConfig.buffs.pack;
-
-            // 버프가 있는 경우 컨테이너 활성화
-            effectsContainer.classList.add('active');
-
-            const buffElement = document.createElement('div');
-            buffElement.className = 'buff-label';
-
-            // 다국어 지원 - I18nHelper 사용
-            const buffName = buffConfig.nameKey ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} +${packBonus}`;
-
-            // 버프별 색상 적용
-            buffElement.style.borderColor = buffConfig.color;
-            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
-
-            // 클릭 이벤트 추가 (툴팁 모달 표시)
-            buffElement.style.cursor = 'pointer';
-            buffElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (window.BuffStatusTooltipModal) {
-                    window.BuffStatusTooltipModal.show('buff', 'pack');
-                }
-            });
-
-            // Flexbox column-reverse/column으로 방향 제어
-            // 플레이어: column-reverse로 아래→위 자동 처리
-            // 적: column으로 위→아래 자동 처리
-            buffsContainer.appendChild(buffElement);
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'pack',
+                player.packBonus,
+                isPlayer
+            );
         }
 
         // 연쇄 버프 표시
         if (player.hasPropagationBuff && player.hasPropagationBuff()) {
-            const propagationBonus = player.propagationBonus;
-            const buffConfig = GameConfig.buffs.propagation;
-
-            // 버프가 있는 경우 컨테이너 활성화
-            effectsContainer.classList.add('active');
-
-            const buffElement = document.createElement('div');
-            buffElement.className = 'buff-label';
-
-            // 다국어 지원 - I18nHelper 사용
-            const buffName = buffConfig.nameKey ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} +${propagationBonus}`;
-
-            // 버프별 색상 적용
-            buffElement.style.borderColor = buffConfig.color;
-            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
-
-            // 클릭 이벤트 추가 (툴팁 모달 표시)
-            buffElement.style.cursor = 'pointer';
-            buffElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (window.BuffStatusTooltipModal) {
-                    window.BuffStatusTooltipModal.show('buff', 'propagation');
-                }
-            });
-
-            // Flexbox column-reverse/column으로 방향 제어
-            // 플레이어: column-reverse로 아래→위 자동 처리
-            // 적: column으로 위→아래 자동 처리
-            buffsContainer.appendChild(buffElement);
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'propagation',
+                player.propagationBonus,
+                isPlayer
+            );
         }
 
         // 독침 버프 표시
         if (player.hasPoisonNeedleBuff && player.hasPoisonNeedleBuff()) {
-            const poisonNeedleTurns = player.poisonNeedleTurns;
-            const buffConfig = GameConfig.buffs.poisonNeedle;
-
-            // 버프가 있는 경우 컨테이너 활성화
-            effectsContainer.classList.add('active');
-
-            const buffElement = document.createElement('div');
-            buffElement.className = 'buff-label';
-
-            // 다국어 지원 - I18nHelper 사용
-            const buffName = buffConfig.nameKey ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} (${poisonNeedleTurns})`;
-
-            // 버프별 색상 적용
-            buffElement.style.borderColor = buffConfig.color;
-            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
-
-            // 클릭 이벤트 추가 (툴팁 모달 표시)
-            buffElement.style.cursor = 'pointer';
-            buffElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (window.BuffStatusTooltipModal) {
-                    window.BuffStatusTooltipModal.show('buff', 'poisonNeedle');
-                }
-            });
-
-            // Flexbox column-reverse/column으로 방향 제어
-            // 플레이어: column-reverse로 아래→위 자동 처리
-            // 적: column으로 위→아래 자동 처리
-            buffsContainer.appendChild(buffElement);
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'poisonNeedle',
+                player.poisonNeedleTurns,
+                isPlayer
+            );
         }
 
         // 유황 버프 표시
         if (player.hasSulfurBuff && player.hasSulfurBuff()) {
-            const sulfurTurns = player.sulfurTurns;
-            const buffConfig = GameConfig.buffs.sulfur;
-
-            // 버프가 있는 경우 컨테이너 활성화
-            effectsContainer.classList.add('active');
-
-            const buffElement = document.createElement('div');
-            buffElement.className = 'buff-label';
-
-            // 다국어 지원 - I18nHelper 사용
-            const buffName = buffConfig.nameKey ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} (${sulfurTurns})`;
-
-            // 버프별 색상 적용
-            buffElement.style.borderColor = buffConfig.color;
-            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
-
-            // 클릭 이벤트 추가 (툴팁 모달 표시)
-            buffElement.style.cursor = 'pointer';
-            buffElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (window.BuffStatusTooltipModal) {
-                    window.BuffStatusTooltipModal.show('buff', 'sulfur');
-                }
-            });
-
-            // Flexbox column-reverse/column으로 방향 제어
-            // 플레이어: column-reverse로 아래→위 자동 처리
-            // 적: column으로 위→아래 자동 처리
-            buffsContainer.appendChild(buffElement);
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'sulfur',
+                player.sulfurTurns,
+                isPlayer
+            );
         }
 
         // 코팅 버프 표시
         if (player.hasCoatingBuff && player.hasCoatingBuff()) {
-            const coatingTurns = player.coatingTurns;
-            const buffConfig = GameConfig.buffs.coating;
-
-            // 버프가 있는 경우 컨테이너 활성화
-            effectsContainer.classList.add('active');
-
-            const buffElement = document.createElement('div');
-            buffElement.className = 'buff-label';
-
-            // 다국어 지원 - I18nHelper 사용
-            const buffName = buffConfig.nameKey ?
-                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
-                buffConfig.name;
-            buffElement.innerHTML = `${buffConfig.emoji} ${buffName} (${coatingTurns})`;
-
-            // 버프별 색상 적용
-            buffElement.style.borderColor = buffConfig.color;
-            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
-
-            // 클릭 이벤트 추가 (툴팁 모달 표시)
-            buffElement.style.cursor = 'pointer';
-            buffElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (window.BuffStatusTooltipModal) {
-                    window.BuffStatusTooltipModal.show('buff', 'coating');
-                }
-            });
-
-            // Flexbox column-reverse/column으로 방향 제어
-            // 플레이어: column-reverse로 아래→위 자동 처리
-            // 적: column으로 위→아래 자동 처리
-            buffsContainer.appendChild(buffElement);
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'coating',
+                player.coatingTurns,
+                isPlayer
+            );
         }
 
         // 버프가 없고 상태이상도 없으면 컨테이너 숨김
