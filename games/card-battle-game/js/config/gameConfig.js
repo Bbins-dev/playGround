@@ -1203,16 +1203,9 @@ const GameConfig = {
         // 스테이지별 적 설정 (1-10스테이지)
         stageConfigs: {
             1: {
-                hp: 50,
+                hp: 10,
                 cards: [
-                    { id: 'inhibitor', count: 1 },              // 억제제
-                    { id: 'chain_reaction', count: 2 },         // 연쇄 반응 x2
-                    { id: 'poison_needle', count: 2 },          // 독침 x2
-                    { id: 'sulfur_spring', count: 1 },          // 유황 온천
-                    { id: 'liquid_coating', count: 1 },         // 액체 코팅
-                    { id: 'poison_throw', count: 1 },           // 독극물 투척
-                    { id: 'first_aid', count: 1 },              // 응급처치
-                    { id: 'nutrient_supplement', count: 1 }     // 영양제
+                    { id: 'random_bash', count: 1 }             // 마구때리기
                 ]
             },
             2: {
