@@ -1071,7 +1071,7 @@ const GameConfig = {
             descriptionKey: 'auto_battle_card_game.ui.buffs.sulfur_description',
             name: '유황',
             emoji: '♨️',
-            description: '얼음 상태이상에 면역',
+            description: '얼음 상태이상에 면역. 턴 시작 시 차감',
             get color() { return GameConfig.masterColors.buffs.sulfur; }, // 황금색
             get maxStack() { return GameConfig.constants.limits.maxBuffStacks; }, // 최대 중첩 수 (턴수 누적)
             targetSelf: true, // 자신에게 적용되는 버프
@@ -1086,7 +1086,7 @@ const GameConfig = {
             descriptionKey: 'auto_battle_card_game.ui.buffs.coating_description',
             name: '코팅',
             emoji: '🛡️',
-            description: '화상 상태이상에 면역',
+            description: '화상 상태이상에 면역. 턴 시작 시 차감',
             get color() { return GameConfig.masterColors.buffs.coating; }, // 스틸 블루
             get maxStack() { return GameConfig.constants.limits.maxBuffStacks; }, // 최대 중첩 수 (턴수 누적)
             targetSelf: true, // 자신에게 적용되는 버프
@@ -1205,16 +1205,14 @@ const GameConfig = {
             1: {
                 hp: 50,
                 cards: [
-                    { id: 'poison_fang', count: 1 },           // 독 이빨
-                    { id: 'toxic_blast', count: 1 },           // 맹독 폭발
-                    { id: 'mirror_reaction', count: 1 },       // 거울반응
-                    { id: 'bifunctional_shield', count: 1 },   // 이관능성 방패
-                    { id: 'gas_absorption', count: 1 },        // 가스 흡수
-                    { id: 'toxic_gas', count: 1 },             // 유독가스
-                    { id: 'poison_mutation', count: 1 },       // 맹독 변성
-                    { id: 'sticky_liquid', count: 1 },         // 끈끈한 액체
-                    { id: 'oblivion_draught', count: 1 },      // 망각제
-                    { id: 'catalyst', count: 1 }               // 촉진제
+                    { id: 'inhibitor', count: 1 },              // 억제제
+                    { id: 'chain_reaction', count: 2 },         // 연쇄 반응 x2
+                    { id: 'poison_needle', count: 2 },          // 독침 x2
+                    { id: 'sulfur_spring', count: 1 },          // 유황 온천
+                    { id: 'liquid_coating', count: 1 },         // 액체 코팅
+                    { id: 'poison_throw', count: 1 },           // 독극물 투척
+                    { id: 'first_aid', count: 1 },              // 응급처치
+                    { id: 'nutrient_supplement', count: 1 }     // 영양제
                 ]
             },
             2: {

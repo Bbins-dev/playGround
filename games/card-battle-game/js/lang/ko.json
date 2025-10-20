@@ -340,11 +340,11 @@
         },
         "sulfur_spring": {
           "name": "유황 온천",
-          "description": "한 턴 간 {buff:sulfur}버프를 얻습니다. {status:frozen}상태가 되지 않습니다."
+          "description": "한 턴 간 {buff:sulfur}버프를 얻습니다. {status:frozen}상태가 되지 않습니다. 턴 시작 시 차감됩니다."
         },
         "liquid_coating": {
           "name": "액체 코팅",
-          "description": "한 턴 간 {buff:coating}버프를 얻습니다. {status:burn}상태가 되지 않습니다."
+          "description": "한 턴 간 {buff:coating}버프를 얻습니다. {status:burn}상태가 되지 않습니다. 턴 시작 시 차감됩니다."
         },
         "gas_absorption": {
           "name": "가스 흡수",
@@ -634,9 +634,9 @@
         "poisonNeedle": "독침",
         "poisonNeedle_description": "독 속성 공격 카드의 명중률이 20% 증가합니다. 1턴 동안 지속됩니다.",
         "sulfur": "유황",
-        "sulfur_description": "얼음 상태이상에 면역됩니다.",
+        "sulfur_description": "얼음 상태이상에 면역됩니다. 턴 시작 시 차감됩니다.",
         "coating": "코팅",
-        "coating_description": "화상 상태이상에 면역됩니다."
+        "coating_description": "화상 상태이상에 면역됩니다. 턴 시작 시 차감됩니다."
       },
       "elements": {
         "fire": "불",
@@ -737,6 +737,7 @@
         "high_voltage_current_success": "⚡ 고압 전류!",
         "light_speed_buff_gained": "⚡ 광속 +{value}({turns})!",
         "catalyst_success": "☠️ 촉진!",
+        "inhibitor_success": "☠️ 억제!",
         "mirror_reaction_no_poison": "중독 없음!"
       },
       "card_selection": {

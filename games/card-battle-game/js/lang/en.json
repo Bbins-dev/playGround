@@ -340,11 +340,11 @@
         },
         "sulfur_spring": {
           "name": "Sulfur Spring",
-          "description": "Gain {buff:sulfur} for 1 turn. Prevents {status:frozen} status."
+          "description": "Gain {buff:sulfur} for 1 turn. Prevents {status:frozen} status. Decremented at turn start."
         },
         "liquid_coating": {
           "name": "Liquid Coating",
-          "description": "Gain {buff:coating} for 1 turn. Prevents {status:burn} status."
+          "description": "Gain {buff:coating} for 1 turn. Prevents {status:burn} status. Decremented at turn start."
         },
         "gas_absorption": {
           "name": "Gas Absorption",
@@ -634,9 +634,9 @@
         "poisonNeedle": "P.NDL",
         "poisonNeedle_description": "Increases accuracy of poison attack cards by 20%. Lasts for 1 turn.",
         "sulfur": "SULFR",
-        "sulfur_description": "Grants immunity to Frozen status.",
+        "sulfur_description": "Grants immunity to Frozen status. Decremented at turn start.",
         "coating": "COAT",
-        "coating_description": "Grants immunity to Burn status."
+        "coating_description": "Grants immunity to Burn status. Decremented at turn start."
       },
       "elements": {
         "fire": "Fire",
