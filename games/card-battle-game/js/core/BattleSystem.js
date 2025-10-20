@@ -82,6 +82,13 @@ class BattleSystem {
             this.effectSystem = new EffectSystem();
         }
 
+        // EffectSystem에 AudioSystem 주입 (사운드 통합)
+        if (this.gameManager && this.gameManager.audioSystem) {
+            this.effectSystem.audioSystem = this.gameManager.audioSystem;
+        } else {
+            console.warn('[BattleSystem] AudioSystem not found - sound effects will be disabled');
+        }
+
         // HP 바 표시
         this.hpBarSystem.show();
 

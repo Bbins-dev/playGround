@@ -2973,6 +2973,48 @@ const GameConfig = {
         loading: {
             showProgress: true,     // 로딩 진행률 표시 여부
             minimumLoadTime: 500    // 최소 로딩 화면 표시 시간 (ms) - 너무 빠르게 사라지지 않도록
+        },
+
+        // 전투 사운드 매핑 (Configuration-Driven)
+        battleSounds: {
+            // 데미지 타입별 SFX (effectiveness 기반)
+            damage: {
+                critical: 'attackCritical',  // 1.5배 (강점)
+                normal: 'attackHit',          // 1.0배 (일반)
+                weak: 'attackWeak'            // 0.5배 (약점)
+            },
+
+            // 속성별 플래시 SFX
+            elementFlash: {
+                fire: 'attackFire',
+                poison: 'attackPoison',
+                electric: 'attackElectric',
+                water: 'attackWater',
+                normal: null  // 노멀 속성은 사운드 없음
+            },
+
+            // 버프/상태 SFX
+            effects: {
+                buffGain: 'buffGain',
+                defenseGain: 'defenseGain'
+            },
+
+            // 카드 획득 SFX (랜덤 풀)
+            cardAcquisition: ['cardGet1', 'cardGet2', 'cardGet3', 'cardGet4'],
+
+            // 메시지 효과 SFX
+            messageEffects: {
+                miss: 'miss',
+                heal: 'heal',
+                failed: 'failed',
+                statusGain: 'statusGain'
+            },
+
+            // 모달 사운드
+            modalSounds: {
+                victory: 'victoryModal',
+                gameOver: 'gameOver'
+            }
         }
     }
 };
