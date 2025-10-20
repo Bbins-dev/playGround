@@ -544,6 +544,86 @@ class AudioSystem {
     }
 
     /**
+     * 랜덤 카드 획득 사운드 재생
+     * @returns {boolean} 성공 여부
+     */
+    playRandomCardGet() {
+        try {
+            const pool = GameConfig?.audio?.battleSounds?.cardAcquisition || [];
+            if (pool.length === 0) {
+                console.warn('[AudioSystem] No card acquisition sounds configured');
+                return false;
+            }
+
+            const randomKey = pool[Math.floor(Math.random() * pool.length)];
+            return this.playSFX(randomKey);
+        } catch (error) {
+            console.error('[AudioSystem] Error playing random card get sound:', error);
+            return false;
+        }
+    }
+
+    /**
+     * 데미지 타입별 사운드 재생 (effectiveness 기반)
+     * @param {number} effectiveness - 상성 배율 (0.5, 1.0, 1.5)
+     * @returns {boolean} 성공 여부
+     */
+    playDamageSFX(effectiveness) {
+        try {
+            const mapping = GameConfig?.audio?.battleSounds?.damage;
+            if (!mapping) {
+                console.warn('[AudioSystem] Damage sound mapping not found in GameConfig');
+                return false;
+            }
+
+            let sfxKey;
+            if (effectiveness > 1.0) {
+                sfxKey = mapping.critical;
+            } else if (effectiveness < 1.0) {
+                sfxKey = mapping.weak;
+            } else {
+                sfxKey = mapping.normal;
+            }
+
+            if (!sfxKey) {
+                console.warn(`[AudioSystem] No SFX key for effectiveness ${effectiveness}`);
+                return false;
+            }
+
+            return this.playSFX(sfxKey);
+        } catch (error) {
+            console.error('[AudioSystem] Error playing damage SFX:', error);
+            return false;
+        }
+    }
+
+    /**
+     * 속성 플래시 사운드 재생
+     * @param {string} element - 속성 ('fire', 'poison', 'electric', 'water', 'normal')
+     * @returns {boolean} 성공 여부
+     */
+    playElementFlashSFX(element) {
+        try {
+            const sfxKey = GameConfig?.audio?.battleSounds?.elementFlash?.[element];
+
+            // null이면 의도적으로 사운드 없음 (예: normal 속성)
+            if (sfxKey === null) {
+                return true; // 에러가 아님
+            }
+
+            if (!sfxKey) {
+                console.warn(`[AudioSystem] No element flash sound for '${element}'`);
+                return false;
+            }
+
+            return this.playSFX(sfxKey);
+        } catch (error) {
+            console.error(`[AudioSystem] Error playing element flash SFX for '${element}':`, error);
+            return false;
+        }
+    }
+
+    /**
      * 모든 오디오 정지 및 정리
      */
     dispose() {

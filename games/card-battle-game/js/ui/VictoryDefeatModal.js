@@ -215,6 +215,12 @@ class VictoryDefeatModal {
             this.showContinueButton();
         }
 
+        // 승리 모달 사운드 재생
+        const victorySfxKey = GameConfig?.audio?.battleSounds?.modalSounds?.victory;
+        if (victorySfxKey && this.gameManager?.audioSystem) {
+            this.gameManager.audioSystem.playSFX(victorySfxKey);
+        }
+
         // 모달 표시
         if (this.victoryModal) {
             this.victoryModal.classList.remove('hidden');
@@ -239,6 +245,12 @@ class VictoryDefeatModal {
 
         // 통계 정보 설정
         this.populateGameStats(gameStats);
+
+        // 게임 오버 사운드 재생
+        const gameOverSfxKey = GameConfig?.audio?.battleSounds?.modalSounds?.gameOver;
+        if (gameOverSfxKey && this.gameManager?.audioSystem) {
+            this.gameManager.audioSystem.playSFX(gameOverSfxKey);
+        }
 
         // 모달 표시
         if (this.defeatModal) {
@@ -707,6 +719,7 @@ class VictoryDefeatModal {
             // GameManager를 통해 카드를 플레이어 손패에 추가
             if (this.gameManager.cardManager && this.gameManager.player) {
                 this.gameManager.cardManager.addCardToPlayer(this.gameManager.player, this.selectedRewardCard.id);
+                // 카드 획득 사운드는 addCardToPlayer() 내부에서 자동 재생됨
             }
 
             this.resetCardRewards();

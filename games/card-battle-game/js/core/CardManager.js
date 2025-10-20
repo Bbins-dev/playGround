@@ -86,6 +86,11 @@ class CardManager {
         // 방어 속성 업데이트
         player.updateDefenseElement();
 
+        // 카드 획득 사운드 재생 (랜덤)
+        if (this.gameManager && this.gameManager.audioSystem) {
+            this.gameManager.audioSystem.playRandomCardGet();
+        }
+
         return true;
     }
 
@@ -105,6 +110,11 @@ class CardManager {
 
         // 방어 속성 업데이트
         player.updateDefenseElement();
+
+        // 카드 획득 사운드 재생 (랜덤)
+        if (this.gameManager && this.gameManager.audioSystem) {
+            this.gameManager.audioSystem.playRandomCardGet();
+        }
 
         return true;
     }

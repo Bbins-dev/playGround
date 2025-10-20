@@ -10,20 +10,32 @@ class EffectSystem {
 
         // 현재 표시 중인 메시지들의 위치 추적 (겹침 방지)
         this.activeMessages = [];
+
+        // AudioSystem 참조 (GameManager/BattleSystem에서 주입)
+        this.audioSystem = null;
     }
 
     // 피격 효과 (고전 게임 스타일)
     async showHitEffect(targetPosition, element, damage = 0, effectiveness = 1.0) {
-        // Step 1: 속성별 색상 플래시
+        // Step 1: 속성별 색상 플래시 + 사운드
         if (element && element !== 'normal') {
+            // 속성 플래시 사운드 재생 (비동기 - 시각 효과와 동시 진행)
+            if (this.audioSystem) {
+                this.audioSystem.playElementFlashSFX(element);
+            }
             await this.showElementFlash(element);
         }
 
         // Step 2: 피격 깜빡임 효과
         await this.showHitBlink(targetPosition);
 
-        // Step 3: 대미지 숫자 표시 (속성 상성에 따른 스타일 적용)
+        // Step 3: 대미지 숫자 표시 + 사운드 (속성 상성에 따른 스타일 적용)
         if (damage > 0) {
+            // 데미지 타입별 사운드 재생
+            if (this.audioSystem) {
+                this.audioSystem.playDamageSFX(effectiveness);
+            }
+
             let damageType = 'damage';
             if (effectiveness > 1.0) {
                 damageType = 'strong'; // 1.5배 데미지
@@ -182,12 +194,26 @@ class EffectSystem {
         // 메시지 타입 결정: 상태이상은 status 존, 버프는 buff 존
         const messageTypeForZone = GameConfig.statusEffects[effectType] ? 'status' : 'buff';
 
+        // 상태이상 획득 사운드 재생 (버프는 showBuffEffect에서 재생)
+        if (GameConfig.statusEffects[effectType] && this.audioSystem) {
+            const sfxKey = GameConfig?.audio?.battleSounds?.messageEffects?.statusGain;
+            if (sfxKey) {
+                this.audioSystem.playSFX(sfxKey);
+            }
+        }
+
         // 숫자 표시 (존 정보를 위해 타입 전달)
         await this.showDamageNumber(0, position, messageTypeForZone, message);
     }
 
     // 방어력 획득 메시지 표시 (템플릿 기반, async - 읽기 시간 포함)
     async showDefenseGainMessage(position, value) {
+        // 방어력 획득 사운드 재생
+        const sfxKey = GameConfig?.audio?.battleSounds?.effects?.defenseGain;
+        if (sfxKey && this.audioSystem) {
+            this.audioSystem.playSFX(sfxKey);
+        }
+
         let template = I18nHelper.getText('auto_battle_card_game.ui.templates.defense_gained');
         if (!template) {
             console.warn('Defense gained template not found');
@@ -316,6 +342,30 @@ class EffectSystem {
                     break;
                 default:
                     numberElement.textContent = `-${amount}`;
+            }
+        }
+
+        // 메시지 타입별 사운드 재생 (Configuration-Driven)
+        if (this.audioSystem) {
+            const soundMap = GameConfig?.audio?.battleSounds?.messageEffects;
+            if (soundMap) {
+                let sfxKey = null;
+
+                switch (type) {
+                    case 'miss':
+                        sfxKey = soundMap.miss;
+                        break;
+                    case 'heal':
+                        sfxKey = soundMap.heal;
+                        break;
+                    case 'conditionFailed':
+                        sfxKey = soundMap.failed;
+                        break;
+                }
+
+                if (sfxKey) {
+                    this.audioSystem.playSFX(sfxKey);
+                }
             }
         }
 
@@ -512,6 +562,12 @@ class EffectSystem {
     async showBuffEffect(buffType, target, value) {
         // target이 player인지 enemy인지 자동 판단하여 올바른 위치에 표시
         const position = this.getTargetPosition(target);
+
+        // 버프 획득 사운드 재생
+        const sfxKey = GameConfig?.audio?.battleSounds?.effects?.buffGain;
+        if (sfxKey && this.audioSystem) {
+            this.audioSystem.playSFX(sfxKey);
+        }
 
         // GameConfig에서 버프 설정 가져오기 (안전한 접근 방식)
         const buffConfig = GameConfig?.buffs?.[buffType];
