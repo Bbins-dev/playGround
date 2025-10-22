@@ -1200,7 +1200,7 @@ const GameConfig = {
         get maxHandSize() { return GameConfig.constants.limits.maxHandSize; },
         startingHP: 10,
         defaultDefenseElement: 'normal',
-        // 스테이지별 적 설정 (1-10스테이지)
+        // 스테이지별 적 설정 (1-20스테이지)
         stageConfigs: {
             1: {
                 hp: 10,
@@ -1265,7 +1265,7 @@ const GameConfig = {
                 cards: [
                     { id: 'sword_dance', count: 1 },
                     { id: 'fast_attack', count: 1 },
-                    { id: 'heavy_strike', count: 3 },
+                    { id: 'heavy_strike', count: 1 },
                     { id: 'crouch', count: 1 }
                 ]
             },
@@ -1273,8 +1273,317 @@ const GameConfig = {
                 hp: 100,
                 cards: [
                     { id: 'raise_shield', count: 7 },
-                    { id: 'shield_bash', count: 1 },
-                    { id: 'crouch', count: 1 }
+                    { id: 'shield_bash', count: 1 }
+                ]
+            },
+            11: {
+                hp: 110,
+                cards: [
+                    { id: 'fire_shield', count: 1 },       // 불의방패
+                    { id: 'hot_breath', count: 1 },        // 뜨거운입김
+                    { id: 'chains_of_fire', count: 1 },    // 불의사슬
+                    { id: 'powder_keg', count: 1 },        // 화약통투척
+                    { id: 'fireball', count: 1 }           // 화염구
+                ]
+            },
+            12: {
+                hp: 120,
+                cards: [
+                    { id: 'fire_breath', count: 1 },       // 불의 호흡
+                    { id: 'hot_wind', count: 1 },          // 열풍
+                    { id: 'flame_ascension', count: 1 }    // 화염승천
+                ]
+            },
+            13: {
+                hp: 130,
+                cards: [
+                    { id: 'scorched_shield', count: 1 },   // 작열방패
+                    { id: 'karura_strike', count: 1 }      // 카루라일격
+                ]
+            },
+            14: {
+                hp: 140,
+                cards: [
+                    { id: 'battery_explosion', count: 2 }, // 배터리 폭발 x2
+                    { id: 'flame_throw', count: 1 },       // 불꽃 던지기
+                    { id: 'chains_of_fire', count: 1 }     // 불의 사슬
+                ]
+            },
+            15: {
+                hp: 150,
+                cards: [
+                    { id: 'fire_breath', count: 1 },       // 불의 호흡
+                    { id: 'opportunity_scent', count: 1 }, // 기회의 냄새
+                    { id: 'fireball', count: 1 }           // 화염구
+                ]
+            },
+            16: {
+                hp: 160,
+                cards: [
+                    { id: 'red_pendant', count: 1 },       // 붉은 펜던트
+                    { id: 'flame_ascension', count: 2 }    // 화염승천 x2
+                ]
+            },
+            17: {
+                hp: 170,
+                cards: [
+                    { id: 'hot_breath', count: 1 },            // 뜨거운 입김
+                    { id: 'oil_pour', count: 1 },              // 기름 붓기
+                    { id: 'chains_of_fire', count: 1 },        // 불의 사슬
+                    { id: 'indomitable_gauntlet', count: 1 },  // 불굴의 장갑
+                    { id: 'flame_burst', count: 1 }            // 화염방사
+                ]
+            },
+            18: {
+                hp: 180,
+                cards: [
+                    { id: 'fire_breath', count: 1 },       // 불의 호흡
+                    { id: 'hot_wind', count: 2 },          // 열풍 x2
+                    { id: 'scorched_shield', count: 1 },   // 작열방패
+                    { id: 'flame_throw', count: 1 }        // 불꽃던지기
+                ]
+            },
+            19: {
+                hp: 190,
+                cards: [
+                    { id: 'red_pendant', count: 1 },           // 붉은 펜던트
+                    { id: 'indomitable_gauntlet', count: 1 },  // 불굴의 장갑
+                    { id: 'karura_strike', count: 1 }          // 카루라 일격
+                ]
+            },
+            20: {
+                hp: 300,
+                cards: [
+                    { id: 'karura_strike', count: 1 },     // 카루라 일격
+                    { id: 'lava_prison', count: 1 },       // 용암 감옥
+                    { id: 'powder_keg', count: 1 },        // 화약통 투척
+                    { id: 'sharpen', count: 1 }            // 벼리기
+                ]
+            },
+            21: {
+                hp: 320,
+                cards: [
+                    { id: 'water_play', count: 1 },        // 물장구
+                    { id: 'healing_spring', count: 1 },    // 회복의 샘
+                    { id: 'mud_bath', count: 1 },          // 진흙탕
+                    { id: 'water_bomb', count: 1 },        // 물폭탄
+                    { id: 'freezing_wind', count: 1 }      // 냉동바람
+                ]
+            },
+            22: {
+                hp: 340,
+                cards: [
+                    { id: 'rain', count: 1 },              // 비내리기
+                    { id: 'sleet', count: 1 },             // 진눈깨비
+                    { id: 'mud_bath', count: 1 },          // 진흙탕
+                    { id: 'cold_snap', count: 1 },         // 혹한기
+                    { id: 'ice_breaker', count: 1 }        // 얼음깨기
+                ]
+            },
+            23: {
+                hp: 360,
+                cards: [
+                    { id: 'slash_water', count: 1 },       // 칼로 물 베기
+                    { id: 'water_healing', count: 1 },     // 물의 치유
+                    { id: 'healing_spring', count: 1 },    // 회복의 샘
+                    { id: 'purification', count: 1 },      // 정화
+                    { id: 'torrent', count: 4 },           // 급류 x4
+                    { id: 'water_bomb', count: 1 }         // 물폭탄
+                ]
+            },
+            24: {
+                hp: 380,
+                cards: [
+                    { id: 'tsunami', count: 1 },           // 쓰나미
+                    { id: 'moisture_absorption', count: 3 }, // 수분 흡수 x3
+                    { id: 'healing_spring', count: 1 },    // 회복의 샘
+                    { id: 'skin_breathing', count: 1 }     // 피부 호흡
+                ]
+            },
+            25: {
+                hp: 400,
+                cards: [
+                    { id: 'slash_water', count: 1 },       // 칼로 물 베기
+                    { id: 'mud_bath', count: 1 },          // 진흙탕
+                    { id: 'purification', count: 1 },      // 정화
+                    { id: 'rain', count: 1 },              // 비내리기
+                    { id: 'torrent', count: 1 },           // 급류
+                    { id: 'freezing_wind', count: 1 }      // 냉동바람
+                ]
+            },
+            26: {
+                hp: 420,
+                cards: [
+                    { id: 'rain', count: 1 },              // 비내리기
+                    { id: 'cold_snap', count: 1 },         // 혹한기
+                    { id: 'cold_burn', count: 1 },         // 저온화상
+                    { id: 'skin_breathing', count: 1 },    // 피부호흡
+                    { id: 'water_healing', count: 1 },     // 물의 치유
+                    { id: 'ice_breaker', count: 1 }        // 얼음깨기
+                ]
+            },
+            27: {
+                hp: 440,
+                cards: [
+                    { id: 'endless_effort', count: 1 },    // 끝없는 노력
+                    { id: 'water_play', count: 1 },        // 물장구
+                    { id: 'skin_breathing', count: 1 },    // 피부호흡
+                    { id: 'healing_spring', count: 1 },    // 회복의샘
+                    { id: 'water_healing', count: 1 },     // 물의 치유
+                    { id: 'torrent', count: 3 },           // 급류 x3
+                    { id: 'bubble_strike', count: 1 }      // 거품타격
+                ]
+            },
+            28: {
+                hp: 460,
+                cards: [
+                    { id: 'sword_dance', count: 1 },       // 칼춤
+                    { id: 'tsunami', count: 1 },           // 쓰나미
+                    { id: 'water_healing', count: 1 },     // 물의치유
+                    { id: 'skin_breathing', count: 1 },    // 피부호흡
+                    { id: 'slash_water', count: 1 }        // 칼로 물 베기
+                ]
+            },
+            29: {
+                hp: 500,
+                cards: [
+                    { id: 'water_bomb', count: 1 },        // 물폭탄
+                    { id: 'freezing_wind', count: 1 },     // 냉동바람
+                    { id: 'ice_breaker', count: 1 }        // 얼음깨기
+                ]
+            },
+            30: {
+                hp: 700,
+                cards: [
+                    { id: 'rain', count: 1 },              // 비내리기
+                    { id: 'moisture_absorption', count: 1 }, // 수분흡수
+                    { id: 'purification', count: 1 },      // 정화
+                    { id: 'torrent', count: 1 },           // 급류
+                    { id: 'tsunami', count: 1 },           // 쓰나미
+                    { id: 'slash_water', count: 1 },       // 칼로 물 베기
+                    { id: 'cold_snap', count: 1 },         // 혹한기
+                    { id: 'cold_burn', count: 1 },         // 저온화상
+                    { id: 'skin_breathing', count: 1 },    // 피부호흡
+                    { id: 'liquify', count: 1 }            // 액체화
+                ]
+            },
+            31: {
+                hp: 550,
+                cards: [
+                    { id: 'phase_shock', count: 1 },       // 위상 쇼크
+                    { id: 'high_voltage_current', count: 1 }, // 고압 전류
+                    { id: 'battery_explosion', count: 1 }, // 배터리 폭발
+                    { id: 'overcharge_battery', count: 1 }, // 과충전
+                    { id: 'super_conductivity', count: 1 }, // 초전도
+                    { id: 'thunder_strike', count: 1 }     // 번개일격
+                ]
+            },
+            32: {
+                hp: 575,
+                cards: [
+                    { id: 'conductive_armor', count: 1 },  // 전도갑옷
+                    { id: 'current_wall', count: 1 },      // 전류 벽
+                    { id: 'light_speed', count: 1 },       // 빛의 속도
+                    { id: 'lightning_storm', count: 1 },   // 번개폭풍
+                    { id: 'electric_shock', count: 1 },    // 감전
+                    { id: 'overload', count: 1 },          // 과부하
+                    { id: 'short_circuit', count: 1 }      // 쇼트
+                ]
+            },
+            33: {
+                hp: 600,
+                cards: [
+                    { id: 'battery_pack', count: 2 },      // 건전지 팩 x2
+                    { id: 'light_speed', count: 1 },       // 빛의 속도
+                    { id: 'lightning_rod', count: 1 },     // 피뢰침
+                    { id: 'paralysis_trap', count: 1 },    // 마비 덫
+                    { id: 'high_voltage_current', count: 1 }, // 고압 전류
+                    { id: 'high_voltage_gloves', count: 1 }, // 고전압 장갑
+                    { id: 'endless_effort', count: 1 },    // 끝없는 노력
+                    { id: 'short_circuit', count: 1 }      // 쇼트
+                ]
+            },
+            34: {
+                hp: 625,
+                cards: [
+                    { id: 'paralysis_trap', count: 1 },    // 마비 덫
+                    { id: 'high_voltage_gloves', count: 1 }, // 고전압 장갑
+                    { id: 'current_wall', count: 1 },      // 전류 벽
+                    { id: 'barricade', count: 1 },         // 바리케이드
+                    { id: 'battery_explosion', count: 1 }, // 배터리 폭발
+                    { id: 'overcharge_battery', count: 1 }, // 과충전
+                    { id: 'lightning_rod', count: 1 },     // 피뢰침
+                    { id: 'lightning_storm', count: 1 },   // 번개 폭풍
+                    { id: 'overload', count: 1 }           // 과부하
+                ]
+            },
+            35: {
+                hp: 650,
+                cards: [
+                    { id: 'super_conductivity', count: 1 }, // 초전도
+                    { id: 'light_speed', count: 2 },       // 빛의 속도 x2
+                    { id: 'indomitable_gauntlet', count: 1 }, // 불굴의 장갑
+                    { id: 'phase_shock', count: 1 },       // 위상 쇼크
+                    { id: 'thunder_strike', count: 1 }     // 번개 일격
+                ]
+            },
+            36: {
+                hp: 675,
+                cards: [
+                    { id: 'hot_breath', count: 1 },        // 뜨거운 입김
+                    { id: 'sword_dance', count: 1 },       // 칼춤
+                    { id: 'purification', count: 1 },      // 정화
+                    { id: 'paralysis_trap', count: 1 },    // 마비 덫
+                    { id: 'blinding_flash', count: 1 },    // 눈부신 섬광
+                    { id: 'electromagnetic_barrier', count: 1 }, // 전자기 방호
+                    { id: 'red_pendant', count: 1 },       // 붉은 펜던트
+                    { id: 'light_speed', count: 2 },       // 빛의 속도 x2
+                    { id: 'overload', count: 1 }           // 과부하
+                ]
+            },
+            37: {
+                hp: 700,
+                cards: [
+                    { id: 'miracle_revival', count: 1 },   // 기사회생
+                    { id: 'endless_effort', count: 1 },    // 끝없는 노력
+                    { id: 'conductive_armor', count: 1 },  // 전도갑옷
+                    { id: 'current_wall', count: 1 },      // 전류 벽
+                    { id: 'high_voltage_gloves', count: 1 }, // 고전압 장갑
+                    { id: 'lightning_storm', count: 3 },   // 번개폭풍 x3
+                    { id: 'electric_shock', count: 1 },    // 감전
+                    { id: 'overload', count: 1 },          // 과부하
+                    { id: 'short_circuit', count: 1 }      // 쇼트
+                ]
+            },
+            38: {
+                hp: 750,
+                cards: [
+                    { id: 'defibrillator', count: 1 },     // 제세동기
+                    { id: 'battery_pack', count: 6 },      // 건전지 팩 x6
+                    { id: 'battery_explosion', count: 1 }, // 배터리 폭발
+                    { id: 'overcharge_battery', count: 1 }, // 과충전
+                    { id: 'short_circuit', count: 1 }      // 쇼트
+                ]
+            },
+            39: {
+                hp: 800,
+                cards: [
+                    { id: 'rain', count: 1 },              // 비내리기
+                    { id: 'super_conductivity', count: 1 }, // 초전도
+                    { id: 'light_speed', count: 3 },       // 빛의 속도 x3
+                    { id: 'paralysis_trap', count: 1 },    // 마비 덫
+                    { id: 'high_voltage_gloves', count: 1 }, // 고전압 장갑
+                    { id: 'conductive_armor', count: 1 },  // 전도갑옷
+                    { id: 'electric_shock', count: 2 }     // 감전 x2
+                ]
+            },
+            40: {
+                hp: 1000,
+                cards: [
+                    { id: 'battery_explosion', count: 1 }, // 배터리 폭발
+                    { id: 'overcharge_battery', count: 2 }, // 과충전 x2
+                    { id: 'light_speed', count: 2 },       // 빛의 속도 x2
+                    { id: 'lightning_storm', count: 1 }    // 번개 폭풍
                 ]
             }
         }
