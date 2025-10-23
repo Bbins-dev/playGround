@@ -324,7 +324,7 @@ class VictoryDefeatModal {
         }
 
         if (this.defeatCriticalCount) {
-            this.defeatCriticalCount.textContent = gameStats.criticalCount || 0;
+            this.defeatCriticalCount.textContent = gameStats.statusDamage || 0;
         }
 
         // 플레이 스타일 번역
