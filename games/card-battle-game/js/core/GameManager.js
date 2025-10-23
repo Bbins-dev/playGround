@@ -1398,6 +1398,15 @@ class GameManager {
             });
         }
 
+        // z-index 레이어 동기화 - Configuration-Driven (하드코딩 방지)
+        if (GameConfig.zIndexLayers) {
+            Object.keys(GameConfig.zIndexLayers).forEach(layer => {
+                // camelCase를 kebab-case로 변환 (volumeButton → volume-button)
+                const kebabCase = layer.replace(/([A-Z])/g, '-$1').toLowerCase();
+                root.style.setProperty(`--z-${kebabCase}`, GameConfig.zIndexLayers[layer]);
+            });
+        }
+
     }
 
     // 뷰포트 스케일링 계산 및 적용
