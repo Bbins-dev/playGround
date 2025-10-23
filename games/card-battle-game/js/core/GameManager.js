@@ -62,7 +62,7 @@ class GameManager {
             finalHand: [],
             // 재미있는 통계
             missCount: 0,
-            criticalCount: 0,
+            statusDamage: 0, // 화상/독으로 받은 총 피해
             mostUsedElement: null,
             mvpCard: null,
             laziestCard: null,
@@ -1544,7 +1544,7 @@ class GameManager {
             finalHand: [],
             // 재미있는 통계
             missCount: 0,
-            criticalCount: 0,
+            statusDamage: 0, // 화상/독으로 받은 총 피해
             mostUsedElement: null,
             mvpCard: null,
             laziestCard: null,
@@ -1568,11 +1568,8 @@ class GameManager {
     }
 
     // 통계 업데이트 메서드들
-    updateStatsOnDamage(damage, isCritical = false) {
+    updateStatsOnDamage(damage) {
         this.gameStats.totalDamageDealt += damage;
-        if (isCritical) {
-            this.gameStats.criticalCount++;
-        }
     }
 
     updateStatsOnMiss() {
@@ -1609,6 +1606,10 @@ class GameManager {
     finalizeGameStats() {
         this.gameStats.finalStage = this.currentStage;
         this.gameStats.finalHand = [...this.player.hand];
+
+        // 상태이상 피해 계산 (화상 + 독)
+        this.gameStats.statusDamage = (this.gameStats.damageByType?.burn || 0) +
+                                       (this.gameStats.damageByType?.poison || 0);
 
         // 가장 많이 사용한 속성 계산
         let maxUsage = 0;
