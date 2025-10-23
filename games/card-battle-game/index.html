@@ -131,29 +131,6 @@
             <!-- 메뉴화면으로 돌아가기 버튼 -->
             <button id="back-to-menu" class="ui-button back-btn menu-btn" data-i18n="auto_battle_card_game.ui.back_to_menu">←</button>
 
-            <!-- 인게임 볼륨 조절 버튼 -->
-            <button id="volume-control-btn" class="ui-button volume-btn" title="Volume">⚙️</button>
-
-            <!-- 인게임 볼륨 팝업 패널 -->
-            <div id="volume-popup-panel" class="volume-popup-panel hidden">
-                <div class="volume-slider-group">
-                    <div class="volume-label-row">
-                        <span class="volume-icon">🎵</span>
-                        <span class="volume-label">BGM</span>
-                        <span class="volume-value" id="ingame-bgm-value">60%</span>
-                    </div>
-                    <input type="range" id="ingame-bgm-slider" class="volume-slider" min="0" max="100" value="60">
-                </div>
-                <div class="volume-slider-group">
-                    <div class="volume-label-row">
-                        <span class="volume-icon">🔊</span>
-                        <span class="volume-label">SFX</span>
-                        <span class="volume-value" id="ingame-sfx-value">80%</span>
-                    </div>
-                    <input type="range" id="ingame-sfx-slider" class="volume-slider" min="0" max="100" value="80">
-                </div>
-            </div>
-
             <!-- 스테이지 인디케이터 -->
             <div id="stage-indicator" class="stage-indicator hidden">
                 <span class="stage-icon">🏆</span>
@@ -169,6 +146,30 @@
 
             <!-- 효과 오버레이 컨테이너 (동적으로 생성) -->
             <div id="effects-container"></div>
+        </div>
+
+        <!-- 인게임 볼륨 컨트롤 (ui-overlay 외부 배치 - z-index 독립) -->
+        <!-- 인게임 볼륨 조절 버튼 -->
+        <button id="volume-control-btn" class="ui-button volume-btn" title="Volume">🔊</button>
+
+        <!-- 인게임 볼륨 팝업 패널 -->
+        <div id="volume-popup-panel" class="volume-popup-panel hidden">
+            <div class="volume-slider-group">
+                <div class="volume-label-row">
+                    <span class="volume-icon">🎵</span>
+                    <span class="volume-label">BGM</span>
+                    <span class="volume-value" id="ingame-bgm-value">60%</span>
+                </div>
+                <input type="range" id="ingame-bgm-slider" class="volume-slider" min="0" max="100" value="60">
+            </div>
+            <div class="volume-slider-group">
+                <div class="volume-label-row">
+                    <span class="volume-icon">🔊</span>
+                    <span class="volume-label">SFX</span>
+                    <span class="volume-value" id="ingame-sfx-value">80%</span>
+                </div>
+                <input type="range" id="ingame-sfx-slider" class="volume-slider" min="0" max="100" value="80">
+            </div>
         </div>
 
         <!-- 카드 갤러리 모달 -->

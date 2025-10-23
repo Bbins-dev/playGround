@@ -516,7 +516,7 @@ class EffectSystem {
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
-                z-index: 999;
+                z-index: ${GameConfig.zIndexLayers.cardActivation};
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
                 animation: cardZoomIn 0.05s ease-out;
             `;

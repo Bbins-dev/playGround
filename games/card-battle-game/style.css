@@ -2228,7 +2228,7 @@ body[data-game-state="menu"] .game-wrapper.status-border-slow {
 
     color: white;
     cursor: pointer;
-    z-index: 900;
+    z-index: var(--z-volume-button, 900); /* GameConfig 기반 z-index */
     transition: all 0.3s ease;
     user-select: none;
 }
@@ -2261,7 +2261,7 @@ body[data-game-state="menu"] .game-wrapper.status-border-slow {
     border: 2px solid rgba(255, 255, 255, 0.25);
     border-radius: 16px;
     padding: 20px;
-    z-index: 950;
+    z-index: var(--z-volume-controls, 950); /* GameConfig 기반 z-index */
     box-shadow:
         0 10px 40px rgba(0, 0, 0, 0.5),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);

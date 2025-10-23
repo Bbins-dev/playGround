@@ -2075,8 +2075,11 @@ const GameConfig = {
         canvas: 1,               // 게임 캔버스
         uiElements: 10,          // 일반 UI 요소들 (HP바, 버튼)
         mainMenuButtons: 100,    // 메인메뉴 버튼
-        modals: 1000,           // 모달들
-        overlays: 2000          // 최상위 오버레이
+        volumeButton: 900,       // 인게임 볼륨 버튼
+        volumeControls: 1500,    // 볼륨 팝업 패널 (카드 활성화보다 위)
+        modals: 1000,            // 모달들
+        cardActivation: 1200,    // 카드 발동 시 확대 이미지
+        overlays: 2000           // 최상위 오버레이
     },
 
     // 픽셀 값 설정 - Magic Number 정리
