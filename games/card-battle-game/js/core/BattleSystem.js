@@ -180,7 +180,9 @@ class BattleSystem {
             this.effectSystem.showDamageNumber(
                 this.gameManager.stageHealingAmount,
                 playerPosition,
-                'heal'
+                'heal',
+                null,
+                { isPlayerTarget: true }  // 스테이지 회복은 항상 플레이어
             );
 
             // HP바 업데이트
@@ -382,7 +384,9 @@ class BattleSystem {
                 this.effectSystem.getEnemyPosition();
 
             // "실패!" 메시지 표시
-            this.effectSystem.showDamageNumber(0, targetPosition, 'conditionFailed');
+            this.effectSystem.showDamageNumber(0, targetPosition, 'conditionFailed', null, {
+                isPlayerTarget: (target === this.player)
+            });
 
             // 조건 실패 시 추가 대기 (플레이어가 확인할 수 있도록)
             await this.wait((GameConfig.timing?.cards?.missDelay || 800) / this.gameSpeed);
@@ -398,7 +402,9 @@ class BattleSystem {
                 this.effectSystem.getEnemyPosition();
 
             // "빗나감!" 표시
-            this.effectSystem.showDamageNumber(0, targetPosition, 'miss');
+            this.effectSystem.showDamageNumber(0, targetPosition, 'miss', null, {
+                isPlayerTarget: (target === this.player)
+            });
 
             // Miss 시 추가 대기 (플레이어가 확인할 수 있도록)
             await this.wait((GameConfig.timing?.cards?.missDelay || 800) / this.gameSpeed);
@@ -493,7 +499,9 @@ class BattleSystem {
             }
         } else if (damage === 0) {
             // 0 데미지 표시 (방어력으로 무효화된 경우 등)
-            this.effectSystem.showDamageNumber(0, targetPosition, 'zero');
+            this.effectSystem.showDamageNumber(0, targetPosition, 'zero', null, {
+                isPlayerTarget: (target === this.player)
+            });
         }
 
         // 힘 버프 획득 처리 (attack 타입 카드에서 힘 버프를 얻는 경우 - 화염승천 등)
@@ -588,7 +596,9 @@ class BattleSystem {
                 template = '❤️ HP +{value}'; // fallback
             }
             const message = template.replace('{value}', healing);
-            await this.effectSystem.showDamageNumber(healing, targetPosition, 'heal', message);
+            await this.effectSystem.showDamageNumber(healing, targetPosition, 'heal', message, {
+                isPlayerTarget: (user === this.player)
+            });
 
             // HP바 즉시 업데이트 (프로젝트 규칙: 회복 시 HP 즉시 반영)
             const isPlayer = (user === this.player);
@@ -611,7 +621,9 @@ class BattleSystem {
                 this.effectSystem.getPlayerPosition();
 
             // "실패!" 메시지 표시
-            await this.effectSystem.showDamageNumber(0, targetPosition, 'conditionFailed');
+            await this.effectSystem.showDamageNumber(0, targetPosition, 'conditionFailed', null, {
+                isPlayerTarget: (target === this.player)
+            });
             // 조건 실패 시 추가 대기 (플레이어가 확인할 수 있도록)
             await this.wait((GameConfig.timing?.cards?.missDelay || 800) / this.gameSpeed);
             return; // 조건 실패면 추가 처리 중단
@@ -622,7 +634,9 @@ class BattleSystem {
             const userPosition = user.isPlayer ?
                 this.effectSystem.getPlayerPosition() :
                 this.effectSystem.getEnemyPosition();
-            await this.effectSystem.showDefenseGainMessage(userPosition, result.defenseGain);
+            await this.effectSystem.showDefenseGainMessage(userPosition, result.defenseGain, {
+                isPlayerTarget: (user === this.player)
+            });
         }
 
         // 힘 버프 획득 처리 (끝없는 노력 카드 등) - 새로운 통합 메서드 사용
@@ -767,7 +781,9 @@ class BattleSystem {
 
             // 정화 메시지 표시
             const template = I18nHelper.getText(result.messageKey);
-            await this.effectSystem.showDamageNumber(0, userPosition, 'status', template);
+            await this.effectSystem.showDamageNumber(0, userPosition, 'status', template, {
+                isPlayerTarget: (user === this.player)
+            });
 
             // 상태이상 UI 즉시 업데이트
             const isPlayer = (user === this.player);
@@ -788,7 +804,9 @@ class BattleSystem {
 
             // 억제제 메시지 표시
             const template = I18nHelper.getText(result.messageKey);
-            await this.effectSystem.showDamageNumber(0, userPosition, 'status', template);
+            await this.effectSystem.showDamageNumber(0, userPosition, 'status', template, {
+                isPlayerTarget: (user === this.player)
+            });
 
             // 상태이상 UI 즉시 업데이트 (감소된 턴수 표시 + 제거된 상태 반영)
             const isPlayer = (user === this.player);
@@ -817,7 +835,9 @@ class BattleSystem {
                 this.effectSystem.getEnemyPosition();
 
             const template = I18nHelper.getText(result.messageKey);
-            await this.effectSystem.showDamageNumber(0, userPosition, 'status', template);
+            await this.effectSystem.showDamageNumber(0, userPosition, 'status', template, {
+                isPlayerTarget: (user === this.player)
+            });
         }
 
         // 자신에게 상태이상 적용 처리 (물장구 카드 등 - 버프 카드지만 자신에게 상태이상 적용)
@@ -849,7 +869,9 @@ class BattleSystem {
         if (result.buffsCleared) {
             // 고압 전류 메시지 표시
             const template = I18nHelper.getText(result.messageKey);
-            await this.effectSystem.showDamageNumber(0, targetPosition, 'status', template);
+            await this.effectSystem.showDamageNumber(0, targetPosition, 'status', template, {
+                isPlayerTarget: (target === this.player)
+            });
 
             // 버프 UI 즉시 업데이트
             const isTargetPlayer = (target === this.player);
@@ -861,7 +883,9 @@ class BattleSystem {
         // 버프가 없는 경우 메시지 (고압 전류 카드)
         if (result.noBuffs) {
             const template = I18nHelper.getText(result.messageKey);
-            await this.effectSystem.showDamageNumber(0, targetPosition, 'conditionFailed', template);
+            await this.effectSystem.showDamageNumber(0, targetPosition, 'conditionFailed', template, {
+                isPlayerTarget: (target === this.player)
+            });
             return;
         }
 
@@ -869,7 +893,9 @@ class BattleSystem {
         if (result.catalystApplied) {
             // 촉진제 메시지 표시
             const template = I18nHelper.getText(result.messageKey);
-            await this.effectSystem.showDamageNumber(0, targetPosition, 'status', template);
+            await this.effectSystem.showDamageNumber(0, targetPosition, 'status', template, {
+                isPlayerTarget: (target === this.player)
+            });
 
             // 상태이상 UI 즉시 업데이트 (연장된 턴수 표시)
             const isTargetPlayer = (target === this.player);
@@ -881,7 +907,9 @@ class BattleSystem {
         // 조건 실패 체크 (명중했지만 조건 미달)
         if (result.conditionFailed) {
             // "실패!" 메시지 표시
-            await this.effectSystem.showDamageNumber(0, targetPosition, 'conditionFailed');
+            await this.effectSystem.showDamageNumber(0, targetPosition, 'conditionFailed', null, {
+                isPlayerTarget: (target === this.player)
+            });
             // 조건 실패 시 추가 대기 (플레이어가 확인할 수 있도록)
             await this.wait((GameConfig.timing?.cards?.missDelay || 800) / this.gameSpeed);
             return; // 조건 실패면 추가 처리 중단
@@ -984,7 +1012,9 @@ class BattleSystem {
         // 조건 미충족 시 특별 메시지 처리 (거울반응 카드 등)
         if (result.conditionNotMet && result.messageKey) {
             const template = I18nHelper.getText(result.messageKey);
-            await this.effectSystem.showDamageNumber(0, userPosition, 'status', template);
+            await this.effectSystem.showDamageNumber(0, userPosition, 'status', template, {
+                isPlayerTarget: (user === this.player)
+            });
             return; // 조건 미충족이면 추가 처리 중단
         }
 
@@ -1000,7 +1030,9 @@ class BattleSystem {
                 template = '❤️ HP +{value}'; // fallback
             }
             const message = template.replace('{value}', healAmount);
-            await this.effectSystem.showDamageNumber(healAmount, userPosition, 'heal', message);
+            await this.effectSystem.showDamageNumber(healAmount, userPosition, 'heal', message, {
+                isPlayerTarget: (user === this.player)
+            });
 
             // HP바 즉시 업데이트
             const isPlayer = (user === this.player);
@@ -1014,7 +1046,9 @@ class BattleSystem {
 
         if (defenseGain > 0) {
             // 방어력 숫자 연출 표시 - 기존 방어력 전용 메서드 사용 (은색 표시)
-            await this.effectSystem.showDefenseGainMessage(userPosition, defenseGain);
+            await this.effectSystem.showDefenseGainMessage(userPosition, defenseGain, {
+                isPlayerTarget: (user === this.player)
+            });
 
             // 방어력 UI 즉시 업데이트 (방어력 메시지 표시 직후)
             const isPlayer = (user === this.player);
@@ -1063,7 +1097,9 @@ class BattleSystem {
         }
 
         const message = template.replace('{value}', selfDamage);
-        this.effectSystem.showDamageNumber(0, position, 'selfDamage', message);
+        this.effectSystem.showDamageNumber(0, position, 'selfDamage', message, {
+            isPlayerTarget: (attacker === this.player)
+        });
     }
 
     // 상태이상 적용 시도 (통합 시스템 - Configuration-Driven)
@@ -1385,7 +1421,9 @@ class BattleSystem {
             // 템플릿 직접 사용 (heal_effect 템플릿 활용)
             const template = I18nHelper.getText('auto_battle_card_game.ui.templates.heal_effect');
             const message = template.replace('{value}', result.templateData.value);
-            this.effectSystem.showDamageNumber(0, userPos, 'heal', message);
+            this.effectSystem.showDamageNumber(0, userPos, 'heal', message, {
+                isPlayerTarget: (user === this.player)
+            });
         }
     }
 
@@ -1408,7 +1446,9 @@ class BattleSystem {
                 this.effectSystem.getEnemyPosition();
 
             // 독 데미지 시각적 표시 (읽기 시간 포함)
-            await this.effectSystem.showDamageNumber(damage, position, 'poison');
+            await this.effectSystem.showDamageNumber(damage, position, 'poison', null, {
+                isPlayerTarget: isPlayerTurn
+            });
 
             // 실제 대미지 적용
             const actualDamage = player.takeDamage(damage);
@@ -1445,7 +1485,9 @@ class BattleSystem {
                 this.effectSystem.getEnemyPosition();
 
             // 화상 데미지 시각적 표시 (읽기 시간 포함)
-            await this.effectSystem.showDamageNumber(damage, position, 'burn');
+            await this.effectSystem.showDamageNumber(damage, position, 'burn', null, {
+                isPlayerTarget: isPlayerTurn
+            });
 
             // 실제 데미지 적용
             const actualDamage = player.takeDamage(damage);
@@ -1502,7 +1544,9 @@ class BattleSystem {
             const message = template.replace('{value}', actualHeal);
 
             // 회복 이펙트 표시 (읽기 시간 포함)
-            await this.effectSystem.showDamageNumber(actualHeal, position, 'heal', message);
+            await this.effectSystem.showDamageNumber(actualHeal, position, 'heal', message, {
+                isPlayerTarget: isPlayerTurn
+            });
 
             // HP바 업데이트
             if (this.hpBarSystem) {
@@ -1546,7 +1590,9 @@ class BattleSystem {
             const message = template.replace('{value}', actualHeal);
 
             // 회복 이펙트 표시 (읽기 시간 포함)
-            await this.effectSystem.showDamageNumber(actualHeal, position, 'heal', message);
+            await this.effectSystem.showDamageNumber(actualHeal, position, 'heal', message, {
+                isPlayerTarget: isPlayerTurn
+            });
 
             // HP바 업데이트
             if (this.hpBarSystem) {
@@ -1666,7 +1712,9 @@ class BattleSystem {
         const selfDamage = card.selfDamage;
 
         // 자해 데미지 시각 효과 표시 (숫자만 표시) - 통합 읽기 시간 적용
-        await this.effectSystem.showDamageNumber(selfDamage, userPosition, 'selfDamage');
+        await this.effectSystem.showDamageNumber(selfDamage, userPosition, 'selfDamage', null, {
+            isPlayerTarget: isPlayerCard
+        });
 
         // 자해 데미지 적용
         user.takeDamage(selfDamage);

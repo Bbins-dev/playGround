@@ -207,7 +207,7 @@ class EffectSystem {
     }
 
     // 방어력 획득 메시지 표시 (템플릿 기반, async - 읽기 시간 포함)
-    async showDefenseGainMessage(position, value) {
+    async showDefenseGainMessage(position, value, metadata = {}) {
         // 방어력 획득 사운드 재생
         const sfxKey = GameConfig?.audio?.battleSounds?.effects?.defenseGain;
         if (sfxKey && this.audioSystem) {
@@ -221,7 +221,7 @@ class EffectSystem {
         }
 
         let message = template.replace('{value}', value);
-        await this.showDamageNumber(0, position, 'shield', message);
+        await this.showDamageNumber(0, position, 'shield', message, metadata);
     }
 
     // 메시지 타입 자동 판별
@@ -296,7 +296,8 @@ class EffectSystem {
     }
 
     // 대미지/회복/효과 숫자 표시 (async - 읽기 시간 포함)
-    async showDamageNumber(amount, position, type = 'damage', customText = null) {
+    // metadata: { isPlayerTarget: boolean } - BattleSystem에서 명시적으로 타겟 정보 전달
+    async showDamageNumber(amount, position, type = 'damage', customText = null, metadata = {}) {
         const numberElement = document.createElement('div');
         let className = 'damage-number';
 
@@ -376,14 +377,14 @@ class EffectSystem {
         const cssVarName = `--color-message-${type}`;
         numberElement.style.color = `var(${cssVarName}, ${messageColor})`;
 
-        // 존 기반 위치 계산 시스템 (수정: 명확한 영역 판단)
+        // 존 기반 위치 계산 시스템 (근본 해결: 좌표 계산 제거, 명시적 플래그 사용)
         const config = GameConfig.cardSelection.damageNumber;
 
-        // Step 1: 입력 position을 분석하여 "어느 영역인지" 판단
-        // position.y는 BattleSystem에서 getPlayerPosition()/getEnemyPosition()으로 전달됨
-        // - getPlayerPosition() → Y축 하단 (~750px) → 플레이어 영역
-        // - getEnemyPosition() → Y축 상단 (~50px) → 적 영역
-        const isPlayerArea = position.y > GameConfig.canvas.height / 2;
+        // Step 1: 영역 판단 - BattleSystem에서 전달한 명시적 플래그 우선 사용
+        // Fallback: 실제 화면 높이 기준 (스케일링 고려)
+        // ⚠️ 주의: position.y는 getBoundingClientRect()의 스케일링 후 좌표
+        //         window.innerHeight는 실제 뷰포트 높이
+        const isPlayerArea = metadata?.isPlayerTarget ?? (position.y > window.innerHeight / 2);
 
         // 기본 위치 계산
         const centerX = GameConfig.canvas.width / 2;
