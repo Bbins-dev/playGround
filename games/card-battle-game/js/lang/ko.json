@@ -742,7 +742,7 @@
       },
       "card_selection": {
         "initial_title": "시작 카드 선택",
-        "instruction": "공격 카드를 선택하여 게임을 시작하세요!",
+        "instruction": "기본 공격카드를 선택하여 게임을 시작하세요!",
         "reward_title": "보상 카드 선택",
         "replacement_title": "카드 교체",
         "selected_count": "선택됨",
@@ -778,6 +778,8 @@
       "replace_card_button": "바꾸기",
       "continue": "계속하기",
       "defeat_title": "게임 오버",
+      "game_complete_title": "🎉 게임 클리어!",
+      "game_complete_message": "축하합니다! 모든 스테이지를 클리어했습니다!",
       "player_name": "플레이어",
       "final_stage": "도달 스테이지",
       "game_statistics": "게임 통계",

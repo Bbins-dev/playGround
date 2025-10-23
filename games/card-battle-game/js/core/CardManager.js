@@ -46,6 +46,14 @@ class CardManager {
 
     // 초기 카드 선택용 공격 카드 목록
     getInitialAttackCards() {
+        // GameConfig에서 설정된 카드 목록 가져오기
+        const configCards = GameConfig?.gameRules?.initialAttackCards;
+
+        if (configCards && Array.isArray(configCards) && configCards.length > 0) {
+            return configCards;
+        }
+
+        // 폴백: 모든 공격 카드 반환
         return this.availableCards.attack.map(cardData => cardData.id);
     }
 

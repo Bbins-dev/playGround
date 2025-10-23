@@ -1177,7 +1177,7 @@ const GameConfig = {
     // 플레이어 설정
     player: {
         get maxHandSize() { return GameConfig.constants.limits.maxHandSize; },
-        startingHP: 10000,
+        startingHP: 10,
         defaultDefenseElement: 'normal'
     },
 
@@ -2913,6 +2913,25 @@ const GameConfig = {
             heal: { min: 2, max: 4 },
             shield: { min: 1, max: 3 },
             buffDuration: { min: 2, max: 4 }
+        },
+
+        // 시작 카드 선택 설정
+        initialAttackCards: [
+            'heavy_strike',    // 세게치기 (노멀)
+            'flame_throw',     // 불꽃던지기 (불)
+            'bubble_strike',   // 거품타격 (물)
+            'thunder_strike',  // 번개일격 (전기)
+            'smog'             // 스모그 (독)
+        ],
+
+        // 유틸리티 메서드
+        /**
+         * 현재 정의된 마지막 스테이지 번호 반환 (확장 가능)
+         * @returns {number} 마지막 스테이지 번호
+         */
+        getMaxStage() {
+            const stages = Object.keys(GameConfig.enemy.stageConfigs).map(Number);
+            return Math.max(...stages);
         }
     },
 

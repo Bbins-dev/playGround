@@ -1197,11 +1197,6 @@ class BattleSystem {
         this.currentTurn = this.currentTurn === 'player' ? 'enemy' : 'player';
         this.battleStats.totalTurns++;
 
-        // 플레이어 턴이 끝났을 때 통계 업데이트
-        if (currentPlayer === this.player) {
-            this.gameManager.updateStatsOnTurn();
-        }
-
         // 전투 종료 체크
         if (!await this.checkBattleEnd()) {
             // 다음 턴 시작 (TimerManager 사용)

@@ -742,7 +742,7 @@
       },
       "card_selection": {
         "initial_title": "Start Card Selection",
-        "instruction": "Choose an attack card to start the game!",
+        "instruction": "Choose a basic attack card to start the game!",
         "reward_title": "Reward Card Selection",
         "replacement_title": "Card Replacement",
         "selected_count": "Selected",
@@ -778,6 +778,8 @@
       "replace_card_button": "Replace",
       "continue": "Continue",
       "defeat_title": "Game Over",
+      "game_complete_title": "🎉 Game Complete!",
+      "game_complete_message": "Congratulations! You cleared all stages!",
       "player_name": "Player",
       "final_stage": "Stage Reached",
       "game_statistics": "Game Statistics",
