@@ -1750,8 +1750,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 15px 0 0 0; /* 상단 15px (최소 여백), 하단 0 (gap으로 처리) */
-    min-height: 680px;
+    margin: 20px 0 0 0; /* 상단 20px (여유 있는 여백), 하단 0 (gap으로 처리) */
+    min-height: 730px; /* 680px → 730px (카드 영역 확장) */
     flex: 1; /* flex 계열 체에서 남은 공간 채우기 */
 }
 
@@ -1761,7 +1761,7 @@
 
 /* 카드 디테일 모달 버튼 간격 및 크기 최적화 */
 .card-detail-content .modal-buttons {
-    margin-top: 20px; /* 50px → 20px로 단축 */
+    margin-top: 35px; /* 카드와 버튼 사이 충분한 여백 확보 */
     gap: 25px;
 }
 

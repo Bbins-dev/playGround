@@ -1675,11 +1675,11 @@ const GameConfig = {
                 top: 25                          // 상단에서 25px (기존 45px에서 올림)
             },
             size: {
-                fontSize: 24,                    // 메인 폰트 크기 (기존 16px → 24px)
-                iconSize: 24,                    // 아이콘 크기 (기존 16px → 24px)
-                progressFontSize: 18,            // 진행도 점 크기 (기존 12px → 18px)
-                padding: 16,                     // 내부 패딩 (기존 12px → 16px)
-                minWidth: 200                    // 최소 너비
+                fontSize: 18,                    // 메인 폰트 크기 (모바일 한글/일본어 대응)
+                iconSize: 18,                    // 아이콘 크기
+                progressFontSize: 14,            // 진행도 점 크기
+                padding: 14,                     // 내부 패딩
+                minWidth: 180                    // 최소 너비
             }
         },
         galleryButton: {
@@ -1953,9 +1953,16 @@ const GameConfig = {
         damageNumber: {
             fontSize: 60,       // 폰트 크기 축소 (90 → 60)
             position: {
-                // 전투 영역 기준 위치 (캔버스 상하 1/3 지점)
-                playerY: 0.75,  // 캔버스 높이의 75% 지점 (하단 1/3)
-                enemyY: 0.25,   // 캔버스 높이의 25% 지점 (상단 1/3)
+                // ⚠️ 중요: 이 값들은 화면 영역별 메시지 표시 위치를 정의함
+                // - playerY: 플레이어 영역(하단)의 메시지 표시 Y 위치
+                //   → 플레이어가 피격당했을 때 사용 (예: 적의 공격)
+                // - enemyY: 적 영역(상단)의 메시지 표시 Y 위치
+                //   → 적이 피격당했을 때 사용 (예: 플레이어의 공격)
+                //
+                // BattleSystem에서 getPlayerPosition()/getEnemyPosition()으로 영역을 판단하며,
+                // EffectSystem이 이 설정값을 사용하여 최종 메시지 위치를 계산함
+                playerY: 0.75,  // 캔버스 높이의 75% 지점 (하단 영역, 900px)
+                enemyY: 0.25,   // 캔버스 높이의 25% 지점 (상단 영역, 300px)
                 randomX: 60,    // X축 랜덤 분산 범위 (-60 ~ +60px)
                 randomY: 20     // Y축 랜덤 분산 범위 (-20 ~ +20px)
             },
