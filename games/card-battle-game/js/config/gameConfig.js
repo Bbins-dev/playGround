@@ -1953,14 +1953,20 @@ const GameConfig = {
         damageNumber: {
             fontSize: 60,       // 폰트 크기 축소 (90 → 60)
             position: {
-                // ⚠️ 중요: 이 값들은 화면 영역별 메시지 표시 위치를 정의함
-                // - playerY: 플레이어 영역(하단)의 메시지 표시 Y 위치
-                //   → 플레이어가 피격당했을 때 사용 (예: 적의 공격)
-                // - enemyY: 적 영역(상단)의 메시지 표시 Y 위치
-                //   → 적이 피격당했을 때 사용 (예: 플레이어의 공격)
+                // ⚠️ 중요: 메시지 표시 위치 (논리적 좌표, 스케일링 전 기준)
                 //
-                // BattleSystem에서 getPlayerPosition()/getEnemyPosition()으로 영역을 판단하며,
-                // EffectSystem이 이 설정값을 사용하여 최종 메시지 위치를 계산함
+                // 영역 판단 방식 (2025-01 근본 수정):
+                // - BattleSystem이 metadata.isPlayerTarget 플래그를 직접 전달
+                // - 좌표 계산 불필요 → 스케일링/transform 이슈 해결
+                //
+                // playerY/enemyY 값의 의미:
+                // - playerY: 플레이어가 피격/회복 받을 때 메시지 표시 Y 위치 (하단 영역)
+                // - enemyY: 적이 피격/회복 받을 때 메시지 표시 Y 위치 (상단 영역)
+                //
+                // 동작 원리:
+                // 1. BattleSystem: target/user 정보를 isPlayerTarget 플래그로 변환
+                // 2. EffectSystem: 플래그 기준으로 playerY/enemyY 선택
+                // 3. 최종 위치: GameConfig.canvas.height * (playerY or enemyY)
                 playerY: 0.75,  // 캔버스 높이의 75% 지점 (하단 영역, 900px)
                 enemyY: 0.25,   // 캔버스 높이의 25% 지점 (상단 영역, 300px)
                 randomX: 60,    // X축 랜덤 분산 범위 (-60 ~ +60px)
