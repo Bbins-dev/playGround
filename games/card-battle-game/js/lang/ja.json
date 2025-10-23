@@ -57,6 +57,12 @@
   "auto_battle_card_game": {
     "title": "オートバトルカード対戦",
     "subtitle": "ターン制自動戦闘カードゲーム！",
+    "version": {
+      "early_access_beta": "アーリーアクセスベータ"
+    },
+    "credits": {
+      "text": "© {year} {company}"
+    },
     "page_title": "オートバトルカード対戦 - BinBox Games",
     "description": "ターン制自動戦闘カードゲーム！カードの順序を戦略的に配置し、5つの属性の相性を活用して勝利を目指そう！",
     "genre": "戦略",

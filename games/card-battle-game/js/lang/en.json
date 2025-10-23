@@ -57,6 +57,12 @@
   "auto_battle_card_game": {
     "title": "Auto Battle Card Dual",
     "subtitle": "Turn-based Auto Battle Card Game!",
+    "version": {
+      "early_access_beta": "Early Access Beta"
+    },
+    "credits": {
+      "text": "© {year} {company}"
+    },
     "page_title": "Auto Battle Card Dual - BinBox Games",
     "description": "Turn-based auto battle card game! Strategically arrange your card order and use the synergy of 5 different elements to achieve victory!",
     "genre": "Strategy",
