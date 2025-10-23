@@ -1,0 +1,11 @@
+# BinBox Games - Robots.txt
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://binboxgames.com/sitemap.xml
+
+# Optional: Crawl-delay for being polite to servers
+Crawl-delay: 1
