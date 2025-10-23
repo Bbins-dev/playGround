@@ -246,10 +246,32 @@ class VictoryDefeatModal {
         // 통계 정보 설정
         this.populateGameStats(gameStats);
 
-        // 게임 오버 사운드 재생
-        const gameOverSfxKey = GameConfig?.audio?.battleSounds?.modalSounds?.gameOver;
-        if (gameOverSfxKey && this.gameManager?.audioSystem) {
-            this.gameManager.audioSystem.playSFX(gameOverSfxKey);
+        // 게임 완료 여부에 따라 제목 동적 변경
+        const titleElement = this.defeatModal?.querySelector('h2[data-i18n]');
+        if (titleElement) {
+            if (gameStats?.isGameComplete) {
+                // 🎉 게임 클리어 모드
+                const titleKey = 'auto_battle_card_game.ui.game_complete_title';
+                titleElement.textContent = I18nHelper.getText(titleKey) || '🎉 게임 클리어!';
+            } else {
+                // 일반 패배 모드
+                const titleKey = 'auto_battle_card_game.ui.defeat_title';
+                titleElement.textContent = I18nHelper.getText(titleKey) || '게임 오버';
+            }
+        }
+
+        // 사운드 재생 (게임 완료 시 이미 GameManager에서 승리 BGM 재생했으므로 스킵)
+        if (!gameStats?.isGameComplete) {
+            const gameOverSfxKey = GameConfig?.audio?.battleSounds?.modalSounds?.gameOver;
+            if (gameOverSfxKey && this.gameManager?.audioSystem) {
+                this.gameManager.audioSystem.playSFX(gameOverSfxKey);
+            }
+        } else {
+            // 게임 클리어 시 승리 효과음 재생
+            const victorySfxKey = GameConfig?.audio?.battleSounds?.modalSounds?.victory;
+            if (victorySfxKey && this.gameManager?.audioSystem) {
+                this.gameManager.audioSystem.playSFX(victorySfxKey);
+            }
         }
 
         // 모달 표시

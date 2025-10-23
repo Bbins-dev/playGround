@@ -742,6 +742,7 @@
       },
       "card_selection": {
         "initial_title": "スタートカード選択",
+        "instruction": "基本攻撃カードを選んでゲームを開始してください！",
         "reward_title": "報酬カード選択",
         "replacement_title": "カード交換",
         "selected_count": "選択済み",
@@ -777,6 +778,8 @@
       "replace_card_button": "交換する",
       "continue": "続ける",
       "defeat_title": "ゲームオーバー",
+      "game_complete_title": "🎉 ゲームクリア!",
+      "game_complete_message": "おめでとうございます！全ステージクリアしました！",
       "player_name": "プレイヤー",
       "final_stage": "到達ステージ",
       "game_statistics": "ゲーム統計",

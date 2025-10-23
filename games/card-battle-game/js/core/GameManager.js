@@ -67,6 +67,9 @@ class GameManager {
             mvpCard: null,
             laziestCard: null,
             playStyle: 'balanced',
+            attackCardUsage: 0,        // 공격 카드 사용 횟수
+            defenseCardUsage: 0,       // 방어 카드 사용 횟수
+            isGameComplete: false,     // 게임 완료 플래그 (마지막 스테이지 클리어)
             cardUsageStats: new Map(), // 카드별 사용 횟수
             elementUsageStats: new Map(), // 속성별 사용 횟수
             // 대미지 타입별 통계
@@ -707,17 +710,63 @@ class GameManager {
             // 보상 카드 생성
             const rewardCards = this.generateRewardCards();
 
-            // 승리 모달 표시 (카드 보상 포함)
-            this.uiManager.showVictoryModal(this.currentStage, async () => {
-                await this.proceedToNextStage();
-            }, rewardCards);
+            // 마지막 스테이지 체크 (확장 가능)
+            const maxStage = GameConfig.gameRules.getMaxStage();
+            const isLastStage = this.currentStage >= maxStage;
+
+            if (isLastStage) {
+                // 🎉 게임 완료 - 패배 모달을 "게임 클리어" 모드로 표시
+                this.changeGameState('gameOver');
+
+                // 승리 BGM 재생
+                if (this.audioSystem) {
+                    this.audioSystem.stopBGM(true);
+                    this.audioSystem.playBGM('victory', false, true);
+                }
+
+                // 통계 finalize
+                this.finalizeGameStats();
+
+                // gameStats에 게임 완료 플래그 추가
+                this.gameStats.isGameComplete = true;
+
+                // 패배 모달 표시 (게임 완료 모드)
+                this.uiManager.showDefeatModal(
+                    this.gameStats,
+                    () => this.restartGame(),
+                    () => this.returnToMainMenu()
+                );
+            } else {
+                // 일반 스테이지 클리어 - 기존 로직
+                this.uiManager.showVictoryModal(this.currentStage, async () => {
+                    await this.proceedToNextStage();
+                }, rewardCards);
+            }
         } catch (error) {
             console.error('handlePlayerVictory 에러:', error);
             // 에러가 있어도 모달은 표시
             const rewardCards = this.generateRewardCards();
-            this.uiManager.showVictoryModal(this.currentStage, async () => {
-                await this.proceedToNextStage();
-            }, rewardCards);
+
+            // 마지막 스테이지 체크 (확장 가능)
+            const maxStage = GameConfig.gameRules.getMaxStage();
+            const isLastStage = this.currentStage >= maxStage;
+
+            if (isLastStage) {
+                // 게임 완료
+                this.changeGameState('gameOver');
+                this.finalizeGameStats();
+                this.gameStats.isGameComplete = true;
+                this.uiManager.showDefeatModal(
+                    this.gameStats,
+                    () => this.restartGame(),
+                    () => this.returnToMainMenu()
+                );
+            } else {
+                // 일반 스테이지 클리어
+                this.uiManager.showVictoryModal(this.currentStage, async () => {
+                    await this.proceedToNextStage();
+                }, rewardCards);
+            }
         }
     }
 
@@ -1491,6 +1540,9 @@ class GameManager {
             mvpCard: null,
             laziestCard: null,
             playStyle: 'balanced',
+            attackCardUsage: 0,        // 공격 카드 사용 횟수
+            defenseCardUsage: 0,       // 방어 카드 사용 횟수
+            isGameComplete: false,     // 게임 완료 플래그 (마지막 스테이지 클리어)
             cardUsageStats: new Map(),
             elementUsageStats: new Map(),
             deathCause: null,
@@ -1588,15 +1640,26 @@ class GameManager {
 
     // 플레이 스타일 분석
     analyzePlayStyle() {
-        const { totalDamageDealt, totalDefenseBuilt, criticalCount, missCount } = this.gameStats;
+        const { totalDamageDealt, totalDefenseBuilt, missCount, totalTurns } = this.gameStats;
 
-        if (totalDefenseBuilt > totalDamageDealt * 1.5) {
-            this.gameStats.playStyle = 'defensive';
-        } else if (criticalCount > this.gameStats.totalTurns * 0.3) {
-            this.gameStats.playStyle = 'aggressive';
-        } else if (missCount > this.gameStats.totalTurns * 0.2) {
+        // 안전한 비율 계산 (0으로 나누기 방지)
+        const missRate = totalTurns > 0 ? missCount / totalTurns : 0;
+        const defenseRatio = totalDamageDealt > 0 ? totalDefenseBuilt / totalDamageDealt : 0;
+
+        // 우선순위: Unlucky → Defensive → Aggressive → Balanced
+
+        if (missRate >= 0.1) {
+            // 🎲 불운한: 10% 이상 빗나감 (기존 20% → 10%)
             this.gameStats.playStyle = 'unlucky';
+        } else if (defenseRatio >= 0.8) {
+            // 🛡️ 방어적: 방어력이 딜의 80% 이상 (기존 150% → 80%)
+            this.gameStats.playStyle = 'defensive';
+        } else if (defenseRatio < 0.3 && totalDamageDealt > totalDefenseBuilt * 2) {
+            // ⚔️ 공격적: 방어가 딜의 30% 미만 AND 딜이 방어의 2배 이상
+            //           (크리티컬 대신 방어/공격 비율 사용)
+            this.gameStats.playStyle = 'aggressive';
         } else {
+            // ⚖️ 균형잡힌: 나머지 모든 경우 (기본값)
             this.gameStats.playStyle = 'balanced';
         }
     }
