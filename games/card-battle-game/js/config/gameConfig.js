@@ -2572,7 +2572,7 @@ const GameConfig = {
 
             // 카드 개수 표시 설정 (왼쪽)
             cardCount: {
-                fontSize: 20,           // 폰트 크기
+                fontSize: 16,           // 폰트 크기 (20px → 16px, "105/105" 형태도 겹치지 않도록)
                 fontWeight: 'bold',     // 폰트 굵기
                 color: '#FFFFFF',       // 텍스트 색상
                 textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' // 텍스트 그림자

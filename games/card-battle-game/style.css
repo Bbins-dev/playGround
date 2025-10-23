@@ -2500,7 +2500,7 @@ body[data-game-state="menu"] .game-wrapper.status-border-slow {
 /* 카드 개수 표시 - 오른쪽 상단 절대 배치 */
 .card-count-display {
     position: absolute;
-    right: 15px;
+    right: 20px;  /* 15px → 20px (제목과 안전 거리 확보) */
     top: 50%;
     transform: translateY(-50%);
     font-size: var(--card-count-font-size, 20px);
