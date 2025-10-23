@@ -1,8 +1,20 @@
 // 게임 설정 및 상수 정의
 
 const GameConfig = {
-    // 게임 버전
-    version: '1.0.0',
+    // 게임 버전 정보
+    versionInfo: {
+        number: '0.1.0',                        // 버전 넘버
+        stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
+    },
+
+    // 제작자 정보
+    credits: {
+        company: 'BinBox Games',                // 회사/제작자 이름
+        year: 2025                              // 저작권 연도
+    },
+
+    // 하위 호환을 위한 레거시 버전 속성
+    get version() { return this.versionInfo.number; },
 
     // 공통 상수 정의 - 매직 넘버 제거
     constants: {
@@ -1789,6 +1801,16 @@ const GameConfig = {
         subtitle: {
             get size() { return GameConfig.masterFonts.uiSizes.mainMenuSubtitle; },                            // 부제목 폰트 크기 (20 → 24)
             offsetY: 70                          // 제목으로부터의 Y 오프셋 (60 → 70)
+        },
+        versionDisplay: {
+            get size() { return GameConfig.masterFonts.baseSizes.large; },                                     // 폰트 크기 (20px)
+            offsetY: 100,                        // 제목으로부터의 Y 오프셋
+            get opacity() { return GameConfig.constants.opacity.mediumHigh; }                                   // 투명도 0.85 (더 진하게)
+        },
+        creditsDisplay: {
+            get size() { return GameConfig.masterFonts.baseSizes.xlarge; },                                    // 폰트 크기 (24px)
+            offsetY: -30,                        // 화면 하단으로부터의 오프셋
+            get opacity() { return GameConfig.constants.opacity.mediumHigh; }                                   // 투명도 0.85 (더 진하게)
         },
         menuItems: {
             startY: 420,                         // 메뉴 시작 Y 위치 (280 → 420, 중앙으로)

@@ -147,9 +147,11 @@ class MainMenu {
         }
         this.renderBackground(ctx, canvas);
         this.renderTitle(ctx, canvas);
+        this.renderVersionInfo(ctx, canvas);   // 버전 정보 렌더링
         // Canvas 메뉴 렌더링 비활성화 - DOM 버튼 사용
         // this.renderMenuItems(ctx, canvas);
         // this.renderInstructions(ctx, canvas); // 조작 안내 메시지 비활성화
+        this.renderCredits(ctx, canvas);       // 제작자 정보 렌더링
 
         this.needsRedraw = false;
         this.lastRenderTime = currentTime;
@@ -254,6 +256,57 @@ class MainMenu {
         const subtitleY = titleY + subtitleConfig.offsetY;
         ctx.strokeText(gameDescription, centerX, subtitleY);
         ctx.fillText(gameDescription, centerX, subtitleY);
+
+        ctx.restore();
+    }
+
+    // 버전 정보 렌더링
+    renderVersionInfo(ctx, canvas) {
+        const config = GameConfig.mainMenu.versionDisplay;
+        const titleConfig = GameConfig.mainMenu.title;
+        const centerX = GameConfig.canvas.width / 2;
+        const versionY = titleConfig.y + config.offsetY;
+
+        // 버전 단계 문자열 가져오기 (i18n)
+        const versionStage = (typeof getI18nText === 'function') ?
+            getI18nText(`auto_battle_card_game.version.${GameConfig.versionInfo.stage}`) || 'Early Access Beta' : 'Early Access Beta';
+
+        // 버전 텍스트: "Early Access Beta v0.1.0"
+        const versionText = `${versionStage} v${GameConfig.versionInfo.number}`;
+
+        ctx.save();
+        ctx.font = `${config.size}px ${GameConfig.fonts?.families?.main || 'Arial'}`;
+        ctx.textAlign = 'center';
+        ctx.fillStyle = GameConfig.colors?.ui?.text?.primary || '#FFFFFF';  // secondary → primary (더 밝게)
+        ctx.globalAlpha = config.opacity;
+
+        ctx.fillText(versionText, centerX, versionY);
+
+        ctx.restore();
+    }
+
+    // 제작자 정보 렌더링
+    renderCredits(ctx, canvas) {
+        const config = GameConfig.mainMenu.creditsDisplay;
+        const centerX = GameConfig.canvas.width / 2;
+        const creditsY = GameConfig.canvas.height + config.offsetY;
+
+        // 제작자 텍스트 가져오기 (i18n 템플릿 사용)
+        let creditsTemplate = (typeof getI18nText === 'function') ?
+            getI18nText('auto_battle_card_game.credits.text') || '© {year} {company}' : '© {year} {company}';
+
+        // 템플릿 변수 치환
+        const creditsText = creditsTemplate
+            .replace('{year}', GameConfig.credits.year)
+            .replace('{company}', GameConfig.credits.company);
+
+        ctx.save();
+        ctx.font = `${GameConfig.fonts?.weights?.bold || 'bold'} ${config.size}px ${GameConfig.fonts?.families?.main || 'Arial'}`;
+        ctx.textAlign = 'center';
+        ctx.fillStyle = GameConfig.colors?.ui?.text?.primary || '#FFFFFF';  // secondary → primary (더 밝게)
+        ctx.globalAlpha = config.opacity;
+
+        ctx.fillText(creditsText, centerX, creditsY);
 
         ctx.restore();
     }
