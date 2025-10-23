@@ -376,9 +376,14 @@ class EffectSystem {
         const cssVarName = `--color-message-${type}`;
         numberElement.style.color = `var(${cssVarName}, ${messageColor})`;
 
-        // 존 기반 위치 계산 시스템
+        // 존 기반 위치 계산 시스템 (수정: 명확한 영역 판단)
         const config = GameConfig.cardSelection.damageNumber;
-        const isPlayerDamage = position.y > GameConfig.canvas.height / 2;
+
+        // Step 1: 입력 position을 분석하여 "어느 영역인지" 판단
+        // position.y는 BattleSystem에서 getPlayerPosition()/getEnemyPosition()으로 전달됨
+        // - getPlayerPosition() → Y축 하단 (~750px) → 플레이어 영역
+        // - getEnemyPosition() → Y축 상단 (~50px) → 적 영역
+        const isPlayerArea = position.y > GameConfig.canvas.height / 2;
 
         // 기본 위치 계산
         const centerX = GameConfig.canvas.width / 2;
@@ -388,11 +393,15 @@ class EffectSystem {
         if (type === 'miss' || type === 'conditionFailed') {
             targetY = GameConfig.canvas.height / 2;
         } else {
-            targetY = isPlayerDamage ?
+            // Step 2: GameConfig 기반으로 정확한 메시지 표시 위치 계산
+            // - 플레이어 영역 (하단) → 0.75 위치 (900px)
+            // - 적 영역 (상단) → 0.25 위치 (300px)
+            targetY = isPlayerArea ?
                 GameConfig.canvas.height * config.position.playerY :
                 GameConfig.canvas.height * config.position.enemyY;
         }
 
+        // Step 3: 재계산된 targetY를 기준으로 basePosition 설정
         const basePosition = { x: centerX, y: targetY };
 
         // 메시지 타입에 따른 존별 랜덤 위치 생성

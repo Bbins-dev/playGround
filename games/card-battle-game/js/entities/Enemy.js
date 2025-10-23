@@ -49,8 +49,8 @@ class Enemy extends Player {
 
     // 적 이름 생성 (다국어 지원)
     generateEnemyName() {
-        // 스테이지 번호를 30개 범위 내로 제한
-        const enemyStage = Math.min(this.stage, 30);
+        // 스테이지 번호를 40개 범위 내로 제한
+        const enemyStage = Math.min(this.stage, 40);
 
         // i18n 시스템을 통해 적 이름 가져오기
         const nameKey = `auto_battle_card_game.ui.enemy_names.${enemyStage}`;
@@ -68,7 +68,9 @@ class Enemy extends Player {
             11: "Apprentice Mage", 12: "Fire Caster", 13: "Ice Witch", 14: "Lightning Summoner", 15: "Elemental Master",
             16: "Zombie Soldier", 17: "Skeleton Archer", 18: "Ghost Knight", 19: "Lich Priest", 20: "Death Lord",
             21: "Dragon Hatchling", 22: "Fire Drake", 23: "Frost Wyvern", 24: "Storm Dragon", 25: "Ancient Dragon King",
-            26: "Fallen Hero", 27: "Betrayer Knight Captain", 28: "Demon Summoner", 29: "Avatar of Chaos", 30: "Final Examiner"
+            26: "Fallen Hero", 27: "Betrayer Knight Captain", 28: "Demon Summoner", 29: "Avatar of Chaos", 30: "Final Examiner",
+            31: "Immortal Phoenix", 32: "Nine-Tailed Fox Avatar", 33: "Abyssal Kraken", 34: "Earth Titan", 35: "Medusa, Queen of Stone",
+            36: "Void Watcher", 37: "Time Devourer", 38: "Dimension Overlord", 39: "Reality Breaker", 40: "The Transcendent - End of All"
         };
 
         return fallbackNames[enemyStage] || `Enemy ${enemyStage}`;
