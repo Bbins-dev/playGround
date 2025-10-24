@@ -123,7 +123,7 @@ class GameRegistry {
         
         const descriptions = {
             'barista-game': 'Hold to pour coffee and release at perfect timing for high combos!',
-            'auto-battle-card-game': 'Auto Battle Card Dual (ABCD) - Turn-based auto battle card game!'
+            'auto-battle-card-game': 'Turn-based auto battle card game!'
         };
         return descriptions[gameData.id] || '새로운 게임입니다!';
     }
