@@ -351,7 +351,11 @@ class Player {
         // 즉시 현재 손패의 노멀 공격카드들에 적용
         this.hand.forEach(card => {
             if (card.type === 'attack' && card.element === 'normal') {
-                card.modifiedActivationCount = card.activationCount + this.speedBonus;
+                // 랜덤 카드는 activationCount가 null일 수 있으므로 안전하게 처리
+                if (card.activationCount !== null && card.activationCount !== undefined) {
+                    card.modifiedActivationCount = card.activationCount + this.speedBonus;
+                }
+                // null인 경우 modifiedActivationCount를 설정하지 않음 (버프 적용 불가)
             }
         });
 
@@ -401,7 +405,10 @@ class Player {
         // 즉시 현재 손패의 불 속성 공격카드들에 적용
         this.hand.forEach(card => {
             if (card.type === 'attack' && card.element === 'fire') {
-                card.modifiedActivationCount = card.activationCount + this.hotWindTurns;
+                // 랜덤 카드는 activationCount가 null일 수 있으므로 안전하게 처리
+                if (card.activationCount !== null && card.activationCount !== undefined) {
+                    card.modifiedActivationCount = card.activationCount + this.hotWindTurns;
+                }
             }
         });
 
@@ -468,7 +475,10 @@ class Player {
         // 즉시 현재 손패의 물 속성 공격카드들에 적용
         this.hand.forEach(card => {
             if (card.type === 'attack' && card.element === 'water') {
-                card.modifiedActivationCount = card.activationCount + this.torrentBonus;
+                // 랜덤 카드는 activationCount가 null일 수 있으므로 안전하게 처리
+                if (card.activationCount !== null && card.activationCount !== undefined) {
+                    card.modifiedActivationCount = card.activationCount + this.torrentBonus;
+                }
             }
         });
 
@@ -522,7 +532,10 @@ class Player {
         // 즉시 현재 손패의 전기 속성 공격카드들에 적용
         this.hand.forEach(card => {
             if (card.type === 'attack' && card.element === 'electric') {
-                card.modifiedActivationCount = card.activationCount + this.lightSpeedBonus;
+                // 랜덤 카드는 activationCount가 null일 수 있으므로 안전하게 처리
+                if (card.activationCount !== null && card.activationCount !== undefined) {
+                    card.modifiedActivationCount = card.activationCount + this.lightSpeedBonus;
+                }
             }
         });
 
@@ -589,7 +602,10 @@ class Player {
         // 독 속성 공격카드의 발동횟수 즉시 업데이트
         this.hand.forEach(card => {
             if (card.type === 'attack' && card.element === 'poison') {
-                card.modifiedActivationCount = card.activationCount + this.propagationBonus;
+                // 랜덤 카드는 activationCount가 null일 수 있으므로 안전하게 처리
+                if (card.activationCount !== null && card.activationCount !== undefined) {
+                    card.modifiedActivationCount = card.activationCount + this.propagationBonus;
+                }
             }
         });
 
@@ -939,28 +955,34 @@ class Player {
 
             // 망각 상태가 아닐 때만 발동횟수 버프 적용
             if (!this.hasOblivionDebuff()) {
-                // 고속 버프 적용 (노멀 공격카드만)
-                if (this.hasSpeedBuff() && card.type === 'attack' && card.element === 'normal') {
-                    card.modifiedActivationCount = card.activationCount + this.speedBonus;
-                }
-                // 열풍 버프 적용 (불 속성 공격카드만)
-                else if (this.hasHotWindBuff() && card.type === 'attack' && card.element === 'fire') {
-                    card.modifiedActivationCount = card.activationCount + this.hotWindTurns;
-                }
-                // 급류 버프 적용 (물 속성 공격카드만)
-                else if (this.hasTorrentBuff() && card.type === 'attack' && card.element === 'water') {
-                    card.modifiedActivationCount = card.activationCount + this.torrentBonus;
-                }
-                // 광속 버프 적용 (전기 속성 공격카드만)
-                else if (this.hasLightSpeedBuff() && card.type === 'attack' && card.element === 'electric') {
-                    card.modifiedActivationCount = card.activationCount + this.lightSpeedBonus;
-                }
-                // 연쇄 버프 적용 (독 속성 공격카드만)
-                else if (this.hasPropagationBuff() && card.type === 'attack' && card.element === 'poison') {
-                    card.modifiedActivationCount = card.activationCount + this.propagationBonus;
-                }
-                else {
-                    // 버프가 없거나 적용 대상이 아닌 경우 초기화
+                // 랜덤 카드는 activationCount가 null이므로 버프 적용 불가
+                if (card.activationCount !== null && card.activationCount !== undefined) {
+                    // 고속 버프 적용 (노멀 공격카드만)
+                    if (this.hasSpeedBuff() && card.type === 'attack' && card.element === 'normal') {
+                        card.modifiedActivationCount = card.activationCount + this.speedBonus;
+                    }
+                    // 열풍 버프 적용 (불 속성 공격카드만)
+                    else if (this.hasHotWindBuff() && card.type === 'attack' && card.element === 'fire') {
+                        card.modifiedActivationCount = card.activationCount + this.hotWindTurns;
+                    }
+                    // 급류 버프 적용 (물 속성 공격카드만)
+                    else if (this.hasTorrentBuff() && card.type === 'attack' && card.element === 'water') {
+                        card.modifiedActivationCount = card.activationCount + this.torrentBonus;
+                    }
+                    // 광속 버프 적용 (전기 속성 공격카드만)
+                    else if (this.hasLightSpeedBuff() && card.type === 'attack' && card.element === 'electric') {
+                        card.modifiedActivationCount = card.activationCount + this.lightSpeedBonus;
+                    }
+                    // 연쇄 버프 적용 (독 속성 공격카드만)
+                    else if (this.hasPropagationBuff() && card.type === 'attack' && card.element === 'poison') {
+                        card.modifiedActivationCount = card.activationCount + this.propagationBonus;
+                    }
+                    else {
+                        // 버프가 없거나 적용 대상이 아닌 경우 초기화
+                        card.modifiedActivationCount = undefined;
+                    }
+                } else {
+                    // activationCount가 null인 랜덤 카드는 버프 적용 불가
                     card.modifiedActivationCount = undefined;
                 }
             } else {
@@ -1020,11 +1042,16 @@ class Player {
             // 열풍 턴수 변경 즉시 불 공격카드들 발동횟수 재계산
             this.hand.forEach(card => {
                 if (card.type === 'attack' && card.element === 'fire') {
-                    if (this.hotWindTurns > 0) {
-                        // 새로운 열풍 턴수로 재계산
-                        card.modifiedActivationCount = card.activationCount + this.hotWindTurns;
+                    // 랜덤 카드는 activationCount가 null이므로 버프 적용 불가
+                    if (card.activationCount !== null && card.activationCount !== undefined) {
+                        if (this.hotWindTurns > 0) {
+                            // 새로운 열풍 턴수로 재계산
+                            card.modifiedActivationCount = card.activationCount + this.hotWindTurns;
+                        } else {
+                            // 0이 되면 초기화
+                            card.modifiedActivationCount = undefined;
+                        }
                     } else {
-                        // 0이 되면 초기화
                         card.modifiedActivationCount = undefined;
                     }
                 }
