@@ -825,6 +825,9 @@ class BattleSystem {
                 user.opponent.updateRuntimeCardStats();
             }
 
+            // 억제제 메시지 확인을 위한 대기 시간 추가 (다른 상태이상 처리와 동일 패턴)
+            await this.wait((GameConfig.timing?.cards?.missDelay || 800) / this.gameSpeed);
+
             return; // 억제제 처리 완료
         }
 

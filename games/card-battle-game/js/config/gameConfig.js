@@ -1215,31 +1215,31 @@ const GameConfig = {
         // 스테이지별 적 설정 (1-20스테이지)
         stageConfigs: {
             1: {
-                hp: 10,
+                hp: 3,
                 cards: [
                     { id: 'random_bash', count: 1 }             // 마구때리기
                 ]
             },
             2: {
-                hp: 15,
+                hp: 5,
                 cards: [{ id: 'heavy_strike', count: 1 }]
             },
             3: {
-                hp: 20,
+                hp: 7,
                 cards: [
                     { id: 'sand_throw', count: 1 },
                     { id: 'random_bash', count: 1 }
                 ]
             },
             4: {
-                hp: 25,
+                hp: 9,
                 cards: [
                     { id: 'wear_armor', count: 1 },
                     { id: 'shield_bash', count: 1 }
                 ]
             },
             5: {
-                hp: 30,
+                hp: 15,
                 cards: [
                     { id: 'taunt', count: 1 },
                     { id: 'large_shield', count: 1 },
@@ -1247,7 +1247,7 @@ const GameConfig = {
                 ]
             },
             6: {
-                hp: 35,
+                hp: 27,
                 cards: [
                     { id: 'sand_throw', count: 1 },
                     { id: 'heavy_strike', count: 1 },

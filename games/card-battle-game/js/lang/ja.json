@@ -189,6 +189,7 @@
       "speed_slow": "遅い",
       "speed_normal": "普通",
       "speed_fast": "早い",
+      "speed_very_fast": "超高速",
       "cards": {
         "random_bash": {
           "name": "乱撃",
