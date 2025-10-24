@@ -1170,7 +1170,6 @@ const CardDatabase = {
                     lightningRodGain: 1,
                     element: this.element,
                     templateData: {
-                        name: GameConfig?.buffs?.lightningRod?.name || '피뢰침',
                         value: 1  // 획득할 값
                     }
                 };
@@ -2506,7 +2505,6 @@ const CardDatabase = {
                     strengthGain: strengthGain,
                     element: this.element,
                     templateData: {
-                        name: GameConfig.buffs.strength.name,
                         value: strengthGain
                     }
                 };
@@ -2534,7 +2532,6 @@ const CardDatabase = {
                     enhanceGain: enhanceGain,
                     element: this.element,
                     templateData: {
-                        name: GameConfig.buffs.enhance.name,
                         value: enhanceGain
                     }
                 };
@@ -2562,7 +2559,6 @@ const CardDatabase = {
                     focusGain: focusGain,
                     element: this.element,
                     templateData: {
-                        name: GameConfig.buffs.focus.name,
                         value: focusGain
                     }
                 };
@@ -2590,7 +2586,6 @@ const CardDatabase = {
                     speedGain: speedGain,
                     element: this.element,
                     templateData: {
-                        name: GameConfig.buffs.speed.name,
                         value: speedGain,  // 획득할 값
                         turns: 1  // 고속은 1턴
                     }
@@ -2797,7 +2792,6 @@ const CardDatabase = {
                     scentGain: scentGain,
                     element: this.element,
                     templateData: {
-                        name: GameConfig.buffs.scent.name,
                         value: scentGain,  // 획득할 값 (아직 적용 전)
                         turns: 1  // 냄새 버프는 항상 1턴
                     }
@@ -3287,7 +3281,6 @@ const CardDatabase = {
                     massGain: stacksGain,
                     element: this.element,
                     templateData: {
-                        name: GameConfig.buffs.mass.name,
                         value: stacksGain  // 획득할 값
                     }
                 };
@@ -3316,7 +3309,6 @@ const CardDatabase = {
                     torrentGain: torrentGain,
                     element: this.element,
                     templateData: {
-                        name: GameConfig.buffs.torrent.name,
                         value: torrentGain,  // 획득할 값
                         turns: 1  // 급류는 1턴
                     }
@@ -3374,7 +3366,6 @@ const CardDatabase = {
                     absorptionGain: absorptionGain,
                     element: this.element,
                     templateData: {
-                        name: GameConfig.buffs.absorption.name,
                         value: absorptionGain  // 획득할 값
                     }
                 };
@@ -3508,7 +3499,6 @@ const CardDatabase = {
                     lightSpeedGain: lightSpeedGain,
                     element: this.element,
                     templateData: {
-                        name: GameConfig.buffs.lightSpeed.name,
                         value: lightSpeedGain,  // 획득할 값
                         turns: 1  // 광속은 1턴
                     }
