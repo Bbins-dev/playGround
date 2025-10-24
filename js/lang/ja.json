@@ -236,12 +236,12 @@
   },
   "upcoming_games": {
     "game2": {
-      "title": "二番目のゲーム",
+      "title": "三番目のゲーム",
       "description": "近日公開予定！",
       "genre": "未定"
     },
     "game3": {
-      "title": "三番目のゲーム",
+      "title": "四番目のゲーム",
       "description": "近日公開予定！",
       "genre": "未定"
     }

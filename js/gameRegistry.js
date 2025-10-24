@@ -107,8 +107,8 @@ class GameRegistry {
         const titles = {
             'barista-game': 'Barista Game',
             'auto-battle-card-game': 'Auto Battle Card Dual',
-            'game2': '두 번째 게임',
-            'game3': '세 번째 게임'
+            'game2': '세 번째 게임',
+            'game3': '네 번째 게임'
         };
         return titles[gameData.id] || gameData.id;
     }
