@@ -71,6 +71,13 @@ const GameConfig = {
             statusPercent: 15                   // 상태이상 대미지 비율 15%
         },
 
+        // 보상 시스템 설정
+        rewards: {
+            rewardCardCount: 4,                 // 보상 카드 갯수
+            allowReroll: true,                  // Re-roll 기능 활성화 여부
+            maxRerollsPerVictory: 1             // 승리당 최대 Re-roll 횟수
+        },
+
         // 픽셀 단위 값들
         pixels: {
             // 패딩
