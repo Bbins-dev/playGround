@@ -1,0 +1,16 @@
+{
+  "name": "card-battle-game",
+  "version": "0.1.2",
+  "description": "Turn-based Auto Battle Card Game with 5 elemental attributes",
+  "scripts": {
+    "sync-version": "node update-version.js",
+    "version": "npm run sync-version && git add index.html"
+  },
+  "keywords": [
+    "game",
+    "card-battle",
+    "turn-based"
+  ],
+  "author": "BinBox Games",
+  "license": "MIT"
+}
