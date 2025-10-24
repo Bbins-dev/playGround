@@ -236,12 +236,12 @@
   },
   "upcoming_games": {
     "game2": {
-      "title": "Second Game",
+      "title": "Third Game",
       "description": "Coming soon!",
       "genre": "TBD"
     },
     "game3": {
-      "title": "Third Game",
+      "title": "Fourth Game",
       "description": "Coming soon!",
       "genre": "TBD"
     }

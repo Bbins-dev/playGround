@@ -236,12 +236,12 @@
   },
   "upcoming_games": {
     "game2": {
-      "title": "두 번째 게임",
+      "title": "세 번째 게임",
       "description": "곧 추가될 예정입니다!",
       "genre": "미정"
     },
     "game3": {
-      "title": "세 번째 게임",
+      "title": "네 번째 게임",
       "description": "곧 추가될 예정입니다!",
       "genre": "미정"
     }
