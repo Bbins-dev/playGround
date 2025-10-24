@@ -425,6 +425,7 @@
                             <div class="reward-card" data-card-index="0"></div>
                             <div class="reward-card" data-card-index="1"></div>
                             <div class="reward-card" data-card-index="2"></div>
+                            <div class="reward-card" data-card-index="3"></div>
                         </div>
                         <p class="card-selection-hint" data-i18n="auto_battle_card_game.ui.card_selection_hint">카드 선택 시 확대됩니다</p>
                     </div>
@@ -451,8 +452,9 @@
                 </div>
 
                 <div class="modal-buttons">
-                    <!-- 기본 상태: 스킵 버튼과 계속하기 -->
+                    <!-- 기본 상태: 다시뽑기(강조), 스킵 버튼, 계속하기 -->
                     <div id="victory-default-buttons" class="button-group">
+                        <button id="victory-reroll" class="ui-button primary reroll-button" data-i18n="auto_battle_card_game.ui.reroll_reward">다시뽑기</button>
                         <button id="victory-skip" class="ui-button secondary" data-i18n="auto_battle_card_game.ui.skip_reward">보상 건너뛰기</button>
                         <button id="victory-continue" class="ui-button primary hidden" data-i18n="auto_battle_card_game.ui.continue">계속하기</button>
                     </div>

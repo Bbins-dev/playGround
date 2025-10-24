@@ -19,6 +19,7 @@ class VictoryDefeatModal {
         this.victoryDefaultButtons = document.getElementById('victory-default-buttons');
         this.victorySelectionButtons = document.getElementById('victory-selection-buttons');
         this.victorySkipBtn = document.getElementById('victory-skip');
+        this.victoryRerollBtn = document.getElementById('victory-reroll');
         this.victoryAddToDeckBtn = document.getElementById('victory-add-to-deck');
         this.victoryReplaceCardBtn = document.getElementById('victory-replace-card');
         this.victoryCancelSelectionBtn = document.getElementById('victory-cancel-selection');
@@ -48,6 +49,7 @@ class VictoryDefeatModal {
         this.selectedRewardCard = null;
         this.selectedHandCardIndex = null;
         this.isShowingCardRewards = false;
+        this.rerollsRemaining = 0; // Re-roll 남은 횟수
 
         // Canvas 요소들
         this.rewardCanvases = [];
@@ -82,6 +84,16 @@ class VictoryDefeatModal {
                     this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
                 }
                 this.handleSkipReward();
+            });
+        }
+
+        if (this.victoryRerollBtn) {
+            this.victoryRerollBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.handleReroll();
             });
         }
 
@@ -198,6 +210,9 @@ class VictoryDefeatModal {
 
         // 상태 초기화 먼저
         this.resetVictoryState();
+
+        // Re-roll 횟수 초기화 (Configuration-Driven)
+        this.rerollsRemaining = GameConfig?.constants?.rewards?.maxRerollsPerVictory || 1;
 
         // 콜백 설정 (resetVictoryState 이후에!)
         this.onVictoryContinue = callback;
@@ -476,6 +491,7 @@ class VictoryDefeatModal {
         this.selectedHandCardIndex = null;
         this.isShowingCardRewards = false;
         this.tempSelectedCard = null; // 임시 저장 변수 초기화
+        this.rerollsRemaining = 0; // Re-roll 횟수 초기화
 
         // UI 요소 숨기기
         if (this.victoryCardRewards) {
@@ -526,7 +542,10 @@ class VictoryDefeatModal {
      * 보상 카드들 렌더링
      */
     renderRewardCards() {
-        for (let i = 0; i < 3; i++) {
+        // Configuration-Driven: 동적 카드 갯수 처리
+        const rewardCount = GameConfig?.constants?.rewards?.rewardCardCount || 4;
+
+        for (let i = 0; i < rewardCount; i++) {
             const rewardCardContainer = document.querySelector(`[data-card-index="${i}"]`);
 
             if (rewardCardContainer) {
@@ -565,6 +584,9 @@ class VictoryDefeatModal {
                 }
             }
         }
+
+        // Re-roll 버튼 상태 업데이트
+        this.updateRerollButton();
     }
 
     /**
@@ -722,6 +744,51 @@ class VictoryDefeatModal {
     handleSkipReward() {
         this.resetCardRewards();
         this.handleVictoryContinue();
+    }
+
+    /**
+     * Re-roll 처리 (다시뽑기)
+     */
+    handleReroll() {
+        // 안전 체크: Re-roll 횟수 소진 시 즉시 리턴
+        if (this.rerollsRemaining <= 0) {
+            console.warn('[VictoryDefeatModal] Re-roll 횟수 소진');
+            return;
+        }
+
+        // GameManager를 통해 새로운 보상 카드 생성
+        if (!this.gameManager || !this.gameManager.generateRewardCards) {
+            console.error('[VictoryDefeatModal] GameManager 또는 generateRewardCards 없음');
+            return;
+        }
+
+        const newRewardCards = this.gameManager.generateRewardCards();
+
+        // 새 카드로 교체 및 재렌더링
+        this.setupCardRewards(newRewardCards);
+
+        // Re-roll 횟수 차감
+        this.rerollsRemaining--;
+
+        // 버튼 상태 업데이트 (0회 남은 경우 즉시 비활성화)
+        this.updateRerollButton();
+    }
+
+    /**
+     * Re-roll 버튼 상태 업데이트
+     */
+    updateRerollButton() {
+        if (!this.victoryRerollBtn) return;
+
+        if (this.rerollsRemaining <= 0) {
+            // Re-roll 횟수 소진: 버튼 비활성화 (CSS에서 스타일 처리)
+            this.victoryRerollBtn.disabled = true;
+            this.victoryRerollBtn.classList.add('disabled');
+        } else {
+            // Re-roll 가능: 버튼 활성화
+            this.victoryRerollBtn.disabled = false;
+            this.victoryRerollBtn.classList.remove('disabled');
+        }
     }
 
     /**
