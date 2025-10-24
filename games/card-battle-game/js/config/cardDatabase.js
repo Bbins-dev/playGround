@@ -264,14 +264,14 @@ const CardDatabase = {
             }
         });
 
-        // 웅크리기 카드 (방어력 15 + 턴 넘김)
+        // 웅크리기 카드 (방어력 30 + 턴 넘김, 90% 명중률)
         this.addCard({
             id: 'crouch',
             nameKey: 'auto_battle_card_game.ui.cards.crouch.name',
             type: 'defense',
             element: 'normal',
             power: GameConfig?.cardEffects?.crouch?.defenseGain || 30,
-            accuracy: 100,
+            accuracy: 90,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.crouch.description',
             skipTurn: true,

@@ -230,7 +230,10 @@ class Card {
             if (this.modifiedActivationCount !== undefined) {
                 if ((this.isRandomBash || this.isRandomHeal) && this.minActivation !== undefined && this.maxActivation !== undefined) {
                     // 랜덤 카드: 버프 적용된 범위 표시 (예: "2-5" → "3-6")
-                    const bonus = this.modifiedActivationCount - this.activationCount;
+                    // activationCount가 null인 경우 안전하게 처리
+                    const baseCount = this.activationCount !== null ? this.activationCount :
+                                     Math.floor((this.minActivation + this.maxActivation) / 2);
+                    const bonus = this.modifiedActivationCount - baseCount;
                     stats.activation = `${this.minActivation + bonus}-${this.maxActivation + bonus}`;
                 } else {
                     // 일반 카드: 숫자로 표시 (예: 1 → 2)
