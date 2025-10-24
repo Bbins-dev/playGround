@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.1.3',                        // 버전 넘버
+        number: '0.1.4',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -2550,7 +2550,7 @@ const GameConfig = {
         definitions: [
             {
                 key: 'power',
-                emoji: '💪',
+                emoji: '🗡️',
                 format: (value, card) => {
                     // 회복 카드 중 퍼센트 표시가 필요한 카드들
                     if (card.type === 'heal' && (card.id === 'miracle_revival' || card.id === 'one_times_hundred')) {
@@ -2581,7 +2581,7 @@ const GameConfig = {
         ],
         // 카드 타입별 스탯 이모지 매핑
         typeStatEmojis: {
-            attack: { power: '💪', accuracy: '🎯' },
+            attack: { power: '🗡️', accuracy: '🎯' },
             defense: { power: '🛡️', accuracy: '✅' },
             status: { power: '⏱️', accuracy: '✅' },
             buff: { power: '✨', accuracy: '✅' },
