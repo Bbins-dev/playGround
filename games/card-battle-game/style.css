@@ -1852,35 +1852,72 @@ body {
 /* 독 상태이상 테두리 */
 .game-wrapper.status-border-poison {
     --status-border-color: #9B59B6;
-    border: 3px solid var(--status-border-color);
+    outline: 3px solid var(--status-border-color);
+    outline-offset: -3px;
     animation: status-border-pulse 2s infinite;
 }
 
 /* 화상 상태이상 테두리 */
 .game-wrapper.status-border-burn {
     --status-border-color: #E67E22;
-    border: 3px solid var(--status-border-color);
+    outline: 3px solid var(--status-border-color);
+    outline-offset: -3px;
     animation: status-border-pulse 2s infinite;
 }
 
 /* 모래 상태이상 테두리 */
 .game-wrapper.status-border-sand {
     --status-border-color: #D4A76A;
-    border: 3px solid var(--status-border-color);
+    outline: 3px solid var(--status-border-color);
+    outline-offset: -3px;
     animation: status-border-pulse 2s infinite;
 }
 
 /* 모욕 상태이상 테두리 */
 .game-wrapper.status-border-insult {
     --status-border-color: #8B4513;
-    border: 3px solid var(--status-border-color);
+    outline: 3px solid var(--status-border-color);
+    outline-offset: -3px;
     animation: status-border-pulse 2s infinite;
 }
 
 /* 둔화 상태이상 테두리 */
 .game-wrapper.status-border-slow {
     --status-border-color: #6C757D;
-    border: 3px solid var(--status-border-color);
+    outline: 3px solid var(--status-border-color);
+    outline-offset: -3px;
+    animation: status-border-pulse 2s infinite;
+}
+
+/* 사슬 상태이상 테두리 */
+.game-wrapper.status-border-chains {
+    --status-border-color: #FF4500;
+    outline: 3px solid var(--status-border-color);
+    outline-offset: -3px;
+    animation: status-border-pulse 2s infinite;
+}
+
+/* 젖음 상태이상 테두리 */
+.game-wrapper.status-border-wet {
+    --status-border-color: #5DADE2;
+    outline: 3px solid var(--status-border-color);
+    outline-offset: -3px;
+    animation: status-border-pulse 2s infinite;
+}
+
+/* 얼음 상태이상 테두리 */
+.game-wrapper.status-border-frozen {
+    --status-border-color: #B0E0E6;
+    outline: 3px solid var(--status-border-color);
+    outline-offset: -3px;
+    animation: status-border-pulse 2s infinite;
+}
+
+/* 망각 상태이상 테두리 */
+.game-wrapper.status-border-oblivion {
+    --status-border-color: #8B008B;
+    outline: 3px solid var(--status-border-color);
+    outline-offset: -3px;
     animation: status-border-pulse 2s infinite;
 }
 
@@ -1889,8 +1926,12 @@ body[data-game-state="menu"] .game-wrapper.status-border-poison,
 body[data-game-state="menu"] .game-wrapper.status-border-burn,
 body[data-game-state="menu"] .game-wrapper.status-border-sand,
 body[data-game-state="menu"] .game-wrapper.status-border-insult,
-body[data-game-state="menu"] .game-wrapper.status-border-slow {
-    border: none !important;
+body[data-game-state="menu"] .game-wrapper.status-border-slow,
+body[data-game-state="menu"] .game-wrapper.status-border-chains,
+body[data-game-state="menu"] .game-wrapper.status-border-wet,
+body[data-game-state="menu"] .game-wrapper.status-border-frozen,
+body[data-game-state="menu"] .game-wrapper.status-border-oblivion {
+    outline: none !important;
     animation: none !important;
     box-shadow: none !important;
 }
