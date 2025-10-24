@@ -39,25 +39,6 @@ body {
 
 /* Language Selector - styles moved to components.css */
 
-/* Sidebar Ads */
-.sidebar-ad {
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 100;
-    width: 160px;
-}
-
-.left-ad {
-    left: 20px;
-}
-
-.right-ad {
-    right: 20px;
-}
-
-/* Ad styles moved to components.css */
-
 /* Header */
 .header {
     background: var(--bg-secondary);
@@ -86,7 +67,7 @@ body {
 /* Main content */
 .main {
     padding: 3rem 0;
-    margin: 0 200px; /* Space for sidebar ads */
+    margin: 0 auto;
 }
 
 .hero {
@@ -226,62 +207,6 @@ body {
     font-size: 1.2rem;
 }
 
-/* 하단 광고 배너 */
-.bottom-ad-section {
-    padding: 3rem 0 2rem 0;
-    text-align: center;
-}
-
-.bottom-ad-section .ad-placeholder.bottom-banner {
-    width: 728px;
-    max-width: 90vw;
-    height: 90px;
-    margin: 0 auto;
-    background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
-    border: 2px dashed #ccc;
-    border-radius: 8px;
-    padding: 20px;
-    text-align: center;
-    color: #888;
-    font-size: 14px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.3s ease;
-}
-
-.bottom-ad-section .ad-placeholder.bottom-banner:hover {
-    background: linear-gradient(45deg, #e8e8e8, #d8d8d8);
-    border-color: #aaa;
-}
-
-.bottom-ad-section .ad-label {
-    font-weight: 600;
-    margin-bottom: 5px;
-    color: #666;
-}
-
-.bottom-ad-section .ad-content {
-    font-size: 12px;
-    color: #aaa;
-    font-weight: 500;
-}
-
-/* 모바일 반응형 - 하단 광고 */
-@media (max-width: 768px) {
-    .bottom-ad-section .ad-placeholder.bottom-banner {
-        width: 320px;
-        height: 50px;
-        padding: 15px;
-        font-size: 12px;
-    }
-    
-    .bottom-ad-section .ad-content {
-        font-size: 10px;
-    }
-}
-
 /* Footer */
 .footer {
     background: var(--bg-secondary);
@@ -297,39 +222,7 @@ body {
 }
 
 /* Responsive design */
-@media (max-width: 1200px) {
-    .main {
-        margin: 0 180px; /* Reduce sidebar space */
-    }
-    
-    .sidebar-ad {
-        width: 140px;
-    }
-}
-
-@media (max-width: 1024px) {
-    .main {
-        margin: 0 160px;
-    }
-    
-    .sidebar-ad {
-        width: 120px;
-    }
-    
-    .ad-content {
-        font-size: 12px;
-    }
-}
-
 @media (max-width: 768px) {
-    .main {
-        margin: 0 20px; /* Remove sidebar space on mobile */
-    }
-    
-    .sidebar-ad {
-        display: none; /* Hide sidebar ads on mobile */
-    }
-    
     /* Language selector responsive styles in components.css */
     
     .container {
