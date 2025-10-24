@@ -834,8 +834,11 @@ class GameManager {
         if (!this.cardManager) return [];
 
         try {
-            // CardManager를 통해 랜덤 카드 3장 생성
-            const cardIds = this.cardManager.getRandomCards(3);
+            // GameConfig에서 보상 카드 갯수 가져오기 (Configuration-Driven)
+            const rewardCount = GameConfig?.constants?.rewards?.rewardCardCount || 4;
+
+            // CardManager를 통해 랜덤 카드 생성
+            const cardIds = this.cardManager.getRandomCards(rewardCount);
             const rewardCards = cardIds.map(cardId => CardDatabase.getCard(cardId)).filter(Boolean);
 
             return rewardCards;

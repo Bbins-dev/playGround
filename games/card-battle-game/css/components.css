@@ -217,6 +217,47 @@
     box-shadow: none !important;
 }
 
+/* 다시뽑기 버튼 특별 스타일 - 푸른색으로 빛나는 효과 */
+.ui-button.reroll-button {
+    background: linear-gradient(145deg, #3498db, #2980b9);
+    box-shadow: 0 0 20px rgba(52, 152, 219, 0.6), 0 4px 12px rgba(52, 152, 219, 0.4);
+    animation: reroll-pulse 2s ease-in-out infinite;
+}
+
+.ui-button.reroll-button:hover {
+    background: linear-gradient(145deg, #2980b9, #21618c);
+    box-shadow: 0 0 30px rgba(52, 152, 219, 0.8), 0 6px 16px rgba(52, 152, 219, 0.5);
+    transform: translateY(-2px) scale(1.05);
+}
+
+.ui-button.reroll-button:active {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.5), 0 2px 8px rgba(52, 152, 219, 0.3);
+}
+
+/* 다시뽑기 버튼 비활성화 상태 */
+.ui-button.reroll-button:disabled,
+.ui-button.reroll-button.disabled {
+    background: linear-gradient(145deg, #95a5a6, #7f8c8d);
+    box-shadow: none;
+    animation: none;
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* 빛나는 펄스 애니메이션 */
+@keyframes reroll-pulse {
+    0% {
+        box-shadow: 0 0 20px rgba(52, 152, 219, 0.6), 0 4px 12px rgba(52, 152, 219, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(52, 152, 219, 0.8), 0 4px 12px rgba(52, 152, 219, 0.5);
+    }
+    100% {
+        box-shadow: 0 0 20px rgba(52, 152, 219, 0.6), 0 4px 12px rgba(52, 152, 219, 0.4);
+    }
+}
+
 /* 언어 선택기 공통 스타일 */
 .language-selector-common {
     background: rgba(0, 0, 0, 0.5);
