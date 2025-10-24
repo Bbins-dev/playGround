@@ -186,9 +186,10 @@ class UIManager {
                 // 클릭된 버튼에 active 클래스 추가
                 e.target.classList.add('active');
 
-                // 속도 값 추출 (1x, 2x, 3x)
-                const speedText = e.target.textContent;
-                const speed = parseInt(speedText.replace('x', ''));
+                // 속도 값 추출 - 버튼 ID 기반 (다국어 독립적)
+                // ID 형식: "speed-1x", "speed-2x", "speed-3x", "speed-5x"
+                const buttonId = e.target.id;
+                const speed = parseInt(buttonId.replace('speed-', '').replace('x', ''));
 
                 // GameManager를 통해 통일된 속도 설정
                 this.gameManager.setGameSpeed(speed);
