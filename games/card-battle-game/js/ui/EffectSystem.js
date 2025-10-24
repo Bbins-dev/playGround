@@ -570,6 +570,48 @@ class EffectSystem {
 
     // 버프 효과 표시 - 자동으로 올바른 위치 결정 (Configuration-Driven)
     async showBuffEffect(buffType, target, value) {
+        // ===== Configuration-Driven 버프 적용 시스템 =====
+        // 1. 실제 버프를 target에 적용
+        // 2. 이펙트 메시지 표시
+        // 3. UI 업데이트
+        // 이렇게 하면 카드는 xxxGain만 반환하면 됨 (addXxxBuff 직접 호출 불필요)
+
+        // 버프 적용 (Configuration-Driven 매핑)
+        // ★ 특수 케이스: sulfur와 coating은 카드에서 이미 addXxxBuff() 호출
+        //    (정화 정보를 반환받아야 하므로 카드에서 직접 호출)
+        //    따라서 여기서는 스킵
+        const skipBuffApplication = (buffType === 'sulfur' || buffType === 'coating');
+
+        if (!skipBuffApplication) {
+            const buffMethodMap = {
+                strength: 'addStrengthBuff',
+                enhance: 'addEnhanceBuff',
+                focus: 'addFocusBuff',
+                speed: 'addSpeedBuff',
+                scent: 'addScentBuff',
+                sharpen: 'addSharpenBuff',
+                hotWind: 'addHotWindBuff',
+                lithium: 'addLithiumBuff',
+                breath: 'addBreathBuff',
+                mass: 'addMassBuff',
+                torrent: 'addTorrentBuff',
+                absorption: 'addAbsorptionBuff',
+                lightSpeed: 'addLightSpeedBuff',
+                superConductivity: 'addSuperConductivityBuff',
+                lightningRod: 'addLightningRodBuff',
+                pack: 'addPackBuff',
+                propagation: 'addPropagationBuff',
+                poisonNeedle: 'addPoisonNeedleBuff'
+            };
+
+            const methodName = buffMethodMap[buffType];
+            if (methodName && typeof target[methodName] === 'function') {
+                target[methodName](value);
+            } else {
+                console.warn(`[EffectSystem] Unknown buff type or missing method: ${buffType}`);
+            }
+        }
+
         // target이 player인지 enemy인지 자동 판단하여 올바른 위치에 표시
         const position = this.getTargetPosition(target);
 

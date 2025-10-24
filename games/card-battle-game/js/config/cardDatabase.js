@@ -1157,7 +1157,7 @@ const CardDatabase = {
                 }
 
                 // 피뢰침 버프 획득 (1턴, 중복 불가)
-                user.addLightningRodBuff(1);
+                // ★ Configuration-Driven: lightningRodGain만 반환
 
                 return {
                     success: true,
@@ -1167,7 +1167,7 @@ const CardDatabase = {
                     element: this.element,
                     templateData: {
                         name: GameConfig?.buffs?.lightningRod?.name || '피뢰침',
-                        value: user.lightningRodTurns
+                        value: 1  // 획득할 값
                     }
                 };
             }
@@ -1185,7 +1185,7 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.battery_pack.description',
             effect: function(user, target, battleSystem) {
                 // 팩 버프 획득 (+1 스택)
-                user.addPackBuff(1);
+                // ★ Configuration-Driven: packGain만 반환
 
                 return {
                     success: true,
@@ -1195,7 +1195,7 @@ const CardDatabase = {
                     element: this.element,
                     templateData: {
                         name: GameConfig?.buffs?.pack?.name || '팩',
-                        value: user.packBonus
+                        value: 1  // 획득할 값
                     }
                 };
             }
@@ -2345,8 +2345,8 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.chain_reaction.description',
             effect: function(user, target, battleSystem) {
                 // 연쇄 버프 획득 (+1 스택)
+                // ★ Configuration-Driven: propagationGain만 반환
                 const gain = GameConfig?.cardEffects?.chainReaction?.propagationGain || 1;
-                user.addPropagationBuff(gain);
 
                 return {
                     success: true,
@@ -2356,7 +2356,7 @@ const CardDatabase = {
                     element: this.element,
                     templateData: {
                         name: GameConfig?.buffs?.propagation?.name || '연쇄',
-                        value: user.propagationBonus
+                        value: gain  // 획득할 값
                     }
                 };
             }
@@ -2374,8 +2374,8 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.poison_needle.description',
             effect: function(user, target, battleSystem) {
                 // 독침 버프 획득 (1턴)
+                // ★ Configuration-Driven: poisonNeedleGain만 반환
                 const gain = GameConfig?.cardEffects?.poisonNeedle?.poisonNeedleGain || 1;
-                user.addPoisonNeedleBuff(gain);
 
                 return {
                     success: true,
@@ -2385,7 +2385,7 @@ const CardDatabase = {
                     element: this.element,
                     templateData: {
                         name: GameConfig?.buffs?.poisonNeedle?.name || '독침',
-                        value: gain  // 턴 수 표시
+                        value: gain  // 획득할 값
                     }
                 };
             }
@@ -2403,19 +2403,21 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.sulfur_spring.description',
             effect: function(user, target, battleSystem) {
                 // 유황 버프 획득 (선제적 정화 포함)
+                // ★ Configuration-Driven: sulfurGain만 반환
+                // ★ 특수 케이스: addSulfurBuff()는 정화 정보 반환하므로 여기서만 호출 필요
                 const gain = GameConfig?.cardEffects?.sulfurSpring?.sulfurGain || 1;
-                const result = user.addSulfurBuff(gain);  // ★ 반환값 받기
+                const result = user.addSulfurBuff(gain);  // 정화 정보 획득
 
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
                     buffType: 'sulfur',
                     sulfurGain: result.turns,
-                    frozenCleansed: result.cleansed,  // ★ 정화 여부 전달
+                    frozenCleansed: result.cleansed,  // 정화 여부 전달
                     element: this.element,
                     templateData: {
                         name: GameConfig?.buffs?.sulfur?.name || '유황',
-                        value: user.sulfurTurns  // 현재 총 턴 수 표시
+                        value: result.turns  // 획득할 값
                     }
                 };
             }
@@ -2433,19 +2435,21 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.liquid_coating.description',
             effect: function(user, target, battleSystem) {
                 // 코팅 버프 획득 (선제적 정화 포함)
+                // ★ Configuration-Driven: coatingGain만 반환
+                // ★ 특수 케이스: addCoatingBuff()는 정화 정보 반환하므로 여기서만 호출 필요
                 const gain = GameConfig?.cardEffects?.liquidCoating?.coatingGain || 1;
-                const result = user.addCoatingBuff(gain);  // ★ 반환값 받기
+                const result = user.addCoatingBuff(gain);  // 정화 정보 획득
 
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
                     buffType: 'coating',
                     coatingGain: result.turns,
-                    burnCleansed: result.cleansed,  // ★ 정화 여부 전달
+                    burnCleansed: result.cleansed,  // 정화 여부 전달
                     element: this.element,
                     templateData: {
                         name: GameConfig?.buffs?.coating?.name || '코팅',
-                        value: user.coatingTurns  // 현재 총 턴 수 표시
+                        value: result.turns  // 획득할 값
                     }
                 };
             }
@@ -2516,8 +2520,8 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.sword_dance.description',
             effect: function(user, target, battleSystem) {
+                // ★ Configuration-Driven: enhanceGain만 반환
                 const enhanceGain = 1;
-                user.addEnhanceBuff(enhanceGain);
 
                 return {
                     success: true,
@@ -2544,8 +2548,8 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.focus.description',
             effect: function(user, target, battleSystem) {
+                // ★ Configuration-Driven: focusGain만 반환
                 const focusGain = 1;
-                user.addFocusBuff(focusGain);
 
                 return {
                     success: true,
@@ -2572,8 +2576,8 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.fast_attack.description',
             effect: function(user, target, battleSystem) {
+                // ★ Configuration-Driven: speedGain만 반환
                 const speedGain = 1;
-                user.addSpeedBuff(speedGain);
 
                 return {
                     success: true,
@@ -2583,8 +2587,8 @@ const CardDatabase = {
                     element: this.element,
                     templateData: {
                         name: GameConfig.buffs.speed.name,
-                        value: user.speedBonus,
-                        turns: user.speedTurns
+                        value: speedGain,  // 획득할 값
+                        turns: 1  // 고속은 1턴
                     }
                 };
             }
@@ -2777,12 +2781,8 @@ const CardDatabase = {
                 }
 
                 // 화상 상태일 경우 냄새 버프 획득
+                // ★ Configuration-Driven: scentGain만 반환하면 BattleSystem이 자동으로 버프 적용
                 const scentGain = 1;
-                user.addScentBuff(scentGain);
-
-                // 버프 라벨 즉시 업데이트
-                const isPlayer = (user === battleSystem.player);
-                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
 
                 return {
                     success: true,
@@ -2792,8 +2792,8 @@ const CardDatabase = {
                     element: this.element,
                     templateData: {
                         name: GameConfig.buffs.scent.name,
-                        value: user.scentBonus,
-                        turns: user.scentTurns
+                        value: scentGain,  // 획득할 값 (아직 적용 전)
+                        turns: 1  // 냄새 버프는 항상 1턴
                     }
                 };
             }
@@ -2821,11 +2821,7 @@ const CardDatabase = {
                 }
 
                 // 벼리기 버프 획득 (1턴)
-                user.addSharpenBuff(1);
-
-                // 버프 라벨 즉시 업데이트
-                const isPlayer = (user === battleSystem.player);
-                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
+                // ★ Configuration-Driven: sharpenGain만 반환
 
                 return {
                     success: true,
@@ -2856,11 +2852,7 @@ const CardDatabase = {
                 // 여기서는 카드의 본연의 효과만 처리 (열풍 버프 추가)
 
                 // 열풍 버프 획득 (1턴, 중첩 가능)
-                user.addHotWindBuff(1);
-
-                // 버프 라벨 즉시 업데이트
-                const isPlayer = (user === battleSystem.player);
-                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
+                // ★ Configuration-Driven: hotWindGain만 반환
 
                 return {
                     success: true,
@@ -2870,7 +2862,7 @@ const CardDatabase = {
                     element: this.element,
                     templateData: {
                         name: GameConfig?.buffs?.hotWind?.name || '열풍',
-                        value: user.hotWindTurns
+                        value: 1  // 획득할 값
                     }
                 };
             }
@@ -2898,7 +2890,7 @@ const CardDatabase = {
                 }
 
                 // 호흡 버프 획득 (1턴, 중복 불가)
-                user.addBreathBuff(1);
+                // ★ Configuration-Driven: breathGain만 반환
 
                 return {
                     success: true,
@@ -2908,7 +2900,7 @@ const CardDatabase = {
                     element: this.element,
                     templateData: {
                         name: GameConfig?.buffs?.breath?.name || '호흡',
-                        value: user.breathTurns
+                        value: 1  // 획득할 값
                     }
                 };
             }
@@ -2926,7 +2918,7 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.battery_explosion.description',
             effect: function(user, target, battleSystem) {
                 // Li⁺ 버프 획득 (1턴, 재사용 시 누적)
-                user.addLithiumBuff(1);
+                // ★ Configuration-Driven: lithiumGain만 반환
 
                 return {
                     success: true,
@@ -2936,7 +2928,7 @@ const CardDatabase = {
                     element: this.element,
                     templateData: {
                         name: GameConfig?.buffs?.lithium?.name || 'Li⁺',
-                        value: user.lithiumTurns
+                        value: 1  // 획득할 값
                     }
                 };
             }
@@ -2966,7 +2958,7 @@ const CardDatabase = {
                 }
 
                 // Li⁺ 버프 1턴 추가 (기존 버프에 누적)
-                user.addLithiumBuff(1);
+                // ★ Configuration-Driven: lithiumGain만 반환
 
                 return {
                     success: true,
@@ -2976,7 +2968,7 @@ const CardDatabase = {
                     element: this.element,
                     templateData: {
                         name: GameConfig?.buffs?.lithium?.name || 'Li⁺',
-                        value: user.lithiumTurns
+                        value: 1  // 획득할 값
                     }
                 };
             }
@@ -3279,8 +3271,8 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.massive_weight.description',
             effect: function(user, target, battleSystem) {
                 // 질량 버프 1 스택 획득
+                // ★ Configuration-Driven: massGain만 반환
                 const stacksGain = 1;
-                user.addMassBuff(stacksGain);
 
                 return {
                     success: true,
@@ -3290,7 +3282,7 @@ const CardDatabase = {
                     element: this.element,
                     templateData: {
                         name: GameConfig.buffs.mass.name,
-                        value: user.massBonus
+                        value: stacksGain  // 획득할 값
                     }
                 };
             }
@@ -3308,12 +3300,8 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.torrent.description',
             effect: function(user, target, battleSystem) {
                 // 급류 버프 획득
+                // ★ Configuration-Driven: torrentGain만 반환
                 const torrentGain = 1;
-                user.addTorrentBuff(torrentGain);
-
-                // 버프 라벨 즉시 업데이트
-                const isPlayer = (user === battleSystem.player);
-                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
 
                 return {
                     success: true,
@@ -3323,8 +3311,8 @@ const CardDatabase = {
                     element: this.element,
                     templateData: {
                         name: GameConfig.buffs.torrent.name,
-                        value: user.torrentBonus,
-                        turns: user.torrentTurns
+                        value: torrentGain,  // 획득할 값
+                        turns: 1  // 급류는 1턴
                     }
                 };
             }
@@ -3370,12 +3358,8 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.moisture_absorption.description',
             effect: function(user, target, battleSystem) {
                 // 흡수 버프 1 스택 획득
+                // ★ Configuration-Driven: absorptionGain만 반환
                 const absorptionGain = 1;
-                user.addAbsorptionBuff(absorptionGain);
-
-                // 버프 라벨 즉시 업데이트
-                const isPlayer = (user === battleSystem.player);
-                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
 
                 return {
                     success: true,
@@ -3385,7 +3369,7 @@ const CardDatabase = {
                     element: this.element,
                     templateData: {
                         name: GameConfig.buffs.absorption.name,
-                        value: user.absorptionBonus
+                        value: absorptionGain  // 획득할 값
                     }
                 };
             }
@@ -3508,12 +3492,8 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.light_speed.description',
             effect: function(user, target, battleSystem) {
                 // 광속 버프 획득
+                // ★ Configuration-Driven: lightSpeedGain만 반환
                 const lightSpeedGain = 2;
-                user.addLightSpeedBuff(lightSpeedGain);
-
-                // 버프 라벨 즉시 업데이트
-                const isPlayer = (user === battleSystem.player);
-                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
 
                 return {
                     success: true,
@@ -3523,8 +3503,8 @@ const CardDatabase = {
                     element: this.element,
                     templateData: {
                         name: GameConfig.buffs.lightSpeed.name,
-                        value: user.lightSpeedBonus,
-                        turns: user.lightSpeedTurns
+                        value: lightSpeedGain,  // 획득할 값
+                        turns: 1  // 광속은 1턴
                     }
                 };
             }
@@ -3552,11 +3532,7 @@ const CardDatabase = {
                 }
 
                 // 초전도 버프 획득 (1턴, 전기 공격 명중률 40% 증가)
-                user.addSuperConductivityBuff(1);
-
-                // 버프 라벨 즉시 업데이트
-                const isPlayer = (user === battleSystem.player);
-                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
+                // ★ Configuration-Driven: superConductivityGain만 반환
 
                 return {
                     success: true,
@@ -3565,7 +3541,8 @@ const CardDatabase = {
                     superConductivityGain: 1,
                     element: this.element,
                     templateData: {
-                        name: GameConfig?.buffs?.superConductivity?.name || '초전도'
+                        name: GameConfig?.buffs?.superConductivity?.name || '초전도',
+                        value: 1  // 획득할 값
                     }
                 };
             }
