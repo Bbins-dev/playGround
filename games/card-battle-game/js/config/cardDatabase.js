@@ -409,6 +409,10 @@ const CardDatabase = {
 
                 user.addStrength(strengthGain);
 
+                // 버프 라벨 즉시 업데이트 (indomitable_gauntlet 패턴 적용)
+                const isPlayer = (user === battleSystem.player);
+                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
+
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.thorn_armor_effect',
@@ -2642,7 +2646,9 @@ const CardDatabase = {
                 // 힘 버프 추가
                 user.addStrength(strengthGain);
 
-                // UI 업데이트는 processDefenseResult에서 메시지 연출 후 처리
+                // 버프 라벨 즉시 업데이트 (thorn_armor, indomitable_gauntlet 패턴 적용)
+                const isPlayer = (user === battleSystem.player);
+                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
 
                 return {
                     success: true,

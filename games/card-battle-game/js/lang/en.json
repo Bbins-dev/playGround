@@ -845,7 +845,7 @@
       "line4": "Maximum hand size is 10 cards! When clearing stages, you can choose to add a card, replace cards in your hand, or skip to the next stage!",
       "line5": "How many stages can you reach? Test your luck!",
       "card_stats": "📊 Card Stats Display",
-      "stat_power": "⚔️ Power: Damage dealt by the card",
+      "stat_power": "🗡️ Power: Damage dealt by the card",
       "stat_accuracy": "🎯 Accuracy: Card activation success rate (100% = always succeeds)",
       "stat_activation": "🔄 Activation Count: Number of times card activates per turn",
       "stat_note": "💡 Hover over cards to see detailed information",
