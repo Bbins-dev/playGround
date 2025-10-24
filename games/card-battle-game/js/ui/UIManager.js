@@ -900,8 +900,8 @@ class UIManager {
             gameWrapper.classList.remove(effect.className);
         });
 
-        // 명시적으로 border 스타일 초기화 (잔여 border 제거)
-        gameWrapper.style.border = 'none';
+        // 명시적으로 outline 스타일 초기화 (잔여 outline 제거)
+        gameWrapper.style.outline = 'none';
         gameWrapper.style.animation = 'none';
 
         // 플레이어의 현재 상태이상 확인
@@ -928,7 +928,7 @@ class UIManager {
         // 가장 우선순위가 높은 상태이상의 테두리 효과 적용
         if (highestPriorityEffect) {
             // inline 스타일 제거 후 CSS 클래스 적용
-            gameWrapper.style.border = '';
+            gameWrapper.style.outline = '';
             gameWrapper.style.animation = '';
             gameWrapper.classList.add(highestPriorityEffect.className);
             gameWrapper.offsetHeight; // 강제 리플로우로 스타일 적용 보장
@@ -943,7 +943,7 @@ class UIManager {
         try {
             // Step 1: 애니메이션 즉시 중단 (inline 스타일 우선 적용으로 GPU 애니메이션 강제 중단)
             gameWrapper.style.animation = 'none';
-            gameWrapper.style.border = 'none';
+            gameWrapper.style.outline = 'none';
 
             // Step 2: 강제 리플로우 (GPU 애니메이션 중단 보장)
             void gameWrapper.offsetHeight;
@@ -955,7 +955,7 @@ class UIManager {
 
             // Step 4: inline 스타일 완전 제거 (CSS 우선순위 정리)
             gameWrapper.style.removeProperty('animation');
-            gameWrapper.style.removeProperty('border');
+            gameWrapper.style.removeProperty('outline');
 
             // Step 5: 최종 강제 리플로우 (모든 스타일 변경 적용 보장)
             void gameWrapper.offsetHeight;

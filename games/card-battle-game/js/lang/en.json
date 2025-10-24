@@ -189,6 +189,7 @@
       "speed_slow": "Slow",
       "speed_normal": "Normal",
       "speed_fast": "Fast",
+      "speed_very_fast": "Very Fast",
       "cards": {
         "random_bash": {
           "name": "Random Bash",
