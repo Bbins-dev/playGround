@@ -88,59 +88,6 @@
     border-color: var(--accent-primary);
 }
 
-/* 광고 컴포넌트 */
-.ad-placeholder {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 10px;
-    text-align: center;
-    box-shadow: var(--shadow);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.ad-placeholder::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.1),
-        transparent
-    );
-    transition: left 0.6s;
-}
-
-.ad-placeholder:hover::before {
-    left: 100%;
-}
-
-.ad-placeholder:hover {
-    background: var(--hover-bg);
-    border-color: var(--accent-primary);
-}
-
-.ad-label {
-    font-size: 12px;
-    color: var(--text-muted);
-    display: block;
-    margin-bottom: 5px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.ad-content {
-    font-size: 14px;
-    color: var(--text-secondary);
-    font-weight: 500;
-}
-
 /* 버튼 컴포넌트 */
 .btn {
     width: 100%;
