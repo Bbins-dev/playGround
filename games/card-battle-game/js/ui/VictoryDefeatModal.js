@@ -657,7 +657,10 @@ class VictoryDefeatModal {
      * @param {number} selectedIndex - 선택된 카드 인덱스
      */
     updateCardSelection(selectedIndex) {
-        for (let i = 0; i < 3; i++) {
+        // Configuration-Driven: 동적 카드 갯수 처리
+        const rewardCount = GameConfig?.constants?.rewards?.rewardCardCount || 4;
+
+        for (let i = 0; i < rewardCount; i++) {
             const rewardCardContainer = document.querySelector(`[data-card-index="${i}"]`);
             if (rewardCardContainer) {
                 if (i === selectedIndex) {
