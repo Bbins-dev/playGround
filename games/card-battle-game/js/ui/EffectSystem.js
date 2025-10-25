@@ -493,8 +493,10 @@ class EffectSystem {
             }
         }, config.animation.duration);
 
-        // 템플릿 기반 통합 읽기 시간 대기 (Configuration-Driven)
-        await new Promise(resolve => setTimeout(resolve, config.animation.readDelay));
+        // 템플릿 기반 통합 읽기 시간 대기 (Configuration-Driven, 게임 속도 적용)
+        const adjustedReadDelay = window.TimerManager ?
+            window.TimerManager.applyGameSpeed(config.animation.readDelay) : config.animation.readDelay;
+        await new Promise(resolve => setTimeout(resolve, adjustedReadDelay));
     }
 
 
@@ -536,6 +538,12 @@ class EffectSystem {
             const gameContainer = document.querySelector('.game-container');
             gameContainer.appendChild(cardOverlay);
 
+            // 게임 속도 적용 (TimerManager 사용)
+            const adjustedDuration = window.TimerManager ?
+                window.TimerManager.applyGameSpeed(duration) : duration;
+
+            console.log(`[EffectSystem.showCardActivation] ${duration}ms → ${adjustedDuration}ms (속도: ${window.TimerManager?.gameSpeed || 1}x)`);
+
             // 지속 시간 후 제거
             setTimeout(() => {
                 cardOverlay.style.animation = 'cardZoomOut 0.05s ease-in forwards';
@@ -545,7 +553,7 @@ class EffectSystem {
                     }
                     resolve();
                 }, 50);
-            }, duration);
+            }, adjustedDuration);
         });
     }
 
