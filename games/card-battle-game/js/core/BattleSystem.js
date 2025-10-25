@@ -489,6 +489,19 @@ class BattleSystem {
             // 실제 대미지 적용
             const actualDamage = target.takeDamage(damage);
 
+            // 화면 흔들림 효과 (플레이어/적 모두 큰 데미지를 받았을 때)
+            if (actualDamage > 0) {
+                const damagePercent = (actualDamage / target.maxHP) * 100;
+                const heavyDamageThreshold = GameConfig?.constants?.performance?.heavyDamageThreshold || 20;
+
+                if (damagePercent >= heavyDamageThreshold) {
+                    // 데미지 비율에 따라 흔들림 강도 조절 (20% = 1.0, 40% = 2.0, 60%+ = 3.0)
+                    const intensity = Math.min(damagePercent / 20, 3.0);
+                    // 게임 속도를 전달하여 애니메이션 duration 자동 조절
+                    this.effectSystem.showScreenShake(intensity, this.gameSpeed);
+                }
+            }
+
             // 피격 효과 (속성 상성 정보 포함)
             const effectiveness = result.effectiveness || 1.0;
             await this.effectSystem.showHitEffect(targetPosition, card.element, damage, effectiveness);
