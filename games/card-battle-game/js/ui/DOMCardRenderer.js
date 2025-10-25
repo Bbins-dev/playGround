@@ -242,6 +242,9 @@ class DOMCardRenderer {
                 lines = [name];
             }
 
+            // 일본어/중국어 문자 감지 (CardRenderer와 동일한 로직)
+            const hasAsianChars = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/.test(name);
+
             nameElement.style.cssText = `
                 position: absolute;
                 left: 50%;
@@ -255,6 +258,7 @@ class DOMCardRenderer {
                 width: ${cardWidth * config.maxWidthRatio}px;
                 word-wrap: break-word;
                 overflow-wrap: break-word;
+                word-break: ${hasAsianChars ? 'break-all' : 'normal'};
                 white-space: normal;
                 ${this.getTextOutlineStyle()}
             `;
@@ -436,6 +440,9 @@ class DOMCardRenderer {
             adjustedFontSize = fontSize * 0.8; // 매우 긴 설명일 때 80%로 줄임
         }
 
+        // 일본어/중국어 문자 감지 (CardRenderer.wrapText와 동일한 로직)
+        const hasAsianChars = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/.test(description);
+
         descElement.style.cssText = `
             position: absolute;
             left: 50%;
@@ -449,6 +456,7 @@ class DOMCardRenderer {
             line-height: ${adjustedFontSize * 1.2}px;
             word-wrap: break-word;
             overflow-wrap: break-word;
+            word-break: ${hasAsianChars ? 'break-all' : 'normal'};
             white-space: normal;
             ${this.getTextOutlineStyle()}
         `;
