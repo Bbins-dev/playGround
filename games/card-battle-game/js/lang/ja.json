@@ -221,7 +221,7 @@
         },
         "crouch": {
           "name": "しゃがみ",
-          "description": "自分に{defense}30を追加し、ターンをスキップします。"
+          "description": "自分に{defense}15を追加し、ターンをスキップします。"
         },
         "large_shield": {
           "name": "大盾",
@@ -521,7 +521,7 @@
         },
         "liquify": {
           "name": "液体化",
-          "description": "自分を液体化して失った{hp}の50%を回復し、{status:wet}状態を解除してターンをスキップします。"
+          "description": "自分を液体化して失った{hp}の10%を回復し、{status:wet}状態を解除してターンをスキップします。"
         },
         "slash_water": {
           "name": "水斬り",

@@ -221,7 +221,7 @@
         },
         "crouch": {
           "name": "웅크리기",
-          "description": "자신에게 {defense} 30을 추가하고 턴을 넘깁니다."
+          "description": "자신에게 {defense} 15를 추가하고 턴을 넘깁니다."
         },
         "large_shield": {
           "name": "거대방패",
@@ -521,7 +521,7 @@
         },
         "liquify": {
           "name": "액체화",
-          "description": "자신을 액체화 하여 잃은 {hp}의 50%를 회복하고 {status:wet} 상태를 제거하며 턴을 넘깁니다."
+          "description": "자신을 액체화 하여 잃은 {hp}의 10%를 회복하고 {status:wet} 상태를 제거하며 턴을 넘깁니다."
         },
         "slash_water": {
           "name": "칼로 물 베기",
