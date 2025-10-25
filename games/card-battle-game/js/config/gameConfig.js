@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.1.6',                        // 버전 넘버
+        number: '0.1.7',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -1654,7 +1654,9 @@ const GameConfig = {
         '2x': 2.0,
         '3x': 3.0,
         '4x': 4.0,   // 빠름
-        '5x': 5.0    // 매우빠름 - 카드 거의 즉시 사라지는 수준
+        '5x': 5.0,   // 매우빠름 - 카드 거의 즉시 사라지는 수준
+        minTimingThreshold: 50,  // 최소 타이밍 임계값 (ms) - 브라우저 일관성 보장
+        maxSpeed: 5              // 최대 속도 배율 (매우빠름 지원)
     },
 
     // UI 위치 설정
@@ -2836,9 +2838,11 @@ const GameConfig = {
         return defenseElement;
     },
 
-    // 게임 속도 적용
+    // 게임 속도 적용 (레거시 호환 - TimerManager 사용 권장)
     applyGameSpeed: function(baseTime, speedMultiplier = 1) {
-        return Math.max(100, baseTime / speedMultiplier); // 최소 100ms
+        const adjusted = Math.round(baseTime / speedMultiplier);
+        const threshold = GameConfig?.gameSpeed?.minTimingThreshold || 50;
+        return Math.max(threshold, adjusted); // 최소 임계값 보장
     },
 
     // 상태이상 면역 체크
