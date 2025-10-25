@@ -61,6 +61,11 @@ class Player {
 
         // 상대 참조 (동적 공격력 계산용)
         this.opponent = null;
+
+        // 성능 최적화: throttle 메커니즘
+        this.lastUpdateTime = 0;
+        this.updateThrottleMs = GameConfig?.constants?.performance?.updateThrottleMs || 16;
+        this.pendingUpdate = false;
     }
 
     // HP 관련 메서드
@@ -702,6 +707,29 @@ class Player {
     updateRuntimeCardStats(opponent) {
         if (!this.hand) return;
 
+        // 성능 최적화: throttle 적용
+        const now = Date.now();
+        if (now - this.lastUpdateTime < this.updateThrottleMs) {
+            // 이미 pending 상태가 아니면 다음 프레임에 실행 예약
+            if (!this.pendingUpdate) {
+                this.pendingUpdate = true;
+                requestAnimationFrame(() => {
+                    this.pendingUpdate = false;
+                    this.lastUpdateTime = Date.now();
+                    this._doUpdateRuntimeCardStats(opponent);
+                });
+            }
+            return;
+        }
+
+        this.lastUpdateTime = now;
+        this._doUpdateRuntimeCardStats(opponent);
+    }
+
+    // 실제 업데이트 로직 (내부 메서드)
+    _doUpdateRuntimeCardStats(opponent) {
+        if (!this.hand) return;
+
         // opponent 파라미터가 전달되면 사용, 아니면 this.opponent 사용 (폴백)
         const target = opponent || this.opponent;
 
@@ -765,6 +793,12 @@ class Player {
                     buffedPower = hasFrozen ? Math.floor(target.maxHP * 0.2) : 0;
                     card.buffedPower = buffedPower;
                     return; // 고정 피해이므로 버프 계산 건너뛰기
+                }
+
+                // shield_bash 카드: 자신의 현재 방어력만큼 피해 (동적 계산)
+                if (card.id === 'shield_bash') {
+                    buffedPower = this.defense || 0;  // 현재 방어력
+                    // 이후 일반 버프 계산 계속 진행 (힘 → 강화 → Li⁺)
                 }
 
                 // 힘 버프 적용 (+1/스택)

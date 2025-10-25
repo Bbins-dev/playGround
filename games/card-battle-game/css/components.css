@@ -258,6 +258,38 @@
     }
 }
 
+/* 손패 확인 버튼 강조 스타일 */
+.ui-button.view-hand-button {
+    background: linear-gradient(145deg, #9b59b6, #8e44ad);
+    box-shadow: 0 0 15px rgba(155, 89, 182, 0.5), 0 4px 10px rgba(155, 89, 182, 0.3);
+    font-weight: 600;
+    animation: view-hand-glow 2.5s ease-in-out infinite;
+}
+
+.ui-button.view-hand-button:hover {
+    background: linear-gradient(145deg, #8e44ad, #7d3c98);
+    box-shadow: 0 0 25px rgba(155, 89, 182, 0.7), 0 6px 14px rgba(155, 89, 182, 0.4);
+    transform: translateY(-2px) scale(1.03);
+}
+
+.ui-button.view-hand-button:active {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 0 12px rgba(155, 89, 182, 0.4), 0 2px 6px rgba(155, 89, 182, 0.2);
+}
+
+/* 손패 확인 버튼 빛나는 애니메이션 */
+@keyframes view-hand-glow {
+    0% {
+        box-shadow: 0 0 15px rgba(155, 89, 182, 0.5), 0 4px 10px rgba(155, 89, 182, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 25px rgba(155, 89, 182, 0.7), 0 4px 10px rgba(155, 89, 182, 0.4);
+    }
+    100% {
+        box-shadow: 0 0 15px rgba(155, 89, 182, 0.5), 0 4px 10px rgba(155, 89, 182, 0.3);
+    }
+}
+
 /* 언어 선택기 공통 스타일 */
 .language-selector-common {
     background: rgba(0, 0, 0, 0.5);
@@ -1440,6 +1472,17 @@
     justify-content: center;
     gap: 15px;
     flex-wrap: wrap;
+}
+
+/* 손패 확인 버튼 행 (2행 중앙 배치) */
+#victory-view-hand-row {
+    margin-top: 10px;
+    width: 100%;
+    flex-basis: 100%;
+}
+
+#victory-view-hand-row .ui-button {
+    min-width: 200px;
 }
 
 

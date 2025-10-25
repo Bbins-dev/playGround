@@ -770,6 +770,51 @@ class EffectSystem {
     wait(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
+
+    /**
+     * 화면 흔들림 효과 (큰 데미지 시)
+     * @param {number} intensity - 흔들림 강도 (1.0 = 기본, 2.0 = 2배)
+     * @param {number} gameSpeed - 게임 속도 배수 (1 = 보통, 2 = 빠름, 5 = 매우빠름)
+     */
+    showScreenShake(intensity = 1.0, gameSpeed = 1) {
+        const gameWrapper = document.querySelector('.game-wrapper');
+        if (!gameWrapper) return;
+
+        // 이미 흔들리고 있으면 기존 애니메이션 즉시 종료하고 새로 시작
+        if (gameWrapper.classList.contains('screen-shake')) {
+            gameWrapper.classList.remove('screen-shake');
+            // 즉시 리플로우 강제 (애니메이션 재시작을 위해)
+            void gameWrapper.offsetWidth;
+        }
+
+        // 흔들림 강도에 따라 CSS 변수 설정
+        const shakeDistance = 10 * Math.min(intensity, 3.0); // 최대 30px
+        gameWrapper.style.setProperty('--shake-distance', `${shakeDistance}px`);
+
+        // 게임 속도에 따라 애니메이션 duration 조절 (Configuration-Driven)
+        const speedMapping = GameConfig?.timing?.combat?.screenShakeBySpeed || {
+            0.5: 600,
+            1: 300,
+            2: 180,
+            5: 120
+        };
+
+        // 게임 속도에 해당하는 duration 찾기, 없으면 기본 계산
+        const adjustedDuration = speedMapping[gameSpeed] ||
+            (GameConfig?.timing?.combat?.screenShake || 300) / Math.max(gameSpeed, 0.5);
+
+        gameWrapper.style.setProperty('--shake-duration', `${adjustedDuration}ms`);
+
+        // 화면 흔들림 클래스 추가
+        gameWrapper.classList.add('screen-shake');
+
+        // 애니메이션 종료 후 클래스 제거
+        setTimeout(() => {
+            gameWrapper.classList.remove('screen-shake');
+            gameWrapper.style.removeProperty('--shake-distance');
+            gameWrapper.style.removeProperty('--shake-duration');
+        }, adjustedDuration);
+    }
 }
 
 // CSS 애니메이션 추가 (동적으로)
@@ -789,6 +834,23 @@ style.textContent = `
         0% { opacity: 0; }
         50% { opacity: 0.3; }
         100% { opacity: 0; }
+    }
+
+    @keyframes screenShake {
+        0%, 100% { transform: translate(0, 0); }
+        10% { transform: translate(calc(var(--shake-distance, 10px) * -1), calc(var(--shake-distance, 10px) * 1)); }
+        20% { transform: translate(calc(var(--shake-distance, 10px) * 1), calc(var(--shake-distance, 10px) * -1)); }
+        30% { transform: translate(calc(var(--shake-distance, 10px) * -0.8), calc(var(--shake-distance, 10px) * 0.8)); }
+        40% { transform: translate(calc(var(--shake-distance, 10px) * 0.8), calc(var(--shake-distance, 10px) * -0.8)); }
+        50% { transform: translate(calc(var(--shake-distance, 10px) * -0.6), calc(var(--shake-distance, 10px) * 0.6)); }
+        60% { transform: translate(calc(var(--shake-distance, 10px) * 0.6), calc(var(--shake-distance, 10px) * -0.6)); }
+        70% { transform: translate(calc(var(--shake-distance, 10px) * -0.4), calc(var(--shake-distance, 10px) * 0.4)); }
+        80% { transform: translate(calc(var(--shake-distance, 10px) * 0.4), calc(var(--shake-distance, 10px) * -0.4)); }
+        90% { transform: translate(calc(var(--shake-distance, 10px) * -0.2), calc(var(--shake-distance, 10px) * 0.2)); }
+    }
+
+    .screen-shake {
+        animation: screenShake var(--shake-duration, 0.3s) ease-in-out;
     }
 `;
 document.head.appendChild(style);
