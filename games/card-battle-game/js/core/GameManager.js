@@ -225,6 +225,11 @@ class GameManager {
         const savedSpeed = parseInt(localStorage.getItem('cardBattle_gameSpeed') || '1');
         this.gameSpeed = savedSpeed;
 
+        // TimerManager에 저장된 속도 즉시 적용
+        if (window.TimerManager) {
+            window.TimerManager.setGameSpeed(savedSpeed);
+        }
+
         // 오디오 시스템 초기화 (가장 먼저)
         this.audioSystem = new AudioSystem();
 
@@ -1463,7 +1468,12 @@ class GameManager {
         // localStorage에 저장
         localStorage.setItem('cardBattle_gameSpeed', speed.toString());
 
-        // 전투 시스템에 속도 적용
+        // TimerManager에 속도 적용 (모든 타이밍 통합 관리)
+        if (window.TimerManager) {
+            window.TimerManager.setGameSpeed(speed);
+        }
+
+        // 전투 시스템에 속도 적용 (레거시 호환)
         if (this.battleSystem) {
             this.battleSystem.setGameSpeed(speed);
         }
