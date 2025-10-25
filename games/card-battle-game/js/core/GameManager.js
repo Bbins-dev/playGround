@@ -1413,6 +1413,19 @@ class GameManager {
             });
         }
 
+        // 턴 배경 인디케이터 설정 - Configuration-Driven
+        if (GameConfig.battleHUD && GameConfig.battleHUD.turnIndicator && GameConfig.battleHUD.turnIndicator.arrows) {
+            const arrows = GameConfig.battleHUD.turnIndicator.arrows;
+            root.style.setProperty('--turn-arrow-size', `${arrows.size}px`);
+            root.style.setProperty('--turn-arrow-spacing', `${arrows.spacing}px`);
+            root.style.setProperty('--turn-arrow-opacity', arrows.opacity);
+            root.style.setProperty('--turn-arrow-blur', `${arrows.blur}px`);
+            root.style.setProperty('--turn-arrow-player-color', arrows.playerColor);
+            root.style.setProperty('--turn-arrow-enemy-color', arrows.enemyColor);
+            root.style.setProperty('--turn-arrow-animation-duration', `${arrows.animationDuration}s`);
+            root.style.setProperty('--turn-arrow-animation-distance', `${arrows.animationDistance}px`);
+        }
+
         // z-index 레이어 동기화 - Configuration-Driven (하드코딩 방지)
         if (GameConfig.zIndexLayers) {
             Object.keys(GameConfig.zIndexLayers).forEach(layer => {
