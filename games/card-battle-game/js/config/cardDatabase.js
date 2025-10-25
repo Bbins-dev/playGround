@@ -3064,13 +3064,13 @@ const CardDatabase = {
             }
         });
 
-        // 액체화 카드 (물 속성 회복 카드, 잃은 체력의 50% 회복 + 젖음 제거 + 턴 넘김)
+        // 액체화 카드 (물 속성 회복 카드, 잃은 체력의 10% 회복 + 젖음 제거 + 턴 넘김)
         this.addCard({
             id: 'liquify',
             nameKey: 'auto_battle_card_game.ui.cards.liquify.name',
             type: 'heal',
             element: 'water',
-            power: 0, // 파워 스탯에 회복량 표시 (실시간 동적 계산: 잃은 체력의 50%)
+            power: 0, // 파워 스탯에 회복량 표시 (실시간 동적 계산: 잃은 체력의 10%)
             healAmount: 0, // 사용하지 않음, buffedPower만 사용
             accuracy: 90,
             activationCount: 1,
@@ -3078,7 +3078,7 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.liquify.description',
             skipTurn: true,
             effect: function(user, target, battleSystem) {
-                // buffedPower 사용 (실시간 동적 계산됨: 잃은 체력의 50%)
+                // buffedPower 사용 (실시간 동적 계산됨: 잃은 체력의 10%)
                 const healAmount = this.buffedPower || 0;
                 const actualHealing = user.heal ? user.heal(healAmount) : 0;
 
