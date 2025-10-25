@@ -971,11 +971,12 @@ class VictoryDefeatModal {
         // 컨테이너 표시
         detailContainer.classList.remove('hidden');
 
-        // 스크롤 위치 리셋 및 비활성화
+        // 스크롤 위치 리셋 (스크롤은 유지 - 취소 버튼 접근성 보장)
         const contentArea = document.querySelector('#victory-modal .victory-content-area');
         if (contentArea) {
             contentArea.scrollTop = 0;
-            contentArea.classList.add('card-enlarged');
+            // 손패 선택 화면에서는 card-enlarged 추가하지 않음 (취소 버튼 접근성 보장)
+            // contentArea.classList.add('card-enlarged');
         }
     }
 
@@ -989,10 +990,11 @@ class VictoryDefeatModal {
             detailContainer.innerHTML = '';
         }
 
-        // 스크롤 재활성화
+        // 스크롤 재활성화 (손패 선택 화면에서는 항상 스크롤 활성화 상태 유지)
         const contentArea = document.querySelector('#victory-modal .victory-content-area');
         if (contentArea) {
-            contentArea.classList.remove('card-enlarged');
+            // 손패 선택 화면에서는 card-enlarged를 추가하지 않았으므로 제거할 필요 없음
+            // contentArea.classList.remove('card-enlarged');
         }
     }
 
