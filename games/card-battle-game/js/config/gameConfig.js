@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.2.1',                        // 버전 넘버
+        number: '0.2.2',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -76,6 +76,16 @@ const GameConfig = {
             rewardCardCount: 4,                 // 보상 카드 갯수
             allowReroll: true,                  // Re-roll 기능 활성화 여부
             maxRerollsPerVictory: 1             // 승리당 최대 Re-roll 횟수
+        },
+
+        // 성능 최적화 설정
+        performance: {
+            updateThrottleMs: 16,               // updateRuntimeCardStats throttle (60fps)
+            maxConcurrentAnimations: 5,         // 동시 실행 애니메이션 최대 수
+            animationThrottleMs: 16,            // 애니메이션 throttle (60fps)
+            enablePassiveListeners: true,       // Passive 이벤트 리스너 활성화
+            enableHardwareAcceleration: true,   // CSS 하드웨어 가속 활성화
+            heavyDamageThreshold: 20            // 화면 흔들림 트리거 데미지 비율 (%)
         },
 
         // 픽셀 단위 값들
@@ -431,7 +441,14 @@ const GameConfig = {
             damage: 400,                  // 대미지 애니메이션
             heal: 300,                    // 회복 애니메이션
             statusChange: 250,            // 상태 변화 애니메이션
-            screenShake: 200,             // 화면 흔들림
+            screenShake: 300,             // 화면 흔들림 (기본값)
+            // 게임 속도별 화면 흔들림 duration
+            screenShakeBySpeed: {
+                0.5: 600,                 // 느림
+                1: 300,                   // 보통
+                2: 180,                   // 빠름
+                5: 120                    // 매우빠름
+            },
             flash: 500                    // 플래시 효과
         },
 
