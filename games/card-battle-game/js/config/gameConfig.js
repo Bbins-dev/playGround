@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.1.7',                        // 버전 넘버
+        number: '0.1.8',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -2337,18 +2337,18 @@ const GameConfig = {
         turnIndicator: {
             arrows: {
                 // 화살표 패턴 설정
-                size: 180,                   // 화살표 크기 (px) - 더 크게
-                spacing: 180,                // 화살표 간격 (px) - 띄엄띄엄
-                opacity: 0.2,               // 투명도 (약간 더 진하게)
-                blur: 2,                    // 블러 효과 (px) - 선명하게
+                size: 700,                   // 화살표 크기 (px) - 매우 크게 (화면 대부분 차지)
+                spacing: 700,                // 화살표 간격 (px)
+                opacity: 0.3,               // 투명도 (더 진하게)
+                blur: 1,                    // 블러 효과 (px) - 매우 선명하게
 
                 // 색상 설정
                 get playerColor() { return GameConfig.masterColors.elements.normal; },   // 플레이어 턴 (밝은 베이지)
                 get enemyColor() { return GameConfig.masterColors.cardTypes.attack; },   // 적 턴 (빨강)
 
                 // 애니메이션 설정
-                animationDuration: 2,        // 애니메이션 지속시간 (초)
-                animationDistance: 180       // 이동 거리 (px) - size와 일치
+                animationDuration: 3,        // 애니메이션 지속시간 (초) - 느리게
+                animationDistance: 700       // 이동 거리 (px) - size와 일치
             }
         }
     },
