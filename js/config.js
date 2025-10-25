@@ -72,9 +72,9 @@ const PlayGroundConfig = {
         }
     },
     
-    // 광고 설정
+    // 광고 설정 (Google AdSense 자동 광고 사용으로 비활성화)
     ads: {
-        enabled: true,
+        enabled: false, // Placeholder 광고 비활성화 - Google AdSense 자동 광고가 처리함
         slots: {
             leftSidebar: { size: '728x90', position: 'left-sidebar' },
             rightSidebar: { size: '728x90', position: 'right-sidebar' },
