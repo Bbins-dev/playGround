@@ -542,8 +542,6 @@ class EffectSystem {
             const adjustedDuration = window.TimerManager ?
                 window.TimerManager.applyGameSpeed(duration) : duration;
 
-            console.log(`[EffectSystem.showCardActivation] ${duration}ms → ${adjustedDuration}ms (속도: ${window.TimerManager?.gameSpeed || 1}x)`);
-
             // 지속 시간 후 제거
             setTimeout(() => {
                 cardOverlay.style.animation = 'cardZoomOut 0.05s ease-in forwards';

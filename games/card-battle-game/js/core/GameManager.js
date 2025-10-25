@@ -304,6 +304,13 @@ class GameManager {
                 }
                 this.setGameSpeed(4);
             }],
+            ['speed-5x', 'click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.audioSystem) {
+                    this.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.setGameSpeed(5);
+            }],
             ['card-gallery-btn', 'click', async () => await this.showCardGallery()],
             ['close-gallery', 'click', async () => await this.hideCardGallery()]
         ]);
