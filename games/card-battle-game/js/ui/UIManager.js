@@ -271,9 +271,10 @@ class UIManager {
 
         this.currentScreen = screenName;
 
-        // 메뉴 화면으로 전환 시 상태이상 테두리 확실히 제거 (안전장치)
+        // 메뉴 화면으로 전환 시 상태이상 테두리 및 턴 배경 확실히 제거 (안전장치)
         if (screenName === 'menu') {
             this.clearStatusBorder();
+            this.clearTurnBackground();
         }
 
         // 화면별 UI 요소 표시/숨김
@@ -964,6 +965,34 @@ class UIManager {
         } catch (error) {
             console.error('[UIManager] 상태이상 테두리 제거 중 오류:', error);
         }
+    }
+
+    // 턴 배경 인디케이터 업데이트 (화살표 패턴 애니메이션)
+    updateTurnBackground(isPlayerTurn) {
+        const indicator = document.getElementById('turn-background-indicator');
+        if (!indicator) {
+            console.warn('[UIManager] 턴 배경 인디케이터를 찾을 수 없습니다');
+            return;
+        }
+
+        // 기존 턴 클래스 제거
+        indicator.classList.remove('player-turn', 'enemy-turn');
+
+        // 새 턴 클래스 추가
+        if (isPlayerTurn) {
+            indicator.classList.add('player-turn');
+        } else {
+            indicator.classList.add('enemy-turn');
+        }
+    }
+
+    // 턴 배경 인디케이터 숨기기 (메인 메뉴 복귀 시 등)
+    clearTurnBackground() {
+        const indicator = document.getElementById('turn-background-indicator');
+        if (!indicator) return;
+
+        // 모든 턴 클래스 제거 (opacity가 0으로 돌아감)
+        indicator.classList.remove('player-turn', 'enemy-turn');
     }
 
     // 승리 모달 표시

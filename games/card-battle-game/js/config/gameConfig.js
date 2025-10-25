@@ -2331,6 +2331,25 @@ const GameConfig = {
             spacing: 8,
             verticalSpacing: 6,
             maxRows: 4
+        },
+
+        // 턴 배경 인디케이터 - 화살표 패턴 애니메이션
+        turnIndicator: {
+            arrows: {
+                // 화살표 패턴 설정
+                size: 180,                   // 화살표 크기 (px) - 더 크게
+                spacing: 180,                // 화살표 간격 (px) - 띄엄띄엄
+                opacity: 0.2,               // 투명도 (약간 더 진하게)
+                blur: 2,                    // 블러 효과 (px) - 선명하게
+
+                // 색상 설정
+                get playerColor() { return GameConfig.masterColors.elements.normal; },   // 플레이어 턴 (밝은 베이지)
+                get enemyColor() { return GameConfig.masterColors.cardTypes.attack; },   // 적 턴 (빨강)
+
+                // 애니메이션 설정
+                animationDuration: 2,        // 애니메이션 지속시간 (초)
+                animationDistance: 180       // 이동 거리 (px) - size와 일치
+            }
         }
     },
 
