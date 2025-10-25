@@ -584,7 +584,7 @@ class EffectSystem {
 
         if (!skipBuffApplication) {
             const buffMethodMap = {
-                strength: 'addStrengthBuff',
+                strength: 'addStrength',  // ✅ 수정: Player.addStrength(amount) 메서드 사용
                 enhance: 'addEnhanceBuff',
                 focus: 'addFocusBuff',
                 speed: 'addSpeedBuff',
