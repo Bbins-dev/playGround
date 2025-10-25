@@ -107,6 +107,11 @@ class BattleSystem {
         const currentPlayer = this.currentTurn === 'player' ? this.player : this.enemy;
         const isPlayerTurn = this.currentTurn === 'player';
 
+        // 턴 배경 인디케이터 업데이트 (화살표 패턴 애니메이션)
+        if (this.gameManager && this.gameManager.uiManager) {
+            this.gameManager.uiManager.updateTurnBackground(isPlayerTurn);
+        }
+
 
         this.battlePhase = 'turnTransition';
         this.turnProgress.currentPlayer = currentPlayer;
