@@ -472,7 +472,14 @@ class BattleSystem {
         await this.checkBattleEnd();
     }
 
-    // 공격 결과 처리
+    /**
+     * 공격 결과 처리
+     * @param {Object} result - 카드 효과 결과 객체
+     * @param {Card} card - 발동된 카드
+     * @param {Player} user - 카드를 사용한 플레이어
+     * @param {Player} target - 공격 대상 플레이어
+     * @param {Object} targetPosition - 타겟 위치 {x, y}
+     */
     async processAttackResult(result, card, user, target, targetPosition) {
         const damage = result.damage || 0;
 
@@ -583,7 +590,12 @@ class BattleSystem {
         }
     }
 
-    // 회복 결과 처리
+    /**
+     * 회복 결과 처리
+     * @param {Object} result - 카드 효과 결과 객체
+     * @param {Player} user - 카드를 사용한 플레이어 (회복 대상자, target 파라미터 없음!)
+     * @param {Object} targetPosition - 타겟 위치 {x, y}
+     */
     async processHealResult(result, user, targetPosition) {
         // healAmount 또는 healing 속성 모두 지원 (하위 호환성)
         const healing = result.healAmount || result.healing || 0;
@@ -611,7 +623,11 @@ class BattleSystem {
         }
     }
 
-    // 버프 결과 처리 - Configuration-Driven (위치 자동 결정)
+    /**
+     * 버프 결과 처리 - Configuration-Driven (위치 자동 결정)
+     * @param {Object} result - 카드 효과 결과 객체
+     * @param {Player} user - 카드를 사용한 플레이어 (버프 적용 대상자, target 파라미터 없음!)
+     */
     async processBuffResult(result, user) {
         // 조건 실패 체크 (명중했지만 조건 미달)
         if (result.conditionFailed) {
@@ -622,7 +638,7 @@ class BattleSystem {
 
             // "실패!" 메시지 표시
             await this.effectSystem.showDamageNumber(0, targetPosition, 'conditionFailed', null, {
-                isPlayerTarget: (target === this.player)
+                isPlayerTarget: (user === this.enemy)
             });
             // 조건 실패 시 추가 대기 (플레이어가 확인할 수 있도록)
             await this.wait((GameConfig.timing?.cards?.missDelay || 800) / this.gameSpeed);
@@ -866,7 +882,14 @@ class BattleSystem {
         this.effectSystem.showStatusEffect('debuff', targetPosition, result.power || 0);
     }
 
-    // 상태이상 결과 처리
+    /**
+     * 상태이상 결과 처리
+     * @param {Object} result - 카드 효과 결과 객체
+     * @param {Player} user - 카드를 사용한 플레이어
+     * @param {Player} target - 상태이상 적용 대상 플레이어
+     * @param {Object} targetPosition - 타겟 위치 {x, y}
+     * @param {Card} card - 발동된 카드
+     */
     async processStatusResult(result, user, target, targetPosition, card) {
         // 버프 제거 효과 처리 (고압 전류 카드)
         if (result.buffsCleared) {
@@ -1010,7 +1033,12 @@ class BattleSystem {
         return null;
     }
 
-    // 방어 결과 처리
+    /**
+     * 방어 결과 처리
+     * @param {Object} result - 카드 효과 결과 객체
+     * @param {Player} user - 카드를 사용한 플레이어 (방어력 획득 대상자, target 파라미터 없음!)
+     * @param {Object} userPosition - 사용자 위치 {x, y}
+     */
     async processDefenseResult(result, user, userPosition) {
         // 조건 미충족 시 특별 메시지 처리 (거울반응 카드 등)
         if (result.conditionNotMet && result.messageKey) {

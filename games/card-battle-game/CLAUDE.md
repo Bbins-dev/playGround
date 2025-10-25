@@ -33,6 +33,33 @@ hasStatusEffect(type) {
 }
 ```
 
+### 4. Undefined 변수 참조 방지 (중요!)
+**함수 파라미터 외부 변수 사용 금지**
+
+```javascript
+// ❌ 금지: 파라미터에 없는 변수 참조
+async processBuffResult(result, user) {
+    isPlayerTarget: (target === this.player)  // target은 파라미터에 없음!
+}
+
+// ✅ 필수: 파라미터만 사용
+async processBuffResult(result, user) {
+    isPlayerTarget: (user === this.enemy)  // user는 파라미터에 있음
+}
+```
+
+**안전 장치**:
+- ✅ JSDoc 주석으로 파라미터 명시
+- ✅ ESLint `no-undef` 규칙 활성화 (.eslintrc.json)
+- ✅ IDE 자동완성/경고 확인
+- ✅ 조건부 코드 경로 테스트 필수
+
+**체크리스트**:
+- [ ] 함수 작성 시 JSDoc 주석 추가
+- [ ] 파라미터 외부 변수 사용 전 파라미터 확인
+- [ ] 복사-붙여넣기 후 변수명 재검증
+- [ ] ESLint 경고 무시하지 말 것
+
 ## ⚡ 필수 체크리스트
 
 ### 버프/상태이상 적용 시
