@@ -221,7 +221,7 @@
         },
         "crouch": {
           "name": "Crouch",
-          "description": "Add 30 {defense} to yourself and skip your turn."
+          "description": "Add 15 {defense} to yourself and skip your turn."
         },
         "large_shield": {
           "name": "Large Shield",
@@ -521,7 +521,7 @@
         },
         "liquify": {
           "name": "Liquify",
-          "description": "Liquify yourself to recover 50% of lost {hp}, remove {status:wet} status, and skip turn."
+          "description": "Liquify yourself to recover 10% of lost {hp}, remove {status:wet} status, and skip turn."
         },
         "slash_water": {
           "name": "Water Slash",
