@@ -782,26 +782,50 @@ class CardRenderer {
 
         segments.forEach(segment => {
             if (segment.type === 'text') {
-                // 단어 단위로 분리
-                const words = segment.content.split(/\s+/).filter(w => w);
+                // 일본어/중국어 문자 감지
+                const hasAsianChars = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/.test(segment.content);
 
-                words.forEach((word, wordIndex) => {
-                    const wordWidth = ctx.measureText(word).width;
-                    const itemWidth = wordWidth + spaceWidth;
+                if (hasAsianChars) {
+                    // 아시아 언어는 문자 단위로 처리
+                    for (let i = 0; i < segment.content.length; i++) {
+                        const char = segment.content[i];
+                        const charWidth = ctx.measureText(char).width;
 
-                    // 현재 줄에 추가할 수 있는지 확인
-                    if (currentLine.totalWidth + itemWidth > maxWidth && currentLine.items.length > 0) {
-                        lines.push(currentLine);
-                        currentLine = { items: [], totalWidth: 0 };
+                        // 현재 줄에 추가할 수 있는지 확인
+                        if (currentLine.totalWidth + charWidth > maxWidth && currentLine.items.length > 0) {
+                            lines.push(currentLine);
+                            currentLine = { items: [], totalWidth: 0 };
+                        }
+
+                        currentLine.items.push({
+                            type: 'text',
+                            content: char,
+                            width: charWidth
+                        });
+                        currentLine.totalWidth += charWidth;
                     }
+                } else {
+                    // 서구 언어는 단어 단위로 분리
+                    const words = segment.content.split(/\s+/).filter(w => w);
 
-                    currentLine.items.push({
-                        type: 'text',
-                        content: word + ' ',
-                        width: itemWidth
+                    words.forEach((word, wordIndex) => {
+                        const wordWidth = ctx.measureText(word).width;
+                        const itemWidth = wordWidth + spaceWidth;
+
+                        // 현재 줄에 추가할 수 있는지 확인
+                        if (currentLine.totalWidth + itemWidth > maxWidth && currentLine.items.length > 0) {
+                            lines.push(currentLine);
+                            currentLine = { items: [], totalWidth: 0 };
+                        }
+
+                        currentLine.items.push({
+                            type: 'text',
+                            content: word + ' ',
+                            width: itemWidth
+                        });
+                        currentLine.totalWidth += itemWidth;
                     });
-                    currentLine.totalWidth += itemWidth;
-                });
+                }
             } else if (segment.type === 'label') {
                 const labelInfo = DescriptionParser.getLabelInfo(segment.labelType, segment.labelKey);
                 if (!labelInfo) return;
