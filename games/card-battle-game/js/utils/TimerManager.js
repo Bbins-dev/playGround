@@ -1,9 +1,45 @@
-// 타이머 관리 시스템 - 메모리 누수 방지
+// 타이머 관리 시스템 - 메모리 누수 방지 및 게임 속도 통합
 class TimerManager {
     constructor() {
         this.timers = new Map();
         this.intervals = new Map();
         this.nextId = 0;
+        this.gameSpeed = 1; // 전역 게임 속도 배율 (1=보통, 2=2배속, 3=3배속, 4=4배속)
+        // GameConfig가 로드되면 값을 가져오고, 없으면 기본값 사용
+        this.minTimingThreshold = (typeof GameConfig !== 'undefined' && GameConfig?.gameSpeed?.minTimingThreshold) || 50;
+    }
+
+    /**
+     * 게임 속도 설정
+     * @param {number} speed - 속도 배율 (1~5)
+     */
+    setGameSpeed(speed) {
+        const oldSpeed = this.gameSpeed;
+        this.gameSpeed = Math.max(1, Math.min(5, speed)); // 1~5 범위로 제한 (매우빠름 지원)
+        console.log(`[TimerManager] 게임 속도 변경: ${oldSpeed}x → ${this.gameSpeed}x`);
+    }
+
+    /**
+     * 게임 속도를 적용한 실제 딜레이 계산
+     * @param {number} baseDelay - 기본 딜레이 (ms)
+     * @returns {number} 속도가 적용된 실제 딜레이
+     */
+    applyGameSpeed(baseDelay) {
+        // 입력값 검증
+        if (typeof baseDelay !== 'number' || baseDelay < 0 || !isFinite(baseDelay)) {
+            console.warn(`[TimerManager] 잘못된 딜레이 값: ${baseDelay}, 최소값 사용`);
+            return this.minTimingThreshold;
+        }
+
+        const adjusted = Math.round(baseDelay / this.gameSpeed);
+        const result = Math.max(this.minTimingThreshold, adjusted);
+
+        // 극단적으로 빠른 경우 경고
+        if (result === this.minTimingThreshold && baseDelay > this.minTimingThreshold * 2) {
+            console.warn(`[TimerManager] 타이밍이 너무 빨라짐: ${baseDelay}ms → ${result}ms (속도: ${this.gameSpeed}x)`);
+        }
+
+        return result;
     }
 
     // setTimeout 래퍼
@@ -185,6 +221,42 @@ class TimerManager {
         start();
 
         return { pause, resume, cancel };
+    }
+
+    /**
+     * 게임 속도가 자동 적용되는 setTimeout
+     * @param {Function} callback - 실행할 콜백 함수
+     * @param {number} baseDelay - 기본 딜레이 (ms)
+     * @param {string} description - 타이머 설명
+     * @returns {number} 타이머 ID
+     */
+    speedAwareTimeout(callback, baseDelay, description = '') {
+        const adjustedDelay = this.applyGameSpeed(baseDelay);
+        return this.setTimeout(callback, adjustedDelay, description || `speed-aware:${baseDelay}ms`);
+    }
+
+    /**
+     * 게임 속도가 자동 적용되는 setInterval
+     * @param {Function} callback - 실행할 콜백 함수
+     * @param {number} baseInterval - 기본 간격 (ms)
+     * @param {string} description - 인터벌 설명
+     * @returns {number} 인터벌 ID
+     */
+    speedAwareInterval(callback, baseInterval, description = '') {
+        const adjustedInterval = this.applyGameSpeed(baseInterval);
+        return this.setInterval(callback, adjustedInterval, description || `speed-aware-interval:${baseInterval}ms`);
+    }
+
+    /**
+     * 게임 속도가 자동 적용되는 Promise 기반 딜레이
+     * @param {number} baseDelay - 기본 딜레이 (ms)
+     * @param {string} description - 설명
+     * @returns {Promise} 지연 Promise
+     */
+    speedAwareDelay(baseDelay, description = '') {
+        return new Promise(resolve => {
+            this.speedAwareTimeout(resolve, baseDelay, description || `speed-aware-delay:${baseDelay}ms`);
+        });
     }
 }
 
