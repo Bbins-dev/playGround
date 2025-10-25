@@ -17,9 +17,11 @@ class VictoryDefeatModal {
 
         // 버튼 그룹들
         this.victoryDefaultButtons = document.getElementById('victory-default-buttons');
+        this.victoryViewHandRow = document.getElementById('victory-view-hand-row');
         this.victorySelectionButtons = document.getElementById('victory-selection-buttons');
         this.victorySkipBtn = document.getElementById('victory-skip');
         this.victoryRerollBtn = document.getElementById('victory-reroll');
+        this.victoryViewHandBtn = document.getElementById('victory-view-hand');
         this.victoryAddToDeckBtn = document.getElementById('victory-add-to-deck');
         this.victoryReplaceCardBtn = document.getElementById('victory-replace-card');
         this.victoryCancelSelectionBtn = document.getElementById('victory-cancel-selection');
@@ -50,6 +52,7 @@ class VictoryDefeatModal {
         this.selectedHandCardIndex = null;
         this.isShowingCardRewards = false;
         this.rerollsRemaining = 0; // Re-roll 남은 횟수
+        this.viewOnlyMode = false; // 손패 확인 전용 모드 플래그
 
         // Canvas 요소들
         this.rewardCanvases = [];
@@ -94,6 +97,16 @@ class VictoryDefeatModal {
                     this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
                 }
                 this.handleReroll();
+            });
+        }
+
+        if (this.victoryViewHandBtn) {
+            this.victoryViewHandBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.handleViewHand();
             });
         }
 
@@ -492,6 +505,7 @@ class VictoryDefeatModal {
         this.isShowingCardRewards = false;
         this.tempSelectedCard = null; // 임시 저장 변수 초기화
         this.rerollsRemaining = 0; // Re-roll 횟수 초기화
+        this.viewOnlyMode = false; // 손패 확인 모드 초기화
 
         // UI 요소 숨기기
         if (this.victoryCardRewards) {
@@ -505,6 +519,9 @@ class VictoryDefeatModal {
         }
         if (this.victoryDefaultButtons) {
             this.victoryDefaultButtons.classList.remove('hidden');
+        }
+        if (this.victoryViewHandRow) {
+            this.victoryViewHandRow.classList.remove('hidden');
         }
         if (this.victoryContinueBtn) {
             this.victoryContinueBtn.classList.add('hidden');
@@ -697,6 +714,9 @@ class VictoryDefeatModal {
         if (this.victoryDefaultButtons) {
             this.victoryDefaultButtons.classList.add('hidden');
         }
+        if (this.victoryViewHandRow) {
+            this.victoryViewHandRow.classList.add('hidden');
+        }
         if (this.victorySelectionButtons) {
             this.victorySelectionButtons.classList.remove('hidden');
         }
@@ -824,7 +844,18 @@ class VictoryDefeatModal {
      */
     handleReplaceCard() {
         if (this.selectedRewardCard && this.gameManager) {
+            this.viewOnlyMode = false; // 교체 모드
             this.showHandReplaceSelection();
+        }
+    }
+
+    /**
+     * 손패 확인 처리 (조회 전용)
+     */
+    handleViewHand() {
+        if (this.gameManager && this.gameManager.player) {
+            this.viewOnlyMode = true; // 조회 전용 모드
+            this.showHandViewSelection();
         }
     }
 
@@ -852,10 +883,56 @@ class VictoryDefeatModal {
         if (this.victoryDefaultButtons) {
             this.victoryDefaultButtons.classList.add('hidden');
         }
+        if (this.victoryViewHandRow) {
+            this.victoryViewHandRow.classList.add('hidden');
+        }
 
         // 손패 교체 영역 표시
         if (this.victoryHandReplace) {
             this.victoryHandReplace.classList.remove('hidden');
+        }
+
+        // 손패 카드들 렌더링
+        this.renderHandCards();
+    }
+
+    /**
+     * 손패 확인 선택 표시 (조회 전용)
+     */
+    showHandViewSelection() {
+        if (!this.gameManager || !this.gameManager.player) return;
+
+        // 카드 보상 영역 숨기기
+        if (this.victoryCardRewards) {
+            this.victoryCardRewards.classList.add('hidden');
+        }
+
+        // 모든 버튼 그룹 숨기기
+        if (this.victorySelectionButtons) {
+            this.victorySelectionButtons.classList.add('hidden');
+        }
+        if (this.victoryDefaultButtons) {
+            this.victoryDefaultButtons.classList.add('hidden');
+        }
+        if (this.victoryViewHandRow) {
+            this.victoryViewHandRow.classList.add('hidden');
+        }
+
+        // 손패 교체 영역 표시 (재사용)
+        if (this.victoryHandReplace) {
+            this.victoryHandReplace.classList.remove('hidden');
+            // 제목 변경 (조회 모드)
+            const title = this.victoryHandReplace.querySelector('h3');
+            if (title) {
+                const titleKey = 'auto_battle_card_game.ui.view_hand_cards_title';
+                title.textContent = I18nHelper.getText(titleKey) || '손패 카드 확인';
+            }
+            // 설명 텍스트 변경 (조회 모드)
+            const instruction = this.victoryHandReplace.querySelector('p');
+            if (instruction) {
+                const instructionKey = 'auto_battle_card_game.ui.view_hand_instruction';
+                instruction.textContent = I18nHelper.getText(instructionKey) || '현재 당신이 보유한 손패 현황';
+            }
         }
 
         // 손패 카드들 렌더링
@@ -937,8 +1014,13 @@ class VictoryDefeatModal {
             // 선택된 손패 카드 확대 표시
             this.showSelectedHandCardDetail(selectedCard);
 
-            // 확인/취소 버튼 표시
-            this.showHandConfirmationButtons();
+            // 조회 전용 모드일 경우 취소 버튼만 표시
+            if (this.viewOnlyMode) {
+                this.showViewOnlyConfirmationButtons();
+            } else {
+                // 교체 모드일 경우 확인/취소 버튼 표시
+                this.showHandConfirmationButtons();
+            }
         }
     }
 
@@ -1004,6 +1086,23 @@ class VictoryDefeatModal {
     showHandConfirmationButtons() {
         if (this.victoryHandConfirmationButtons) {
             this.victoryHandConfirmationButtons.classList.remove('hidden');
+        }
+        // 바꾸기 버튼 표시
+        if (this.victoryConfirmReplacementBtn) {
+            this.victoryConfirmReplacementBtn.classList.remove('hidden');
+        }
+    }
+
+    /**
+     * 조회 전용 모드 버튼들 표시 (취소 버튼만)
+     */
+    showViewOnlyConfirmationButtons() {
+        if (this.victoryHandConfirmationButtons) {
+            this.victoryHandConfirmationButtons.classList.remove('hidden');
+        }
+        // 바꾸기 버튼 숨김 (조회 전용 모드)
+        if (this.victoryConfirmReplacementBtn) {
+            this.victoryConfirmReplacementBtn.classList.add('hidden');
         }
     }
 
@@ -1078,6 +1177,9 @@ class VictoryDefeatModal {
         if (this.victoryDefaultButtons) {
             this.victoryDefaultButtons.classList.remove('hidden');
         }
+        if (this.victoryViewHandRow) {
+            this.victoryViewHandRow.classList.remove('hidden');
+        }
     }
 
     /**
@@ -1089,19 +1191,47 @@ class VictoryDefeatModal {
         // 손패 교체 영역 숨기기
         if (this.victoryHandReplace) {
             this.victoryHandReplace.classList.add('hidden');
+            // 제목 복구 (교체 모드)
+            const title = this.victoryHandReplace.querySelector('h3');
+            if (title) {
+                const titleKey = 'auto_battle_card_game.ui.hand_replace_title';
+                title.textContent = I18nHelper.getText(titleKey) || '손패 카드 교체';
+            }
         }
 
-        // 이전 선택 상태 복구 (확대 카드만 다시 표시)
-        if (this.tempSelectedCard) {
-            // 카드 선택 상태 복구
-            const cardIndex = this.rewardCards.indexOf(this.tempSelectedCard);
-            this.updateCardSelection(cardIndex);
+        // 확대창 숨기기
+        this.hideSelectedHandCardDetail();
 
-            // 확대창 다시 표시
-            this.showSelectedCardDetail(this.tempSelectedCard);
+        // 조회 전용 모드였다면 기본 버튼으로 돌아감
+        if (this.viewOnlyMode) {
+            this.viewOnlyMode = false;
 
-            // 선택 버튼들도 복구
-            this.showSelectionButtons();
+            // 카드 보상 영역 다시 표시
+            if (this.victoryCardRewards) {
+                this.victoryCardRewards.classList.remove('hidden');
+            }
+
+            // 기본 버튼 표시
+            if (this.victoryDefaultButtons) {
+                this.victoryDefaultButtons.classList.remove('hidden');
+            }
+            // 손패 확인 버튼 행 표시
+            if (this.victoryViewHandRow) {
+                this.victoryViewHandRow.classList.remove('hidden');
+            }
+        } else {
+            // 교체 모드였다면 이전 선택 상태 복구 (확대 카드만 다시 표시)
+            if (this.tempSelectedCard) {
+                // 카드 선택 상태 복구
+                const cardIndex = this.rewardCards.indexOf(this.tempSelectedCard);
+                this.updateCardSelection(cardIndex);
+
+                // 확대창 다시 표시
+                this.showSelectedCardDetail(this.tempSelectedCard);
+
+                // 선택 버튼들도 복구
+                this.showSelectionButtons();
+            }
         }
     }
 
