@@ -3032,14 +3032,15 @@ const CardDatabase = {
             nameKey: 'auto_battle_card_game.ui.cards.healing_spring.name',
             type: 'heal',
             element: 'water',
-            power: 10, // 파워 스탯에 회복량 표시 (젖음 상태일 때만 발동)
+            power: 0, // 기본 회복량 0 (젖음 상태일 때만 10으로 증가)
             healAmount: 10,
             accuracy: 80,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.healing_spring.description',
             effect: function(user, target, battleSystem) {
                 // buffedPower 사용 (젖음 상태 자동 반영됨)
-                const healAmount = this.buffedPower || this.healAmount;
+                // buffedPower가 0일 때 OR 연산자로 healAmount가 사용되는 버그 방지
+                const healAmount = this.buffedPower !== undefined ? this.buffedPower : 0;
 
                 // 젖음 상태가 아니면 조건 실패
                 if (healAmount === 0) {
