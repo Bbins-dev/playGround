@@ -278,7 +278,7 @@ class BattleSystem {
 
                 // 같은 카드의 연속 발동 간 짧은 딜레이
                 if (card.canActivate()) {
-                    await this.wait((GameConfig.timing?.cards?.repeatDelay || 300) / this.gameSpeed);
+                    await this.wait(GameConfig.timing?.cards?.repeatDelay || 300);
                 }
             }
 
@@ -291,7 +291,7 @@ class BattleSystem {
 
             // 다음 카드 발동 전 잠시 대기
             if (i < activatableCards.length - 1) {
-                await this.wait(GameConfig.animations.cardInterval / this.gameSpeed);
+                await this.wait(GameConfig.animations.cardInterval);
             }
         }
 
@@ -315,11 +315,8 @@ class BattleSystem {
             console.log(`[RANDOM ACTIVATION] ${card.name || card.id}: ${currentCount}/${totalCount}번째 발동 중`);
         }
 
-        // 카드 발동 애니메이션
-        const cardDuration = GameConfig.utils.applyGameSpeed(
-            GameConfig.animations.cardActivation,
-            this.gameSpeed
-        );
+        // 카드 발동 애니메이션 (속도는 wait()에서 자동 적용)
+        const cardDuration = GameConfig.animations.cardActivation;
 
         await this.effectSystem.showCardActivation(card, cardDuration);
 
@@ -389,7 +386,7 @@ class BattleSystem {
             });
 
             // 조건 실패 시 추가 대기 (플레이어가 확인할 수 있도록)
-            await this.wait((GameConfig.timing?.cards?.missDelay || 800) / this.gameSpeed);
+            await this.wait(GameConfig.timing?.cards?.missDelay || 800);
         } else {
             // 명중률 실패 (빗나감)
             if (isPlayerCard) {
@@ -407,7 +404,7 @@ class BattleSystem {
             });
 
             // Miss 시 추가 대기 (플레이어가 확인할 수 있도록)
-            await this.wait((GameConfig.timing?.cards?.missDelay || 800) / this.gameSpeed);
+            await this.wait(GameConfig.timing?.cards?.missDelay || 800);
         }
 
         this.battleStats.cardsActivated++;
@@ -641,7 +638,7 @@ class BattleSystem {
                 isPlayerTarget: (user === this.enemy)
             });
             // 조건 실패 시 추가 대기 (플레이어가 확인할 수 있도록)
-            await this.wait((GameConfig.timing?.cards?.missDelay || 800) / this.gameSpeed);
+            await this.wait(GameConfig.timing?.cards?.missDelay || 800);
             return; // 조건 실패면 추가 처리 중단
         }
 
@@ -842,7 +839,7 @@ class BattleSystem {
             }
 
             // 억제제 메시지 확인을 위한 대기 시간 추가 (다른 상태이상 처리와 동일 패턴)
-            await this.wait((GameConfig.timing?.cards?.missDelay || 800) / this.gameSpeed);
+            await this.wait(GameConfig.timing?.cards?.missDelay || 800);
 
             return; // 억제제 처리 완료
         }
@@ -937,7 +934,7 @@ class BattleSystem {
                 isPlayerTarget: (target === this.player)
             });
             // 조건 실패 시 추가 대기 (플레이어가 확인할 수 있도록)
-            await this.wait((GameConfig.timing?.cards?.missDelay || 800) / this.gameSpeed);
+            await this.wait(GameConfig.timing?.cards?.missDelay || 800);
             return; // 조건 실패면 추가 처리 중단
         }
 
@@ -1329,6 +1326,7 @@ class BattleSystem {
     // 게임 속도 설정
     setGameSpeed(speed) {
         this.gameSpeed = speed;
+        console.log(`[BattleSystem] 게임 속도 설정: ${speed}x (레거시, 실제로는 TimerManager 사용)`);
     }
 
     // 전투 일시정지
@@ -1662,7 +1660,12 @@ class BattleSystem {
     }
 
     // 유틸리티: 대기 (개선된 타이머 추적 버전)
-    wait(ms) {
+    /**
+     * 게임 속도가 자동 적용되는 대기 함수
+     * @param {number} baseMs - 기본 대기 시간 (ms)
+     * @returns {Promise} 대기 완료 Promise
+     */
+    wait(baseMs) {
         return new Promise(resolve => {
             // 전투가 이미 종료되었으면 즉시 resolve
             if (this.battlePhase === 'ended') {
@@ -1682,10 +1685,19 @@ class BattleSystem {
                 resolve();
             };
 
+            // TimerManager의 속도 인식 기능 사용
+            let adjustedMs = baseMs;
+            if (this.timerManager && typeof this.timerManager.applyGameSpeed === 'function') {
+                adjustedMs = this.timerManager.applyGameSpeed(baseMs);
+                console.log(`[BattleSystem.wait] ${baseMs}ms → ${adjustedMs}ms (속도: ${this.timerManager.gameSpeed}x)`);
+            } else {
+                console.warn('[BattleSystem.wait] TimerManager를 찾을 수 없어 속도 적용 안됨');
+            }
+
             const timerId = setTimeout(() => {
                 this.activeTimers = this.activeTimers.filter(id => id !== timerId);
                 checkAndResolve();
-            }, ms);
+            }, adjustedMs);
 
             // 활성 타이머 목록에 추가
             this.activeTimers.push(timerId);
@@ -1764,7 +1776,7 @@ class BattleSystem {
         user.updateRuntimeCardStats();
 
         // 자해 데미지 표시 대기 시간
-        await this.wait(config.timing.animationDelay / this.gameSpeed);
+        await this.wait(config.timing.animationDelay);
 
         // 자해 후 자신에게 상태이상 적용 (selfStatusEffect 지원)
         if (card.selfStatusEffect && !user.isDead()) {
@@ -1775,7 +1787,7 @@ class BattleSystem {
         // 사망 체크
         if (user.isDead()) {
             // 사망 체크 대기 시간
-            await this.wait(config.timing.deathCheckDelay / this.gameSpeed);
+            await this.wait(config.timing.deathCheckDelay);
 
             // 전투 종료 처리
             await this.checkBattleEnd();
