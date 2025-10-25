@@ -1694,7 +1694,6 @@ class BattleSystem {
             let adjustedMs = baseMs;
             if (this.timerManager && typeof this.timerManager.applyGameSpeed === 'function') {
                 adjustedMs = this.timerManager.applyGameSpeed(baseMs);
-                console.log(`[BattleSystem.wait] ${baseMs}ms → ${adjustedMs}ms (속도: ${this.timerManager.gameSpeed}x)`);
             } else {
                 console.warn('[BattleSystem.wait] TimerManager를 찾을 수 없어 속도 적용 안됨');
             }
