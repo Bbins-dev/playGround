@@ -804,10 +804,11 @@ class Player {
                     buffedHealAmount = hasWet ? (GameConfig?.cardEffects?.healingSpring?.healAmount || 10) : 0;
                 }
 
-                // liquify 카드: 잃은 체력의 50% 회복 (실시간 동적 계산)
+                // liquify 카드: 잃은 체력의 일정 비율 회복 (실시간 동적 계산)
                 if (card.id === 'liquify') {
                     const lostHP = this.maxHP - this.hp;
-                    buffedHealAmount = Math.floor(lostHP * 0.5);
+                    const healPercent = GameConfig?.cardEffects?.liquify?.healPercent || 10;
+                    buffedHealAmount = Math.floor(lostHP * (healPercent / 100));
                 }
 
                 // slash_water 카드: 마지막 받은 피해만큼 회복 (실시간 동적 계산)

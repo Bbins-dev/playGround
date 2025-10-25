@@ -3067,7 +3067,7 @@ const GameConfig = {
 
         // 웅크리기 카드 설정
         crouch: {
-            defenseGain: 30    // 방어력 증가량
+            defenseGain: 15    // 방어력 증가량
         },
         // 작열방패 카드 설정
         scorchedShield: {
@@ -3105,6 +3105,10 @@ const GameConfig = {
         liquidCoating: {
             coatingGain: 1,  // 코팅 버프 획득량 (턴수)
             accuracy: 80     // 명중률 (80%)
+        },
+        // 액체화 카드 설정
+        liquify: {
+            healPercent: 10  // 잃은 체력의 회복 비율 (10%)
         },
         // 화약통 투척 카드 설정
         powderKeg: {
