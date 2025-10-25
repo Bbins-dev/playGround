@@ -404,14 +404,9 @@ const CardDatabase = {
                 // 자해 데미지는 BattleSystem.preprocessSelfDamage()에서 이미 처리됨
                 // 여기서는 카드의 본연의 효과만 처리 (힘 버프 추가)
 
-                // 안전한 접근 방식 (Optional Chaining + 기본값)
+                // ★ Configuration-Driven: strengthGain만 반환
+                // 실제 버프 적용은 BattleSystem.processDefenseResult → showBuffEffect에서 처리
                 const strengthGain = GameConfig?.cardEffects?.thornArmor?.strengthGain || 3;
-
-                user.addStrength(strengthGain);
-
-                // 버프 라벨 즉시 업데이트 (indomitable_gauntlet 패턴 적용)
-                const isPlayer = (user === battleSystem.player);
-                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
 
                 return {
                     success: true,
@@ -437,14 +432,9 @@ const CardDatabase = {
                 // 자해 데미지는 BattleSystem.preprocessSelfDamage()에서 이미 처리됨
                 // 여기서는 카드의 본연의 효과만 처리 (힘 버프 추가)
 
-                // 안전한 접근 방식 (Optional Chaining + 기본값)
+                // ★ Configuration-Driven: strengthGain만 반환
+                // 실제 버프 적용은 BattleSystem.processDefenseResult → showBuffEffect에서 처리
                 const strengthGain = GameConfig?.cardEffects?.indomitableGauntlet?.strengthGain || 5;
-
-                user.addStrength(strengthGain);
-
-                // 버프 라벨 즉시 업데이트
-                const isPlayer = (user === battleSystem.player);
-                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
 
                 return {
                     success: true,
@@ -2016,9 +2006,9 @@ const CardDatabase = {
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
-                // 힘 버프 추가 (라벨 업데이트는 BattleSystem에서 메시지와 함께)
+                // ★ Configuration-Driven: strengthGain만 반환
+                // 실제 버프 적용은 BattleSystem.processAttackResult → showBuffEffect에서 처리
                 const strengthGain = 1;
-                user.addStrength(strengthGain);
 
                 // 화상 적용 (통합 시스템 - 면역 메시지 지원)
                 return {
@@ -2495,8 +2485,9 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.endless_effort.description',
             effect: function(user, target, battleSystem) {
+                // ★ Configuration-Driven: strengthGain만 반환
+                // 실제 버프 적용은 BattleSystem.processBuffResult → showBuffEffect에서 처리
                 const strengthGain = this.power;
-                user.addStrength(strengthGain);
 
                 return {
                     success: true,
@@ -2635,15 +2626,11 @@ const CardDatabase = {
                 const defenseValue = this.power;
                 const strengthGain = GameConfig?.cardEffects?.redPendant?.strengthGain || 1;
 
-                // 방어력 추가
+                // 방어력 추가 (카드에서 직접 적용 - Defense 패턴)
                 user.addDefense(defenseValue);
 
-                // 힘 버프 추가
-                user.addStrength(strengthGain);
-
-                // 버프 라벨 즉시 업데이트 (thorn_armor, indomitable_gauntlet 패턴 적용)
-                const isPlayer = (user === battleSystem.player);
-                battleSystem.hpBarSystem.updateBuffs(user, isPlayer);
+                // ★ Configuration-Driven: strengthGain만 반환
+                // 힘 버프 적용은 BattleSystem.processDefenseResult → showBuffEffect에서 처리
 
                 return {
                     success: true,
