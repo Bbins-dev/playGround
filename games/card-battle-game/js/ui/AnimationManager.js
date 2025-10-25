@@ -41,13 +41,17 @@ class AnimationManager {
         // RAF 핸들
         this.rafId = null;
 
+        // 프레임 독립적 타이밍을 위한 속성
+        this.lastFrameTime = 0;
+
     }
 
     // 애니메이션 시작
     start() {
         if (!this.isPlaying) {
             this.isPlaying = true;
-            this.animate();
+            this.lastFrameTime = performance.now(); // 고정밀 타이머 사용
+            this.animate(this.lastFrameTime);
         }
     }
 
@@ -60,23 +64,25 @@ class AnimationManager {
         }
     }
 
-    // 메인 애니메이션 루프
-    animate() {
+    // 메인 애니메이션 루프 - 프레임 독립적 타이밍
+    animate(currentTime) {
         if (!this.isPlaying) return;
 
-        const currentTime = Date.now();
+        // deltaTime 계산 (프레임율 무관)
+        const deltaTime = currentTime - this.lastFrameTime;
+        this.lastFrameTime = currentTime;
 
-        // 개별 애니메이션 업데이트
-        this.updateAnimations(currentTime);
+        // 개별 애니메이션 업데이트 (deltaTime 전달)
+        this.updateAnimations(currentTime, deltaTime);
 
         // 시퀀스 애니메이션 업데이트
         this.updateSequences(currentTime);
 
-        this.rafId = requestAnimationFrame(() => this.animate());
+        this.rafId = requestAnimationFrame((time) => this.animate(time));
     }
 
-    // 개별 애니메이션 업데이트
-    updateAnimations(currentTime) {
+    // 개별 애니메이션 업데이트 - 게임 속도 자동 적용
+    updateAnimations(currentTime, deltaTime) {
         this.animations.forEach((anim, id) => {
             const elapsed = (currentTime - anim.startTime) * this.globalSpeed;
             const progress = Math.min(elapsed / anim.duration, 1);
@@ -148,7 +154,7 @@ class AnimationManager {
             type: config.type,
             duration: config.duration || this.defaultDurations[config.type] || 1000,
             easing: this.easingFunctions[config.easing || 'easeInOut'],
-            startTime: Date.now(),
+            startTime: performance.now(),
             onUpdate: config.onUpdate,
             onComplete: config.onComplete,
             ...config
@@ -164,7 +170,7 @@ class AnimationManager {
 
     // 카드 이동 애니메이션
     animateCardMove(cardElement, from, to, options = {}) {
-        const id = `cardMove_${Date.now()}_${Math.random()}`;
+        const id = `cardMove_${performance.now()}_${Math.random()}`;
 
         return this.createAnimation(id, {
             type: 'cardMove',
@@ -191,7 +197,7 @@ class AnimationManager {
 
     // 카드 하이라이트 애니메이션
     animateCardHighlight(cardElement, options = {}) {
-        const id = `cardHighlight_${Date.now()}_${Math.random()}`;
+        const id = `cardHighlight_${performance.now()}_${Math.random()}`;
 
         return this.createAnimation(id, {
             type: 'cardHighlight',
@@ -228,7 +234,7 @@ class AnimationManager {
 
     // 카드 발동 애니메이션
     animateCardActivation(cardData, position, options = {}) {
-        const id = `cardActivation_${Date.now()}_${Math.random()}`;
+        const id = `cardActivation_${performance.now()}_${Math.random()}`;
 
         return this.createAnimation(id, {
             type: 'cardActivation',
@@ -251,7 +257,7 @@ class AnimationManager {
 
     // 대미지 숫자 애니메이션
     animateDamageNumber(damage, position, type = 'damage', options = {}) {
-        const id = `damageNumber_${Date.now()}_${Math.random()}`;
+        const id = `damageNumber_${performance.now()}_${Math.random()}`;
 
         // 대미지 숫자 요소 생성
         const numberElement = document.createElement('div');
@@ -306,7 +312,7 @@ class AnimationManager {
 
     // 상태이상 효과 애니메이션
     animateStatusEffect(effectType, position, options = {}) {
-        const id = `statusEffect_${Date.now()}_${Math.random()}`;
+        const id = `statusEffect_${performance.now()}_${Math.random()}`;
 
         const effectConfigs = {
             buff: { emoji: '↑', color: '#2ECC71', movement: 'up' },
@@ -336,7 +342,7 @@ class AnimationManager {
 
     // 턴 전환 애니메이션
     animateTurnTransition(fromPlayer, toPlayer, options = {}) {
-        const id = `turnTransition_${Date.now()}_${Math.random()}`;
+        const id = `turnTransition_${performance.now()}_${Math.random()}`;
 
         return this.createAnimation(id, {
             type: 'turnTransition',
@@ -383,7 +389,7 @@ class AnimationManager {
 
     // 배틀 액션 시퀀스 (카드 발동 → 피격 → 대미지)
     createBattleActionSequence(card, user, target, result) {
-        const sequenceId = `battleAction_${Date.now()}`;
+        const sequenceId = `battleAction_${performance.now()}`;
 
         const userPosition = user === 'player' ?
             GameConfig.ui.playerHand : GameConfig.ui.enemyHand;
