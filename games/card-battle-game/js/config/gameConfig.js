@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.2.3',                        // 버전 넘버
+        number: '0.2.4',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -1021,7 +1021,7 @@ const GameConfig = {
                 format: '+{value}'  // 예: +2 (항상 1턴이므로 턴 표시 제거)
             },
             effect: {
-                activationBonus: 2  // 카드당 추가 횟수 +2
+                activationBonus: 1  // 카드당 추가 횟수 +1
             }
         },
         superConductivity: {
@@ -3213,7 +3213,7 @@ const GameConfig = {
         },
         // 빛의 속도 카드 설정
         lightSpeed: {
-            activationBonus: 2,    // 발동 횟수 +2
+            activationBonus: 1,    // 발동 횟수 +1
             fixedTurns: 1          // 1턴 고정 지속
         },
         // 이관능성 방패 카드 설정
