@@ -141,6 +141,18 @@ const GameConfig = {
         showSystemInitialization: false       // 시스템 초기화 숨김
     },
 
+    // 페이지 라이프사이클 관리 설정 (모바일 백그라운드 복원 대응)
+    pageLifecycle: {
+        enableBackgroundPause: true,            // 백그라운드 전환 시 자동 일시정지
+        enableAudioPause: true,                 // 백그라운드 시 오디오 일시정지
+        enableBattlePause: true,                // 백그라운드 시 전투 일시정지
+        restoreDelay: 100,                      // 포그라운드 복귀 시 복원 딜레이 (ms)
+        forceRerender: true,                    // 포그라운드 복귀 시 Canvas 강제 재렌더링
+        logVisibilityChanges: false,            // visibilitychange 이벤트 로그 (디버깅용)
+        handlePageShow: true,                   // pageshow 이벤트 처리 (bfcache 대응)
+        handlePageHide: true                    // pagehide 이벤트 처리
+    },
+
     // 마스터 색상 시스템 - 모든 색상의 단일 진실의 원천
     masterColors: {
         // 속성 색상
