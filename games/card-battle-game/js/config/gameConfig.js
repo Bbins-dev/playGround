@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.2.52',                        // 버전 넘버
+        number: '0.2.53',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -1784,11 +1784,11 @@ const GameConfig = {
         },
         // 활성 카드 글로우 설정
         activeCardGlow: {
-            color: '#ff4444',                 // 붉은색 글로우
-            secondaryColor: '#ff6666',        // 보조 글로우 색상
-            borderWidth: 4,                   // 더 두꺼운 테두리
-            glowRadius: 12,                   // 글로우 반경
-            glowIntensity: 0.8,               // 글로우 강도
+            color: '#FFFF00',                 // 네온 옐로우 (밝고 눈에 잘 띔)
+            secondaryColor: '#FFD700',        // 골드 옐로우 (보조 글로우 색상)
+            borderWidth: 10,                  // 매우 두꺼운 테두리 (6 → 10)
+            glowRadius: 35,                   // 넓은 글로우 반경 (20 → 35, 주변 카드 많이 가림)
+            glowIntensity: 1.2,               // 초강력 글로우 강도 (1.0 → 1.2)
             pulseSpeed: 2000,                 // 펄스 애니메이션 속도 (ms)
             fadeoutDuration: 800              // 잔상 페이드아웃 시간 (ms)
         },
