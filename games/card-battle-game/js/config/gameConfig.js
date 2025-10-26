@@ -85,7 +85,19 @@ const GameConfig = {
             animationThrottleMs: 16,            // 애니메이션 throttle (60fps)
             enablePassiveListeners: true,       // Passive 이벤트 리스너 활성화
             enableHardwareAcceleration: true,   // CSS 하드웨어 가속 활성화
-            heavyDamageThreshold: 20            // 화면 흔들림 트리거 데미지 비율 (%)
+            heavyDamageThreshold: 20,           // 화면 흔들림 트리거 데미지 비율 (%)
+
+            // 스마트 렌더링 시스템 (배터리 최적화)
+            smartRendering: {
+                enabled: true,                  // 스마트 렌더링 활성화 (배터리 절약)
+                renderOnlyWhenNeeded: true,     // 변경 시에만 렌더링 (대기 시 0fps)
+                maxFPS: 60,                     // 최대 프레임률
+                minFPS: 0,                      // 최소 프레임률 (대기 시)
+                pauseWhenInactive: true,        // 비활성화 시 렌더링 중지
+                singleRenderLoop: true,         // 단일 RAF 루프 사용 (이중 루프 방지)
+                stopWhenIdle: true,             // 유휴 상태에서 루프 완전 중지
+                idleTimeout: 100                // 유휴 판단 시간 (ms)
+            }
         },
 
         // 보안 설정
