@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.3.2',                        // 버전 넘버
+        number: '0.3.3',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -92,10 +92,24 @@ const GameConfig = {
                 enabled: true,                  // 스마트 렌더링 활성화 (배터리 절약)
                 renderOnlyWhenNeeded: true,     // 변경 시에만 렌더링 (대기 시 0fps)
                 maxFPS: 60,                     // 최대 프레임률
-                minFPS: 0,                      // 최소 프레임률 (대기 시)
+
+                // 게임 상태별 최소 FPS (레티나 디스플레이 끊김 방지)
+                minFPS: {
+                    menu: 0,                    // 메뉴: 이벤트 기반 (배터리 절약)
+                    battle: 30,                 // 전투: 30fps 보장 (부드러움)
+                    cardSelection: 15,          // 카드 선택: 15fps
+                    gallery: 0,                 // 갤러리: 이벤트 기반
+                    default: 0                  // 기본값: 이벤트 기반
+                },
+
+                // 고 DPI 디스플레이 보상 (레티나, 고해상도 모니터)
+                highDPICompensation: true,      // 레티나 디스플레이 보상 활성화
+                highDPIThreshold: 1.5,          // devicePixelRatio >= 1.5면 고 DPI로 판단
+                highDPIBattleMinFPS: 30,        // 고 DPI에서 전투 중 최소 FPS
+
                 pauseWhenInactive: true,        // 비활성화 시 렌더링 중지
                 singleRenderLoop: true,         // 단일 RAF 루프 사용 (이중 루프 방지)
-                stopWhenIdle: true,             // 유휴 상태에서 루프 완전 중지
+                stopWhenIdle: false,            // 유휴 상태 중지 비활성화 (안정성 우선)
                 idleTimeout: 100                // 유휴 판단 시간 (ms)
             }
         },
@@ -171,7 +185,7 @@ const GameConfig = {
         enableBattlePause: true,                // 백그라운드 시 전투 일시정지
         restoreDelay: 100,                      // 포그라운드 복귀 시 복원 딜레이 (ms)
         forceRerender: true,                    // 포그라운드 복귀 시 Canvas 강제 재렌더링
-        logVisibilityChanges: false,            // visibilitychange 이벤트 로그 (디버깅용)
+        logVisibilityChanges: true,             // visibilitychange 이벤트 로그 (디버깅용 활성화)
         handlePageShow: true,                   // pageshow 이벤트 처리 (bfcache 대응)
         handlePageHide: true                    // pagehide 이벤트 처리
     },
