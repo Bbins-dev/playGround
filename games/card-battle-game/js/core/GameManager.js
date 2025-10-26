@@ -40,6 +40,10 @@ class GameManager {
         this.isAnimating = false;
         this.lastRenderTime = 0;
 
+        // 고 DPI 디스플레이 감지 (레티나, 고해상도 모니터)
+        this.devicePixelRatio = window.devicePixelRatio || 1;
+        this.isHighDPI = this.devicePixelRatio >= (GameConfig?.constants?.performance?.smartRendering?.highDPIThreshold || 1.5);
+
         // 게임 데이터
         this.availableCards = [];
         this.selectedCards = [];
@@ -419,24 +423,26 @@ class GameManager {
             // 항상 update 실행 (로직 처리)
             this.update(deltaTime);
 
-            // 렌더링이 필요할 때만 실행 (배터리 최적화)
+            // 렌더링 판단 (레티나 디스플레이 보상 포함)
             if (smartRenderingConfig.renderOnlyWhenNeeded) {
-                if (this.needsRender || this.isAnimating) {
+                // shouldRenderFrame()으로 렌더링 여부 판단
+                if (this.shouldRenderFrame(currentTime)) {
                     this.render();
-                    this.needsRender = false;
                     this.lastRenderTime = currentTime;
-                }
 
-                // 유휴 상태 감지는 일단 비활성화 (안정성 우선)
-                // if (smartRenderingConfig.stopWhenIdle) {
-                //     const idleTime = currentTime - this.lastRenderTime;
-                //     if (idleTime > (smartRenderingConfig.idleTimeout || 100) && !this.isAnimating) {
-                //         return;
-                //     }
-                // }
+                    // 전투 중이거나 고 DPI 디스플레이에서는 needsRender 유지
+                    // (지속적인 렌더링 보장)
+                    const maintainRender = this.gameState === 'battle' ||
+                                         (this.isHighDPI && smartRenderingConfig.highDPICompensation);
+
+                    if (!maintainRender) {
+                        this.needsRender = false;
+                    }
+                }
             } else {
                 // 항상 렌더링 (레거시 모드)
                 this.render();
+                this.lastRenderTime = currentTime;
             }
 
             this.gameLoop = requestAnimationFrame(gameLoop);
@@ -472,6 +478,45 @@ class GameManager {
         if (!this.gameLoop && smartRenderingConfig?.enabled) {
             this.startGameLoop();
         }
+    }
+
+    /**
+     * 현재 프레임을 렌더링해야 하는지 판단 (레티나 디스플레이 보상 포함)
+     * @param {number} currentTime - 현재 시간 (ms)
+     * @returns {boolean} 렌더링 여부
+     */
+    shouldRenderFrame(currentTime) {
+        const smartRenderingConfig = GameConfig?.constants?.performance?.smartRendering;
+
+        // 스마트 렌더링 비활성화 시 항상 렌더링
+        if (!smartRenderingConfig?.enabled) {
+            return true;
+        }
+
+        // needsRender 플래그나 애니메이션 중이면 렌더링
+        if (this.needsRender || this.isAnimating) {
+            return true;
+        }
+
+        // 게임 상태별 최소 FPS 확인
+        const minFPSConfig = smartRenderingConfig.minFPS || {};
+        const minFPS = minFPSConfig[this.gameState] ?? minFPSConfig.default ?? 0;
+
+        // 최소 FPS가 0이면 이벤트 기반 렌더링 (needsRender만 체크)
+        if (minFPS === 0) {
+            return false;
+        }
+
+        // 최소 프레임 간격 계산 (ms)
+        const minFrameInterval = 1000 / minFPS;
+        const timeSinceLastRender = currentTime - this.lastRenderTime;
+
+        // 최소 프레임 간격이 지났으면 렌더링
+        if (timeSinceLastRender >= minFrameInterval) {
+            return true;
+        }
+
+        return false;
     }
 
     // 애니메이션 시작 알림
@@ -1774,14 +1819,34 @@ class GameManager {
             // Canvas 크기 업데이트
             this.updateCanvasSize();
 
-            // 강제 재렌더링
+            // 강제 재렌더링 요청 (스마트 렌더링 시스템 활성화)
+            this.needsRender = true;
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => this.requestRender(), i * 16);
+            }
+
+            // 강제 재렌더링 (UIManager 메서드가 있는 경우)
             if (config.forceRerender && this.uiManager) {
                 this.uiManager.forceFullRerender?.();
             }
 
-            // 전투 재개
-            if (config.enableBattlePause && this.battleSystem && this.gameState === 'battle') {
-                this.battleSystem.resume();
+            // 전투 중인 경우 전투 시스템 복원
+            if (this.battleSystem && this.gameState === 'battle') {
+                // 전투 재개
+                if (config.enableBattlePause) {
+                    this.battleSystem.resume();
+                }
+
+                // UI 전체 동기화 (플레이어, 적 상태)
+                if (this.hpBarSystem && this.player && this.enemy) {
+                    this.hpBarSystem.updatePlayerInfo(this.player, this.enemy);
+                    this.hpBarSystem.updateStatusEffects(this.player, true);
+                    this.hpBarSystem.updateStatusEffects(this.enemy, false);
+                    this.hpBarSystem.updateBuffs(this.player, true);
+                    this.hpBarSystem.updateBuffs(this.enemy, false);
+                    this.hpBarSystem.updateDefenseElementBadge(this.player, true);
+                    this.hpBarSystem.updateDefenseElementBadge(this.enemy, false);
+                }
             }
 
             // 오디오 재개 (사용자가 명시적으로 음소거하지 않은 경우만)
@@ -1794,13 +1859,8 @@ class GameManager {
                 this.animationManager.resumeAll?.();
             }
 
-            // UI 전체 동기화
-            if (this.hpBarSystem && this.player && this.enemy && this.gameState === 'battle') {
-                this.hpBarSystem.updatePlayerInfo(this.player, this.enemy);
-                this.hpBarSystem.updateStatusEffects(this.player, true);
-                this.hpBarSystem.updateStatusEffects(this.enemy, false);
-                this.hpBarSystem.updateBuffs(this.player, true);
-                this.hpBarSystem.updateBuffs(this.enemy, false);
+            if (config.logVisibilityChanges) {
+                console.log('[PageLifecycle] Foreground restoration complete');
             }
         }, restoreDelay);
     }
