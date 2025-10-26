@@ -526,6 +526,17 @@ class HPBarSystem {
             );
         }
 
+        // 우비 버프 표시 (스택 기반 - 턴이 아님!)
+        if (player.hasRaincoatProtection && player.hasRaincoatProtection()) {
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'raincoat',
+                player.raincoatStacks,
+                isPlayer
+            );
+        }
+
         // 버프가 없고 상태이상도 없으면 컨테이너 숨김
         const statusContainer = isPlayer ? this.playerStatusGrid : this.enemyStatusGrid;
         if (!buffsContainer.children.length && !statusContainer.children.length) {
