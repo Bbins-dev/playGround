@@ -1129,19 +1129,19 @@ const CardDatabase = {
             }
         });
 
-        // 피뢰침 카드 (전기 속성, 다음 전기 공격카드 100% 명중 보장)
+        // 정전기 카드 (전기 속성, 손패 전기 카드 수만큼 전기 공격력 증가)
         this.addCard({
-            id: 'lightning_rod',
-            nameKey: 'auto_battle_card_game.ui.cards.lightning_rod.name',
+            id: 'static',
+            nameKey: 'auto_battle_card_game.ui.cards.static.name',
             type: 'buff',
             element: 'electric',
             power: 0,
-            accuracy: 80,
+            accuracy: 70,
             activationCount: 1,
-            descriptionKey: 'auto_battle_card_game.ui.cards.lightning_rod.description',
+            descriptionKey: 'auto_battle_card_game.ui.cards.static.description',
             effect: function(user, target, battleSystem) {
-                // 중복 체크 (이미 피뢰침 버프가 있으면 실패)
-                if (user.hasLightningRodBuff && user.hasLightningRodBuff()) {
+                // 중복 체크 (이미 정전기 버프가 있으면 실패)
+                if (user.hasStaticBuff && user.hasStaticBuff()) {
                     return {
                         success: true,
                         conditionFailed: true,
@@ -1150,14 +1150,14 @@ const CardDatabase = {
                     };
                 }
 
-                // 피뢰침 버프 획득 (1턴, 중복 불가)
-                // ★ Configuration-Driven: lightningRodGain만 반환
+                // 정전기 버프 획득 (1턴, 중첩 불가)
+                // ★ Configuration-Driven: staticGain만 반환
 
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
-                    buffType: 'lightningRod',
-                    lightningRodGain: 1,
+                    buffType: 'static',
+                    staticGain: 1,
                     element: this.element,
                     templateData: {
                         value: 1  // 획득할 값
