@@ -40,26 +40,45 @@ class CardBattleGame {
         this.protectGameData();
     }
 
+    // Deep Freeze 유틸리티 (재귀적 불변화)
+    deepFreeze(obj) {
+        // null이나 primitive 타입은 건너뛰기
+        if (obj === null || typeof obj !== 'object') {
+            return obj;
+        }
+
+        // 이미 frozen된 객체는 건너뛰기
+        if (Object.isFrozen(obj)) {
+            return obj;
+        }
+
+        // 현재 레벨 freeze
+        Object.freeze(obj);
+
+        // 모든 속성에 대해 재귀적으로 freeze
+        Object.getOwnPropertyNames(obj).forEach(prop => {
+            const value = obj[prop];
+            if (value !== null &&
+                (typeof value === 'object' || typeof value === 'function') &&
+                !Object.isFrozen(value)) {
+                this.deepFreeze(value);
+            }
+        });
+
+        return obj;
+    }
+
     // 게임 데이터 보호 (치팅 방지)
     protectGameData() {
         try {
-            // 카드 데이터베이스 보호 (읽기 전용)
+            // 카드 데이터베이스 보호 (Deep Freeze로 완전 불변화)
             if (window.CardDatabase) {
-                Object.freeze(window.CardDatabase);
-                Object.freeze(window.CardDatabase.cards);
-                // 개별 카드 데이터 보호
-                Object.values(window.CardDatabase.cards).forEach(card => {
-                    Object.freeze(card);
-                });
+                this.deepFreeze(window.CardDatabase);
             }
 
-            // GameConfig 보호
+            // GameConfig 보호 (Deep Freeze로 완전 불변화)
             if (window.GameConfig) {
-                Object.freeze(window.GameConfig);
-                Object.freeze(window.GameConfig.elements);
-                Object.freeze(window.GameConfig.cardTypes);
-                Object.freeze(window.GameConfig.canvas);
-                Object.freeze(window.GameConfig.ui);
+                this.deepFreeze(window.GameConfig);
             }
 
             // Player와 Enemy 클래스의 중요 메서드 보호
@@ -115,10 +134,12 @@ class CardBattleGame {
 
     // 게임 무결성 모니터링 시스템
     setupIntegrityMonitoring() {
-        // 5초마다 무결성 검사
+        // Configuration-Driven: 검사 주기 설정 (2초마다 - 강화)
+        const checkInterval = GameConfig?.constants?.security?.integrityCheckInterval || 2000;
+
         this.integrityTimer = setInterval(() => {
             this.performIntegrityCheck();
-        }, 5000);
+        }, checkInterval);
 
         // 페이지 가시성 변경 시 검사
         document.addEventListener('visibilitychange', () => {
@@ -128,7 +149,7 @@ class CardBattleGame {
         });
     }
 
-    // 무결성 검사 수행
+    // 무결성 검사 수행 (강화 버전)
     performIntegrityCheck() {
         try {
             // GameManager 존재 및 상태 확인
@@ -136,34 +157,81 @@ class CardBattleGame {
                 return;
             }
 
-            const gameManager = this.gameManager;
+            const gm = this.gameManager;
+            const securityConfig = GameConfig?.constants?.security;
+            const violations = [];
 
-            // Player/Enemy HP 범위 검사
-            if (gameManager.player && typeof gameManager.player.hp === 'number') {
-                if (gameManager.player.hp < 0 || gameManager.player.hp > gameManager.player.maxHP + 50) {
-                    console.warn('Player HP 비정상 값 감지:', gameManager.player.hp);
-                    this.resetToSafeState();
-                    return;
+            // 1. Player/Enemy HP 범위 검사 (Configuration-Driven)
+            if (gm.player && typeof gm.player.hp === 'number') {
+                const maxAllowedHP = gm.player.maxHP + (securityConfig?.maxHPTolerance || 50);
+                if (gm.player.hp < 0 || gm.player.hp > maxAllowedHP) {
+                    violations.push(`Player HP 비정상: ${gm.player.hp} (최대: ${maxAllowedHP})`);
                 }
             }
 
-            if (gameManager.enemy && typeof gameManager.enemy.hp === 'number') {
-                if (gameManager.enemy.hp < 0 || gameManager.enemy.hp > gameManager.enemy.maxHP + 50) {
-                    console.warn('Enemy HP 비정상 값 감지:', gameManager.enemy.hp);
-                    this.resetToSafeState();
-                    return;
+            if (gm.enemy && typeof gm.enemy.hp === 'number') {
+                const maxAllowedHP = gm.enemy.maxHP + (securityConfig?.maxHPTolerance || 50);
+                if (gm.enemy.hp < 0 || gm.enemy.hp > maxAllowedHP) {
+                    violations.push(`Enemy HP 비정상: ${gm.enemy.hp} (최대: ${maxAllowedHP})`);
                 }
             }
 
-            // 중요 객체 변조 검사
+            // 2. 손패 크기 검증 (Configuration-Driven)
+            if (gm.player?.hand && Array.isArray(gm.player.hand)) {
+                const maxHandSize = GameConfig.player.maxHandSize + (securityConfig?.maxHandSizeTolerance || 5);
+                if (gm.player.hand.length > maxHandSize) {
+                    violations.push(`손패 크기 초과: ${gm.player.hand.length} (최대: ${maxHandSize})`);
+                }
+            }
+
+            // 3. 버프 수치 검증 (Configuration-Driven)
+            if (gm.player) {
+                const maxBuff = securityConfig?.maxBuffValue || 100;
+                const buffChecks = [
+                    { name: 'strength', value: gm.player.strength },
+                    { name: 'focusTurns', value: gm.player.focusTurns },
+                    { name: 'speedTurns', value: gm.player.speedTurns }
+                ];
+
+                buffChecks.forEach(check => {
+                    if (check.value > maxBuff) {
+                        violations.push(`버프 수치 비정상 (${check.name}): ${check.value} (최대: ${maxBuff})`);
+                    }
+                });
+            }
+
+            // 4. 스테이지 번호 검증 (Configuration-Driven)
+            const maxStage = securityConfig?.maxStageNumber || 100;
+            if (gm.currentStage > maxStage || gm.currentStage < 1) {
+                violations.push(`스테이지 번호 비정상: ${gm.currentStage} (범위: 1-${maxStage})`);
+            }
+
+            // 5. 전투 상태 논리 검증
+            if (gm.battleSystem?.battlePhase === 'ended' && gm.isGameRunning) {
+                // 전투가 정상적으로 끝났는지 재확인
+                const playerDead = gm.player?.isDead();
+                const enemyDead = gm.enemy?.isDead();
+                if (!playerDead && !enemyDead) {
+                    violations.push('전투 상태 비정상: 양측 모두 생존 중인데 전투 종료됨');
+                }
+            }
+
+            // 6. 중요 객체 변조 검사
             if (window.CardDatabase && !Object.isFrozen(window.CardDatabase)) {
-                console.warn('CardDatabase 보호가 해제됨');
-                Object.freeze(window.CardDatabase);
+                violations.push('CardDatabase 보호 해제 감지');
+                this.deepFreeze(window.CardDatabase);
             }
 
             if (window.GameConfig && !Object.isFrozen(window.GameConfig)) {
-                console.warn('GameConfig 보호가 해제됨');
-                Object.freeze(window.GameConfig);
+                violations.push('GameConfig 보호 해제 감지');
+                this.deepFreeze(window.GameConfig);
+            }
+
+            // 7. 위반 사항 처리
+            if (violations.length > 0) {
+                console.error('[CHEAT DETECTED] 게임 무결성 위반:', violations);
+                this.resetToSafeState();
+                return;
             }
 
         } catch (error) {

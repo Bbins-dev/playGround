@@ -1,3 +1,6 @@
+// ★ WeakMap을 사용한 Private Storage (치트 방지)
+const _rerollsRemaining = new WeakMap();
+
 /**
  * 승리/패배 모달 관리 클래스
  */
@@ -51,7 +54,10 @@ class VictoryDefeatModal {
         this.selectedRewardCard = null;
         this.selectedHandCardIndex = null;
         this.isShowingCardRewards = false;
-        this.rerollsRemaining = 0; // Re-roll 남은 횟수
+
+        // ★ rerollsRemaining을 WeakMap으로 보호 (치트 방지)
+        _rerollsRemaining.set(this, 0);
+
         this.viewOnlyMode = false; // 손패 확인 전용 모드 플래그
 
         // Canvas 요소들
@@ -64,7 +70,30 @@ class VictoryDefeatModal {
         // DOMCardRenderer 인스턴스 (확대 카드용)
         this.domCardRenderer = new DOMCardRenderer();
 
+        // ★ DOM 이벤트 보호: 주기적 검증 타이머 (치트 방지)
+        this.integrityTimer = null;
+
         this.initializeEventListeners();
+        this.setupDOMIntegrityCheck();
+    }
+
+    // ★ rerollsRemaining Getter/Setter (WeakMap 접근 제어)
+    getRerollsRemaining() {
+        return _rerollsRemaining.get(this) || 0;
+    }
+
+    setRerollsRemaining(value) {
+        // 유효성 검증 (음수 방지, 최대값 제한)
+        const maxRerolls = GameConfig?.constants?.rewards?.maxRerollsPerVictory || 1;
+        const validatedValue = Math.max(0, Math.min(value, maxRerolls));
+        _rerollsRemaining.set(this, validatedValue);
+    }
+
+    decrementRerolls() {
+        const current = this.getRerollsRemaining();
+        if (current > 0) {
+            _rerollsRemaining.set(this, current - 1);
+        }
     }
 
     initializeEventListeners() {
@@ -224,8 +253,8 @@ class VictoryDefeatModal {
         // 상태 초기화 먼저
         this.resetVictoryState();
 
-        // Re-roll 횟수 초기화 (Configuration-Driven)
-        this.rerollsRemaining = GameConfig?.constants?.rewards?.maxRerollsPerVictory || 1;
+        // Re-roll 횟수 초기화 (Configuration-Driven) - WeakMap 사용
+        this.setRerollsRemaining(GameConfig?.constants?.rewards?.maxRerollsPerVictory || 1);
 
         // 콜백 설정 (resetVictoryState 이후에!)
         this.onVictoryContinue = callback;
@@ -474,6 +503,9 @@ class VictoryDefeatModal {
             this.victoryModal.classList.add('hidden');
         }
         this.onVictoryContinue = null;
+
+        // ★ DOM 무결성 검사 타이머 정리 (메모리 누수 방지)
+        this.cleanupDOMIntegrityCheck();
     }
 
     /**
@@ -485,6 +517,9 @@ class VictoryDefeatModal {
         }
         this.onDefeatRestart = null;
         this.onDefeatMainMenu = null;
+
+        // ★ DOM 무결성 검사 타이머 정리 (메모리 누수 방지)
+        this.cleanupDOMIntegrityCheck();
     }
 
     /**
@@ -504,7 +539,7 @@ class VictoryDefeatModal {
         this.selectedHandCardIndex = null;
         this.isShowingCardRewards = false;
         this.tempSelectedCard = null; // 임시 저장 변수 초기화
-        this.rerollsRemaining = 0; // Re-roll 횟수 초기화
+        this.setRerollsRemaining(0); // Re-roll 횟수 초기화 (WeakMap 사용)
         this.viewOnlyMode = false; // 손패 확인 모드 초기화
 
         // UI 요소 숨기기
@@ -773,9 +808,14 @@ class VictoryDefeatModal {
      * Re-roll 처리 (다시뽑기)
      */
     handleReroll() {
-        // 안전 체크: Re-roll 횟수 소진 시 즉시 리턴
-        if (this.rerollsRemaining <= 0) {
-            console.warn('[VictoryDefeatModal] Re-roll 횟수 소진');
+        // ★ 안전 체크: Re-roll 횟수 소진 시 즉시 리턴 (WeakMap 사용)
+        if (this.getRerollsRemaining() <= 0) {
+            console.warn('[CHEAT ATTEMPT] Re-roll 시도 차단 - 남은 횟수 0');
+            // 버튼 강제 비활성화 (DOM 조작 방지)
+            if (this.victoryRerollBtn) {
+                this.victoryRerollBtn.disabled = true;
+                this.victoryRerollBtn.classList.add('disabled');
+            }
             return;
         }
 
@@ -790,20 +830,22 @@ class VictoryDefeatModal {
         // 새 카드로 교체 및 재렌더링
         this.setupCardRewards(newRewardCards);
 
-        // Re-roll 횟수 차감
-        this.rerollsRemaining--;
+        // Re-roll 횟수 차감 (WeakMap 사용)
+        this.decrementRerolls();
 
         // 버튼 상태 업데이트 (0회 남은 경우 즉시 비활성화)
         this.updateRerollButton();
     }
 
     /**
-     * Re-roll 버튼 상태 업데이트
+     * Re-roll 버튼 상태 업데이트 (WeakMap 사용)
      */
     updateRerollButton() {
         if (!this.victoryRerollBtn) return;
 
-        if (this.rerollsRemaining <= 0) {
+        const remainingRerolls = this.getRerollsRemaining();
+
+        if (remainingRerolls <= 0) {
             // Re-roll 횟수 소진: 버튼 비활성화 (CSS에서 스타일 처리)
             this.victoryRerollBtn.disabled = true;
             this.victoryRerollBtn.classList.add('disabled');
@@ -1284,6 +1326,72 @@ class VictoryDefeatModal {
             normal: '⭐'  // 👊 대신 ⭐ 사용
         };
         return symbols[element] || '❓';
+    }
+
+    /**
+     * DOM 무결성 검사 설정 (치트 방지)
+     */
+    setupDOMIntegrityCheck() {
+        // Configuration-Driven: 검사 주기 설정 (1초마다)
+        const checkInterval = GameConfig?.constants?.security?.domCheckInterval || 1000;
+
+        this.integrityTimer = setInterval(() => {
+            this.performDOMIntegrityCheck();
+        }, checkInterval);
+    }
+
+    /**
+     * DOM 무결성 검사 수행 (주기적 검증)
+     */
+    performDOMIntegrityCheck() {
+        // 카드 보상 화면이 표시 중일 때만 검사
+        if (!this.isShowingCardRewards) {
+            return;
+        }
+
+        // Re-roll 버튼 상태 검증
+        if (this.victoryRerollBtn) {
+            const actualRemaining = this.getRerollsRemaining();
+            const buttonDisabled = this.victoryRerollBtn.disabled;
+
+            // 불일치 감지: 남은 횟수 0인데 버튼이 활성화된 경우
+            if (actualRemaining <= 0 && !buttonDisabled) {
+                console.warn('[CHEAT DETECTED] Re-roll 버튼 상태 복구 시도');
+                this.victoryRerollBtn.disabled = true;
+                this.victoryRerollBtn.classList.add('disabled');
+            }
+
+            // 불일치 감지: 남은 횟수 있는데 버튼이 비활성화된 경우 (정상 복구)
+            if (actualRemaining > 0 && buttonDisabled) {
+                this.victoryRerollBtn.disabled = false;
+                this.victoryRerollBtn.classList.remove('disabled');
+            }
+        }
+
+        // '덱에 추가' 버튼 상태 검증 (손패 크기)
+        if (this.victoryAddToDeckBtn && this.gameManager && this.gameManager.player) {
+            const currentHandSize = this.gameManager.player.hand.length;
+            const maxHandSize = GameConfig.player.maxHandSize;
+            const isHandFull = currentHandSize >= maxHandSize;
+            const buttonDisabled = this.victoryAddToDeckBtn.disabled;
+
+            // 불일치 감지: 손패 가득 찼는데 버튼이 활성화된 경우
+            if (isHandFull && !buttonDisabled) {
+                console.warn('[CHEAT DETECTED] 덱 추가 버튼 상태 복구 시도');
+                this.victoryAddToDeckBtn.disabled = true;
+                this.victoryAddToDeckBtn.classList.add('disabled');
+            }
+        }
+    }
+
+    /**
+     * DOM 무결성 검사 정리
+     */
+    cleanupDOMIntegrityCheck() {
+        if (this.integrityTimer) {
+            clearInterval(this.integrityTimer);
+            this.integrityTimer = null;
+        }
     }
 
     /**
