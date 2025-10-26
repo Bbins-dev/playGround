@@ -203,6 +203,38 @@ class GameManager {
         // Canvas 크기 설정 및 반응형 업데이트
         this.updateCanvasSize();
 
+        // Canvas 컨텍스트 손실/복원 이벤트 처리 (모바일 백그라운드 대응)
+        this.canvas.addEventListener('contextlost', (e) => {
+            e.preventDefault(); // 기본 동작 방지 (자동 복원 시도)
+            console.warn('[GameManager] Canvas context lost - preventing auto-restore');
+
+            // 게임 일시정지 (복원될 때까지)
+            if (this.battleSystem && this.gameState === 'battle') {
+                this.battleSystem.pause();
+            }
+        });
+
+        this.canvas.addEventListener('contextrestored', () => {
+            console.log('[GameManager] Canvas context restored - reinitializing');
+
+            // 컨텍스트 재설정
+            this.ctx = this.canvas.getContext('2d');
+            this.ctx.imageSmoothingEnabled = true;
+
+            // Canvas 크기 재설정
+            this.updateCanvasSize();
+
+            // 강제 재렌더링
+            if (this.uiManager) {
+                this.uiManager.forceFullRerender?.();
+            }
+
+            // 전투 재개
+            if (this.battleSystem && this.gameState === 'battle') {
+                this.battleSystem.resume();
+            }
+        });
+
     }
 
     // 레이아웃 안정화 대기
@@ -320,6 +352,13 @@ class GameManager {
             [document, 'keydown', (e) => this.handleKeyDown(e)],
             [this.canvas, 'wheel', (e) => this.handleWheelInput(e)],
             [window, 'resize', () => this.handleResize()]
+        ]);
+
+        // 페이지 라이프사이클 이벤트 (모바일 백그라운드 복원 대응)
+        this.addEventListeners([
+            [document, 'visibilitychange', () => this.handleVisibilityChange()],
+            [window, 'pageshow', (e) => this.handlePageShow(e)],
+            [window, 'pagehide', (e) => this.handlePageHide(e)]
         ]);
 
         // Canvas 이벤트는 메뉴가 DOM으로 전환되어 더 이상 필요하지 않음
@@ -1557,6 +1596,138 @@ class GameManager {
             localStorage.setItem('cardBattleGame_save', JSON.stringify(saveData));
         } catch (error) {
         }
+    }
+
+    // ===== 페이지 라이프사이클 이벤트 핸들러 (모바일 백그라운드 복원 대응) =====
+
+    /**
+     * Visibility Change 핸들러 - 페이지가 백그라운드/포그라운드로 전환될 때
+     * 모바일에서 화면을 끄거나 다른 앱으로 전환 시 호출됨
+     */
+    handleVisibilityChange() {
+        const config = GameConfig?.pageLifecycle || {};
+
+        if (config.logVisibilityChanges) {
+            console.log(`[PageLifecycle] Visibility changed: ${document.hidden ? 'hidden' : 'visible'}`);
+        }
+
+        if (document.hidden) {
+            // 백그라운드로 전환 - 일시정지
+            this.handleBackgroundTransition();
+        } else {
+            // 포그라운드로 복귀 - 복원
+            this.handleForegroundRestore();
+        }
+    }
+
+    /**
+     * 백그라운드 전환 처리
+     */
+    handleBackgroundTransition() {
+        const config = GameConfig?.pageLifecycle || {};
+
+        // 전투 일시정지
+        if (config.enableBattlePause && this.battleSystem && this.gameState === 'battle') {
+            this.battleSystem.pause();
+        }
+
+        // 오디오 일시정지
+        if (config.enableAudioPause && this.audioSystem) {
+            this.audioSystem.pauseAllAudio?.();
+        }
+
+        // 애니메이션 일시정지
+        if (this.animationManager) {
+            this.animationManager.pauseAll?.();
+        }
+    }
+
+    /**
+     * 포그라운드 복원 처리
+     */
+    handleForegroundRestore() {
+        const config = GameConfig?.pageLifecycle || {};
+
+        // 복원 딜레이 적용 (레이아웃 안정화 대기)
+        const restoreDelay = config.restoreDelay || 100;
+
+        setTimeout(() => {
+            // Canvas 크기 업데이트
+            this.updateCanvasSize();
+
+            // 강제 재렌더링
+            if (config.forceRerender && this.uiManager) {
+                this.uiManager.forceFullRerender?.();
+            }
+
+            // 전투 재개
+            if (config.enableBattlePause && this.battleSystem && this.gameState === 'battle') {
+                this.battleSystem.resume();
+            }
+
+            // 오디오 재개 (사용자가 명시적으로 음소거하지 않은 경우만)
+            if (config.enableAudioPause && this.audioSystem) {
+                this.audioSystem.resumeAllAudio?.();
+            }
+
+            // 애니메이션 재개
+            if (this.animationManager) {
+                this.animationManager.resumeAll?.();
+            }
+
+            // UI 전체 동기화
+            if (this.hpBarSystem && this.player && this.enemy && this.gameState === 'battle') {
+                this.hpBarSystem.updatePlayerInfo(this.player, this.enemy);
+                this.hpBarSystem.updateStatusEffects(this.player, true);
+                this.hpBarSystem.updateStatusEffects(this.enemy, false);
+                this.hpBarSystem.updateBuffs(this.player, true);
+                this.hpBarSystem.updateBuffs(this.enemy, false);
+            }
+        }, restoreDelay);
+    }
+
+    /**
+     * Page Show 핸들러 - bfcache(Back-Forward Cache)에서 복원될 때
+     * 모바일 Safari에서 뒤로가기 버튼으로 돌아올 때 호출됨
+     * @param {PageTransitionEvent} event
+     */
+    handlePageShow(event) {
+        const config = GameConfig?.pageLifecycle || {};
+
+        if (!config.handlePageShow) return;
+
+        // bfcache에서 복원된 경우
+        if (event.persisted) {
+            if (config.logVisibilityChanges) {
+                console.log('[PageLifecycle] Page restored from bfcache');
+            }
+
+            // 전체 재초기화 (bfcache는 메모리 상태를 그대로 복원하므로 Canvas가 깨질 수 있음)
+            this.handleForegroundRestore();
+
+            // 추가로 CSS 변수도 재동기화
+            this.syncCSSVariables();
+        }
+    }
+
+    /**
+     * Page Hide 핸들러 - 페이지가 숨겨질 때 (bfcache 진입 전)
+     * @param {PageTransitionEvent} event
+     */
+    handlePageHide(event) {
+        const config = GameConfig?.pageLifecycle || {};
+
+        if (!config.handlePageHide) return;
+
+        if (config.logVisibilityChanges) {
+            console.log('[PageLifecycle] Page hiding');
+        }
+
+        // 백그라운드 전환 처리 (일시정지 등)
+        this.handleBackgroundTransition();
+
+        // 선택적: 게임 상태 저장 (향후 확장용)
+        // this.saveGameData();
     }
 
     // 게임 매니저 파괴

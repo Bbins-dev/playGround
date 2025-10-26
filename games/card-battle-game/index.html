@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="auto_battle_card_game.page_title">자동전투 카드대전</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔️</text></svg>">
-    <link rel="stylesheet" href="style.css?v=0.2.2">
-    <link rel="stylesheet" href="css/components.css?v=0.2.2">
+    <link rel="stylesheet" href="style.css?v=0.2.3">
+    <link rel="stylesheet" href="css/components.css?v=0.2.3">
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1398958608599791"
      crossorigin="anonymous"></script>
@@ -307,7 +307,7 @@
                         <p data-i18n="auto_battle_card_game.tutorial.stat_power">⚔️ 공격력: 카드가 입히는 피해량</p>
                         <p data-i18n="auto_battle_card_game.tutorial.stat_accuracy">🎯 명중률: 카드 발동 성공 확률 (100% = 항상 성공)</p>
                         <p data-i18n="auto_battle_card_game.tutorial.stat_activation">🔄 발동횟수: 한 턴에 카드가 발동되는 횟수</p>
-                        <p data-i18n="auto_battle_card_game.tutorial.stat_note">💡 카드 위에 마우스를 올리면 자세한 정보를 확인할 수 있습니다</p>
+                        <p data-i18n="auto_battle_card_game.tutorial.stat_note" data-i18n-parse>💡 카드 위에 마우스를 올리면 자세한 정보를 확인할 수 있습니다</p>
                     </div>
                 </div>
 
@@ -558,50 +558,50 @@
 
     <!-- 스크립트 로드 -->
     <!-- 설정 파일들 먼저 로드 -->
-    <script src="js/config/gameConfig.js?v=0.2.2"></script>
+    <script src="js/config/gameConfig.js?v=0.2.3"></script>
     <!-- i18n 시스템 -->
-    <script src="js/i18n.js?v=0.2.2"></script>
+    <script src="js/i18n.js?v=0.2.3"></script>
     <!-- 유틸리티 클래스들 -->
-    <script src="js/utils/I18nHelper.js?v=0.2.2"></script>
-    <script src="js/utils/CanvasUtils.js?v=0.2.2"></script>
-    <script src="js/utils/TextRenderer.js?v=0.2.2"></script>
-    <script src="js/utils/ColorUtils.js?v=0.2.2"></script>
-    <script src="js/utils/TimerManager.js?v=0.2.2"></script>
-    <script src="js/utils/RenderOptimizer.js?v=0.2.2"></script>
-    <script src="js/utils/DescriptionParser.js?v=0.2.2"></script>
-    <script src="js/config/cardDatabase.js?v=0.2.2"></script>
-    <script src="js/entities/Card.js?v=0.2.2"></script>
-    <script src="js/entities/Player.js?v=0.2.2"></script>
-    <script src="js/entities/Enemy.js?v=0.2.2"></script>
+    <script src="js/utils/I18nHelper.js?v=0.2.3"></script>
+    <script src="js/utils/CanvasUtils.js?v=0.2.3"></script>
+    <script src="js/utils/TextRenderer.js?v=0.2.3"></script>
+    <script src="js/utils/ColorUtils.js?v=0.2.3"></script>
+    <script src="js/utils/TimerManager.js?v=0.2.3"></script>
+    <script src="js/utils/RenderOptimizer.js?v=0.2.3"></script>
+    <script src="js/utils/DescriptionParser.js?v=0.2.3"></script>
+    <script src="js/config/cardDatabase.js?v=0.2.3"></script>
+    <script src="js/entities/Card.js?v=0.2.3"></script>
+    <script src="js/entities/Player.js?v=0.2.3"></script>
+    <script src="js/entities/Enemy.js?v=0.2.3"></script>
     <!-- 오디오 시스템 -->
-    <script src="js/systems/AudioSystem.js?v=0.2.2"></script>
-    <script src="js/ui/HPBarSystem.js?v=0.2.2"></script>
-    <script src="js/ui/BuffStatusTooltipModal.js?v=0.2.2"></script>
-    <script src="js/ui/EffectSystem.js?v=0.2.2"></script>
+    <script src="js/systems/AudioSystem.js?v=0.2.3"></script>
+    <script src="js/ui/HPBarSystem.js?v=0.2.3"></script>
+    <script src="js/ui/BuffStatusTooltipModal.js?v=0.2.3"></script>
+    <script src="js/ui/EffectSystem.js?v=0.2.3"></script>
     <!-- UI 기본 컴포넌트 먼저 로드 -->
-    <script src="js/ui/LoadingScreen.js?v=0.2.2"></script>
-    <script src="js/ui/VolumeControl.js?v=0.2.2"></script>
-    <script src="js/ui/CardRenderer.js?v=0.2.2"></script>
-    <script src="js/ui/DOMCardRenderer.js?v=0.2.2"></script>
-    <script src="js/ui/Renderer.js?v=0.2.2"></script>
-    <script src="js/ui/AnimationManager.js?v=0.2.2"></script>
-    <script src="js/ui/StageIndicator.js?v=0.2.2"></script>
+    <script src="js/ui/LoadingScreen.js?v=0.2.3"></script>
+    <script src="js/ui/VolumeControl.js?v=0.2.3"></script>
+    <script src="js/ui/CardRenderer.js?v=0.2.3"></script>
+    <script src="js/ui/DOMCardRenderer.js?v=0.2.3"></script>
+    <script src="js/ui/Renderer.js?v=0.2.3"></script>
+    <script src="js/ui/AnimationManager.js?v=0.2.3"></script>
+    <script src="js/ui/StageIndicator.js?v=0.2.3"></script>
 
     <!-- 모달 클래스들 -->
-    <script src="js/ui/PlayerNameModal.js?v=0.2.2"></script>
-    <script src="js/ui/CardSelectionModal.js?v=0.2.2"></script>
-    <script src="js/ui/VictoryDefeatModal.js?v=0.2.2"></script>
+    <script src="js/ui/PlayerNameModal.js?v=0.2.3"></script>
+    <script src="js/ui/CardSelectionModal.js?v=0.2.3"></script>
+    <script src="js/ui/VictoryDefeatModal.js?v=0.2.3"></script>
 
     <!-- 화면 클래스들 -->
-    <script src="js/screens/MainMenu.js?v=0.2.2"></script>
+    <script src="js/screens/MainMenu.js?v=0.2.3"></script>
 
     <!-- UI 관리자 (모든 UI 컴포넌트 이후) -->
-    <script src="js/ui/UIManager.js?v=0.2.2"></script>
+    <script src="js/ui/UIManager.js?v=0.2.3"></script>
 
     <!-- 코어 시스템들 (UI 이후) -->
-    <script src="js/core/BattleSystem.js?v=0.2.2"></script>
-    <script src="js/core/CardManager.js?v=0.2.2"></script>
-    <script src="js/core/GameManager.js?v=0.2.2"></script>
+    <script src="js/core/BattleSystem.js?v=0.2.3"></script>
+    <script src="js/core/CardManager.js?v=0.2.3"></script>
+    <script src="js/core/GameManager.js?v=0.2.3"></script>
     <!-- CardSelection.js 제거 - CardSelectionModal.js로 대체됨 -->
     <script src="game.js"></script>
 </body>
