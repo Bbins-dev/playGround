@@ -261,7 +261,7 @@
         },
         "flame_ascension": {
           "name": "Flame Ascension",
-          "description": "Deal 5 damage to yourself, then deal 12 damage to the opponent and gain 1 {buff:strength} on hit. Has a chance to inflict {status:burn}."
+          "description": "Deal 5 damage to yourself, then deal 10 damage to the opponent and gain 1 {buff:strength} on hit. Has a chance to inflict {status:burn}."
         },
         "bubble_strike": {
           "name": "Bubble Strike",
@@ -429,7 +429,7 @@
         },
         "karura_strike": {
           "name": "Karura Strike",
-          "description": "A technique learned from the Karura clan. Deal 10 damage to yourself, then deal 24 damage to opponent and inflict {status:burn}."
+          "description": "A technique learned from the Karura clan. Deal 10 damage to yourself, then deal 20 damage to opponent and inflict {status:burn}."
         },
         "fireball": {
           "name": "Fireball",
