@@ -837,20 +837,23 @@ style.textContent = `
     }
 
     @keyframes screenShake {
-        0%, 100% { transform: translate(0, 0); }
-        10% { transform: translate(calc(var(--shake-distance, 10px) * -1), calc(var(--shake-distance, 10px) * 1)); }
-        20% { transform: translate(calc(var(--shake-distance, 10px) * 1), calc(var(--shake-distance, 10px) * -1)); }
-        30% { transform: translate(calc(var(--shake-distance, 10px) * -0.8), calc(var(--shake-distance, 10px) * 0.8)); }
-        40% { transform: translate(calc(var(--shake-distance, 10px) * 0.8), calc(var(--shake-distance, 10px) * -0.8)); }
-        50% { transform: translate(calc(var(--shake-distance, 10px) * -0.6), calc(var(--shake-distance, 10px) * 0.6)); }
-        60% { transform: translate(calc(var(--shake-distance, 10px) * 0.6), calc(var(--shake-distance, 10px) * -0.6)); }
-        70% { transform: translate(calc(var(--shake-distance, 10px) * -0.4), calc(var(--shake-distance, 10px) * 0.4)); }
-        80% { transform: translate(calc(var(--shake-distance, 10px) * 0.4), calc(var(--shake-distance, 10px) * -0.4)); }
-        90% { transform: translate(calc(var(--shake-distance, 10px) * -0.2), calc(var(--shake-distance, 10px) * 0.2)); }
+        0%, 100% { transform: translate3d(0, 0, 0); }
+        10% { transform: translate3d(calc(var(--shake-distance, 10px) * -1), calc(var(--shake-distance, 10px) * 1), 0); }
+        20% { transform: translate3d(calc(var(--shake-distance, 10px) * 1), calc(var(--shake-distance, 10px) * -1), 0); }
+        30% { transform: translate3d(calc(var(--shake-distance, 10px) * -0.8), calc(var(--shake-distance, 10px) * 0.8), 0); }
+        40% { transform: translate3d(calc(var(--shake-distance, 10px) * 0.8), calc(var(--shake-distance, 10px) * -0.8), 0); }
+        50% { transform: translate3d(calc(var(--shake-distance, 10px) * -0.6), calc(var(--shake-distance, 10px) * 0.6), 0); }
+        60% { transform: translate3d(calc(var(--shake-distance, 10px) * 0.6), calc(var(--shake-distance, 10px) * -0.6), 0); }
+        70% { transform: translate3d(calc(var(--shake-distance, 10px) * -0.4), calc(var(--shake-distance, 10px) * 0.4), 0); }
+        80% { transform: translate3d(calc(var(--shake-distance, 10px) * 0.4), calc(var(--shake-distance, 10px) * -0.4), 0); }
+        90% { transform: translate3d(calc(var(--shake-distance, 10px) * -0.2), calc(var(--shake-distance, 10px) * 0.2), 0); }
     }
 
     .screen-shake {
         animation: screenShake var(--shake-duration, 0.3s) ease-in-out;
+        will-change: transform;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
     }
 `;
 document.head.appendChild(style);
