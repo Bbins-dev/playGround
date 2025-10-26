@@ -261,7 +261,7 @@
         },
         "flame_ascension": {
           "name": "화염승천",
-          "description": "자신에게 5의 피해를 입힌 후 상대에게 피해 12을 주고 명중 시 {buff:strength}을 1 얻습니다. 일정확률로 {status:burn}을 입힙니다."
+          "description": "자신에게 5의 피해를 입힌 후 상대에게 피해 10을 주고 명중 시 {buff:strength}을 1 얻습니다. 일정확률로 {status:burn}을 입힙니다."
         },
         "bubble_strike": {
           "name": "거품타격",
@@ -429,7 +429,7 @@
         },
         "karura_strike": {
           "name": "카루라 일격",
-          "description": "카루라 일족에게 배운 기술입니다. 자신에게 피해 10을 입힌 후 상대에게 피해 24을 주고 {status:burn}을 입힙니다."
+          "description": "카루라 일족에게 배운 기술입니다. 자신에게 피해 10을 입힌 후 상대에게 피해 20을 주고 {status:burn}을 입힙니다."
         },
         "fireball": {
           "name": "화염구",
