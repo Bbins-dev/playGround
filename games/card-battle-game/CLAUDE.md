@@ -60,6 +60,33 @@ async processBuffResult(result, user) {
 - [ ] 복사-붙여넣기 후 변수명 재검증
 - [ ] ESLint 경고 무시하지 말 것
 
+### 5. 보안 & 무결성 (치트 방지)
+
+**민감한 데이터는 WeakMap으로 보호**
+```javascript
+// ❌ 금지: 직접 접근 가능한 변수
+this.rerollsRemaining = 1;
+
+// ✅ 필수: WeakMap으로 보호 + Getter/Setter
+const _privateData = new WeakMap();
+_privateData.set(this, 1);
+getRerollsRemaining() { return _privateData.get(this) || 0; }
+```
+
+**GameConfig/CardDatabase 수정 시 Deep Freeze 재적용**
+```javascript
+// 새 설정 추가 후 반드시 Deep Freeze 호출
+this.deepFreeze(GameConfig);
+this.deepFreeze(CardDatabase);
+```
+
+**체크리스트** (신규 기능 구현 시):
+- [ ] 민감한 변수(카운터, 리소스)는 WeakMap 사용
+- [ ] 검증 로직 추가 (범위, 논리적 일관성)
+- [ ] GameConfig에 보안 설정 추가 (허용치, 최댓값)
+- [ ] 버튼/UI 상태는 데이터 기반으로 자동 업데이트
+- [ ] 직접 접근 가능한 변수는 Getter/Setter로 검증
+
 ## ⚡ 필수 체크리스트
 
 ### 버프/상태이상 적용 시
