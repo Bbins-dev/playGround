@@ -313,11 +313,11 @@
         },
         "poison_throw": {
           "name": "Poison Throw",
-          "description": "Throw poison to deal 3 damage and inflict {status:poisoned} for 3 turns."
+          "description": "Throw poison to deal 3 damage and inflict {status:poisoned} for 1 turn."
         },
         "poison_fang": {
           "name": "Poison Fang",
-          "description": "Small but deadly. Deal 3 damage and inflict {status:poisoned} for 5 turns."
+          "description": "Small but deadly. Deal 3 damage and inflict {status:poisoned} for 3 turns."
         },
         "toxic_gas": {
           "name": "Toxic Gas",
@@ -333,7 +333,7 @@
         },
         "poison_barrage": {
           "name": "Poison Barrage",
-          "description": "Rapidly fires poison needles 2-5 times. Each hit has a low chance to inflict {status:poisoned} for 2 turns."
+          "description": "Rapidly fires poison needles 2-5 times. Each hit has a low chance to inflict {status:poisoned} for 1 turn."
         },
         "poison_mutation": {
           "name": "Toxic Mutation",
@@ -369,7 +369,7 @@
         },
         "toxic_blast": {
           "name": "Toxic Blast",
-          "description": "Deal 5 damage per {status:poisoned} turn remaining on the enemy."
+          "description": "Deal damage equal to {status:poisoned} turns remaining on the enemy."
         },
         "liquid_armor": {
           "name": "Liquid Armor",
@@ -402,6 +402,10 @@
         "miracle_revival": {
           "name": "Miracle Revival",
           "description": "If current {hp} is below 30% of max {hp}, restore 50% of max {hp}."
+        },
+        "shake_off": {
+          "name": "Shake Off",
+          "description": "Remove one random {cardType:status} from yourself."
         },
         "one_times_hundred": {
           "name": "1x100",
@@ -521,7 +525,7 @@
         },
         "liquify": {
           "name": "Liquify",
-          "description": "Liquify yourself to recover 10% of lost {hp}, remove {status:wet} status, and skip turn."
+          "description": "Liquify yourself to recover 10% of lost {hp} and remove {status:wet} status."
         },
         "slash_water": {
           "name": "Water Slash",
@@ -557,7 +561,7 @@
         },
         "purification": {
           "name": "Purification",
-          "description": "Removes all current {cardType:status} effects."
+          "description": "If your defense element is water, removes all current {cardType:status} effects."
         },
         "current_shield": {
           "name": "Current Shield",
@@ -680,7 +684,7 @@
         "special": "Special",
         "special_description": "Special cards with unique effects.",
         "status": "Status",
-        "status_description": "Cards that inflict negative effects like stun, burn, or poison on enemies.",
+        "status_description": "Negative effects such as burn and poison.",
         "heal": "Heal",
         "heal_description": "Restore HP with this card."
       },
@@ -727,6 +731,7 @@
         "sulfur_immune": "Sulfur!",
         "coating_immune": "Coating!",
         "status_cleansed": "Cleansed!",
+        "status_removed": "{name} Removed!",
         "paralysis_triggered": "⚡ Paralyzed!",
         "phase_self_attack": "🌀 Self Attack!",
         "burn_extended": "🔥 Burn+{value}T!",
