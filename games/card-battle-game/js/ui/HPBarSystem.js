@@ -460,13 +460,13 @@ class HPBarSystem {
             );
         }
 
-        // 피뢰침 버프 표시 (showValue: false - 일회용)
-        if (player.hasLightningRodBuff && player.hasLightningRodBuff()) {
+        // 정전기 버프 표시 (showValue: true - 턴수 표시)
+        if (player.hasStaticBuff && player.hasStaticBuff()) {
             this._createBuffElement(
                 buffsContainer,
                 effectsContainer,
-                'lightningRod',
-                player.lightningRodTurns,
+                'static',
+                player.staticTurns,
                 isPlayer
             );
         }

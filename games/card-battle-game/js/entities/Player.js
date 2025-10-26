@@ -46,7 +46,7 @@ class Player {
         this.lightSpeedBonus = 0; // 광속 추가 발동횟수
         this.lightSpeedTurns = 0; // 광속 버프 남은 턴 수 (항상 1턴 고정)
         this.superConductivityTurns = 0; // 초전도 버프 남은 턴 수 (중첩 불가, 1턴 고정)
-        this.lightningRodTurns = 0; // 피뢰침 버프 남은 턴 수 (일회용, 중첩 불가)
+        this.staticTurns = 0; // 정전기 버프 남은 턴 수 (중첩 불가, 1턴 고정)
         this.packBonus = 0; // 팩 버프 스택 수
         this.packTurns = 0; // 팩 버프 턴 수 (회복 직후 즉시 제거)
         this.propagationBonus = 0; // 연쇄 추가 발동횟수
@@ -575,13 +575,13 @@ class Player {
         return turns;
     }
 
-    // 피뢰침 버프 관련 메서드
-    hasLightningRodBuff() {
-        return this.lightningRodTurns > 0;
+    // 정전기 버프 관련 메서드
+    hasStaticBuff() {
+        return this.staticTurns > 0;
     }
 
-    addLightningRodBuff(turns) {
-        this.lightningRodTurns = turns;  // 중복 불가이므로 덮어쓰기 (일회용)
+    addStaticBuff(turns) {
+        this.staticTurns = turns;  // 중복 불가이므로 덮어쓰기
         this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
         return turns;
     }
@@ -749,7 +749,7 @@ class Player {
         this.lightSpeedBonus = 0;
         this.lightSpeedTurns = 0;
         this.superConductivityTurns = 0;
-        this.lightningRodTurns = 0;
+        this.staticTurns = 0;
         this.packBonus = 0;
         this.packTurns = 0;
         this.poisonNeedleTurns = 0;
@@ -861,6 +861,12 @@ class Player {
 
                 // 질량 버프 적용 (물 속성만, 현재 HP의 20% × 스택)
                 buffedPower += this.getMassBonus(card.element);
+
+                // 정전기 버프 적용 (전기 속성만, 손패 전기 카드 수 × 10)
+                if (card.element === 'electric' && this.hasStaticBuff()) {
+                    const electricCount = this.hand.filter(c => c.element === 'electric').length;
+                    buffedPower += electricCount * 10;
+                }
 
                 // 강화 버프 적용 (1.5배)
                 if (this.hasEnhanceBuff()) {
@@ -996,11 +1002,6 @@ class Player {
 
             // 호흡 버프 체크 (불 속성 버프 카드만) - 발동률 100% 보장
             if (card.type === 'buff' && card.element === 'fire' && this.hasBreathBuff()) {
-                modifiedAccuracy = 100;
-            }
-
-            // 피뢰침 버프 체크 (전기 공격 카드만) - 명중률 100% 보장
-            if (card.type === 'attack' && card.element === 'electric' && this.hasLightningRodBuff()) {
                 modifiedAccuracy = 100;
             }
 
@@ -1236,6 +1237,11 @@ class Player {
         // 초전도 버프 턴수 차감
         if (this.superConductivityTurns > 0) {
             this.superConductivityTurns--;
+        }
+
+        // 정전기 버프 턴수 차감
+        if (this.staticTurns > 0) {
+            this.staticTurns--;
         }
 
         // 독침 버프 턴수 차감

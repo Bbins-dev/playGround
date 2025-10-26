@@ -320,7 +320,10 @@ class DOMCardRenderer {
         const stats = card.getDisplayStats ? card.getDisplayStats(context) : {
             power: card.power,
             accuracy: card.accuracy,
-            activation: card.activationCount
+            // ★ 안전장치: 카드 데이터 객체도 랜덤 발동횟수 범위 표시
+            activation: (card.isRandomBash || card.isRandomHeal) && card.minActivation !== undefined && card.maxActivation !== undefined
+                ? `${card.minActivation}-${card.maxActivation}`
+                : card.activationCount
         };
 
         const typeEmojiConfig = statConfig.typeStatEmojis[card.type] || statConfig.typeStatEmojis.attack;

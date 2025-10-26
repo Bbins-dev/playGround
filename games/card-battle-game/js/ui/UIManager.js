@@ -282,6 +282,14 @@ class UIManager {
 
         // 화면 초기화
         this.initializeScreen(screenName);
+
+        // 스마트 렌더링: 화면 전환 시 렌더링 요청 (여러 프레임)
+        if (this.gameManager?.requestRender) {
+            this.gameManager.needsRender = true;
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => this.gameManager.requestRender(), i * 16);
+            }
+        }
     }
 
     // UI 요소 가시성 업데이트
@@ -1000,6 +1008,9 @@ class UIManager {
         // 모든 UI 요소 즉시 숨기기
         this.hideAllUIElements();
 
+        // 턴 배경 화살표 애니메이션 중지
+        this.clearTurnBackground();
+
         // DOM 기반 승리 모달 표시 (카드 보상 포함)
         this.victoryDefeatModal.showVictory(stage || 1, () => {
 
@@ -1028,6 +1039,9 @@ class UIManager {
     showDefeatModal(callback) {
         // 모든 UI 요소 즉시 숨기기
         this.hideAllUIElements();
+
+        // 턴 배경 화살표 애니메이션 중지
+        this.clearTurnBackground();
 
         // 게임 상태를 gameOver로 명확히 설정
         this.gameManager.gameState = 'gameOver';
