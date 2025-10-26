@@ -1233,7 +1233,7 @@ const CardDatabase = {
             }
         });
 
-        // 독극물 투척 카드 (독 속성, 명중 시 100% 중독 3턴)
+        // 독극물 투척 카드 (독 속성, 명중 시 100% 중독 1턴)
         this.addCard({
             id: 'poison_throw',
             nameKey: 'auto_battle_card_game.ui.cards.poison_throw.name',
@@ -1243,6 +1243,45 @@ const CardDatabase = {
             accuracy: 70,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.poison_throw.description',
+            poisonChance: 100,
+            effect: function(user, target, battleSystem) {
+                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
+
+                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
+                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
+                const finalDamage = Math.floor(baseDamage * effectiveness);
+
+                // 중독 적용 (통합 시스템 - 명중 시 100% 확률로 1턴 중독)
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.damage',
+                    damage: finalDamage,
+                    statusEffect: {
+                        type: 'poisoned',
+                        chance: this.poisonChance,
+                        power: null,
+                        duration: 1  // 1턴 중독
+                    },
+                    element: this.element,
+                    effectiveness: effectiveness
+                };
+            }
+        });
+
+        // 독 이빨 카드 (독 속성, 명중 시 100% 확률로 3턴 중독)
+        this.addCard({
+            id: 'poison_fang',
+            nameKey: 'auto_battle_card_game.ui.cards.poison_fang.name',
+            type: 'attack',
+            element: 'poison',
+            power: 3,
+            accuracy: 70,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.poison_fang.description',
             poisonChance: 100,
             effect: function(user, target, battleSystem) {
                 let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
@@ -1265,45 +1304,6 @@ const CardDatabase = {
                         chance: this.poisonChance,
                         power: null,
                         duration: 3  // 3턴 중독
-                    },
-                    element: this.element,
-                    effectiveness: effectiveness
-                };
-            }
-        });
-
-        // 독 이빨 카드 (독 속성, 명중 시 100% 확률로 5턴 중독)
-        this.addCard({
-            id: 'poison_fang',
-            nameKey: 'auto_battle_card_game.ui.cards.poison_fang.name',
-            type: 'attack',
-            element: 'poison',
-            power: 3,
-            accuracy: 70,
-            activationCount: 1,
-            descriptionKey: 'auto_battle_card_game.ui.cards.poison_fang.description',
-            poisonChance: 100,
-            effect: function(user, target, battleSystem) {
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
-
-                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
-                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
-                    baseDamage = Math.floor(baseDamage * 1.5);
-                }
-
-                const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
-                const finalDamage = Math.floor(baseDamage * effectiveness);
-
-                // 중독 적용 (통합 시스템 - 명중 시 100% 확률로 5턴 중독)
-                return {
-                    success: true,
-                    messageKey: 'auto_battle_card_game.ui.damage',
-                    damage: finalDamage,
-                    statusEffect: {
-                        type: 'poisoned',
-                        chance: this.poisonChance,
-                        power: null,
-                        duration: 5  // 5턴 중독
                     },
                     element: this.element,
                     effectiveness: effectiveness
@@ -1339,7 +1339,7 @@ const CardDatabase = {
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
-                // 중독 적용 (통합 시스템 - 각 타격마다 10% 확률로 2턴 중독)
+                // 중독 적용 (통합 시스템 - 각 타격마다 10% 확률로 1턴 중독)
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.damage',
@@ -1348,7 +1348,7 @@ const CardDatabase = {
                         type: 'poisoned',
                         chance: this.poisonChance,
                         power: null,
-                        duration: 2  // 2턴 중독
+                        duration: 1  // 1턴 중독
                     },
                     element: this.element,
                     effectiveness: effectiveness
@@ -1468,12 +1468,12 @@ const CardDatabase = {
             nameKey: 'auto_battle_card_game.ui.cards.toxic_blast.name',
             type: 'attack',
             element: 'poison',
-            power: 0,  // 동적 계산: 적의 중독 잔여 턴 × 5
+            power: 0,  // 동적 계산: 적의 중독 잔여 턴 × 1
             accuracy: 80,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.toxic_blast.description',
             effect: function(user, target, battleSystem) {
-                // 동적 공격력: 적의 중독 잔여 턴 × 5 (Player.updateRuntimeCardStats()에서 이미 계산됨)
+                // 동적 공격력: 적의 중독 잔여 턴 × 1 (Player.updateRuntimeCardStats()에서 이미 계산됨)
                 // buffedPower에 이미 모든 버프 포함 (힘, 강화) - 중복 적용 방지
                 let baseDamage = this.buffedPower || 0;
 
@@ -1720,6 +1720,48 @@ const CardDatabase = {
                     element: this.element,
                     effectType: 'heal',
                     templateData: { value: actualHealing }
+                };
+            }
+        });
+
+        // 몸 털기 카드 (버프 카드, 상태이상 무작위 제거)
+        this.addCard({
+            id: 'shake_off',
+            nameKey: 'auto_battle_card_game.ui.cards.shake_off.name',
+            type: 'buff',
+            element: 'special',
+            power: 0,
+            accuracy: 70,
+            activationCount: 1,
+            usageLimit: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.shake_off.description',
+            effect: function(user, target, battleSystem) {
+                // turnsLeft > 0인 활성 상태이상만 필터링
+                const activeStatusEffects = (user.statusEffects || []).filter(e => e.turnsLeft > 0);
+
+                // 상태이상 없으면 조건 실패
+                if (activeStatusEffects.length === 0) {
+                    return {
+                        success: true,
+                        conditionFailed: true,
+                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        element: this.element
+                    };
+                }
+
+                // 무작위로 하나 선택 (안전한 방식)
+                const randomIndex = Math.floor(Math.random() * activeStatusEffects.length);
+                const removedEffect = activeStatusEffects[randomIndex];
+
+                // 상태이상 제거
+                if (user.removeStatusEffect) {
+                    user.removeStatusEffect(removedEffect.type);
+                }
+
+                return {
+                    success: true,
+                    removedStatusType: removedEffect.type,
+                    element: this.element
                 };
             }
         });
@@ -3065,7 +3107,7 @@ const CardDatabase = {
             }
         });
 
-        // 액체화 카드 (물 속성 회복 카드, 잃은 체력의 10% 회복 + 젖음 제거 + 턴 넘김)
+        // 액체화 카드 (물 속성 회복 카드, 잃은 체력의 10% 회복 + 젖음 제거)
         this.addCard({
             id: 'liquify',
             nameKey: 'auto_battle_card_game.ui.cards.liquify.name',
@@ -3077,7 +3119,6 @@ const CardDatabase = {
             activationCount: 1,
             usageLimit: 1, // 1회만 사용 가능
             descriptionKey: 'auto_battle_card_game.ui.cards.liquify.description',
-            skipTurn: true,
             effect: function(user, target, battleSystem) {
                 // buffedPower 사용 (실시간 동적 계산됨: 잃은 체력의 10%)
                 const healAmount = this.buffedPower || 0;
@@ -3089,17 +3130,11 @@ const CardDatabase = {
                     user.removeStatusEffect('wet');
                 }
 
-                // 턴 스킵 플래그 설정 (BattleSystem에서 처리)
-                if (battleSystem && battleSystem.setTurnSkip) {
-                    battleSystem.setTurnSkip(true);
-                }
-
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.templates.liquify_effect',
                     healAmount: actualHealing,
                     wetRemoved: hadWet,
-                    skipTurn: true,
                     element: this.element,
                     effectType: 'heal',
                     templateData: { value: actualHealing }
@@ -3367,11 +3402,21 @@ const CardDatabase = {
             type: 'buff',
             element: 'water',
             power: 0, // 버프 카드는 파워가 없음
-            accuracy: GameConfig?.cardEffects?.purification?.activationChance || 80,
+            accuracy: GameConfig?.cardEffects?.purification?.activationChance || 70,
             activationCount: 1,
             usageLimit: 1, // 1회만 사용 가능
             descriptionKey: 'auto_battle_card_game.ui.cards.purification.description',
             effect: function(user, target, battleSystem) {
+                // 방어속성이 물이 아닌 경우 실패
+                if (user.defenseElement !== 'water') {
+                    return {
+                        success: true,
+                        conditionFailed: true,
+                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        element: this.element
+                    };
+                }
+
                 // 현재 상태이상 카운트
                 const statusCount = user.statusEffects.length;
 
