@@ -452,7 +452,7 @@ const CardDatabase = {
             type: 'status',
             element: 'normal',
             power: 0,
-            accuracy: 55,
+            accuracy: 40,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.taunt.description',
             tauntChance: 100,
@@ -772,7 +772,7 @@ const CardDatabase = {
             type: 'attack',
             element: 'electric',
             power: 3,  // 기본 공격력 (젖음 상태이면 9로 동적 계산)
-            accuracy: 70,
+            accuracy: 80,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.electric_shock.description',
             effect: function(user, target, battleSystem) {
@@ -2485,6 +2485,36 @@ const CardDatabase = {
                     templateData: {
                         name: GameConfig?.buffs?.coating?.name || '코팅',
                         value: result.turns  // 획득할 값
+                    }
+                };
+            }
+        });
+
+        // 좋은 우비 카드 (특수 속성, 우비 버프 - 상태이상 차단)
+        this.addCard({
+            id: 'good_raincoat',
+            nameKey: 'auto_battle_card_game.ui.cards.good_raincoat.name',
+            type: 'buff',
+            element: 'special',
+            power: 0,
+            accuracy: GameConfig?.cardEffects?.goodRaincoat?.accuracy || 80,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.good_raincoat.description',
+            effect: function(user, target, battleSystem) {
+                // 우비 버프 획득 (상태이상 차단)
+                // ★ Configuration-Driven: raincoatGain만 반환
+                const gain = GameConfig?.cardEffects?.goodRaincoat?.raincoatGain || 1;
+                const stacksAdded = user.addRaincoatBuff(gain);
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
+                    buffType: 'raincoat',
+                    raincoatGain: stacksAdded,
+                    element: this.element,
+                    templateData: {
+                        name: GameConfig?.buffs?.raincoat?.name || '우비',
+                        value: stacksAdded
                     }
                 };
             }

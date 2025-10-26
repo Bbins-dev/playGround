@@ -183,7 +183,27 @@
         "37": "Time Devourer",
         "38": "Dimension Overlord",
         "39": "Reality Breaker",
-        "40": "The Transcendent - End of All"
+        "40": "Overcharged Battery Fairy",
+        "41": "Mad Toxicologist",
+        "42": "Toxic Gas Terrorist",
+        "43": "Venomous Alchemist",
+        "44": "Poison-Hurling Maniac",
+        "45": "Toxic Fortress Guardian",
+        "46": "Elemental Fusion Experiment",
+        "47": "Smog Dragon",
+        "48": "Lava Viper",
+        "49": "Toxic Gas Golem",
+        "50": "Emperor of Toxic Blasts",
+        "51": "Omnistrike Machine",
+        "52": "Invincible Shield King",
+        "53": "Extreme Cryomancer",
+        "54": "Lightning Jellyfish Queen",
+        "55": "Corrupted Guardian",
+        "56": "Avatar of Tsunami",
+        "57": "Flame Opportunist",
+        "58": "Perfected Toxin Entity",
+        "59": "God of Endless Effort",
+        "60": "Alarm Clock Ringtone"
       },
       "battle_speed": "Battle Speed",
       "speed_slow": "Slow",
@@ -362,6 +382,10 @@
         "liquid_coating": {
           "name": "Liquid Coating",
           "description": "Gain {buff:coating} for 1 turn. Prevents {status:burn} status. Decremented at turn start."
+        },
+        "good_raincoat": {
+          "name": "Good Raincoat",
+          "description": "Blocks one {cardType:status} application per turn. {buff:raincoat} stacks."
         },
         "gas_absorption": {
           "name": "Gas Absorption",
@@ -657,7 +681,9 @@
         "sulfur": "SULFR",
         "sulfur_description": "Grants immunity to Frozen status. Decremented at turn start.",
         "coating": "COAT",
-        "coating_description": "Grants immunity to Burn status. Decremented at turn start."
+        "coating_description": "Grants immunity to Burn status. Decremented at turn start.",
+        "raincoat": "RAIN",
+        "raincoat_description": "Blocks one status effect application per stack. Can block multiple times when stacked. Decreases by 1 stack at turn start."
       },
       "elements": {
         "fire": "Fire",
