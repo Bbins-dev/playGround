@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.2.2',                        // 버전 넘버
+        number: '0.2.3',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -139,6 +139,18 @@ const GameConfig = {
         showStatusRolls: true,                 // 상태이상 확률 롤 표시
         showUIEvents: false,                   // UI 이벤트 숨김
         showSystemInitialization: false       // 시스템 초기화 숨김
+    },
+
+    // 페이지 라이프사이클 관리 설정 (모바일 백그라운드 복원 대응)
+    pageLifecycle: {
+        enableBackgroundPause: true,            // 백그라운드 전환 시 자동 일시정지
+        enableAudioPause: true,                 // 백그라운드 시 오디오 일시정지
+        enableBattlePause: true,                // 백그라운드 시 전투 일시정지
+        restoreDelay: 100,                      // 포그라운드 복귀 시 복원 딜레이 (ms)
+        forceRerender: true,                    // 포그라운드 복귀 시 Canvas 강제 재렌더링
+        logVisibilityChanges: false,            // visibilitychange 이벤트 로그 (디버깅용)
+        handlePageShow: true,                   // pageshow 이벤트 처리 (bfcache 대응)
+        handlePageHide: true                    // pagehide 이벤트 처리
     },
 
     // 마스터 색상 시스템 - 모든 색상의 단일 진실의 원천
@@ -3074,7 +3086,7 @@ const GameConfig = {
 
         // 뇌진탕 카드 설정
         concussion: {
-            stunChance: 40     // 기절 확률 (40%)
+            stunChance: 25     // 기절 확률 (25%)
         },
 
         // 제세동기 카드 설정
