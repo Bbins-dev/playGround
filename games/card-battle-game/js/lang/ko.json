@@ -117,7 +117,7 @@
         "paralysis": "마비",
         "paralysis_description": "30% 확률로 아무 카드도 발동되지 않습니다. 해당 턴을 건너뜁니다.",
         "phase": "위상",
-        "phase_description": "30% 확률로 공격이 자신에게 향합니다. 자신을 공격하게 됩니다.",
+        "phase_description": "공격카드 발동 시 30%확률로 자기 자신을 공격합니다.",
         "burn": "화상",
         "burn_description": "턴 시작 시 5의 화상 대미지를 받습니다. 방어력을 무시합니다.",
         "poisoned": "중독",
@@ -261,7 +261,7 @@
         },
         "flame_ascension": {
           "name": "화염승천",
-          "description": "자신에게 5의 피해를 입힌 후 상대에게 피해 7을 주고 명중 시 {buff:strength}을 1 얻습니다. 일정확률로 {status:burn}을 입힙니다."
+          "description": "자신에게 5의 피해를 입힌 후 상대에게 피해 12을 주고 명중 시 {buff:strength}을 1 얻습니다. 일정확률로 {status:burn}을 입힙니다."
         },
         "bubble_strike": {
           "name": "거품타격",
@@ -269,7 +269,7 @@
         },
         "water_bomb": {
           "name": "물폭탄",
-          "description": "상대에게 물폭탄을 던져 3의 피해를 입히고 높은 확률로 {status:wet}을 입힙니다."
+          "description": "상대에게 물폭탄을 던져 3의 피해를 입히고 높은 확률로 {status:wet}상태로 만듭니다."
         },
         "tsunami": {
           "name": "쓰나미",
@@ -425,7 +425,7 @@
         },
         "karura_strike": {
           "name": "카루라 일격",
-          "description": "카루라 일족에게 배운 기술입니다. 자신에게 피해 10을 입힌 후 상대에게 피해 12를 주고 {status:burn}을 입힙니다."
+          "description": "카루라 일족에게 배운 기술입니다. 자신에게 피해 10을 입힌 후 상대에게 피해 24을 주고 {status:burn}을 입힙니다."
         },
         "fireball": {
           "name": "화염구",
@@ -850,7 +850,7 @@
       "stat_power": "🗡️ 공격력: 카드가 입히는 피해량",
       "stat_accuracy": "🎯 명중률: 카드 발동 성공 확률 (100% = 항상 성공)",
       "stat_activation": "🔄 발동횟수: 한 턴에 카드가 발동되는 횟수",
-      "stat_note": "💡 카드 위에 마우스를 올리면 자세한 정보를 확인할 수 있습니다",
+      "stat_note": "💡 카드 속의 마크를 클릭하면 설명을 볼 수 있습니다. 예: {buff:strength}클릭!",
       "element_system": "⚔️ 속성 상성 시스템",
       "attack_card_element": "공격카드 속성",
       "defense_element": "방어속성",
