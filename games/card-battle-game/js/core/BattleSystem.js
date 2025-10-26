@@ -364,10 +364,6 @@ class BattleSystem {
             }
         }
 
-        // ===== 피뢰침 버프 체크 (전기 공격 카드 발동 전) =====
-        const hadLightningRod = card.type === 'attack' && card.element === 'electric' &&
-                                user.hasLightningRodBuff && user.hasLightningRodBuff();
-
         // 카드 효과 실행 (명중 체크 포함)
         const result = card.activate(user, target, this);
 
@@ -378,12 +374,6 @@ class BattleSystem {
 
         if (result.success) {
             // 성공 로그
-
-            // ===== 피뢰침 버프 즉시 제거 (전기 공격 명중 성공 시) =====
-            if (hadLightningRod) {
-                user.lightningRodTurns = 0;
-                this.hpBarSystem.updateBuffs(user, isPlayerCard);
-            }
 
             // 효과별 후처리
             await this.processCardResult(result, card, user, target, selfDamageProcessed);
@@ -749,9 +739,9 @@ class BattleSystem {
             await this.effectSystem.showBuffEffect('superConductivity', user, result.superConductivityGain);
         }
 
-        // 피뢰침 버프 획득 처리 (피뢰침 카드) - 새로운 통합 메서드 사용
-        if (result.lightningRodGain && result.lightningRodGain > 0) {
-            await this.effectSystem.showBuffEffect('lightningRod', user, result.lightningRodGain);
+        // 정전기 버프 획득 처리 (정전기 카드) - 새로운 통합 메서드 사용
+        if (result.staticGain && result.staticGain > 0) {
+            await this.effectSystem.showBuffEffect('static', user, result.staticGain);
         }
 
         // 팩 버프 획득 처리 (건전지 팩 카드) - 새로운 통합 메서드 사용

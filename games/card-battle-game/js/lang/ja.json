@@ -619,9 +619,9 @@
           "name": "除細動器",
           "description": "健康な対象は{status:stun}する可能性があります。"
         },
-        "lightning_rod": {
-          "name": "避雷針",
-          "description": "次の{electric}{cardType:attack}カードが外れません。{buff:lightningRod}は重複しません。"
+        "static": {
+          "name": "静電気",
+          "description": "1ターンの間、手札の{electric}属性カード1枚につき{electric}{cardType:attack}カードの基本攻撃力に10を追加します。{buff:static}は重複しません。"
         },
         "battery_pack": {
           "name": "バッテリーパック",
@@ -670,8 +670,8 @@
         "lightSpeed_description": "電気属性の攻撃カードの発動回数が増加します。",
         "superConductivity": "超電導",
         "superConductivity_description": "電気属性攻撃カードの命中率が40%増加します。",
-        "lightningRod": "避雷針",
-        "lightningRod_description": "次の電気属性攻撃カードが必ず命中します。一回限りで重複しません。",
+        "static": "静電気",
+        "static_description": "電気攻撃カードの攻撃力が手札の電気カード数 × 10増加します。1ターン持続します。",
         "pack": "パック",
         "pack_description": "ターン開始時にパック値 × 8のHPを回復します。回復後すぐに消えます。スタック可能です。",
         "propagation": "伝播",
