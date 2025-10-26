@@ -253,11 +253,11 @@
         },
         "flame_throw": {
           "name": "Flame Throw",
-          "description": "Throw flames at the enemy for 3 damage. Low chance to inflict {status:burn} on hit."
+          "description": "Throw flames at the enemy for 4 damage. Low chance to inflict {status:burn} on hit."
         },
         "flame_burst": {
           "name": "Flame Burst",
-          "description": "Shoots flames at the opponent 1-3 times for 2 damage each, with a low chance to inflict {status:burn}."
+          "description": "Shoots flames at the opponent 1-3 times for 3 damage each, with a low chance to inflict {status:burn}."
         },
         "flame_ascension": {
           "name": "Flame Ascension",
@@ -433,7 +433,7 @@
         },
         "fireball": {
           "name": "Fireball",
-          "description": "A powerful flame strike that deals 4 damage. Has a chance to inflict {status:burn}."
+          "description": "A powerful flame strike that deals 7 damage. Has a chance to inflict {status:burn}."
         },
         "hot_breath": {
           "name": "Hot Breath",
