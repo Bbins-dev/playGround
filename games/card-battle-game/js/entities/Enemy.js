@@ -49,8 +49,8 @@ class Enemy extends Player {
 
     // 적 이름 생성 (다국어 지원)
     generateEnemyName() {
-        // 스테이지 번호를 40개 범위 내로 제한
-        const enemyStage = Math.min(this.stage, 40);
+        // 스테이지 번호를 60개 범위 내로 제한
+        const enemyStage = Math.min(this.stage, 60);
 
         // i18n 시스템을 통해 적 이름 가져오기
         const nameKey = `auto_battle_card_game.ui.enemy_names.${enemyStage}`;
@@ -70,7 +70,11 @@ class Enemy extends Player {
             21: "Dragon Hatchling", 22: "Fire Drake", 23: "Frost Wyvern", 24: "Storm Dragon", 25: "Ancient Dragon King",
             26: "Fallen Hero", 27: "Betrayer Knight Captain", 28: "Demon Summoner", 29: "Avatar of Chaos", 30: "Final Examiner",
             31: "Immortal Phoenix", 32: "Nine-Tailed Fox Avatar", 33: "Abyssal Kraken", 34: "Earth Titan", 35: "Medusa, Queen of Stone",
-            36: "Void Watcher", 37: "Time Devourer", 38: "Dimension Overlord", 39: "Reality Breaker", 40: "The Transcendent - End of All"
+            36: "Void Watcher", 37: "Time Devourer", 38: "Dimension Overlord", 39: "Reality Breaker", 40: "Overcharged Battery Fairy",
+            41: "Mad Toxicologist", 42: "Toxic Gas Terrorist", 43: "Venomous Alchemist", 44: "Poison-Hurling Maniac", 45: "Toxic Fortress Guardian",
+            46: "Elemental Fusion Experiment", 47: "Smog Dragon", 48: "Lava Viper", 49: "Toxic Gas Golem", 50: "Emperor of Toxic Blasts",
+            51: "Omnistrike Machine", 52: "Invincible Shield King", 53: "Extreme Cryomancer", 54: "Lightning Jellyfish Queen", 55: "Corrupted Guardian",
+            56: "Avatar of Tsunami", 57: "Flame Opportunist", 58: "Perfected Toxin Entity", 59: "God of Endless Effort", 60: "Alarm Clock Ringtone"
         };
 
         return fallbackNames[enemyStage] || `Enemy ${enemyStage}`;

@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.2.53',                        // 버전 넘버
+        number: '0.3.0',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -223,7 +223,8 @@ const GameConfig = {
             pack: '#00CED1',          // 팩 - 다크 터쿼이즈 (전기 에너지, 배터리 느낌)
             propagation: '#9B59B6',   // 연쇄 - 보라색 (독 속성, 화학 반응 전파)
             sulfur: '#FFD700',        // 유황 - 황금색 (온천, 얼음 면역)
-            coating: '#4682B4'        // 코팅 - 스틸 블루 (방어막, 화상 면역)
+            coating: '#4682B4',       // 코팅 - 스틸 블루 (방어막, 화상 면역)
+            raincoat: '#87CEEB'       // 우비 - 하늘색 (상태이상 차단, 보호)
         },
 
         // 체력 라벨 색상
@@ -1125,6 +1126,24 @@ const GameConfig = {
                 accuracy: 20  // 20% 증가 (곱셈 계산)
             }
         },
+        raincoat: {
+            nameKey: 'auto_battle_card_game.ui.buffs.raincoat',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.raincoat_description',
+            name: '우비',
+            emoji: '🌂',
+            description: '상태이상 적용 1회 차단. 턴 시작 시 차감',
+            get color() { return GameConfig.masterColors.buffs.raincoat; }, // 하늘색
+            get maxStack() { return GameConfig.constants.limits.maxBuffStacks; }, // 최대 중첩 수
+            targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'intensity', // 스택 카운터 방식 (raincoatStacks) - 턴이 아님!
+            display: {
+                showValue: true,
+                format: '+{value}'  // 예: +2 (스택 표시, 턴이 아님)
+            },
+            effect: {
+                blockStatusEffect: true  // 상태이상 차단 기능
+            }
+        },
         sulfur: {
             nameKey: 'auto_battle_card_game.ui.buffs.sulfur',
             descriptionKey: 'auto_battle_card_game.ui.buffs.sulfur_description',
@@ -1643,6 +1662,224 @@ const GameConfig = {
                     { id: 'overcharge_battery', count: 2 }, // 과충전 x2
                     { id: 'light_speed', count: 2 },       // 빛의 속도 x2
                     { id: 'lightning_storm', count: 1 }    // 번개 폭풍
+                ]
+            },
+            41: {
+                hp: 1100,
+                cards: [
+                    { id: 'chain_reaction', count: 2 },    // 연쇄 반응 x2
+                    { id: 'inhibitor', count: 1 },         // 억제제
+                    { id: 'poison_needle', count: 1 },     // 독침
+                    { id: 'liquid_coating', count: 1 },    // 액체 코팅
+                    { id: 'poison_fang', count: 1 },       // 독 이빨
+                    { id: 'poison_mutation', count: 1 },   // 맹독 변성
+                    { id: 'gas_absorption', count: 1 }     // 가스 흡수
+                ]
+            },
+            42: {
+                hp: 1200,
+                cards: [
+                    { id: 'toxic_gas', count: 1 },         // 유독가스
+                    { id: 'sulfur_spring', count: 1 },     // 유황 온천
+                    { id: 'sword_dance', count: 1 },       // 칼춤
+                    { id: 'poison_barrage', count: 2 },    // 독침 연발 x2
+                    { id: 'indomitable_gauntlet', count: 2 }, // 불굴의 장갑 x2
+                    { id: 'gas_absorption', count: 1 }     // 가스흡수
+                ]
+            },
+            43: {
+                hp: 1300,
+                cards: [
+                    { id: 'shake_off', count: 1 },         // 몸 털기
+                    { id: 'sticky_liquid', count: 1 },     // 끈끈한 액체
+                    { id: 'oblivion_draught', count: 1 },  // 망각제
+                    { id: 'toxic_gas', count: 1 },         // 유독가스
+                    { id: 'poison_mutation', count: 2 },   // 맹독 변성 x2
+                    { id: 'mirror_reaction', count: 1 },   // 거울 반응
+                    { id: 'toxic_blast', count: 1 }        // 맹독 폭발
+                ]
+            },
+            44: {
+                hp: 1400,
+                cards: [
+                    { id: 'poison_throw', count: 5 },      // 독극물 투척 x5
+                    { id: 'poison_mutation', count: 1 },   // 맹독 변성
+                    { id: 'mirror_reaction', count: 1 },   // 거울 반응
+                    { id: 'gas_absorption', count: 1 }     // 가스 흡수
+                ]
+            },
+            45: {
+                hp: 1500,
+                cards: [
+                    { id: 'inhibitor', count: 2 },         // 억제제 x2
+                    { id: 'sulfur_spring', count: 1 },     // 유황 온천
+                    { id: 'sticky_liquid', count: 1 },     // 끈끈한 액체
+                    { id: 'toxic_barrier', count: 2 },     // 독극물 장벽 x2
+                    { id: 'barricade', count: 1 },         // 바리케이드
+                    { id: 'poison_needle', count: 1 },     // 독침
+                    { id: 'poison_fang', count: 2 }        // 독 이빨 x2
+                ]
+            },
+            46: {
+                hp: 1600,
+                cards: [
+                    { id: 'oblivion_draught', count: 1 },  // 망각제
+                    { id: 'liquid_coating', count: 1 },    // 액체 코팅
+                    { id: 'sulfur_spring', count: 1 },     // 유황 온천
+                    { id: 'mud_bath', count: 1 },          // 진흙탕
+                    { id: 'taunt', count: 1 },             // 도발
+                    { id: 'toxic_gas', count: 1 },         // 유독가스
+                    { id: 'hot_breath', count: 1 },        // 뜨거운 입김
+                    { id: 'paralysis_trap', count: 1 },    // 마비 덫
+                    { id: 'phase_shock', count: 1 },       // 위상 쇼크
+                    { id: 'catalyst', count: 1 }           // 촉진제
+                ]
+            },
+            47: {
+                hp: 1700,
+                cards: [
+                    { id: 'smog', count: 3 },              // 스모그 x3
+                    { id: 'poison_throw', count: 2 },      // 독극물 투척 x2
+                    { id: 'poison_fang', count: 1 },       // 독 이빨
+                    { id: 'poison_barrage', count: 1 },    // 독침 연발
+                    { id: 'poison_mutation', count: 1 },   // 맹독 변성
+                    { id: 'toxic_blast', count: 1 },       // 맹독 폭발
+                    { id: 'mirror_reaction', count: 1 }    // 거울 반응
+                ]
+            },
+            48: {
+                hp: 1800,
+                cards: [
+                    { id: 'hot_breath', count: 1 },        // 뜨거운 입김
+                    { id: 'lava_prison', count: 1 },       // 용암 감옥
+                    { id: 'poison_needle', count: 1 },     // 독침
+                    { id: 'poison_fang', count: 3 },       // 독 이빨 x3
+                    { id: 'gas_absorption', count: 1 },    // 가스 흡수
+                    { id: 'mirror_reaction', count: 1 }    // 거울 반응
+                ]
+            },
+            49: {
+                hp: 1900,
+                cards: [
+                    { id: 'toxic_gas', count: 1 },         // 유독가스
+                    { id: 'poison_mutation', count: 2 },   // 맹독 변성 x2
+                    { id: 'gas_absorption', count: 1 },    // 가스 흡수
+                    { id: 'mirror_reaction', count: 1 },   // 거울 반응
+                    { id: 'crouch', count: 1 }             // 웅크리기
+                ]
+            },
+            50: {
+                hp: 2500,
+                cards: [
+                    { id: 'taunt', count: 1 },             // 도발
+                    { id: 'oblivion_draught', count: 1 },  // 망각제
+                    { id: 'chain_reaction', count: 1 },    // 연쇄 반응
+                    { id: 'poison_needle', count: 1 },     // 독침
+                    { id: 'toxic_gas', count: 1 },         // 유독가스
+                    { id: 'poison_mutation', count: 2 },   // 맹독변성 x2
+                    { id: 'toxic_blast', count: 1 },       // 맹독 폭발
+                    { id: 'mirror_reaction', count: 1 },   // 거울 반응
+                    { id: 'gas_absorption', count: 1 }     // 가스 흡수
+                ]
+            },
+            51: {
+                hp: 3000,
+                cards: [
+                    { id: 'heavy_strike', count: 10 }      // 세게 치기 x10
+                ]
+            },
+            52: {
+                hp: 3500,
+                cards: [
+                    { id: 'taunt', count: 1 },             // 도발
+                    { id: 'large_shield', count: 8 },      // 거대방패 x8
+                    { id: 'shield_bash', count: 1 }        // 방패치기
+                ]
+            },
+            53: {
+                hp: 4000,
+                cards: [
+                    { id: 'defibrillator', count: 1 },     // 제세동기
+                    { id: 'rain', count: 1 },              // 비내리기
+                    { id: 'cold_snap', count: 1 },         // 혹한기
+                    { id: 'ice_breaker', count: 2 },       // 얼음깨기 x2
+                    { id: 'freezing_wind', count: 1 }      // 냉동바람
+                ]
+            },
+            54: {
+                hp: 4500,
+                cards: [
+                    { id: 'water_play', count: 1 },        // 물장구
+                    { id: 'rain', count: 1 },              // 비내리기
+                    { id: 'moisture_absorption', count: 1 }, // 수분흡수
+                    { id: 'lightning_rod', count: 1 },     // 피뢰침
+                    { id: 'light_speed', count: 2 },       // 빛의 속도 x2
+                    { id: 'electric_shock', count: 1 },    // 감전
+                    { id: 'liquify', count: 1 }            // 액체화
+                ]
+            },
+            55: {
+                hp: 5000,
+                cards: [
+                    { id: 'paralysis_trap', count: 1 },    // 마비 덫
+                    { id: 'high_voltage_gloves', count: 1 }, // 고전압 장갑
+                    { id: 'current_wall', count: 1 },      // 전류 벽
+                    { id: 'scorched_shield', count: 1 },   // 작열방패
+                    { id: 'indomitable_gauntlet', count: 1 }, // 불굴의 장갑
+                    { id: 'red_pendant', count: 1 },       // 붉은 펜던트
+                    { id: 'large_shield', count: 1 },      // 거대방패
+                    { id: 'barricade', count: 1 },         // 바리케이드
+                    { id: 'shield_bash', count: 1 },       // 방패치기
+                    { id: 'poison_fang', count: 1 }        // 독 이빨
+                ]
+            },
+            56: {
+                hp: 5500,
+                cards: [
+                    { id: 'purification', count: 1 },      // 정화
+                    { id: 'moisture_absorption', count: 2 }, // 수분흡수 x2
+                    { id: 'tsunami', count: 5 }            // 쓰나미 x5
+                ]
+            },
+            57: {
+                hp: 6000,
+                cards: [
+                    { id: 'counter_attack', count: 1 },    // 카운터 어택
+                    { id: 'fire_breath', count: 1 },       // 불의 호흡
+                    { id: 'opportunity_scent', count: 3 }, // 기회의 냄새 x3
+                    { id: 'hot_wind', count: 1 },          // 열풍
+                    { id: 'flame_throw', count: 1 }        // 불꽃 던지기
+                ]
+            },
+            58: {
+                hp: 6500,
+                cards: [
+                    { id: 'toxic_gas', count: 1 },         // 유독가스
+                    { id: 'poison_mutation', count: 3 },   // 맹독 변성 x3
+                    { id: 'gas_absorption', count: 1 }     // 가스흡수
+                ]
+            },
+            59: {
+                hp: 7000,
+                cards: [
+                    { id: 'endless_effort', count: 3 },    // 끝없는 노력 x3
+                    { id: 'lightning_storm', count: 1 },   // 번개 폭풍
+                    { id: 'electric_shock', count: 1 },    // 감전
+                    { id: 'overload', count: 1 },          // 과부하
+                    { id: 'short_circuit', count: 1 },     // 쇼트
+                    { id: 'liquify', count: 1 }            // 액체화
+                ]
+            },
+            60: {
+                hp: 10000,
+                cards: [
+                    { id: 'water_bomb', count: 1 },        // 물폭탄
+                    { id: 'freezing_wind', count: 2 },     // 냉동바람 x2
+                    { id: 'ice_breaker', count: 3 },       // 얼음깨기 x3
+                    { id: 'rain', count: 1 },              // 비내리기
+                    { id: 'cold_snap', count: 1 },         // 혹한기
+                    { id: 'tsunami', count: 1 },           // 쓰나미
+                    { id: 'liquify', count: 1 }            // 액체화
                 ]
             }
         }
@@ -3145,6 +3382,11 @@ const GameConfig = {
         liquidCoating: {
             coatingGain: 1,  // 코팅 버프 획득량 (턴수)
             accuracy: 80     // 명중률 (80%)
+        },
+        // 좋은 우비 카드 설정
+        goodRaincoat: {
+            raincoatGain: 1,  // 우비 버프 획득량 (스택)
+            accuracy: 80      // 명중률 (80%)
         },
         // 액체화 카드 설정
         liquify: {
