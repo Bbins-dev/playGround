@@ -338,7 +338,8 @@ class BattleSystem {
         }
 
         // ===== 위상 상태 체크 (30% 확률로 타겟 자신으로 변경) =====
-        if (user.hasStatusEffect('phase')) {
+        // 공격 카드만 위상 효과 적용 (버프/회복/방어 카드는 원래 자신에게 적용되므로 제외)
+        if (card.type === 'attack' && user.hasStatusEffect('phase')) {
             const phaseConfig = GameConfig.statusEffects?.phase;
             const phaseChance = phaseConfig?.defaultChance || 30;
 
