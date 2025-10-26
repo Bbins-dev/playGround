@@ -3477,8 +3477,8 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.light_speed.description',
             effect: function(user, target, battleSystem) {
                 // 광속 버프 획득
-                // ★ Configuration-Driven: lightSpeedGain만 반환
-                const lightSpeedGain = 2;
+                // ★ Configuration-Driven: GameConfig에서 값 가져오기
+                const lightSpeedGain = GameConfig?.buffs?.lightSpeed?.effect?.activationBonus || 1;
 
                 return {
                     success: true,
