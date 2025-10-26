@@ -86,7 +86,25 @@ class CardRenderer {
         }
     }
 
-    // 활성 카드 글로우 효과 그리기
+    /**
+     * Hex 색상을 RGBA로 변환하는 유틸리티 (Configuration-Driven)
+     * @param {string} hex - Hex 색상 코드 (예: '#FFFF00')
+     * @param {number} alpha - 투명도 (0~1)
+     * @returns {string} RGBA 문자열
+     */
+    hexToRgba(hex, alpha) {
+        // # 제거
+        hex = hex.replace('#', '');
+
+        // RGB 값 추출
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    // 활성 카드 글로우 효과 그리기 (Configuration-Driven)
     drawActiveCardGlow(ctx, x, y, width, height, isFadingOut = false, fadeStartTime = null) {
         const glowConfig = this.style.activeCardGlow;
 
@@ -101,33 +119,33 @@ class CardRenderer {
             fadeIntensity = 1 - progress;
         }
 
-        // 펄스 효과 계산 (잔상일 때는 펄스 없음)
+        // 펄스 효과 계산 (잔상일 때는 펄스 없음) - 강화된 펄스 범위
         let pulseIntensity = 1;
         if (!isFadingOut) {
             const time = Date.now();
             const pulseTime = (time % glowConfig.pulseSpeed) / glowConfig.pulseSpeed;
-            pulseIntensity = 0.6 + 0.4 * (Math.sin(pulseTime * Math.PI * 2) * 0.5 + 0.5);
+            pulseIntensity = 0.5 + 0.5 * (Math.sin(pulseTime * Math.PI * 2) * 0.5 + 0.5);
         }
 
         const finalIntensity = pulseIntensity * fadeIntensity;
 
-        // 외부 글로우 (가장 넓고 약함)
+        // 외부 글로우 (가장 넓고 약함) - GameConfig 색상 사용 - 강화된 opacity
         for (let i = glowConfig.glowRadius; i > 0; i -= 2) {
-            const opacity = (glowConfig.glowIntensity * finalIntensity * (glowConfig.glowRadius - i)) / glowConfig.glowRadius * 0.15;
-            ctx.strokeStyle = `rgba(255, 68, 68, ${opacity})`;
-            ctx.lineWidth = 2;
+            const opacity = (glowConfig.glowIntensity * finalIntensity * (glowConfig.glowRadius - i)) / glowConfig.glowRadius * 0.3;
+            ctx.strokeStyle = this.hexToRgba(glowConfig.color, opacity);
+            ctx.lineWidth = 3;
             this.roundRect(ctx, x - i, y - i, width + i * 2, height + i * 2, this.style.borderRadius + i);
             ctx.stroke();
         }
 
-        // 중간 글로우 (보조 색상)
-        ctx.strokeStyle = `rgba(255, 102, 102, ${0.6 * finalIntensity})`;
-        ctx.lineWidth = 3;
-        this.roundRect(ctx, x - 2, y - 2, width + 4, height + 4, this.style.borderRadius + 2);
+        // 중간 글로우 (보조 색상) - GameConfig 보조 색상 사용 - 강화된 opacity
+        ctx.strokeStyle = this.hexToRgba(glowConfig.secondaryColor, 0.85 * finalIntensity);
+        ctx.lineWidth = 5;
+        this.roundRect(ctx, x - 3, y - 3, width + 6, height + 6, this.style.borderRadius + 3);
         ctx.stroke();
 
-        // 내부 테두리 (메인 색상, 가장 강함)
-        ctx.strokeStyle = `rgba(255, 68, 68, ${0.9 * finalIntensity})`;
+        // 내부 테두리 (메인 색상, 가장 강함) - GameConfig 메인 색상 사용
+        ctx.strokeStyle = this.hexToRgba(glowConfig.color, 1.0 * finalIntensity);
         ctx.lineWidth = glowConfig.borderWidth;
         this.roundRect(ctx, x, y, width, height, this.style.borderRadius);
         ctx.stroke();
