@@ -771,11 +771,11 @@ class Player {
                     // 조건 충족 시 계속 진행하여 버프 적용
                 }
 
-                // toxic_blast 카드: 적의 중독 잔여 턴 × 5 (동적 계산)
+                // toxic_blast 카드: 적의 중독 잔여 턴 × 1 (동적 계산)
                 if (card.id === 'toxic_blast' && target) {
                     const poisonedEffect = target.statusEffects?.find(e => e.type === 'poisoned');
                     const poisonedTurns = poisonedEffect ? poisonedEffect.turnsLeft : 0;
-                    buffedPower = poisonedTurns * (GameConfig?.cardEffects?.toxicBlast?.damagePerTurn || 5);
+                    buffedPower = poisonedTurns * (GameConfig?.cardEffects?.toxicBlast?.damagePerTurn || 1);
 
                     // 조건 미충족 시 버프 계산 건너뛰기 (질량 버프 등 미적용)
                     if (poisonedTurns === 0) {
