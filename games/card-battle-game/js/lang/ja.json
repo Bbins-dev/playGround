@@ -253,11 +253,11 @@
         },
         "flame_throw": {
           "name": "フレイムスロー",
-          "description": "相手に炎を投げて３のダメージを与えます。命中時、低確率で{status:burn}を与えます。"
+          "description": "相手に炎を投げて4のダメージを与えます。命中時、低確率で{status:burn}を与えます。"
         },
         "flame_burst": {
           "name": "フレイムバースト",
-          "description": "相手に炎を放射して1-3回2ダメージを与え、低確率で{status:burn}を負わせます。"
+          "description": "相手に炎を放射して1-3回3ダメージを与え、低確率で{status:burn}を負わせます。"
         },
         "flame_ascension": {
           "name": "炎昇天",
@@ -433,7 +433,7 @@
         },
         "fireball": {
           "name": "ファイアボール",
-          "description": "強力な炎の一撃で4ダメージを与えます。一定確率で{status:burn}を負わせます。"
+          "description": "強力な炎の一撃で7ダメージを与えます。一定確率で{status:burn}を負わせます。"
         },
         "hot_breath": {
           "name": "熱い息",
