@@ -716,14 +716,15 @@ class Player {
         return false;
     }
 
-    // 턴 시작 시 우비 1스택 차감 (벼리기와 동일한 방식)
+    // 턴 시작 시 우비 버프 완전 제거 (스택 수 무관 - 한 턴만 지속)
     decrementRaincoatAtTurnStart() {
         if (this.raincoatStacks > 0) {
-            this.raincoatStacks--;
+            const removedStacks = this.raincoatStacks;
+            this.raincoatStacks = 0;  // 스택 수와 관계없이 완전 제거
             this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
-            return true;
+            return removedStacks;
         }
-        return false;
+        return 0;
     }
 
     clearBuffs() {
