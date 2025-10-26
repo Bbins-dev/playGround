@@ -54,6 +54,7 @@ class Player {
         this.poisonNeedleTurns = 0; // 독침 버프 남은 턴 수 (1턴 고정, 독 공격 명중률 20% 증가)
         this.sulfurTurns = 0; // 유황 버프 남은 턴 수 (얼음 면역)
         this.coatingTurns = 0; // 코팅 버프 남은 턴 수 (화상 면역)
+        this.raincoatStacks = 0; // 우비 버프 스택 수 (상태이상 차단, 턴이 아닌 스택 기반)
 
         // 턴 관련
         this.currentCardIndex = 0;
@@ -692,6 +693,37 @@ class Player {
         }
 
         return { turns, cleansed: hadBurn };
+    }
+
+    // 우비 버프 관련 메서드
+    hasRaincoatProtection() {
+        return this.raincoatStacks > 0;
+    }
+
+    addRaincoatBuff(stacks) {
+        this.raincoatStacks += stacks;  // 스택 추가 방식 (턴이 아님!)
+        this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
+        return stacks;
+    }
+
+    // 우비 1스택 소모 (상태이상 차단 시)
+    consumeRaincoatStack() {
+        if (this.raincoatStacks > 0) {
+            this.raincoatStacks--;
+            this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
+            return true;
+        }
+        return false;
+    }
+
+    // 턴 시작 시 우비 1스택 차감 (벼리기와 동일한 방식)
+    decrementRaincoatAtTurnStart() {
+        if (this.raincoatStacks > 0) {
+            this.raincoatStacks--;
+            this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
+            return true;
+        }
+        return false;
     }
 
     clearBuffs() {
