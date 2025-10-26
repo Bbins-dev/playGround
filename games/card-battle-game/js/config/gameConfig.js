@@ -3160,7 +3160,7 @@ const GameConfig = {
         },
         // 맹독 폭발 카드 설정
         toxicBlast: {
-            damagePerTurn: 5   // 중독 잔여 턴당 데미지
+            damagePerTurn: 1   // 중독 잔여 턴당 데미지
         },
         // 망각제 카드 설정
         oblivionDraught: {
@@ -3197,7 +3197,7 @@ const GameConfig = {
         },
         // 정화 카드 설정
         purification: {
-            activationChance: 80,  // 80% 발동률
+            activationChance: 70,  // 70% 발동률
             messageKey: 'auto_battle_card_game.ui.templates.purification_success',
             noStatusKey: 'auto_battle_card_game.ui.templates.purification_no_status',
             visual: {

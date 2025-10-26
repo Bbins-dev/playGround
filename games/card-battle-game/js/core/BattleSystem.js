@@ -827,6 +827,25 @@ class BattleSystem {
             }
         }
 
+        // 몸 털기 효과 처리 (상태이상 무작위 제거)
+        if (result.removedStatusType) {
+            const isUserPlayer = (user === this.player);
+
+            // 상태이상 UI 즉시 업데이트
+            this.hpBarSystem.updateStatusEffects(user, isUserPlayer);
+
+            // 플레이어의 상태이상 테두리 효과 업데이트
+            if (isUserPlayer && this.gameManager?.uiManager) {
+                this.gameManager.uiManager.updateStatusBorder();
+            }
+
+            // "{이모티콘} {상태이상이름} 제거!" 메시지 표시
+            const userPosition = isUserPlayer ?
+                this.effectSystem.getPlayerPosition() :
+                this.effectSystem.getEnemyPosition();
+            await this.effectSystem.showEffectMessage(result.removedStatusType, userPosition, 'status_removed');
+        }
+
         // 억제제 효과 처리 (턴 기반 상태이상 턴수 감소)
         if (result.inhibitorApplied) {
             // user의 위치에서 메시지 표시 (버프카드지만 상태이상 관련)
