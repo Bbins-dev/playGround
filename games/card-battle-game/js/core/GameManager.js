@@ -35,6 +35,11 @@ class GameManager {
         this.gameLoop = null;
         this.lastTime = 0;
 
+        // 스마트 렌더링 플래그 (배터리 최적화)
+        this.needsRender = true;
+        this.isAnimating = false;
+        this.lastRenderTime = 0;
+
         // 게임 데이터
         this.availableCards = [];
         this.selectedCards = [];
@@ -90,6 +95,9 @@ class GameManager {
     // 게임 초기화
     async init() {
         try {
+            // 전역 접근 가능하도록 설정 (스마트 렌더링용)
+            window.gameManager = this;
+
             // 로딩 화면 초기화 및 표시
             this.loadingScreen = new LoadingScreen(this);
             this.loadingScreen.show();
@@ -127,6 +135,12 @@ class GameManager {
             // 로딩 화면 완전히 숨긴 후 메인 메뉴 표시 (BGM은 showMainMenu에서 재생)
             this.showMainMenu();
 
+            // 스마트 렌더링: 초기 렌더링 보장 (여러 프레임)
+            this.needsRender = true;
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => this.requestRender(), i * 16);
+            }
+
         } catch (error) {
             console.error('GameManager 초기화 중 오류:', error);
             // 에러가 있어도 로딩 화면 숨기고 게임 시작
@@ -136,6 +150,12 @@ class GameManager {
             this.showMainMenu();
             if (!this.gameLoop) {
                 this.startGameLoop();
+            }
+
+            // 에러 시에도 초기 렌더링 보장
+            this.needsRender = true;
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => this.requestRender(), i * 16);
             }
         }
     }
@@ -379,8 +399,54 @@ class GameManager {
         });
     }
 
-    // 게임 루프 시작
+    // 게임 루프 시작 (스마트 렌더링 최적화)
     startGameLoop() {
+        const smartRenderingConfig = GameConfig?.constants?.performance?.smartRendering;
+
+        // 스마트 렌더링 비활성화 시 기존 방식 사용
+        if (!smartRenderingConfig?.enabled) {
+            this.startTraditionalGameLoop();
+            return;
+        }
+
+        this.lastTime = performance.now();
+        this.lastRenderTime = this.lastTime;
+
+        const gameLoop = (currentTime) => {
+            const deltaTime = currentTime - this.lastTime;
+            this.lastTime = currentTime;
+
+            // 항상 update 실행 (로직 처리)
+            this.update(deltaTime);
+
+            // 렌더링이 필요할 때만 실행 (배터리 최적화)
+            if (smartRenderingConfig.renderOnlyWhenNeeded) {
+                if (this.needsRender || this.isAnimating) {
+                    this.render();
+                    this.needsRender = false;
+                    this.lastRenderTime = currentTime;
+                }
+
+                // 유휴 상태 감지는 일단 비활성화 (안정성 우선)
+                // if (smartRenderingConfig.stopWhenIdle) {
+                //     const idleTime = currentTime - this.lastRenderTime;
+                //     if (idleTime > (smartRenderingConfig.idleTimeout || 100) && !this.isAnimating) {
+                //         return;
+                //     }
+                // }
+            } else {
+                // 항상 렌더링 (레거시 모드)
+                this.render();
+            }
+
+            this.gameLoop = requestAnimationFrame(gameLoop);
+        };
+
+        this.gameLoop = requestAnimationFrame(gameLoop);
+    }
+
+    // 전통적인 게임 루프 (폴백용)
+    startTraditionalGameLoop() {
         this.lastTime = performance.now();
 
         const gameLoop = (currentTime) => {
@@ -396,8 +462,48 @@ class GameManager {
         this.gameLoop = requestAnimationFrame(gameLoop);
     }
 
+    // 렌더링 요청 (외부에서 호출)
+    requestRender() {
+        const smartRenderingConfig = GameConfig?.constants?.performance?.smartRendering;
+
+        this.needsRender = true;
+
+        // 루프가 중지된 경우 재시작
+        if (!this.gameLoop && smartRenderingConfig?.enabled) {
+            this.startGameLoop();
+        }
+    }
+
+    // 애니메이션 시작 알림
+    startAnimation() {
+        this.isAnimating = true;
+        this.requestRender();
+    }
+
+    // 애니메이션 종료 알림
+    stopAnimation() {
+        this.isAnimating = false;
+    }
+
     // 게임 업데이트
     update(deltaTime) {
+        // AnimationManager 업데이트 (단일 루프 통합)
+        const smartRenderingConfig = GameConfig?.constants?.performance?.smartRendering;
+        if (smartRenderingConfig?.singleRenderLoop && this.animationManager) {
+            // AnimationManager의 독립 RAF 대신 여기서 업데이트
+            const currentTime = performance.now();
+            this.animationManager.updateAnimations(currentTime, deltaTime);
+            this.animationManager.updateSequences(currentTime);
+
+            // 애니메이션이 실행 중이면 계속 렌더링 요청
+            if (this.animationManager.animations.size > 0 || this.animationManager.sequences.size > 0) {
+                this.requestRender();
+                this.isAnimating = true;
+            } else {
+                this.isAnimating = false;
+            }
+        }
+
         // 현재 화면 업데이트
         if (this.currentScreen && this.currentScreen.update) {
             this.currentScreen.update(deltaTime);
@@ -544,6 +650,12 @@ class GameManager {
         // Canvas 기반 메인 메뉴 표시 (필요시)
         if (this.mainMenu) {
             this.mainMenu.show();
+        }
+
+        // 스마트 렌더링: 화면 전환 시 렌더링 요청 (여러 프레임)
+        this.needsRender = true;
+        for (let i = 0; i < 5; i++) {
+            setTimeout(() => this.requestRender(), i * 16);
         }
     }
 
@@ -729,6 +841,10 @@ class GameManager {
         if (this.volumeControl) {
             this.volumeControl.showIngameVolumeButton();
         }
+
+        // 스마트 렌더링: 전투 시작 시 렌더링 요청
+        this.needsRender = true;
+        this.requestRender();
 
         if (this.battleSystem) {
             await this.battleSystem.startBattle(this.player, this.enemy);

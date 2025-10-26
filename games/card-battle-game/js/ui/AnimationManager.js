@@ -48,9 +48,25 @@ class AnimationManager {
 
     // 애니메이션 시작
     start() {
+        // 스마트 렌더링: 단일 루프 모드 체크
+        const smartRenderingConfig = GameConfig?.constants?.performance?.smartRendering;
+
+        if (smartRenderingConfig?.enabled && smartRenderingConfig?.singleRenderLoop) {
+            // 단일 루프 모드: GameManager에서 관리하므로 독립 RAF 실행 안 함
+            this.isPlaying = true;
+            this.lastFrameTime = performance.now();
+
+            // GameManager에게 렌더링 요청
+            if (window.gameManager) {
+                window.gameManager.startAnimation();
+            }
+            return;
+        }
+
+        // 레거시 모드: 독립 RAF 실행
         if (!this.isPlaying) {
             this.isPlaying = true;
-            this.lastFrameTime = performance.now(); // 고정밀 타이머 사용
+            this.lastFrameTime = performance.now();
             this.animate(this.lastFrameTime);
         }
     }
@@ -58,6 +74,16 @@ class AnimationManager {
     // 애니메이션 정지
     stop() {
         this.isPlaying = false;
+
+        // 스마트 렌더링: GameManager에게 종료 알림
+        const smartRenderingConfig = GameConfig?.constants?.performance?.smartRendering;
+        if (smartRenderingConfig?.enabled && smartRenderingConfig?.singleRenderLoop) {
+            if (window.gameManager) {
+                window.gameManager.stopAnimation();
+            }
+        }
+
+        // 레거시 모드: RAF 취소
         if (this.rafId) {
             cancelAnimationFrame(this.rafId);
             this.rafId = null;
@@ -164,6 +190,12 @@ class AnimationManager {
 
         // 애니메이션이 시작되면 자동으로 애니메이션 루프 시작
         this.start();
+
+        // 스마트 렌더링: 렌더링 요청
+        const smartRenderingConfig = GameConfig?.constants?.performance?.smartRendering;
+        if (smartRenderingConfig?.enabled && window.gameManager) {
+            window.gameManager.requestRender();
+        }
 
         return animation;
     }
