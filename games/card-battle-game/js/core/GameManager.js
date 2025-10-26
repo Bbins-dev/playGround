@@ -1006,7 +1006,10 @@ class GameManager {
 
             // CardManager를 통해 랜덤 카드 생성
             const cardIds = this.cardManager.getRandomCards(rewardCount);
-            const rewardCards = cardIds.map(cardId => CardDatabase.getCard(cardId)).filter(Boolean);
+
+            // ★ 수정: Card 인스턴스 생성 (getCard → createCardInstance)
+            // 이유: getDisplayStats() 메서드를 사용하여 랜덤 발동횟수 범위(1-3) 표시
+            const rewardCards = cardIds.map(cardId => CardDatabase.createCardInstance(cardId)).filter(Boolean);
 
             return rewardCards;
         } catch (error) {
