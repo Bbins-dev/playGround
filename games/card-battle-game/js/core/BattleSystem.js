@@ -148,6 +148,14 @@ class BattleSystem {
             this.hpBarSystem.updateBuffs(currentPlayer, isPlayerTurn);
         }
 
+        // 우비 버프 차감 (턴 시작 시 - "다음 턴 시작까지" 지속, 스택 기반)
+        if (currentPlayer.raincoatStacks > 0) {
+            currentPlayer.decrementRaincoatAtTurnStart();
+
+            // 버프 UI 즉시 업데이트
+            this.hpBarSystem.updateBuffs(currentPlayer, isPlayerTurn);
+        }
+
         // ===== 2. 방어력 초기화 =====
         if (currentPlayer.defense > 0) {
             // 방어력 감소 애니메이션 실행
@@ -805,6 +813,11 @@ class BattleSystem {
             }
         }
 
+        // 우비 버프 획득 처리 (좋은 우비 카드) - 새로운 통합 메서드 사용
+        if (result.raincoatGain && result.raincoatGain > 0) {
+            await this.effectSystem.showBuffEffect('raincoat', user, result.raincoatGain);
+        }
+
         // 정화 효과 처리 (정화 카드)
         if (result.purified) {
             const userPosition = user.isPlayer ?
@@ -1185,7 +1198,28 @@ class BattleSystem {
             }
         }
 
-        // 2. 상태이상 적용 시도
+        // 2. 우비 버프 보호 체크 (모든 상태이상 차단)
+        if (target.hasRaincoatProtection()) {
+            // 우비 1스택 소모
+            target.consumeRaincoatStack();
+
+            // 차단 메시지 표시
+            this.effectSystem.showDamageNumber(
+                '🌂 차단!',
+                targetPosition,
+                'immune',
+                null,
+                { isPlayerTarget: (target === this.player) }
+            );
+
+            // 버프 UI 즉시 업데이트 (스택 감소 반영)
+            const isTargetPlayer = target === this.player;
+            this.hpBarSystem.updateBuffs(target, isTargetPlayer);
+
+            return { success: false, blocked: 'raincoat', statusType: statusInfo.type };
+        }
+
+        // 3. 상태이상 적용 시도
         const result = target.addStatusEffect(
             statusInfo.type,
             statusInfo.power || null,
