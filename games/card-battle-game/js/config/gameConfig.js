@@ -3074,7 +3074,7 @@ const GameConfig = {
 
         // 뇌진탕 카드 설정
         concussion: {
-            stunChance: 40     // 기절 확률 (40%)
+            stunChance: 25     // 기절 확률 (25%)
         },
 
         // 제세동기 카드 설정
