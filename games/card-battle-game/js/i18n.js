@@ -111,7 +111,16 @@ class I18n {
             const key = element.getAttribute('data-i18n');
             const translation = this.getTranslation(key);
             if (translation) {
-                element.textContent = translation;
+                // 마커 파싱이 필요한 요소인지 확인
+                const needsParsing = element.hasAttribute('data-i18n-parse');
+
+                if (needsParsing && typeof DescriptionParser !== 'undefined') {
+                    // DescriptionParser를 사용하여 마커 파싱
+                    this.applyParsedTranslation(element, translation);
+                } else {
+                    // 일반 텍스트로 설정
+                    element.textContent = translation;
+                }
             }
         });
 
@@ -159,6 +168,56 @@ class I18n {
         }
         
         return translation;
+    }
+
+    /**
+     * 마커가 포함된 번역 텍스트를 파싱하여 클릭 가능한 라벨로 렌더링
+     * @param {HTMLElement} element - 대상 요소
+     * @param {string} translation - 번역 텍스트 (마커 포함)
+     */
+    applyParsedTranslation(element, translation) {
+        // 기존 내용 초기화
+        element.innerHTML = '';
+
+        // DescriptionParser로 마커 파싱
+        const segments = DescriptionParser.parse(translation);
+
+        segments.forEach(segment => {
+            if (segment.type === 'text') {
+                // 일반 텍스트
+                element.appendChild(document.createTextNode(segment.content));
+            } else if (segment.type === 'label') {
+                // 라벨 생성
+                const labelInfo = DescriptionParser.getLabelInfo(segment.labelType, segment.labelKey);
+                if (labelInfo) {
+                    const labelSpan = document.createElement('span');
+                    labelSpan.className = 'inline-label clickable-label';
+
+                    // 폰트 크기 계산 (현재 요소의 폰트 크기 기준)
+                    const computedStyle = window.getComputedStyle(element);
+                    const baseFontSize = parseFloat(computedStyle.fontSize) || 14;
+                    const adjustedFontSize = Math.max(10, baseFontSize * 0.9);
+
+                    // 라벨 스타일 적용
+                    labelSpan.style.cssText = DescriptionParser.getLabelCSS(labelInfo, adjustedFontSize);
+                    labelSpan.textContent = `${labelInfo.emoji} ${labelInfo.name}`;
+
+                    // 클릭 이벤트 - 툴팁 모달 표시
+                    labelSpan.addEventListener('click', (e) => {
+                        e.stopPropagation();
+
+                        if (window.BuffStatusTooltipModal) {
+                            window.BuffStatusTooltipModal.show(segment.labelType, segment.labelKey);
+                        }
+                    });
+
+                    // 커서 스타일 추가
+                    labelSpan.style.cursor = 'pointer';
+
+                    element.appendChild(labelSpan);
+                }
+            }
+        });
     }
 
     // Get translation for dynamic content
