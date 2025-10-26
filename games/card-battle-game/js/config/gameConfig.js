@@ -88,6 +88,17 @@ const GameConfig = {
             heavyDamageThreshold: 20            // 화면 흔들림 트리거 데미지 비율 (%)
         },
 
+        // 보안 설정
+        security: {
+            integrityCheckInterval: 2000,       // 무결성 검사 주기 (ms) - 2초마다
+            domCheckInterval: 1000,             // DOM 무결성 검사 주기 (ms) - 1초마다
+            maxHPTolerance: 50,                 // HP 초과 허용치 (힐링 오버플로우 대응)
+            maxHandSizeTolerance: 5,            // 손패 크기 초과 허용치
+            maxBuffValue: 100,                  // 최대 버프 수치
+            maxStageNumber: 100,                // 최대 스테이지 번호
+            enableIntegrityCheck: true          // 무결성 검사 활성화 여부
+        },
+
         // 픽셀 단위 값들
         pixels: {
             // 패딩
