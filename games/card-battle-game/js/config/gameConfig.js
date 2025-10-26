@@ -85,7 +85,19 @@ const GameConfig = {
             animationThrottleMs: 16,            // 애니메이션 throttle (60fps)
             enablePassiveListeners: true,       // Passive 이벤트 리스너 활성화
             enableHardwareAcceleration: true,   // CSS 하드웨어 가속 활성화
-            heavyDamageThreshold: 20            // 화면 흔들림 트리거 데미지 비율 (%)
+            heavyDamageThreshold: 20,           // 화면 흔들림 트리거 데미지 비율 (%)
+
+            // 스마트 렌더링 시스템 (배터리 최적화)
+            smartRendering: {
+                enabled: true,                  // 스마트 렌더링 활성화 (배터리 절약)
+                renderOnlyWhenNeeded: true,     // 변경 시에만 렌더링 (대기 시 0fps)
+                maxFPS: 60,                     // 최대 프레임률
+                minFPS: 0,                      // 최소 프레임률 (대기 시)
+                pauseWhenInactive: true,        // 비활성화 시 렌더링 중지
+                singleRenderLoop: true,         // 단일 RAF 루프 사용 (이중 루프 방지)
+                stopWhenIdle: true,             // 유휴 상태에서 루프 완전 중지
+                idleTimeout: 100                // 유휴 판단 시간 (ms)
+            }
         },
 
         // 보안 설정
@@ -219,7 +231,7 @@ const GameConfig = {
             torrent: '#4682B4',       // 급류 - 스틸 블루 (물결/파도 느낌)
             absorption: '#20B2AA',    // 흡수 - 라이트 시그린 (물 치유 느낌)
             lightSpeed: '#FFD700',    // 광속 - 금색 (전기 속성 색상, 빛의 속도)
-            lightningRod: '#FFA500',  // 피뢰침 - 오렌지 (전기 속성 색상, 번개봉)
+            static: '#FFA500',        // 정전기 - 오렌지 (전기 속성, 정전기 느낌)
             pack: '#00CED1',          // 팩 - 다크 터쿼이즈 (전기 에너지, 배터리 느낌)
             propagation: '#9B59B6',   // 연쇄 - 보라색 (독 속성, 화학 반응 전파)
             sulfur: '#FFD700',        // 유황 - 황금색 (온천, 얼음 면역)
@@ -1054,22 +1066,22 @@ const GameConfig = {
                 accuracy: 40  // 40% 증가 (곱셈 계산)
             }
         },
-        lightningRod: {
-            nameKey: 'auto_battle_card_game.ui.buffs.lightningRod',
-            descriptionKey: 'auto_battle_card_game.ui.buffs.lightningRod_description',
-            name: '피뢰침',
-            emoji: '🗼',
-            description: '다음 전기 공격카드가 반드시 명중',
-            get color() { return GameConfig.masterColors.buffs.lightningRod; }, // 오렌지 계열 (전기 속성)
+        static: {
+            nameKey: 'auto_battle_card_game.ui.buffs.static',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.static_description',
+            name: '정전기',
+            emoji: '⚡',
+            description: '전기 공격카드 공격력 +10 × 손패 전기 카드 수',
+            get color() { return GameConfig.masterColors.buffs.static; }, // 오렌지 (피뢰침 색상 계승)
             get maxStack() { return 1; }, // 중첩 불가 (항상 1)
             targetSelf: true, // 자신에게 적용되는 버프
-            durationType: 'consumable', // 일회용 (전기 공격 발동 시 즉시 소모)
+            durationType: 'duration', // 턴 추가 방식 (staticTurns)
             display: {
-                showValue: false, // 턴 표기 없음 (일회용 버프)
-                format: ''
+                showValue: true, // 턴 표기 있음
+                format: '({value})'
             },
             effect: {
-                guaranteedHit: true  // 전기 공격카드 100% 명중 보장
+                damagePerCard: 10  // 전기 카드당 추가 대미지
             }
         },
         pack: {
@@ -1573,7 +1585,6 @@ const GameConfig = {
                 cards: [
                     { id: 'battery_pack', count: 2 },      // 건전지 팩 x2
                     { id: 'light_speed', count: 1 },       // 빛의 속도
-                    { id: 'lightning_rod', count: 1 },     // 피뢰침
                     { id: 'paralysis_trap', count: 1 },    // 마비 덫
                     { id: 'high_voltage_current', count: 1 }, // 고압 전류
                     { id: 'high_voltage_gloves', count: 1 }, // 고전압 장갑
@@ -1590,7 +1601,6 @@ const GameConfig = {
                     { id: 'barricade', count: 1 },         // 바리케이드
                     { id: 'battery_explosion', count: 1 }, // 배터리 폭발
                     { id: 'overcharge_battery', count: 1 }, // 과충전
-                    { id: 'lightning_rod', count: 1 },     // 피뢰침
                     { id: 'lightning_storm', count: 1 },   // 번개 폭풍
                     { id: 'overload', count: 1 }           // 과부하
                 ]
@@ -1812,7 +1822,6 @@ const GameConfig = {
                     { id: 'water_play', count: 1 },        // 물장구
                     { id: 'rain', count: 1 },              // 비내리기
                     { id: 'moisture_absorption', count: 1 }, // 수분흡수
-                    { id: 'lightning_rod', count: 1 },     // 피뢰침
                     { id: 'light_speed', count: 2 },       // 빛의 속도 x2
                     { id: 'electric_shock', count: 1 },    // 감전
                     { id: 'liquify', count: 1 }            // 액체화

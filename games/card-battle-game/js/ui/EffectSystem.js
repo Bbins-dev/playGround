@@ -604,7 +604,7 @@ class EffectSystem {
                 absorption: 'addAbsorptionBuff',
                 lightSpeed: 'addLightSpeedBuff',
                 superConductivity: 'addSuperConductivityBuff',
-                lightningRod: 'addLightningRodBuff',
+                static: 'addStaticBuff',
                 pack: 'addPackBuff',
                 propagation: 'addPropagationBuff',
                 poisonNeedle: 'addPoisonNeedleBuff'

@@ -108,11 +108,6 @@ class Card {
             actualAccuracy = 100;
         }
 
-        // 피뢰침 버프 체크 (전기 공격 카드만) - 명중률 100% 보장
-        if (this.type === 'attack' && this.element === 'electric' && user && user.hasLightningRodBuff && user.hasLightningRodBuff()) {
-            actualAccuracy = 100;
-        }
-
         // 초전도 버프 체크 (전기 공격 카드만) - 상태이상 적용 후 곱셈 방식으로 증가 (소수점 버림)
         if (this.type === 'attack' && this.element === 'electric' && user && user.hasSuperConductivityBuff && user.hasSuperConductivityBuff()) {
             const superConductivityEffect = GameConfig?.buffs?.superConductivity?.effect?.accuracy || 40; // 40%
