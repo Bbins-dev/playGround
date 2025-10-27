@@ -772,7 +772,7 @@ const CardDatabase = {
             type: 'attack',
             element: 'electric',
             power: 3,  // 기본 공격력 (젖음 상태이면 9로 동적 계산)
-            accuracy: 80,
+            accuracy: 70,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.electric_shock.description',
             effect: function(user, target, battleSystem) {

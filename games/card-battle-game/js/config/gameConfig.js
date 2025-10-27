@@ -1085,7 +1085,7 @@ const GameConfig = {
             descriptionKey: 'auto_battle_card_game.ui.buffs.static_description',
             name: '정전기',
             emoji: '⚡',
-            description: '전기 공격카드 공격력 +10 × 손패 전기 카드 수',
+            description: '전기속성 카드 수 만큼 전기 공격카드의 기본공격력이 강해집니다',
             get color() { return GameConfig.masterColors.buffs.static; }, // 오렌지 (피뢰침 색상 계승)
             get maxStack() { return 1; }, // 중첩 불가 (항상 1)
             targetSelf: true, // 자신에게 적용되는 버프
@@ -1095,7 +1095,7 @@ const GameConfig = {
                 format: '({value})'
             },
             effect: {
-                damagePerCard: 10  // 전기 카드당 추가 대미지
+                damagePerCard: 1  // 전기 카드당 추가 대미지
             }
         },
         pack: {
@@ -1370,6 +1370,7 @@ const GameConfig = {
                     { id: 'sword_dance', count: 1 },
                     { id: 'fast_attack', count: 1 },
                     { id: 'heavy_strike', count: 1 },
+                    { id: 'large_shield', count: 1 },
                     { id: 'crouch', count: 1 }
                 ]
             },
