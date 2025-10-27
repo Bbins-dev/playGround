@@ -742,6 +742,13 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
 
+                // 정전기 버프 적용 (전기 속성만, 손패 전기 카드 수 × damagePerCard)
+                if (user.hasStaticBuff && user.hasStaticBuff()) {
+                    const electricCount = user.hand.filter(c => c.element === 'electric').length;
+                    const damagePerCard = GameConfig?.buffs?.static?.effect?.damagePerCard || 1;
+                    baseDamage += electricCount * damagePerCard;
+                }
+
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
                     baseDamage = Math.floor(baseDamage * 1.5);
@@ -888,6 +895,13 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 // 일반 공격 데미지 계산 (힘 버프 적용)
                 let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
+
+                // 정전기 버프 적용 (전기 속성만, 손패 전기 카드 수 × damagePerCard)
+                if (user.hasStaticBuff && user.hasStaticBuff()) {
+                    const electricCount = user.hand.filter(c => c.element === 'electric').length;
+                    const damagePerCard = GameConfig?.buffs?.static?.effect?.damagePerCard || 1;
+                    baseDamage += electricCount * damagePerCard;
+                }
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
