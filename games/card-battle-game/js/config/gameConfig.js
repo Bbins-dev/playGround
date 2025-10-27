@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.3.6',                        // 버전 넘버
+        number: '0.3.7',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -114,15 +114,16 @@ const GameConfig = {
             }
         },
 
-        // 보안 설정
+        // 보안 설정 - 배터리 최적화
         security: {
-            integrityCheckInterval: 2000,       // 무결성 검사 주기 (ms) - 2초마다
-            domCheckInterval: 1000,             // DOM 무결성 검사 주기 (ms) - 1초마다
+            integrityCheckInterval: 2000,       // 무결성 검사 주기 (ms) - enableIntegrityCheck=true일 때만 사용
+            domCheckInterval: 1000,             // DOM 무결성 검사 주기 (ms)
             maxHPTolerance: 50,                 // HP 초과 허용치 (힐링 오버플로우 대응)
             maxHandSizeTolerance: 5,            // 손패 크기 초과 허용치
             maxBuffValue: 100,                  // 최대 버프 수치
             maxStageNumber: 100,                // 최대 스테이지 번호
-            enableIntegrityCheck: true          // 무결성 검사 활성화 여부
+            enableIntegrityCheck: false,        // 무결성 검사 반복 실행 비활성화 (배터리 절약)
+            checkOnPageFocus: true              // 페이지 복귀 시에만 무결성 검사 (영향 미비)
         },
 
         // 픽셀 단위 값들
