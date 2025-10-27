@@ -621,7 +621,7 @@
         },
         "static": {
           "name": "정전기",
-          "description": "한 턴 간 {electric}{cardType:attack}카드의 기본공격력에 손패의 {electric}속성 카드 당 5를 추가합니다. {buff:static}는 중첩되지 않습니다."
+          "description": "한 턴 간 손패의 {electric}속성 카드 1장 당 {electric}{cardType:attack}카드의 기본 공격력에 5를 추가합니다. {buff:static}는 중첩되지 않습니다."
         },
         "battery_pack": {
           "name": "건전지 팩",

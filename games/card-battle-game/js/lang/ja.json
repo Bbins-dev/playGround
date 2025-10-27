@@ -621,7 +621,7 @@
         },
         "static": {
           "name": "静電気",
-          "description": "1ターンの間、手札の{electric}属性カード1枚につき{electric}{cardType:attack}カードの基本攻撃力に5を追加します。{buff:static}は重複しません。"
+          "description": "1ターンの間、手札の{electric}属性カード1枚当たり{electric}{cardType:attack}カードの基本攻撃力に5を追加します。{buff:static}は重複しません。"
         },
         "battery_pack": {
           "name": "バッテリーパック",
