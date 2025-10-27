@@ -621,7 +621,7 @@
         },
         "static": {
           "name": "静電気",
-          "description": "1ターンの間、手札の{electric}属性カード1枚につき{electric}{cardType:attack}カードの基本攻撃力に10を追加します。{buff:static}は重複しません。"
+          "description": "1ターンの間、手札の{electric}属性カード数が{electric}{cardType:attack}カードの基本攻撃力に加算されます。{buff:static}は重複しません。"
         },
         "battery_pack": {
           "name": "バッテリーパック",
@@ -671,7 +671,7 @@
         "superConductivity": "超電導",
         "superConductivity_description": "電気属性攻撃カードの命中率が40%増加します。",
         "static": "静電気",
-        "static_description": "電気攻撃カードの攻撃力が手札の電気カード数 × 10増加します。1ターン持続します。",
+        "static_description": "電気属性カード数分、電気攻撃カードの基本攻撃力が強化されます。",
         "pack": "パック",
         "pack_description": "ターン開始時にパック値 × 8のHPを回復します。回復後すぐに消えます。スタック可能です。",
         "propagation": "伝播",
