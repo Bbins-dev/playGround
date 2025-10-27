@@ -725,7 +725,7 @@ const GameConfig = {
             emoji: '💨',
             description: '공격 카드의 명중률 30% 감소',
             get defaultReduction() { return GameConfig.constants.probabilities.statusReduction; },
-            duration: 2,
+            duration: 1,
             get color() { return GameConfig.masterColors.statusEffects.sand; }
         },
         insult: {
@@ -1096,7 +1096,7 @@ const GameConfig = {
                 format: '({value})'
             },
             effect: {
-                damagePerCard: 1  // 전기 카드당 추가 대미지
+                damagePerCard: 5  // 전기 카드당 추가 대미지
             }
         },
         pack: {
@@ -3572,7 +3572,7 @@ const GameConfig = {
 
         // 헤더 스타일 (이모지 + 이름)
         header: {
-            get fontSize() { return GameConfig.masterFonts.sizes.xlarge; },
+            get fontSize() { return GameConfig.masterFonts.baseSizes.xlarge; },
             emojiSize: 32,
             spacing: 8
         },
