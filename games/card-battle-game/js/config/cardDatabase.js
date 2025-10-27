@@ -1150,7 +1150,7 @@ const CardDatabase = {
             type: 'buff',
             element: 'electric',
             power: 0,
-            accuracy: 70,
+            accuracy: 80,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.static.description',
             effect: function(user, target, battleSystem) {
@@ -3014,7 +3014,7 @@ const CardDatabase = {
             type: 'buff',
             element: 'electric',
             power: 0,
-            accuracy: 70,
+            accuracy: 80,
             activationCount: 1,
             usageLimit: 1, // 1회만 사용 가능
             descriptionKey: 'auto_battle_card_game.ui.cards.overcharge_battery.description',
