@@ -123,7 +123,7 @@
         "poisoned": "毒",
         "poisoned_description": "ターン終了時に残りターン数分のダメージを受けます。",
         "sand": "砂",
-        "sand_description": "攻撃カードの{accuracy}が30%減少します。2ターン持続します。",
+        "sand_description": "攻撃カードの{accuracy}が30%減少します。1ターン持続します。",
         "insult": "侮辱",
         "insult_description": "防御カードの発動率が30%減少します。2ターン持続します。",
         "slow": "鈍化",
@@ -621,7 +621,7 @@
         },
         "static": {
           "name": "静電気",
-          "description": "1ターンの間、手札の{electric}属性カード数が{electric}{cardType:attack}カードの基本攻撃力に加算されます。{buff:static}は重複しません。"
+          "description": "1ターンの間、手札の{electric}属性カード1枚につき{electric}{cardType:attack}カードの基本攻撃力に5を追加します。{buff:static}は重複しません。"
         },
         "battery_pack": {
           "name": "バッテリーパック",
@@ -671,7 +671,7 @@
         "superConductivity": "超電導",
         "superConductivity_description": "電気属性攻撃カードの命中率が40%増加します。",
         "static": "静電気",
-        "static_description": "電気属性カード数分、電気攻撃カードの基本攻撃力が強化されます。",
+        "static_description": "電気属性カード1枚ごとに電気攻撃カードの基本攻撃力に5を追加します。",
         "pack": "パック",
         "pack_description": "ターン開始時にパック値 × 8のHPを回復します。回復後すぐに消えます。スタック可能です。",
         "propagation": "伝播",

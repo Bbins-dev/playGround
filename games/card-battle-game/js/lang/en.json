@@ -123,7 +123,7 @@
         "poisoned": "Poison",
         "poisoned_description": "Take damage equal to remaining turns at turn end.",
         "sand": "Sand",
-        "sand_description": "Reduces attack card {accuracy} by 30%. Lasts for 2 turns.",
+        "sand_description": "Reduces attack card {accuracy} by 30%. Lasts for 1 turn.",
         "insult": "Insult",
         "insult_description": "Reduces defense card activation rate by 30%. Lasts for 2 turns.",
         "slow": "Slow",
@@ -621,7 +621,7 @@
         },
         "static": {
           "name": "Static",
-          "description": "For one turn, adds base power to {electric}{cardType:attack} cards equal to the number of {electric} cards in hand. {buff:static} does not stack."
+          "description": "For one turn, adds 5 to {electric}{cardType:attack} card base power per {electric} card in hand. {buff:static} does not stack."
         },
         "battery_pack": {
           "name": "Battery Pack",
@@ -671,7 +671,7 @@
         "superConductivity": "S.COND",
         "superConductivity_description": "Increases electric attack card accuracy by 40%.",
         "static": "STATIC",
-        "static_description": "Electric attack cards gain base power equal to the number of electric cards in hand.",
+        "static_description": "Adds 5 to electric attack card base power per electric card in hand.",
         "pack": "PACK",
         "pack_description": "Restore HP equal to Pack value × 8 at turn start. Disappears immediately after healing. Stackable.",
         "propagation": "PROP",
