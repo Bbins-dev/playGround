@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.3.4',                        // 버전 넘버
+        number: '0.3.5',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -1683,10 +1683,11 @@ const GameConfig = {
             40: {
                 hp: 1000,
                 cards: [
-                    { id: 'battery_explosion', count: 1 }, // 배터리 폭발
-                    { id: 'overcharge_battery', count: 2 }, // 과충전 x2
-                    { id: 'light_speed', count: 2 },       // 빛의 속도 x2
-                    { id: 'lightning_storm', count: 1 }    // 번개 폭풍
+                    { id: 'super_conductivity', count: 1 }, // 초전도
+                    { id: 'light_speed', count: 1 },        // 빛의 속도
+                    { id: 'static', count: 1 },             // 정전기
+                    { id: 'lightning_storm', count: 1 },    // 번개 폭풍
+                    { id: 'catalyst', count: 1 }            // 촉진제
                 ]
             },
             41: {
