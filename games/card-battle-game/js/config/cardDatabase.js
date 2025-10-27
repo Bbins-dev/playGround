@@ -3590,7 +3590,7 @@ const CardDatabase = {
             type: 'buff',
             element: 'electric',
             power: 0, // 버프 카드는 파워가 없음
-            accuracy: 90,
+            accuracy: 80,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.super_conductivity.description',
             effect: function(user, target, battleSystem) {
