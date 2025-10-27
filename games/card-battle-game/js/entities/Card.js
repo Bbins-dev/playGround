@@ -197,16 +197,32 @@ class Card {
             if (this.getRandomActivationCount) {
                 this.activationCount = this.getRandomActivationCount();
 
-                // 디버그 로그: 첫 발동 결정 시점
-                if (GameConfig?.debugMode?.showRandomBashCounts) {
-                    console.log(`[RANDOM ACTIVATION] ${this.name || this.id}: ${this.activationCount}회로 결정됨`);
+                // ★ FIX: 랜덤 횟수 결정 후 버프 보너스 누적 (급류/고속/열풍/광속/연쇄 버프)
+                // modifiedActivationCount에는 Player.startTurn()에서 버프 보너스만 저장되어 있음
+                if (this.modifiedActivationCount !== undefined) {
+                    this.activationCount += this.modifiedActivationCount;
+
+                    // 디버그 로그: 버프 적용 후 최종 횟수
+                    if (GameConfig?.debugMode?.showRandomBashCounts) {
+                        const bonus = this.modifiedActivationCount;
+                        const baseCount = this.activationCount - bonus;
+                        console.log(`[RANDOM ACTIVATION] ${this.name || this.id}: ${baseCount}회(기본) + ${bonus}회(버프) = ${this.activationCount}회`);
+                    }
+
+                    // 버프 보너스를 activationCount에 반영했으므로 modifiedActivationCount는 더 이상 사용 안함
+                    this.modifiedActivationCount = undefined;
+                } else {
+                    // 디버그 로그: 버프 없을 때
+                    if (GameConfig?.debugMode?.showRandomBashCounts) {
+                        console.log(`[RANDOM ACTIVATION] ${this.name || this.id}: ${this.activationCount}회로 결정됨 (버프 없음)`);
+                    }
                 }
             } else {
                 this.activationCount = 1; // fallback
             }
         }
 
-        // 고속 버프가 적용된 경우 modifiedActivationCount 사용
+        // 일반 카드 또는 랜덤 카드(이미 결정된 경우) - modifiedActivationCount 우선 사용
         const effectiveCount = this.modifiedActivationCount !== undefined ?
             this.modifiedActivationCount : this.activationCount;
         return this.isActive && this.currentActivations < effectiveCount;
