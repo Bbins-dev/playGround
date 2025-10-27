@@ -123,7 +123,7 @@
         "poisoned": "중독",
         "poisoned_description": "턴 종료 시 남은 턴수만큼 피해를 받습니다.",
         "sand": "모래",
-        "sand_description": "공격 카드의 {accuracy}이 30% 감소합니다. 2턴 동안 지속됩니다.",
+        "sand_description": "공격 카드의 {accuracy}이 30% 감소합니다. 1턴 동안 지속됩니다.",
         "insult": "모욕",
         "insult_description": "방어 카드의 발동률이 30% 감소합니다. 2턴 동안 지속됩니다.",
         "slow": "둔화",
@@ -621,7 +621,7 @@
         },
         "static": {
           "name": "정전기",
-          "description": "한 턴 간 손패의 {electric}속성 카드 수가 {electric}{cardType:attack}카드의 기본 공격력에 더해집니다. {buff:static}는 중첩되지 않습니다."
+          "description": "한 턴 간 {electric}{cardType:attack}카드의 기본공격력에 손패의 {electric}속성 카드 당 5를 추가합니다. {buff:static}는 중첩되지 않습니다."
         },
         "battery_pack": {
           "name": "건전지 팩",
@@ -671,7 +671,7 @@
         "superConductivity": "초전도",
         "superConductivity_description": "전기 속성 공격 카드의 명중률이 40% 증가합니다.",
         "static": "정전기",
-        "static_description": "전기속성 카드 수 만큼 전기 공격카드의 기본공격력이 강해집니다.",
+        "static_description": "전기 속성 카드 1장당 전기 공격카드의 기본공격력에 5를 추가합니다.",
         "pack": "팩",
         "pack_description": "턴 시작 시 팩 수치 × 8만큼 HP를 회복합니다. 회복 후 즉시 사라집니다. 중첩 가능합니다.",
         "propagation": "연쇄",
