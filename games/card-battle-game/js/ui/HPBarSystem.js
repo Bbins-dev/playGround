@@ -117,6 +117,7 @@ class HPBarSystem {
     }
 
     // HP 숫자 카운트 애니메이션 (Promise 반환으로 수정)
+    // HP 숫자 카운트 애니메이션 (배터리 최적화: RAF 사용)
     animateHPNumber(element, targetHP, maxHP) {
         const currentText = element.textContent;
         const currentHP = parseInt(currentText.split('/')[0]);
@@ -127,27 +128,31 @@ class HPBarSystem {
 
         return new Promise((resolve) => {
             const duration = GameConfig?.masterTiming?.ui?.hpAnimation || 300; // GameConfig 참조, 기본값 300ms
-            const steps = 20;
-            const stepDuration = duration / steps;
+            const steps = 10; // 20 → 10단계로 축소 (배터리 절약 + 빠른 애니메이션)
+            const startTime = performance.now();
             const hpDiff = targetHP - currentHP;
-            const stepValue = hpDiff / steps;
 
-            let step = 0;
-            const timer = setInterval(() => {
-                step++;
-                const newHP = Math.round(currentHP + (stepValue * step));
+            const animate = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const step = Math.floor(progress * steps);
+
+                const newHP = Math.round(currentHP + (hpDiff * progress));
                 element.textContent = `${newHP}/${maxHP}`;
 
-                if (step >= steps) {
-                    clearInterval(timer);
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
                     element.textContent = `${targetHP}/${maxHP}`;
                     resolve();
                 }
-            }, stepDuration);
+            };
+
+            requestAnimationFrame(animate);
         });
     }
 
-    // 방어력 숫자 카운트 애니메이션 (Promise 반환)
+    // 방어력 숫자 카운트 애니메이션 (배터리 최적화: RAF 사용)
     animateDefenseNumber(element, targetDefense) {
         const currentText = element.textContent;
         const currentDefense = parseInt(currentText.replace('🛡️', '')) || 0;
@@ -159,23 +164,27 @@ class HPBarSystem {
 
         return new Promise((resolve) => {
             const duration = GameConfig?.masterTiming?.ui?.defenseAnimation || 300; // GameConfig 참조, 기본값 300ms
-            const steps = 20;
-            const stepDuration = duration / steps;
+            const steps = 10; // 20 → 10단계로 축소 (배터리 절약)
+            const startTime = performance.now();
             const defenseDiff = targetDefense - currentDefense;
-            const stepValue = defenseDiff / steps;
 
-            let step = 0;
-            const timer = setInterval(() => {
-                step++;
-                const newDefense = Math.round(currentDefense + (stepValue * step));
+            const animate = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const step = Math.floor(progress * steps);
+
+                const newDefense = Math.round(currentDefense + (defenseDiff * progress));
                 element.textContent = `🛡️${newDefense}`;
 
-                if (step >= steps) {
-                    clearInterval(timer);
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
                     element.textContent = `🛡️${targetDefense}`;
                     resolve();
                 }
-            }, stepDuration);
+            };
+
+            requestAnimationFrame(animate);
         });
     }
 
@@ -641,7 +650,7 @@ class HPBarSystem {
         defenseElementBadge._clickHandler = newClickHandler; // 참조 저장
     }
 
-    // 방어력 감소 애니메이션 (턴 시작 시 0으로 초기화)
+    // 방어력 감소 애니메이션 (배터리 최적화: RAF 사용)
     animateDefenseDecrease(player, isPlayer = true) {
         const targetElements = isPlayer ? {
             overlay: this.playerDefenseOverlay,
@@ -662,14 +671,13 @@ class HPBarSystem {
 
         return new Promise((resolve) => {
             const duration = GameConfig?.masterTiming?.ui?.defenseShatter || 300; // GameConfig 참조, 기본값 300ms
-            const steps = 20;
-            const stepDuration = duration / steps;
-            const defenseStep = initialDefense / steps;
+            const steps = 10; // 20 → 10단계로 축소 (배터리 절약)
+            const startTime = performance.now();
 
-            let step = 0;
-            const timer = setInterval(() => {
-                step++;
-                const currentDefense = Math.max(0, Math.round(initialDefense - (defenseStep * step)));
+            const animate = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const currentDefense = Math.max(0, Math.round(initialDefense * (1 - progress)));
 
                 // 방어력 오버레이 크기 조정
                 const maxHP = player.maxHP;
@@ -685,11 +693,14 @@ class HPBarSystem {
                     targetElements.overlay.classList.remove('max-defense');
                 }
 
-                if (step >= steps) {
-                    clearInterval(timer);
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
                     resolve();
                 }
-            }, stepDuration);
+            };
+
+            requestAnimationFrame(animate);
         });
     }
 
