@@ -621,7 +621,7 @@
         },
         "static": {
           "name": "Static",
-          "description": "For one turn, adds 10 to base power of {electric}{cardType:attack} cards for each {electric} card in hand. {buff:static} does not stack."
+          "description": "For one turn, adds base power to {electric}{cardType:attack} cards equal to the number of {electric} cards in hand. {buff:static} does not stack."
         },
         "battery_pack": {
           "name": "Battery Pack",
@@ -671,7 +671,7 @@
         "superConductivity": "S.COND",
         "superConductivity_description": "Increases electric attack card accuracy by 40%.",
         "static": "STATIC",
-        "static_description": "Electric attack cards gain +10 power per electric card in hand. Lasts for 1 turn.",
+        "static_description": "Electric attack cards gain base power equal to the number of electric cards in hand.",
         "pack": "PACK",
         "pack_description": "Restore HP equal to Pack value × 8 at turn start. Disappears immediately after healing. Stackable.",
         "propagation": "PROP",

@@ -862,10 +862,11 @@ class Player {
                 // 질량 버프 적용 (물 속성만, 현재 HP의 20% × 스택)
                 buffedPower += this.getMassBonus(card.element);
 
-                // 정전기 버프 적용 (전기 속성만, 손패 전기 카드 수 × 10)
+                // 정전기 버프 적용 (전기 속성만, 손패 전기 카드 수 × damagePerCard)
                 if (card.element === 'electric' && this.hasStaticBuff()) {
                     const electricCount = this.hand.filter(c => c.element === 'electric').length;
-                    buffedPower += electricCount * 10;
+                    const damagePerCard = GameConfig?.buffs?.static?.effect?.damagePerCard || 1;
+                    buffedPower += electricCount * damagePerCard;
                 }
 
                 // 강화 버프 적용 (1.5배)
