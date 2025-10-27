@@ -621,7 +621,7 @@
         },
         "static": {
           "name": "Static",
-          "description": "For one turn, adds 5 to {electric}{cardType:attack} card base power per {electric} card in hand. {buff:static} does not stack."
+          "description": "For one turn, adds 5 base power to {electric}{cardType:attack} cards per {electric} card in hand. {buff:static} does not stack."
         },
         "battery_pack": {
           "name": "Battery Pack",
