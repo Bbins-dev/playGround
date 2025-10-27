@@ -132,21 +132,26 @@ class CardBattleGame {
         Object.freeze(window.Enemy.prototype.setHP);
     }
 
-    // 게임 무결성 모니터링 시스템
+    // 게임 무결성 모니터링 시스템 - 배터리 최적화
     setupIntegrityMonitoring() {
-        // Configuration-Driven: 검사 주기 설정 (2초마다 - 강화)
-        const checkInterval = GameConfig?.constants?.security?.integrityCheckInterval || 2000;
+        const securityConfig = GameConfig?.constants?.security;
 
-        this.integrityTimer = setInterval(() => {
-            this.performIntegrityCheck();
-        }, checkInterval);
+        // 반복 검사: enableIntegrityCheck 설정에 따라 조건부 실행 (배터리 절약)
+        if (securityConfig?.enableIntegrityCheck) {
+            const checkInterval = securityConfig.integrityCheckInterval || 2000;
+            this.integrityTimer = setInterval(() => {
+                this.performIntegrityCheck();
+            }, checkInterval);
+        }
 
-        // 페이지 가시성 변경 시 검사
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden) {
-                setTimeout(() => this.performIntegrityCheck(), 1000);
-            }
-        });
+        // 페이지 복귀 시 검사: checkOnPageFocus 설정에 따라 실행 (영향 미비)
+        if (securityConfig?.checkOnPageFocus) {
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    setTimeout(() => this.performIntegrityCheck(), 1000);
+                }
+            });
+        }
     }
 
     // 무결성 검사 수행 (강화 버전)

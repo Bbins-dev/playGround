@@ -1789,6 +1789,7 @@ class GameManager {
      */
     handleBackgroundTransition() {
         const config = GameConfig?.pageLifecycle || {};
+        const smartRenderingConfig = GameConfig?.constants?.performance?.smartRendering;
 
         // 전투 일시정지
         if (config.enableBattlePause && this.battleSystem && this.gameState === 'battle') {
@@ -1803,6 +1804,12 @@ class GameManager {
         // 애니메이션 일시정지
         if (this.animationManager) {
             this.animationManager.pauseAll?.();
+        }
+
+        // 게임 루프 일시정지 (배터리 최적화: 비활성 탭에서 렌더링 중지)
+        if (smartRenderingConfig?.pauseWhenInactive && this.gameLoop) {
+            cancelAnimationFrame(this.gameLoop);
+            this.gameLoop = null;
         }
     }
 
@@ -1857,6 +1864,12 @@ class GameManager {
             // 애니메이션 재개
             if (this.animationManager) {
                 this.animationManager.resumeAll?.();
+            }
+
+            // 게임 루프 재개 (배터리 최적화: 탭 활성화 시 렌더링 재개)
+            const smartRenderingConfig = GameConfig?.constants?.performance?.smartRendering;
+            if (smartRenderingConfig?.pauseWhenInactive && !this.gameLoop) {
+                this.startGameLoop();
             }
 
             if (config.logVisibilityChanges) {
