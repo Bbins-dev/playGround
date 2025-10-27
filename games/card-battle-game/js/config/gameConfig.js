@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.3.5',                        // 버전 넘버
+        number: '0.3.6',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -994,7 +994,7 @@ const GameConfig = {
             descriptionKey: 'auto_battle_card_game.ui.buffs.mass_description',
             name: '질량',
             emoji: '⚓',
-            description: '물 속성 공격카드 공격력에 현재 체력의 20%×강도 추가',
+            description: '물 속성 공격카드 공격력에 현재 체력의 15%×강도 추가',
             get color() { return GameConfig.masterColors.buffs.mass; }, // 질량 - 하늘색 (물 속성)
             get maxStack() { return GameConfig.constants.limits.maxBuffStacks; }, // 최대 중첩 수
             targetSelf: true, // 자신에게 적용되는 버프
@@ -1004,7 +1004,7 @@ const GameConfig = {
                 format: '+{value}'  // 예: +3 (항상 1턴이므로 턴 표시 제거)
             },
             effect: {
-                hpPercent: 20  // 현재 체력의 20%
+                hpPercent: 15  // 현재 체력의 15%
             }
         },
         torrent: {
@@ -3464,7 +3464,7 @@ const GameConfig = {
         },
         // 상당한 질량 카드 설정
         massiveWeight: {
-            hpPercent: 20,    // 현재 체력의 20%
+            hpPercent: 15,    // 현재 체력의 15%
             fixedTurns: 1     // 1턴 고정 지속
         },
         // 수분흡수 카드 설정
