@@ -470,7 +470,7 @@ class Player {
     getMassBonus(element) {
         // 물 속성 공격카드일 때만 추가 대미지 반환
         if (element === 'water' && this.hasMassBuff()) {
-            const percent = GameConfig?.cardEffects?.massiveWeight?.hpPercent || 20;
+            const percent = GameConfig?.cardEffects?.massiveWeight?.hpPercent || 15;
             return Math.floor(this.hp * (percent / 100) * this.massBonus);
         }
         return 0;
@@ -859,7 +859,7 @@ class Player {
                 // 냄새 버프 적용 (불 속성만)
                 buffedPower += this.getScentBonus(card.element);
 
-                // 질량 버프 적용 (물 속성만, 현재 HP의 20% × 스택)
+                // 질량 버프 적용 (물 속성만, 현재 HP의 15% × 스택)
                 buffedPower += this.getMassBonus(card.element);
 
                 // 정전기 버프 적용 (전기 속성만, 손패 전기 카드 수 × damagePerCard)

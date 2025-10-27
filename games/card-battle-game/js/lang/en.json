@@ -569,7 +569,7 @@
         },
         "massive_weight": {
           "name": "Massive Weight",
-          "description": "For 1 turn, adds 20% of your current HP to {water}{cardType:attack} card base power. Gain {buff:mass} buff."
+          "description": "For 1 turn, adds 15% of your current HP to {water}{cardType:attack} card base power. Gain {buff:mass} buff."
         },
         "torrent": {
           "name": "Torrent",
@@ -661,7 +661,7 @@
         "breath": "BRE",
         "breath_description": "Fire element buff cards always activate successfully.",
         "mass": "Mass",
-        "mass_description": "Adds 20% of current HP to water element attack card power per stack. Lasts 1 turn.",
+        "mass_description": "Adds 15% of current HP to water element attack card power per stack. Lasts 1 turn.",
         "torrent": "TRN",
         "torrent_description": "Increases the activation count of water element attack cards.",
         "absorption": "ABS",

@@ -569,7 +569,7 @@
         },
         "massive_weight": {
           "name": "相当な質量",
-          "description": "1ターンの間、自分の現在HPの20%に相当する数値を{water}{cardType:attack}カード基本攻撃力に加算します。{buff:mass}バフ獲得。"
+          "description": "1ターンの間、自分の現在HPの15%に相当する数値を{water}{cardType:attack}カード基本攻撃力に加算します。{buff:mass}バフ獲得。"
         },
         "torrent": {
           "name": "激流",
@@ -661,7 +661,7 @@
         "breath": "呼吸",
         "breath_description": "火属性バフカードの発動が必ず成功します。",
         "mass": "質量",
-        "mass_description": "水属性攻撃カードの攻撃力に現在HPの20%が重複回数分だけ追加されます。1ターン持続します。",
+        "mass_description": "水属性攻撃カードの攻撃力に現在HPの15%が重複回数分だけ追加されます。1ターン持続します。",
         "torrent": "激流",
         "torrent_description": "水属性攻撃カードの発動回数が増加します。",
         "absorption": "吸収",
