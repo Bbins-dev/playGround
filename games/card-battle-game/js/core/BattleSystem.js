@@ -488,16 +488,23 @@ class BattleSystem {
             // 실제 대미지 적용
             const actualDamage = target.takeDamage(damage);
 
-            // 화면 흔들림 효과 (플레이어/적 모두 큰 데미지를 받았을 때)
+            // 화면 흔들림 효과 (절대 데미지값 기반, 플레이어/적 공통 적용)
             if (actualDamage > 0) {
-                const damagePercent = (actualDamage / target.maxHP) * 100;
-                const heavyDamageThreshold = GameConfig?.constants?.performance?.heavyDamageThreshold || 20;
+                const shakeConfig = GameConfig?.screenShake;
+                if (shakeConfig?.enabled) {
+                    // 데미지 구간에 맞는 tier 찾기
+                    const tier = shakeConfig.tiers?.find(t =>
+                        actualDamage >= t.minDamage && actualDamage <= t.maxDamage
+                    );
 
-                if (damagePercent >= heavyDamageThreshold) {
-                    // 데미지 비율에 따라 흔들림 강도 조절 (20% = 1.0, 40% = 2.0, 60%+ = 3.0)
-                    const intensity = Math.min(damagePercent / 20, 3.0);
-                    // 게임 속도를 전달하여 애니메이션 duration 자동 조절
-                    this.effectSystem.showScreenShake(intensity, this.gameSpeed);
+                    if (tier) {
+                        // tier의 intensity와 durationMultiplier를 EffectSystem에 전달
+                        this.effectSystem.showScreenShake(
+                            tier.intensity,
+                            this.gameSpeed,
+                            tier.durationMultiplier
+                        );
+                    }
                 }
             }
 
