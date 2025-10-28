@@ -740,21 +740,33 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.thunder_strike.description',
             effect: function(user, target, battleSystem) {
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
+                // ★ 데미지 계산 순서 (Player.js와 동일):
+                // 1. base power
+                // 2. 정전기 버프
+                // 3. 힘 버프
+                // 4. 조건부 곱셈 (해당 없음)
+                // 5. 강화 버프
+                // 6. Li⁺ 버프
 
-                // 정전기 버프 적용 (전기 속성만, 손패 전기 카드 수 × damagePerCard)
+                let baseDamage = this.power;
+
+                // ★ 1단계: 정전기 버프 적용 (전기 속성만, 가장 먼저!)
                 if (user.hasStaticBuff && user.hasStaticBuff()) {
                     const electricCount = user.hand.filter(c => c.element === 'electric').length;
                     const damagePerCard = GameConfig?.buffs?.static?.effect?.damagePerCard || 1;
                     baseDamage += electricCount * damagePerCard;
                 }
 
-                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                // ★ 2단계: 힘 버프 적용
+                baseDamage += (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
+
+                // ★ 3단계: 곱셈 버프들
+                // 강화 버프 적용 (1.5배)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
                     baseDamage = Math.floor(baseDamage * 1.5);
                 }
 
-                // Li⁺ 버프 적용 (전기 속성 공격 카드)
+                // Li⁺ 버프 적용 (전기 속성 공격 카드, 턴수만큼 곱셈)
                 if (user.hasLithiumBuff && user.hasLithiumBuff()) {
                     baseDamage = Math.floor(baseDamage * user.getLithiumTurns());
                 }
@@ -893,22 +905,33 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.lightning_storm.description',
             effect: function(user, target, battleSystem) {
-                // 일반 공격 데미지 계산 (힘 버프 적용)
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
+                // ★ 데미지 계산 순서 (Player.js와 동일):
+                // 1. base power
+                // 2. 정전기 버프
+                // 3. 힘 버프
+                // 4. 조건부 곱셈 (해당 없음)
+                // 5. 강화 버프
+                // 6. Li⁺ 버프
 
-                // 정전기 버프 적용 (전기 속성만, 손패 전기 카드 수 × damagePerCard)
+                let baseDamage = this.power;
+
+                // ★ 1단계: 정전기 버프 적용 (전기 속성만, 가장 먼저!)
                 if (user.hasStaticBuff && user.hasStaticBuff()) {
                     const electricCount = user.hand.filter(c => c.element === 'electric').length;
                     const damagePerCard = GameConfig?.buffs?.static?.effect?.damagePerCard || 1;
                     baseDamage += electricCount * damagePerCard;
                 }
 
-                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
+                // ★ 2단계: 힘 버프 적용
+                baseDamage += (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
+
+                // ★ 3단계: 곱셈 버프들
+                // 강화 버프 적용 (1.5배)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
                     baseDamage = Math.floor(baseDamage * 1.5);
                 }
 
-                // Li⁺ 버프 적용 (전기 속성 공격 카드)
+                // Li⁺ 버프 적용 (전기 속성 공격 카드, 턴수만큼 곱셈)
                 if (user.hasLithiumBuff && user.hasLithiumBuff()) {
                     baseDamage = Math.floor(baseDamage * user.getLithiumTurns());
                 }

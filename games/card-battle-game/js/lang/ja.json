@@ -309,15 +309,15 @@
         },
         "electric_shock": {
           "name": "感電",
-          "description": "{status:wet}状態の敵に対して基本攻撃力が3倍になります。"
+          "description": "{status:wet}状態の敵に対して攻撃力が3倍になります。"
         },
         "overload": {
           "name": "過負荷",
-          "description": "{status:burn}状態の敵に対して基本攻撃力が2倍になります。"
+          "description": "{status:burn}状態の敵に対して攻撃力が2倍になります。"
         },
         "short_circuit": {
           "name": "ショート",
-          "description": "{status:paralysis}状態の敵に対して基本攻撃力が10倍になります。"
+          "description": "{status:paralysis}状態の敵に対して攻撃力が10倍になります。"
         },
         "paralysis_trap": {
           "name": "麻痺の罠",
@@ -621,7 +621,7 @@
         },
         "static": {
           "name": "静電気",
-          "description": "1ターンの間、手札の{electric}属性カード1枚当たり{electric}{cardType:attack}カードの基本攻撃力に5を追加します。{buff:static}は重複しません。"
+          "description": "1ターンの間、手札の{electric}属性カード枚数が{electric}{cardType:attack}カードの基本攻撃力に加算されます。{buff:static}は重複しません。"
         },
         "battery_pack": {
           "name": "バッテリーパック",
@@ -671,7 +671,7 @@
         "superConductivity": "超電導",
         "superConductivity_description": "電気属性攻撃カードの命中率が40%増加します。",
         "static": "静電気",
-        "static_description": "電気属性カード1枚ごとに電気攻撃カードの基本攻撃力に5を追加します。",
+        "static_description": "手札の電気属性カード枚数が電気攻撃カードの基本攻撃力に加算されます。重複しません。",
         "pack": "パック",
         "pack_description": "ターン開始時にパック値 × 8のHPを回復します。回復後すぐに消えます。スタック可能です。",
         "propagation": "伝播",
