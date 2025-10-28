@@ -772,11 +772,12 @@ class EffectSystem {
     }
 
     /**
-     * 화면 흔들림 효과 (큰 데미지 시)
-     * @param {number} intensity - 흔들림 강도 (1.0 = 기본, 2.0 = 2배)
-     * @param {number} gameSpeed - 게임 속도 배수 (1 = 보통, 2 = 빠름, 5 = 매우빠름)
+     * 화면 흔들림 효과 (데미지 기반, 게임 속도 무관)
+     * @param {number} intensity - 흔들림 강도 (1.0 = 기본, 2.0 = 2배, 최대 3.5)
+     * @param {number} gameSpeed - (사용 안 함, 하위 호환성 유지용)
+     * @param {number} durationMultiplier - 지속시간 배율 (1.0 = 기본, 2.0 = 2배)
      */
-    showScreenShake(intensity = 1.0, gameSpeed = 1) {
+    showScreenShake(intensity = 1.0, gameSpeed = 1, durationMultiplier = 1.0) {
         const gameWrapper = document.querySelector('.game-wrapper');
         if (!gameWrapper) return;
 
@@ -787,21 +788,15 @@ class EffectSystem {
             void gameWrapper.offsetWidth;
         }
 
-        // 흔들림 강도에 따라 CSS 변수 설정
-        const shakeDistance = 10 * Math.min(intensity, 3.0); // 최대 30px
+        // 흔들림 강도에 따라 CSS 변수 설정 (intensity 최대값 3.5로 확장)
+        const shakeDistance = 10 * Math.min(intensity, 3.5); // 최대 35px
         gameWrapper.style.setProperty('--shake-distance', `${shakeDistance}px`);
 
-        // 게임 속도에 따라 애니메이션 duration 조절 (Configuration-Driven)
-        const speedMapping = GameConfig?.timing?.combat?.screenShakeBySpeed || {
-            0.5: 600,
-            1: 300,
-            2: 180,
-            5: 120
-        };
+        // 게임 속도 무관, 데미지 기반 duration (Configuration-Driven)
+        const baseDuration = GameConfig?.screenShake?.baseDuration || 300;
 
-        // 게임 속도에 해당하는 duration 찾기, 없으면 기본 계산
-        const adjustedDuration = speedMapping[gameSpeed] ||
-            (GameConfig?.timing?.combat?.screenShake || 300) / Math.max(gameSpeed, 0.5);
+        // durationMultiplier 적용 (데미지 구간별 시간 차등화)
+        const adjustedDuration = baseDuration * durationMultiplier;
 
         gameWrapper.style.setProperty('--shake-duration', `${adjustedDuration}ms`);
 
