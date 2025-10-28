@@ -14,9 +14,7 @@ class TimerManager {
      * @param {number} speed - 속도 배율 (1~5)
      */
     setGameSpeed(speed) {
-        const oldSpeed = this.gameSpeed;
         this.gameSpeed = Math.max(1, Math.min(5, speed)); // 1~5 범위로 제한 (매우빠름 지원)
-        console.log(`[TimerManager] 게임 속도 변경: ${oldSpeed}x → ${this.gameSpeed}x`);
     }
 
     /**
