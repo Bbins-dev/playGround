@@ -1920,7 +1920,8 @@ const GameConfig = {
         gallery: { width: 320, height: 448 },    // 카드 갤러리 전용 크기 (preview보다 약간 더 큼)
         large: { width: 580, height: 812 },      // 카드 디테일 모달 크기 (적당한 확대)
         victory: { width: 180, height: 252 },    // 승리 모달 보상 카드 크기 (50% 확대)
-        victoryDetail: { width: 360, height: 504 } // 승리 모달 확대 카드 크기 (260% 확대)
+        victoryDetail: { width: 360, height: 504 }, // 승리 모달 확대 카드 크기 (260% 확대)
+        defeatHand: { width: 120, height: 168 }  // 패배 모달 최종 손패 크기 (hand와 동일)
     },
 
     // 손패 레이아웃 설정
