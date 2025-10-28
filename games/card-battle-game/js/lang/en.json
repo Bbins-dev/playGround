@@ -309,15 +309,15 @@
         },
         "electric_shock": {
           "name": "Electric Shock",
-          "description": "Base power triples against {status:wet} enemies."
+          "description": "Power triples against {status:wet} enemies."
         },
         "overload": {
           "name": "Overload",
-          "description": "Base power doubles against {status:burn} enemies."
+          "description": "Power doubles against {status:burn} enemies."
         },
         "short_circuit": {
           "name": "Short Circuit",
-          "description": "Base power is multiplied by 10 against {status:paralysis} enemies."
+          "description": "Power is multiplied by 10 against {status:paralysis} enemies."
         },
         "paralysis_trap": {
           "name": "Paralysis Trap",
@@ -621,7 +621,7 @@
         },
         "static": {
           "name": "Static",
-          "description": "For one turn, adds 5 base power to {electric}{cardType:attack} cards per {electric} card in hand. {buff:static} does not stack."
+          "description": "For one turn, the number of {electric} cards in hand is added to the base power of {electric}{cardType:attack} cards. {buff:static} does not stack."
         },
         "battery_pack": {
           "name": "Battery Pack",
@@ -671,7 +671,7 @@
         "superConductivity": "S.COND",
         "superConductivity_description": "Increases electric attack card accuracy by 40%.",
         "static": "STATIC",
-        "static_description": "Adds 5 to electric attack card base power per electric card in hand.",
+        "static_description": "The number of electric cards in hand is added to the base power of electric attack cards. Does not stack.",
         "pack": "PACK",
         "pack_description": "Restore HP equal to Pack value × 8 at turn start. Disappears immediately after healing. Stackable.",
         "propagation": "PROP",
