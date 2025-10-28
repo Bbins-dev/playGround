@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.3.14',                        // 버전 넘버
+        number: '0.3.15',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -1096,7 +1096,7 @@ const GameConfig = {
                 format: '({value})'
             },
             effect: {
-                damagePerCard: 5  // 전기 카드당 추가 대미지
+                damagePerCard: 1  // 전기 카드당 추가 대미지
             }
         },
         pack: {
