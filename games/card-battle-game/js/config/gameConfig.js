@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.3.17',                        // 버전 넘버
+        number: '0.3.18',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -85,7 +85,6 @@ const GameConfig = {
             animationThrottleMs: 16,            // 애니메이션 throttle (60fps)
             enablePassiveListeners: true,       // Passive 이벤트 리스너 활성화
             enableHardwareAcceleration: true,   // CSS 하드웨어 가속 활성화
-            heavyDamageThreshold: 20,           // 화면 흔들림 트리거 데미지 비율 (%)
 
             // 스마트 렌더링 시스템 (배터리 최적화)
             smartRendering: {
@@ -653,6 +652,20 @@ const GameConfig = {
         get strong() { return GameConfig.constants.multipliers.advantage; },    // 강점으로 공격 시 1.5배 대미지
         get normal() { return GameConfig.constants.multipliers.normal; },       // 보통 대미지
         get weak() { return GameConfig.constants.multipliers.disadvantage; }    // 약점으로 공격 시 0.5배 대미지
+    },
+
+    // 화면 쉐이킹 시스템 (절대 데미지값 기반, 게임 속도 무관)
+    screenShake: {
+        enabled: true,  // 쉐이킹 효과 활성화
+        baseDuration: 300,  // 기본 지속시간 (ms) - 게임 속도 영향 없음
+        // 데미지 구간별 차등 설정 (intensity: 흔들림 강도, durationMultiplier: 지속시간 배율)
+        tiers: [
+            { minDamage: 10,  maxDamage: 29,  intensity: 0.8, durationMultiplier: 0.8 },  // 작은 타격
+            { minDamage: 30,  maxDamage: 49,  intensity: 1.2, durationMultiplier: 1.0 },  // 중간 타격
+            { minDamage: 50,  maxDamage: 99,  intensity: 1.8, durationMultiplier: 1.2 },  // 강한 타격
+            { minDamage: 100, maxDamage: 299, intensity: 2.5, durationMultiplier: 1.5 },  // 매우 강한 타격
+            { minDamage: 300, maxDamage: Infinity, intensity: 3.5, durationMultiplier: 2.0 }  // 초대형 타격
+        ]
     },
 
     // 상태이상 정의
