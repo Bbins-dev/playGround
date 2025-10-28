@@ -803,7 +803,7 @@
 .mvp-card {
     background: linear-gradient(145deg, var(--color-warning), var(--color-warning-dark));
     color: white;
-    padding: 15px;
+    padding: 8px 15px;  /* 위아래 여백 축소 (15px → 8px) */
     border-radius: 8px;
     text-align: center;
     margin-top: 15px;
@@ -812,8 +812,13 @@
 
 .mvp-card p {
     margin: 0;
-    font-size: 16px;
+    font-size: 26px;  /* 폰트 크기 증가 (20px → 26px) */
     font-weight: 600;
+}
+
+/* "최종 손패:" 텍스트 크기 (p 안의 span) */
+.mvp-card p span {
+    font-size: inherit;  /* p의 26px를 상속 */
 }
 
 .mvp-card span:last-child {
@@ -831,6 +836,35 @@
 .mvp-card-container canvas {
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* 패배 모달 최종 손패 컨테이너 (동적 2행 레이아웃) */
+.mvp-card-container.final-hand-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 700px;
+    margin: 15px auto 0;
+    width: 100%;
+}
+
+/* 각 행 스타일 */
+.final-hand-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: nowrap;
+}
+
+/* 카드 컨테이너 스타일 */
+.final-hand-card-container {
+    flex-shrink: 0;
+}
+
+.mvp-card-container.final-hand-grid canvas {
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* =============================================== */
