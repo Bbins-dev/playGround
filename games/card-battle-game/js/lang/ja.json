@@ -521,7 +521,7 @@
         },
         "hot_wind": {
           "name": "熱風",
-          "description": "自分に5ダメージを与えて{buff:hotWind}バフを獲得。{fire}{cardType:attack}カードの発動回数を{buff:hotWind}残りターン分増加させる。"
+          "description": "自分に5ダメージを与えて1ターンの間{buff:hotWind}獲得。手札の{fire}{cardType:attack}カードの数がすべての{fire}{cardType:attack}カードの攻撃力に乗算されます。{buff:hotWind}は重複しません。"
         },
         "battery_explosion": {
           "name": "バッテリー爆発",
@@ -647,7 +647,7 @@
         "enhance": "強化",
         "enhance_description": "攻撃カードのダメージが50%増加します。ターン終了後、効果は消えます。",
         "focus": "集中",
-        "focus_description": "ノーマル属性攻撃カードの{accuracy}が30%増加します。",
+        "focus_description": "ノーマル属性攻撃カードの命中率が30%増加します。",
         "speed": "高速",
         "speed_description": "ノーマル属性攻撃カードの発動回数が増加します。",
         "scent": "匂い",
@@ -655,7 +655,7 @@
         "sharpen": "研ぎ",
         "sharpen_description": "次のターン開始までHPが1以下にならなくなります。起死回生効果。",
         "hotWind": "熱風",
-        "hotWind_description": "火属性攻撃カードの発動回数が熱風バフの残りターン数分増加します。",
+        "hotWind_description": "手札の火攻撃カードの数がすべての火攻撃カードの攻撃力に乗算されます。",
         "lithium": "Li⁺",
         "lithium_description": "火、電気属性攻撃カードの攻撃力がLi⁺残りターン数分だけ乗算されます。",
         "breath": "呼吸",

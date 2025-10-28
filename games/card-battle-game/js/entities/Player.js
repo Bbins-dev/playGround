@@ -409,22 +409,7 @@ class Player {
     }
 
     addHotWindBuff(turns) {
-        this.hotWindTurns += turns;
-
-        // 즉시 현재 손패의 불 속성 공격카드들에 적용
-        this.hand.forEach(card => {
-            if (card.type === 'attack' && card.element === 'fire') {
-                // 일반 카드: activationCount + bonus
-                if (card.activationCount !== null && card.activationCount !== undefined) {
-                    card.modifiedActivationCount = card.activationCount + this.hotWindTurns;
-                }
-                // 랜덤 카드 (isRandomBash/isRandomHeal): bonus만 저장
-                else if (card.isRandomBash || card.isRandomHeal) {
-                    card.modifiedActivationCount = this.hotWindTurns;
-                }
-            }
-        });
-
+        this.hotWindTurns = turns;  // 중첩 불가 (덮어쓰기)
         this.updateRuntimeCardStats();  // 런타임 스탯 즉시 업데이트
         return turns;
     }
@@ -879,6 +864,17 @@ class Player {
                 // 질량 버프 적용 (물 속성만, 현재 HP의 15% × 스택)
                 buffedPower += this.getMassBonus(card.element);
 
+                // ★ 5단계: 열풍 버프 적용 (불 속성만, 곱셈)
+                if (card.element === 'fire' && this.hasHotWindBuff()) {
+                    const fireAttackCount = this.hand.filter(c =>
+                        c.type === 'attack' && c.element === 'fire'
+                    ).length;
+                    if (fireAttackCount > 0) {
+                        buffedPower = Math.floor(buffedPower * fireAttackCount);
+                    }
+                }
+
+                // ★ 6단계: 최종 곱셈 버프들
                 // 강화 버프 적용 (1.5배)
                 if (this.hasEnhanceBuff()) {
                     buffedPower = Math.floor(buffedPower * (GameConfig?.constants?.multipliers?.buffMultiplier || 1.5));
@@ -1060,10 +1056,6 @@ class Player {
                     if (this.hasSpeedBuff() && card.type === 'attack' && card.element === 'normal') {
                         card.modifiedActivationCount = card.activationCount + this.speedBonus;
                     }
-                    // 열풍 버프 적용 (불 속성 공격카드만)
-                    else if (this.hasHotWindBuff() && card.type === 'attack' && card.element === 'fire') {
-                        card.modifiedActivationCount = card.activationCount + this.hotWindTurns;
-                    }
                     // 급류 버프 적용 (물 속성 공격카드만)
                     else if (this.hasTorrentBuff() && card.type === 'attack' && card.element === 'water') {
                         card.modifiedActivationCount = card.activationCount + this.torrentBonus;
@@ -1086,10 +1078,6 @@ class Player {
                     // 고속 버프 적용 (노멀 공격카드만)
                     if (this.hasSpeedBuff() && card.type === 'attack' && card.element === 'normal') {
                         card.modifiedActivationCount = this.speedBonus;
-                    }
-                    // 열풍 버프 적용 (불 속성 공격카드만)
-                    else if (this.hasHotWindBuff() && card.type === 'attack' && card.element === 'fire') {
-                        card.modifiedActivationCount = this.hotWindTurns;
                     }
                     // 급류 버프 적용 (물 속성 공격카드만)
                     else if (this.hasTorrentBuff() && card.type === 'attack' && card.element === 'water') {
@@ -1165,24 +1153,6 @@ class Player {
         // 열풍 버프 턴수 차감
         if (this.hotWindTurns > 0) {
             this.hotWindTurns--;
-
-            // 열풍 턴수 변경 즉시 불 공격카드들 발동횟수 재계산
-            this.hand.forEach(card => {
-                if (card.type === 'attack' && card.element === 'fire') {
-                    // 랜덤 카드는 activationCount가 null이므로 버프 적용 불가
-                    if (card.activationCount !== null && card.activationCount !== undefined) {
-                        if (this.hotWindTurns > 0) {
-                            // 새로운 열풍 턴수로 재계산
-                            card.modifiedActivationCount = card.activationCount + this.hotWindTurns;
-                        } else {
-                            // 0이 되면 초기화
-                            card.modifiedActivationCount = undefined;
-                        }
-                    } else {
-                        card.modifiedActivationCount = undefined;
-                    }
-                }
-            });
         }
 
         // Li⁺ 버프 턴수 차감
