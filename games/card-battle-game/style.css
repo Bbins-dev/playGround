@@ -1553,16 +1553,16 @@ body {
 
 /* 화면 흔들림 (새 시스템 - CSS 변수 기반, 데미지별 차등) */
 @keyframes dynamicScreenShake {
-    0%, 100% { transform: translate(0, 0); }
-    10% { transform: translate(calc(var(--shake-distance, 10px) * -0.2), calc(var(--shake-distance, 10px) * -0.1)); }
-    20% { transform: translate(calc(var(--shake-distance, 10px) * 0.2), calc(var(--shake-distance, 10px) * 0.1)); }
-    30% { transform: translate(calc(var(--shake-distance, 10px) * -0.1), calc(var(--shake-distance, 10px) * 0.2)); }
-    40% { transform: translate(calc(var(--shake-distance, 10px) * 0.1), calc(var(--shake-distance, 10px) * -0.2)); }
-    50% { transform: translate(calc(var(--shake-distance, 10px) * -0.2), calc(var(--shake-distance, 10px) * 0.1)); }
-    60% { transform: translate(calc(var(--shake-distance, 10px) * 0.2), calc(var(--shake-distance, 10px) * -0.1)); }
-    70% { transform: translate(calc(var(--shake-distance, 10px) * -0.1), calc(var(--shake-distance, 10px) * -0.2)); }
-    80% { transform: translate(calc(var(--shake-distance, 10px) * 0.1), calc(var(--shake-distance, 10px) * 0.2)); }
-    90% { transform: translate(calc(var(--shake-distance, 10px) * -0.2), calc(var(--shake-distance, 10px) * -0.1)); }
+    0%, 100% { transform: translate3d(0, 0, 0) !important; }
+    10% { transform: translate3d(calc(var(--shake-distance, 10px) * -0.2), calc(var(--shake-distance, 10px) * -0.1), 0) !important; }
+    20% { transform: translate3d(calc(var(--shake-distance, 10px) * 0.2), calc(var(--shake-distance, 10px) * 0.1), 0) !important; }
+    30% { transform: translate3d(calc(var(--shake-distance, 10px) * -0.1), calc(var(--shake-distance, 10px) * 0.2), 0) !important; }
+    40% { transform: translate3d(calc(var(--shake-distance, 10px) * 0.1), calc(var(--shake-distance, 10px) * -0.2), 0) !important; }
+    50% { transform: translate3d(calc(var(--shake-distance, 10px) * -0.2), calc(var(--shake-distance, 10px) * 0.1), 0) !important; }
+    60% { transform: translate3d(calc(var(--shake-distance, 10px) * 0.2), calc(var(--shake-distance, 10px) * -0.1), 0) !important; }
+    70% { transform: translate3d(calc(var(--shake-distance, 10px) * -0.1), calc(var(--shake-distance, 10px) * -0.2), 0) !important; }
+    80% { transform: translate3d(calc(var(--shake-distance, 10px) * 0.1), calc(var(--shake-distance, 10px) * 0.2), 0) !important; }
+    90% { transform: translate3d(calc(var(--shake-distance, 10px) * -0.2), calc(var(--shake-distance, 10px) * -0.1), 0) !important; }
 }
 
 .game-wrapper.screen-shake {

@@ -320,14 +320,6 @@ class BattleSystem {
         // 현재 발동 중인 카드 설정
         this.activatingCard = card;
 
-        // 랜덤 발동 카드 진행 로그 (각 발동마다)
-        if ((card.isRandomBash || card.isRandomHeal) && GameConfig?.debugMode?.showRandomBashCounts) {
-            const currentCount = card.currentActivations + 1;
-            const totalCount = card.modifiedActivationCount !== undefined ?
-                card.modifiedActivationCount : card.activationCount;
-            console.log(`[RANDOM ACTIVATION] ${card.name || card.id}: ${currentCount}/${totalCount}번째 발동 중`);
-        }
-
         // 카드 발동 애니메이션 (속도는 wait()에서 자동 적용)
         const cardDuration = GameConfig.animations.cardActivation;
 
@@ -366,6 +358,15 @@ class BattleSystem {
 
         // 카드 효과 실행 (명중 체크 포함)
         const result = card.activate(user, target, this);
+
+        // 랜덤발동 카드의 개별 hit 로그 (명중 판정 결과 포함)
+        if ((card.isRandomBash || card.isRandomHeal) && GameConfig?.debugMode?.showRandomBashCounts) {
+            const currentCount = card.currentActivations;
+            const totalCount = card.modifiedActivationCount !== undefined ?
+                card.modifiedActivationCount : card.activationCount;
+            const hitStatus = result.success ? 'HIT ✓' : (result.conditionFailed ? 'COND FAIL' : 'MISS ✗');
+            console.log(`[RANDOM ACTIVATION] ${card.name || card.id}: Hit ${currentCount}/${totalCount} - ${hitStatus}`);
+        }
 
         // 플레이어 카드 사용 시 통계 수집
         if (isPlayerCard) {
@@ -492,32 +493,22 @@ class BattleSystem {
             if (actualDamage > 0) {
                 const shakeConfig = GameConfig?.screenShake;
 
-                // 디버깅 로그
-                console.log('[Screen Shake Debug]', {
-                    damage,
-                    actualDamage,
-                    target: target === this.player ? 'Player' : 'Enemy',
-                    shakeEnabled: shakeConfig?.enabled,
-                    tiersCount: shakeConfig?.tiers?.length
-                });
-
                 if (shakeConfig?.enabled) {
                     // 데미지 구간에 맞는 tier 찾기 (화면 표시 데미지 기준)
-                    const tier = shakeConfig.tiers?.find(t =>
+                    const tierIndex = shakeConfig.tiers?.findIndex(t =>
                         damage >= t.minDamage && damage <= t.maxDamage
                     );
 
-                    console.log('[Screen Shake Tier]', tier);
+                    // tierIndex >= 0: 유효한 tier를 찾음 (0은 첫 번째 tier)
+                    if (tierIndex >= 0) {
+                        const tier = shakeConfig.tiers[tierIndex];
 
-                    if (tier) {
                         // tier의 intensity와 durationMultiplier를 EffectSystem에 전달
                         this.effectSystem.showScreenShake(
                             tier.intensity,
                             this.gameSpeed,
                             tier.durationMultiplier
                         );
-                    } else {
-                        console.warn('[Screen Shake] No tier found for damage:', damage);
                     }
                 }
             }
@@ -1187,8 +1178,12 @@ class BattleSystem {
         }
 
         const message = template.replace('{value}', selfDamage);
+
+        // 화면 위치로 플레이어/적 구분 (y 좌표가 화면 중앙보다 아래면 플레이어 영역)
+        const isPlayerArea = position.y > window.innerHeight / 2;
+
         this.effectSystem.showDamageNumber(0, position, 'selfDamage', message, {
-            isPlayerTarget: (attacker === this.player)
+            isPlayerTarget: isPlayerArea
         });
     }
 
@@ -1409,7 +1404,6 @@ class BattleSystem {
     // 게임 속도 설정
     setGameSpeed(speed) {
         this.gameSpeed = speed;
-        console.log(`[BattleSystem] 게임 속도 설정: ${speed}x (레거시, 실제로는 TimerManager 사용)`);
     }
 
     // 전투 일시정지
