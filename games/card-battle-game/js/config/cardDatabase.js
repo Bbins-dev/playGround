@@ -483,17 +483,8 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.flame_throw.description',
             burnChance: 15,
             effect: function(user, target, battleSystem) {
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
-
-                // 곱셈 버프 적용 (강화, Li⁺)
-                let multiplier = 1.0;
-                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
-                    multiplier *= 1.5;
-                }
-                if (user.hasLithiumBuff && user.hasLithiumBuff()) {
-                    multiplier *= user.getLithiumTurns();
-                }
-                baseDamage = Math.floor(baseDamage * multiplier);
+                // buffedPower에 이미 모든 버프 포함 (힘, 냄새, 열풍, 강화, Li⁺) - Player.updateRuntimeCardStats()에서 계산됨
+                let baseDamage = this.buffedPower || 0;
 
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
@@ -1969,18 +1960,8 @@ const CardDatabase = {
             burnChance: 100, // 명중 시 100% 확률로 화상
             effect: function(user, target, battleSystem) {
                 // 자해 데미지는 BattleSystem.preprocessSelfDamage()에서 이미 처리됨
-                // 여기서는 카드의 본연의 효과만 처리 (상대에게 공격)
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
-
-                // 곱셈 버프 적용 (강화, Li⁺)
-                let multiplier = 1.0;
-                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
-                    multiplier *= 1.5;
-                }
-                if (user.hasLithiumBuff && user.hasLithiumBuff()) {
-                    multiplier *= user.getLithiumTurns();
-                }
-                baseDamage = Math.floor(baseDamage * multiplier);
+                // buffedPower에 이미 모든 버프 포함 (힘, 냄새, 열풍, 강화, Li⁺) - Player.updateRuntimeCardStats()에서 계산됨
+                let baseDamage = this.buffedPower || 0;
 
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
@@ -2023,17 +2004,8 @@ const CardDatabase = {
                 return Math.floor(Math.random() * (this.maxActivation - this.minActivation + 1)) + this.minActivation;
             },
             effect: function(user, target, battleSystem) {
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
-
-                // 곱셈 버프 적용 (강화, Li⁺)
-                let multiplier = 1.0;
-                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
-                    multiplier *= 1.5;
-                }
-                if (user.hasLithiumBuff && user.hasLithiumBuff()) {
-                    multiplier *= user.getLithiumTurns();
-                }
-                baseDamage = Math.floor(baseDamage * multiplier);
+                // buffedPower에 이미 모든 버프 포함 (힘, 냄새, 열풍, 강화, Li⁺) - Player.updateRuntimeCardStats()에서 계산됨
+                let baseDamage = this.buffedPower || 0;
 
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
@@ -2069,18 +2041,8 @@ const CardDatabase = {
             burnChance: 40, // 명중 시 40% 확률로 화상
             effect: function(user, target, battleSystem) {
                 // 자해 데미지는 BattleSystem.preprocessSelfDamage()에서 이미 처리됨
-                // 여기서는 카드의 본연의 효과만 처리 (상대에게 공격)
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
-
-                // 곱셈 버프 적용 (강화, Li⁺)
-                let multiplier = 1.0;
-                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
-                    multiplier *= 1.5;
-                }
-                if (user.hasLithiumBuff && user.hasLithiumBuff()) {
-                    multiplier *= user.getLithiumTurns();
-                }
-                baseDamage = Math.floor(baseDamage * multiplier);
+                // buffedPower에 이미 모든 버프 포함 (힘, 냄새, 열풍, 강화, Li⁺) - Player.updateRuntimeCardStats()에서 계산됨
+                let baseDamage = this.buffedPower || 0;
 
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
@@ -2119,17 +2081,8 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.fireball.description',
             burnChance: 60, // 명중 시 60% 확률로 화상
             effect: function(user, target, battleSystem) {
-                let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0) + (user.getScentBonus ? user.getScentBonus(this.element) : 0);
-
-                // 곱셈 버프 적용 (강화, Li⁺)
-                let multiplier = 1.0;
-                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
-                    multiplier *= 1.5;
-                }
-                if (user.hasLithiumBuff && user.hasLithiumBuff()) {
-                    multiplier *= user.getLithiumTurns();
-                }
-                baseDamage = Math.floor(baseDamage * multiplier);
+                // buffedPower에 이미 모든 버프 포함 (힘, 냄새, 열풍, 강화, Li⁺) - Player.updateRuntimeCardStats()에서 계산됨
+                let baseDamage = this.buffedPower || 0;
 
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);

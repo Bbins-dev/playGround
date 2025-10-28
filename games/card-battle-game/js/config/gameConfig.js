@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.3.15',                        // 버전 넘버
+        number: '0.3.16',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -950,9 +950,9 @@ const GameConfig = {
             descriptionKey: 'auto_battle_card_game.ui.buffs.hotWind_description',
             name: '열풍',
             emoji: '🌪️',
-            description: '불 속성 공격카드 발동횟수 +{value}',
+            description: '손패의 불 공격카드 수가 모든 불 공격카드의 공격력에 곱해집니다',
             get color() { return GameConfig.masterColors.buffs.hotWind; }, // 열풍 - 불 속성 색상
-            get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수
+            get maxStack() { return 1; },     // 중첩 불가
             targetSelf: true, // 자신에게 적용되는 버프
             durationType: 'duration', // 턴 추가 방식 (hotWindTurns)
             display: {
@@ -1395,8 +1395,9 @@ const GameConfig = {
             12: {
                 hp: 120,
                 cards: [
+                    { id: 'hot_breath', count: 1 },        // 뜨거운 입김
                     { id: 'fire_breath', count: 1 },       // 불의 호흡
-                    { id: 'hot_wind', count: 1 },          // 열풍
+                    { id: 'opportunity_scent', count: 1 }, // 기회의 냄새
                     { id: 'flame_ascension', count: 1 }    // 화염승천
                 ]
             },
@@ -1444,9 +1445,9 @@ const GameConfig = {
                 hp: 180,
                 cards: [
                     { id: 'fire_breath', count: 1 },       // 불의 호흡
-                    { id: 'hot_wind', count: 2 },          // 열풍 x2
-                    { id: 'scorched_shield', count: 1 },   // 작열방패
-                    { id: 'flame_throw', count: 1 }        // 불꽃던지기
+                    { id: 'hot_wind', count: 1 },          // 열풍
+                    { id: 'red_pendant', count: 1 },       // 붉은 펜던트
+                    { id: 'flame_throw', count: 2 }        // 불꽃던지기 x2
                 ]
             },
             19: {
@@ -1870,11 +1871,11 @@ const GameConfig = {
             57: {
                 hp: 6000,
                 cards: [
-                    { id: 'counter_attack', count: 1 },    // 카운터 어택
                     { id: 'fire_breath', count: 1 },       // 불의 호흡
-                    { id: 'opportunity_scent', count: 3 }, // 기회의 냄새 x3
+                    { id: 'opportunity_scent', count: 1 }, // 기회의 냄새
                     { id: 'hot_wind', count: 1 },          // 열풍
-                    { id: 'flame_throw', count: 1 }        // 불꽃 던지기
+                    { id: 'fireball', count: 3 },          // 화염구 x3
+                    { id: 'powder_keg', count: 1 }         // 화약통 투척
                 ]
             },
             58: {
