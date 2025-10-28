@@ -30,15 +30,16 @@ class EffectSystem {
             await this.showElementFlash(element);
         }
 
-        // Step 2: 피격 깜빡임 효과
+        // Step 2: 데미지 사운드 재생 (HP 바 반짝임과 동시 재생을 위해 먼저 실행)
+        if (damage > 0 && this.audioSystem) {
+            this.audioSystem.playDamageSFX(effectiveness);
+        }
+
+        // Step 3: 피격 깜빡임 효과 (사운드와 동시에 시각 효과 시작)
         await this.showHitBlink(targetPosition);
 
-        // Step 3: 대미지 숫자 표시 + 사운드 (속성 상성에 따른 스타일 적용)
+        // Step 4: 대미지 숫자 표시 (속성 상성에 따른 스타일 적용)
         if (damage > 0) {
-            // 데미지 타입별 사운드 재생
-            if (this.audioSystem) {
-                this.audioSystem.playDamageSFX(effectiveness);
-            }
 
             let damageType = 'damage';
             if (effectiveness > 1.0) {
