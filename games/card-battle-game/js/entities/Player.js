@@ -790,6 +790,18 @@ class Player {
             if (card.type === 'attack') {
                 let buffedPower = card.power;
 
+                // ★ 1단계: 정전기 버프 적용 (전기 속성만, 가장 먼저!)
+                if (card.element === 'electric' && this.hasStaticBuff()) {
+                    const electricCount = this.hand.filter(c => c.element === 'electric').length;
+                    const damagePerCard = GameConfig?.buffs?.static?.effect?.damagePerCard || 1;
+                    buffedPower += electricCount * damagePerCard;
+                }
+
+                // ★ 2단계: 힘 버프 적용 (+1/스택)
+                buffedPower += this.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1);
+
+                // ★ 3단계: 조건부 곱셈 (정전기 + 힘 포함한 상태에서 곱셈)
+
                 // freezing_wind 카드: 적의 젖음 잔여 턴 × 10 (동적 계산)
                 if (card.id === 'freezing_wind' && target) {
                     const wetEffect = target.statusEffects?.find(e => e.type === 'wet');
@@ -818,25 +830,31 @@ class Player {
                     // 조건 충족 시 계속 진행하여 버프 적용
                 }
 
-                // electric_shock 카드: 적이 젖음 상태일 때 기본 공격력 3배 (3 → 9)
+                // electric_shock 카드: 적이 젖음 상태일 때 3배 곱셈 (정전기 + 힘 포함)
                 if (card.id === 'electric_shock' && target) {
                     const hasWet = target.hasStatusEffect('wet');
-                    buffedPower = hasWet ? 9 : 3;  // 조건부 기본 공격력
-                    // 이후 일반 버프 계산 계속 진행 (힘 → 강화 → Li⁺)
+                    if (hasWet) {
+                        buffedPower = buffedPower * 3;
+                    }
+                    // 젖음 아닐 때는 그대로 유지 (정전기 + 힘만 반영됨)
                 }
 
-                // overload 카드: 적이 화상 상태일 때 기본 공격력 2배 (5 → 10)
+                // overload 카드: 적이 화상 상태일 때 2배 곱셈 (정전기 + 힘 포함)
                 if (card.id === 'overload' && target) {
                     const hasBurn = target.hasStatusEffect('burn');
-                    buffedPower = hasBurn ? 10 : 5;  // 조건부 기본 공격력
-                    // 이후 일반 버프 계산 계속 진행 (힘 → 강화 → Li⁺)
+                    if (hasBurn) {
+                        buffedPower = buffedPower * 2;
+                    }
+                    // 화상 아닐 때는 그대로 유지 (정전기 + 힘만 반영됨)
                 }
 
-                // short_circuit 카드: 적이 마비 상태일 때 기본 공격력 10배 (1 → 10)
+                // short_circuit 카드: 적이 마비 상태일 때 10배 곱셈 (정전기 + 힘 포함)
                 if (card.id === 'short_circuit' && target) {
                     const hasParalysis = target.hasStatusEffect('paralysis');
-                    buffedPower = hasParalysis ? 10 : 1;  // 조건부 기본 공격력
-                    // 이후 일반 버프 계산 계속 진행 (힘 → 강화 → Li⁺)
+                    if (hasParalysis) {
+                        buffedPower = buffedPower * 10;
+                    }
+                    // 마비 아닐 때는 그대로 유지 (정전기 + 힘만 반영됨)
                 }
 
                 // ice_breaker 카드: 적이 frozen 상태일 때 적 최대 HP의 20% (고정 피해)
@@ -850,24 +868,16 @@ class Player {
                 // shield_bash 카드: 자신의 현재 방어력만큼 피해 (동적 계산)
                 if (card.id === 'shield_bash') {
                     buffedPower = this.defense || 0;  // 현재 방어력
-                    // 이후 일반 버프 계산 계속 진행 (힘 → 강화 → Li⁺)
+                    // 이후 일반 버프 계산 계속 진행 (속성 → 강화 → Li⁺)
                 }
 
-                // 힘 버프 적용 (+1/스택)
-                buffedPower += this.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1);
+                // ★ 4단계: 속성 보너스 덧셈
 
                 // 냄새 버프 적용 (불 속성만)
                 buffedPower += this.getScentBonus(card.element);
 
                 // 질량 버프 적용 (물 속성만, 현재 HP의 15% × 스택)
                 buffedPower += this.getMassBonus(card.element);
-
-                // 정전기 버프 적용 (전기 속성만, 손패 전기 카드 수 × damagePerCard)
-                if (card.element === 'electric' && this.hasStaticBuff()) {
-                    const electricCount = this.hand.filter(c => c.element === 'electric').length;
-                    const damagePerCard = GameConfig?.buffs?.static?.effect?.damagePerCard || 1;
-                    buffedPower += electricCount * damagePerCard;
-                }
 
                 // 강화 버프 적용 (1.5배)
                 if (this.hasEnhanceBuff()) {
