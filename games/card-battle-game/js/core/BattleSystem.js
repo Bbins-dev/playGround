@@ -494,6 +494,7 @@ class BattleSystem {
 
                 // 디버깅 로그
                 console.log('[Screen Shake Debug]', {
+                    damage,
                     actualDamage,
                     target: target === this.player ? 'Player' : 'Enemy',
                     shakeEnabled: shakeConfig?.enabled,
@@ -501,9 +502,9 @@ class BattleSystem {
                 });
 
                 if (shakeConfig?.enabled) {
-                    // 데미지 구간에 맞는 tier 찾기
+                    // 데미지 구간에 맞는 tier 찾기 (화면 표시 데미지 기준)
                     const tier = shakeConfig.tiers?.find(t =>
-                        actualDamage >= t.minDamage && actualDamage <= t.maxDamage
+                        damage >= t.minDamage && damage <= t.maxDamage
                     );
 
                     console.log('[Screen Shake Tier]', tier);
@@ -516,7 +517,7 @@ class BattleSystem {
                             tier.durationMultiplier
                         );
                     } else {
-                        console.warn('[Screen Shake] No tier found for damage:', actualDamage);
+                        console.warn('[Screen Shake] No tier found for damage:', damage);
                     }
                 }
             }
