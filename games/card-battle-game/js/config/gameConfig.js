@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.3.22',                        // 버전 넘버
+        number: '0.3.23',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -1348,7 +1348,7 @@ const GameConfig = {
                 hp: 15,
                 cards: [
                     { id: 'taunt', count: 1 },
-                    { id: 'large_shield', count: 1 },
+                    { id: 'wear_armor', count: 1 },
                     { id: 'shield_bash', count: 1 }
                 ]
             },
