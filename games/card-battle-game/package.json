@@ -1,10 +1,13 @@
 {
   "name": "card-battle-game",
-  "version": "0.3.18",
+  "version": "0.3.19",
   "description": "Turn-based Auto Battle Card Game with 5 elemental attributes",
   "scripts": {
     "sync-version": "node update-version.js",
-    "version": "npm run sync-version && git add index.html"
+    "version": "npm run sync-version && git add index.html js/config/gameConfig.js",
+    "bump": "npm version patch",
+    "bump:minor": "npm version minor",
+    "bump:major": "npm version major"
   },
   "keywords": [
     "game",
