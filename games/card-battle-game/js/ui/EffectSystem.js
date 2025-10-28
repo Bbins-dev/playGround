@@ -588,10 +588,11 @@ class EffectSystem {
         // 이렇게 하면 카드는 xxxGain만 반환하면 됨 (addXxxBuff 직접 호출 불필요)
 
         // 버프 적용 (Configuration-Driven 매핑)
-        // ★ 특수 케이스: sulfur와 coating은 카드에서 이미 addXxxBuff() 호출
-        //    (정화 정보를 반환받아야 하므로 카드에서 직접 호출)
-        //    따라서 여기서는 스킵
-        const skipBuffApplication = (buffType === 'sulfur' || buffType === 'coating');
+        // ★ 특수 케이스: sulfur, coating, raincoat은 카드에서 이미 addXxxBuff() 호출
+        //    - sulfur/coating: 정화 정보를 반환받아야 하므로 카드에서 직접 호출
+        //    - raincoat: 적용 스택 정보를 반환받아야 하므로 카드에서 직접 호출
+        //    따라서 여기서는 중복 적용 방지를 위해 스킵
+        const skipBuffApplication = (buffType === 'sulfur' || buffType === 'coating' || buffType === 'raincoat');
 
         if (!skipBuffApplication) {
             const buffMethodMap = {
