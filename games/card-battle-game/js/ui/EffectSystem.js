@@ -13,6 +13,10 @@ class EffectSystem {
 
         // AudioSystem 참조 (GameManager/BattleSystem에서 주입)
         this.audioSystem = null;
+
+        // 스크린 쉐이크 타임아웃 추적 (중복 쉐이크 방지)
+        this.screenShakeTimeout = null;
+        this.screenShakeInterval = null;
     }
 
     // 피격 효과 (고전 게임 스타일)
@@ -607,7 +611,8 @@ class EffectSystem {
                 static: 'addStaticBuff',
                 pack: 'addPackBuff',
                 propagation: 'addPropagationBuff',
-                poisonNeedle: 'addPoisonNeedleBuff'
+                poisonNeedle: 'addPoisonNeedleBuff',
+                raincoat: 'addRaincoatBuff'  // ✅ 추가: raincoat 버프
             };
 
             const methodName = buffMethodMap[buffType];
@@ -671,7 +676,22 @@ class EffectSystem {
         this.effectsContainer.innerHTML = '';
         this.numbersContainer.innerHTML = '';
         this.activeEffects.clear();
-        this.activeMessages = []; // 메시지 목록도 초기화
+        this.activeMessages = [];
+
+        // 스크린 쉐이크 상태 정리
+        if (this.screenShakeTimeout) {
+            clearTimeout(this.screenShakeTimeout);
+            this.screenShakeTimeout = null;
+        }
+        if (this.screenShakeInterval) {
+            clearInterval(this.screenShakeInterval);
+            this.screenShakeInterval = null;
+        }
+
+        const gameWrapper = document.querySelector('.game-wrapper');
+        if (gameWrapper) {
+            gameWrapper.style.transform = '';
+        }
     }
 
     // 복합 효과 (여러 효과 조합)
@@ -778,54 +798,58 @@ class EffectSystem {
      * @param {number} durationMultiplier - 지속시간 배율 (1.0 = 기본, 2.0 = 2배)
      */
     showScreenShake(intensity = 1.0, gameSpeed = 1, durationMultiplier = 1.0) {
-        console.log('[EffectSystem] showScreenShake called', { intensity, gameSpeed, durationMultiplier });
-
         const gameWrapper = document.querySelector('.game-wrapper');
-        console.log('[EffectSystem] gameWrapper found:', !!gameWrapper);
 
         if (!gameWrapper) {
-            console.error('[EffectSystem] gameWrapper not found!');
             return;
         }
 
-        // 이미 흔들리고 있으면 기존 애니메이션 즉시 종료하고 새로 시작
-        if (gameWrapper.classList.contains('screen-shake')) {
-            console.log('[EffectSystem] Stopping existing shake');
-            gameWrapper.classList.remove('screen-shake');
-            // 즉시 리플로우 강제 (애니메이션 재시작을 위해)
-            void gameWrapper.offsetWidth;
+        // 기존 애니메이션 취소
+        if (this.screenShakeTimeout) {
+            clearTimeout(this.screenShakeTimeout);
+            this.screenShakeTimeout = null;
+        }
+        if (this.screenShakeInterval) {
+            clearInterval(this.screenShakeInterval);
+            this.screenShakeInterval = null;
         }
 
-        // 흔들림 강도에 따라 CSS 변수 설정 (intensity 최대값 3.5로 확장)
-        const shakeDistance = 10 * Math.min(intensity, 3.5); // 최대 35px
-        gameWrapper.style.setProperty('--shake-distance', `${shakeDistance}px`);
-
-        // 게임 속도 무관, 데미지 기반 duration (Configuration-Driven)
+        // 설정
+        const shakeDistance = 10 * Math.min(intensity, 3.5);
         const baseDuration = GameConfig?.screenShake?.baseDuration || 300;
-
-        // durationMultiplier 적용 (데미지 구간별 시간 차등화)
         const adjustedDuration = baseDuration * durationMultiplier;
 
-        gameWrapper.style.setProperty('--shake-duration', `${adjustedDuration}ms`);
+        // JavaScript로 직접 흔들기
+        const startTime = Date.now();
+        const frameRate = 16; // ~60fps
 
-        console.log('[EffectSystem] Shake settings:', {
-            shakeDistance: `${shakeDistance}px`,
-            duration: `${adjustedDuration}ms`,
-            baseDuration,
-            durationMultiplier
-        });
+        this.screenShakeInterval = setInterval(() => {
+            const elapsed = Date.now() - startTime;
+            const progress = elapsed / adjustedDuration;
 
-        // 화면 흔들림 클래스 추가
-        gameWrapper.classList.add('screen-shake');
-        console.log('[EffectSystem] screen-shake class added');
+            if (progress >= 1) {
+                clearInterval(this.screenShakeInterval);
+                this.screenShakeInterval = null;
+                gameWrapper.style.transform = '';
+                return;
+            }
 
-        // 애니메이션 종료 후 클래스 제거
-        setTimeout(() => {
-            gameWrapper.classList.remove('screen-shake');
-            gameWrapper.style.removeProperty('--shake-distance');
-            gameWrapper.style.removeProperty('--shake-duration');
-            console.log('[EffectSystem] screen-shake class removed');
-        }, adjustedDuration);
+            // 랜덤 흔들림 (감쇠 적용)
+            const decay = 1 - progress;
+            const randomX = (Math.random() - 0.5) * 2 * shakeDistance * decay;
+            const randomY = (Math.random() - 0.5) * 2 * shakeDistance * decay;
+
+            gameWrapper.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        }, frameRate);
+
+        // 안전장치: 시간 초과 시 강제 종료
+        this.screenShakeTimeout = setTimeout(() => {
+            if (this.screenShakeInterval) {
+                clearInterval(this.screenShakeInterval);
+                this.screenShakeInterval = null;
+            }
+            gameWrapper.style.transform = '';
+        }, adjustedDuration + 50);
     }
 }
 

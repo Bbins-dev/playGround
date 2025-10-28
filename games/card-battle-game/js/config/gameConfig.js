@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.3.24',                        // 버전 넘버
+        number: '0.3.26',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -660,11 +660,11 @@ const GameConfig = {
         baseDuration: 300,  // 기본 지속시간 (ms) - 게임 속도 영향 없음
         // 데미지 구간별 차등 설정 (intensity: 흔들림 강도, durationMultiplier: 지속시간 배율)
         tiers: [
-            { minDamage: 10,  maxDamage: 29,  intensity: 0.8, durationMultiplier: 0.8 },  // 작은 타격
-            { minDamage: 30,  maxDamage: 49,  intensity: 1.2, durationMultiplier: 1.0 },  // 중간 타격
+            { minDamage: 1,   maxDamage: 19,  intensity: 0.8, durationMultiplier: 0.8 },  // 작은 타격
+            { minDamage: 20,  maxDamage: 49,  intensity: 1.2, durationMultiplier: 1.0 },  // 중간 타격
             { minDamage: 50,  maxDamage: 99,  intensity: 1.8, durationMultiplier: 1.2 },  // 강한 타격
-            { minDamage: 100, maxDamage: 299, intensity: 2.5, durationMultiplier: 1.5 },  // 매우 강한 타격
-            { minDamage: 300, maxDamage: Infinity, intensity: 3.5, durationMultiplier: 2.0 }  // 초대형 타격
+            { minDamage: 100, maxDamage: 199, intensity: 2.5, durationMultiplier: 1.5 },  // 매우 강한 타격
+            { minDamage: 200, maxDamage: Infinity, intensity: 3.5, durationMultiplier: 2.0 }  // 초대형 타격
         ]
     },
 
