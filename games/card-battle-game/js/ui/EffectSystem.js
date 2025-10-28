@@ -778,11 +778,19 @@ class EffectSystem {
      * @param {number} durationMultiplier - 지속시간 배율 (1.0 = 기본, 2.0 = 2배)
      */
     showScreenShake(intensity = 1.0, gameSpeed = 1, durationMultiplier = 1.0) {
+        console.log('[EffectSystem] showScreenShake called', { intensity, gameSpeed, durationMultiplier });
+
         const gameWrapper = document.querySelector('.game-wrapper');
-        if (!gameWrapper) return;
+        console.log('[EffectSystem] gameWrapper found:', !!gameWrapper);
+
+        if (!gameWrapper) {
+            console.error('[EffectSystem] gameWrapper not found!');
+            return;
+        }
 
         // 이미 흔들리고 있으면 기존 애니메이션 즉시 종료하고 새로 시작
         if (gameWrapper.classList.contains('screen-shake')) {
+            console.log('[EffectSystem] Stopping existing shake');
             gameWrapper.classList.remove('screen-shake');
             // 즉시 리플로우 강제 (애니메이션 재시작을 위해)
             void gameWrapper.offsetWidth;
@@ -800,14 +808,23 @@ class EffectSystem {
 
         gameWrapper.style.setProperty('--shake-duration', `${adjustedDuration}ms`);
 
+        console.log('[EffectSystem] Shake settings:', {
+            shakeDistance: `${shakeDistance}px`,
+            duration: `${adjustedDuration}ms`,
+            baseDuration,
+            durationMultiplier
+        });
+
         // 화면 흔들림 클래스 추가
         gameWrapper.classList.add('screen-shake');
+        console.log('[EffectSystem] screen-shake class added');
 
         // 애니메이션 종료 후 클래스 제거
         setTimeout(() => {
             gameWrapper.classList.remove('screen-shake');
             gameWrapper.style.removeProperty('--shake-distance');
             gameWrapper.style.removeProperty('--shake-duration');
+            console.log('[EffectSystem] screen-shake class removed');
         }, adjustedDuration);
     }
 }
