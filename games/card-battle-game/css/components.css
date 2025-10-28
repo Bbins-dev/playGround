@@ -838,8 +838,9 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* 패배 모달 최종 손패 컨테이너 (동적 2행 레이아웃) */
-.mvp-card-container.final-hand-grid {
+/* 최종 손패 컨테이너 (동적 2행 레이아웃) - 패배 모달 & 손패 모달 공통 */
+.mvp-card-container.final-hand-grid,
+.hand-cards-grid.final-hand-grid {
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -848,7 +849,7 @@
     width: 100%;
 }
 
-/* 각 행 스타일 */
+/* 각 행 스타일 (공통) */
 .final-hand-row {
     display: flex;
     justify-content: center;
@@ -857,12 +858,15 @@
     flex-wrap: nowrap;
 }
 
-/* 카드 컨테이너 스타일 */
-.final-hand-card-container {
+/* 카드 컨테이너 스타일 (공통) */
+.final-hand-card-container,
+.hand-card {
     flex-shrink: 0;
 }
 
-.mvp-card-container.final-hand-grid canvas {
+/* Canvas 카드 스타일 (공통) */
+.mvp-card-container.final-hand-grid canvas,
+.hand-cards-grid.final-hand-grid canvas {
     border-radius: 6px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
