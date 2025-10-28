@@ -491,11 +491,22 @@ class BattleSystem {
             // 화면 흔들림 효과 (절대 데미지값 기반, 플레이어/적 공통 적용)
             if (actualDamage > 0) {
                 const shakeConfig = GameConfig?.screenShake;
+
+                // 디버깅 로그
+                console.log('[Screen Shake Debug]', {
+                    actualDamage,
+                    target: target === this.player ? 'Player' : 'Enemy',
+                    shakeEnabled: shakeConfig?.enabled,
+                    tiersCount: shakeConfig?.tiers?.length
+                });
+
                 if (shakeConfig?.enabled) {
                     // 데미지 구간에 맞는 tier 찾기
                     const tier = shakeConfig.tiers?.find(t =>
                         actualDamage >= t.minDamage && actualDamage <= t.maxDamage
                     );
+
+                    console.log('[Screen Shake Tier]', tier);
 
                     if (tier) {
                         // tier의 intensity와 durationMultiplier를 EffectSystem에 전달
@@ -504,6 +515,8 @@ class BattleSystem {
                             this.gameSpeed,
                             tier.durationMultiplier
                         );
+                    } else {
+                        console.warn('[Screen Shake] No tier found for damage:', actualDamage);
                     }
                 }
             }
