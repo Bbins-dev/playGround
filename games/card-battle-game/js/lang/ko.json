@@ -521,7 +521,7 @@
         },
         "hot_wind": {
           "name": "열풍",
-          "description": "자신에게 피해 5를 입힌 뒤 {buff:hotWind} 버프 획득. {fire} {cardType:attack} 카드로 공격 시 {buff:hotWind} 잔여 턴 만큼 발동횟수를 증가시킨다."
+          "description": "자신에게 피해를 5 입힌 뒤 한 턴 간 {buff:hotWind} 획득. 손패의 {fire} {cardType:attack} 카드 수가 모든 {fire} {cardType:attack} 카드의 공격력에 곱해집니다. {buff:hotWind}은 중첩되지 않습니다."
         },
         "battery_explosion": {
           "name": "배터리폭발",
@@ -647,7 +647,7 @@
         "enhance": "강화",
         "enhance_description": "공격 카드의 대미지가 50% 증가합니다. 턴이 지나면 효과가 사라집니다.",
         "focus": "집중",
-        "focus_description": "노멀 속성 공격 카드의 {accuracy}이 30% 증가합니다.",
+        "focus_description": "노멀 속성 공격 카드의 명중률이 30% 증가합니다.",
         "speed": "고속",
         "speed_description": "노멀 속성 공격 카드의 발동 횟수가 증가합니다.",
         "scent": "냄새",
@@ -655,7 +655,7 @@
         "sharpen": "벼리기",
         "sharpen_description": "다음 턴 시작까지 체력이 1 아래로 내려가지 않습니다. 기사회생 효과입니다.",
         "hotWind": "열풍",
-        "hotWind_description": "불 속성 공격 카드의 발동 횟수가 열풍 버프의 잔여 턴 수만큼 증가합니다.",
+        "hotWind_description": "손패의 불 공격 카드 수가 모든 불 공격 카드의 공격력에 곱해집니다.",
         "lithium": "Li⁺",
         "lithium_description": "불, 전기 속성 공격 카드의 공격력이 Li⁺ 잔여 턴 수만큼 곱해집니다.",
         "breath": "호흡",
