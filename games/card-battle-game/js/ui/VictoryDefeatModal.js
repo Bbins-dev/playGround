@@ -1124,21 +1124,59 @@ class VictoryDefeatModal {
     }
 
     /**
-     * 손패 카드들 렌더링
+     * 손패 카드들 렌더링 (동적 2행 레이아웃 - 게임패배모달 방식)
      */
     renderHandCards() {
         if (!this.handCardsForReplace || !this.gameManager || !this.gameManager.player) return;
 
         this.handCardsForReplace.innerHTML = '';
-        const handCards = this.gameManager.player.hand || [];
+        this.handCardsForReplace.classList.add('final-hand-grid'); // 게임패배모달과 동일한 CSS 클래스
 
-        handCards.forEach((card, index) => {
-            // Player.hand는 Card 인스턴스를 직접 포함
-            if (card) {
-                const handCardElement = this.createHandCardElement(card, index);
-                this.handCardsForReplace.appendChild(handCardElement);
+        const handCards = this.gameManager.player.hand || [];
+        const totalCards = handCards.length;
+
+        if (totalCards === 0) return;
+
+        if (totalCards <= 5) {
+            // 5장 이하: 1행에만 가운데 정렬
+            const row1 = document.createElement('div');
+            row1.className = 'final-hand-row';
+
+            handCards.forEach((card, index) => {
+                if (card) {
+                    const handCardElement = this.createHandCardElement(card, index);
+                    row1.appendChild(handCardElement);
+                }
+            });
+
+            this.handCardsForReplace.appendChild(row1);
+        } else {
+            // 6장 이상: 동적 2행 배치 (1행: n-5장, 2행: 5장)
+            const firstRowCount = totalCards - 5;
+
+            // 1행 렌더링
+            const row1 = document.createElement('div');
+            row1.className = 'final-hand-row';
+            for (let i = 0; i < firstRowCount; i++) {
+                if (handCards[i]) {
+                    const handCardElement = this.createHandCardElement(handCards[i], i);
+                    row1.appendChild(handCardElement);
+                }
             }
-        });
+
+            // 2행 렌더링
+            const row2 = document.createElement('div');
+            row2.className = 'final-hand-row';
+            for (let i = firstRowCount; i < totalCards; i++) {
+                if (handCards[i]) {
+                    const handCardElement = this.createHandCardElement(handCards[i], i);
+                    row2.appendChild(handCardElement);
+                }
+            }
+
+            this.handCardsForReplace.appendChild(row1);
+            this.handCardsForReplace.appendChild(row2);
+        }
     }
 
     /**
