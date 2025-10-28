@@ -391,18 +391,15 @@ class VictoryDefeatModal {
             this.defeatPlayStyle.textContent = translatedStyle;
         }
 
-        // MVP 카드
+        // 최종 손패 (MVP 카드 대신)
         if (this.defeatMvpCard) {
-            const mvpCard = gameStats.mvpCard;
-            if (mvpCard && window.CardDatabase) {
-                const cardData = CardDatabase.getCard(mvpCard);
-                if (cardData) {
-                    this.renderMvpCard(cardData);
-                } else {
-                    this.showMvpCardText(mvpCard);
-                }
+            // GameManager에서 플레이어 손패 가져오기
+            const finalHand = this.gameManager?.player?.hand || [];
+            if (finalHand.length > 0) {
+                this.renderFinalHand(finalHand);
             } else {
-                this.showMvpCardText(I18nHelper.getText('auto_battle_card_game.ui.none') || '-');
+                this.defeatMvpCard.classList.remove('final-hand-grid');
+                this.showMvpCardText(I18nHelper.getText('auto_battle_card_game.ui.no_cards') || '-');
             }
         }
     }
@@ -454,6 +451,151 @@ class VictoryDefeatModal {
      */
     showMvpCardText(text) {
         this.defeatMvpCard.innerHTML = `<p style="margin: 0; font-size: 18px; font-weight: bold; text-align: center; color: var(--glass-text-primary);">${text}</p>`;
+    }
+
+    /**
+     * 최종 손패를 동적 2행 레이아웃으로 렌더링
+     * 5장 이하: 1행 가운데 정렬
+     * 6장 이상: 1행 (총장수-5)장, 2행 5장, 각 행 가운데 정렬
+     * @param {Array} handCards - 최종 손패 카드 배열
+     */
+    renderFinalHand(handCards) {
+        // 기존 컨텐츠 제거
+        this.defeatMvpCard.innerHTML = '';
+
+        // 그리드 레이아웃 클래스 추가
+        this.defeatMvpCard.classList.add('final-hand-grid');
+
+        // 손패가 없는 경우
+        if (!handCards || handCards.length === 0) {
+            this.defeatMvpCard.classList.remove('final-hand-grid');
+            this.showMvpCardText(I18nHelper.getText('auto_battle_card_game.ui.no_cards') || '-');
+            return;
+        }
+
+        // Configuration-Driven: 패배 모달 손패 카드 크기
+        const cardSize = GameConfig?.cardSizes?.defeatHand || { width: 120, height: 168 };
+
+        const totalCards = handCards.length;
+
+        // 5장 이하: 1행에만 표시
+        if (totalCards <= 5) {
+            const row1 = document.createElement('div');
+            row1.className = 'final-hand-row';
+
+            handCards.forEach((card, index) => {
+                if (card) {
+                    const cardContainer = this.createCardElement(card, cardSize);
+                    row1.appendChild(cardContainer);
+                }
+            });
+
+            this.defeatMvpCard.appendChild(row1);
+        }
+        // 6장 이상: 1행 (총장수-5)장, 2행 5장
+        else {
+            const firstRowCount = totalCards - 5;
+
+            // 1행 생성
+            const row1 = document.createElement('div');
+            row1.className = 'final-hand-row';
+
+            for (let i = 0; i < firstRowCount; i++) {
+                const card = handCards[i];
+                if (card) {
+                    const cardContainer = this.createCardElement(card, cardSize);
+                    row1.appendChild(cardContainer);
+                }
+            }
+
+            // 2행 생성
+            const row2 = document.createElement('div');
+            row2.className = 'final-hand-row';
+
+            for (let i = firstRowCount; i < totalCards; i++) {
+                const card = handCards[i];
+                if (card) {
+                    const cardContainer = this.createCardElement(card, cardSize);
+                    row2.appendChild(cardContainer);
+                }
+            }
+
+            this.defeatMvpCard.appendChild(row1);
+            this.defeatMvpCard.appendChild(row2);
+        }
+
+        // 최종 손패 아래에 플레이어 방어속성 배지 표시
+        const defenseElement = this.gameManager?.player?.defenseElement || 'normal';
+        const defenseBadge = this.createDefenseElementBadge(defenseElement);
+        defenseBadge.style.marginTop = '12px';
+        this.defeatMvpCard.appendChild(defenseBadge);
+    }
+
+    /**
+     * 카드 Canvas 요소 생성
+     * @param {Object} card - 카드 데이터
+     * @param {Object} cardSize - 카드 크기 {width, height}
+     * @returns {HTMLElement} Canvas 요소
+     */
+    createCardElement(card, cardSize) {
+        // Canvas 생성
+        const canvas = document.createElement('canvas');
+        canvas.width = cardSize.width;
+        canvas.height = cardSize.height;
+        canvas.className = 'final-hand-card-container';
+
+        const ctx = canvas.getContext('2d');
+
+        // CardRenderer로 카드 렌더링
+        this.cardRenderer.renderCard(ctx, card, 0, 0, cardSize.width, cardSize.height, {
+            isSelected: false,
+            isHighlighted: false,
+            opacity: 1
+        });
+
+        return canvas;
+    }
+
+    /**
+     * 방어속성 배지 생성 (인게임 스타일)
+     * @param {string} element - 카드 속성
+     * @returns {HTMLElement} 배지 요소
+     */
+    createDefenseElementBadge(element) {
+        const badge = document.createElement('div');
+        badge.className = `defense-element-badge ${element || 'normal'}`;
+        // CSS 클래스 스타일을 유지하면서 크기만 조정 (배경색, 테두리 색상은 CSS에서)
+        badge.style.setProperty('min-width', 'auto', 'important');
+        badge.style.setProperty('height', '50px', 'important');
+        badge.style.setProperty('padding', '6px 8px', 'important');  // 상하 6px, 좌우 8px
+        badge.style.setProperty('gap', '4px', 'important');
+        badge.style.setProperty('margin', '0', 'important');
+
+        // 속성 정보 가져오기 (이모지 + 다국어 텍스트)
+        const elementConfig = GameConfig?.elements?.[element];
+        const emoji = elementConfig?.emoji || '⭐';
+
+        // 현재 언어로 번역된 속성 텍스트 가져오기
+        let elementText = element; // 기본값 (fallback)
+        if (elementConfig && elementConfig.elementNames) {
+            const currentLang = window.i18n?.currentLanguage || localStorage.getItem('selectedLanguage') || 'ko';
+            elementText = elementConfig.elementNames[currentLang] || elementConfig.elementNames['ko'] || element;
+        }
+
+        const emojiSpan = document.createElement('span');
+        emojiSpan.className = 'badge-emoji';
+        emojiSpan.textContent = emoji;
+        emojiSpan.style.fontSize = '22px';
+
+        const textSpan = document.createElement('span');
+        textSpan.className = 'badge-text';
+        textSpan.textContent = elementText;
+        textSpan.style.fontSize = '15px';
+
+        badge.appendChild(emojiSpan);
+        badge.appendChild(textSpan);
+
+        return badge;
     }
 
     /**
