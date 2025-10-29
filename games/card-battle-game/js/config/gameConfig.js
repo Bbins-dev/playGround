@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.3.29',                        // 버전 넘버
+        number: '0.3.30',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -209,6 +209,7 @@ const GameConfig = {
             paralysis: '#F39C12',     // 마비 - 주황색
             phase: '#00FFFF',         // 위상 - 형광 하늘색 (cyan)
             burn: '#E67E22',          // 화상 - 주황색
+            ignition: '#FF6347',      // 발화 - 토마토 빨강 (불꽃 느낌)
             poisoned: '#9B59B6',      // 중독 - 보라색
             sand: '#D4A76A',          // 모래 - 베이지색
             insult: '#8B4513',        // 모욕 - 갈색
@@ -335,7 +336,7 @@ const GameConfig = {
 
         // 메시지 타입별 색상 (플로팅 숫자용)
         messageTypes: {
-            damage: '#FF0000',            // 대미지 - 빨간색
+            damage: '#FF4444',            // 대미지 - 빨간색
             heal: '#2ECC71',              // 회복 - 초록색
             shield: '#E8E8E8',            // 방어력 - 밝은 은색
             buff: '#FFD700',              // 버프 - 금색
@@ -344,8 +345,8 @@ const GameConfig = {
             burn: '#FF7F50',              // 화상 및 화상 연장 - 코랄색
             miss: '#CCCCCC',              // 빗나감 - 회색
             zero: '#888888',              // 0 대미지 - 어두운 회색
-            strong: '#FF4500',            // 강한 대미지 - 오렌지-레드
-            weak: '#FFA500',              // 약한 대미지 - 주황색
+            strong: '#FF8C00',            // 강함! (1.5배) - 주황색
+            weak: '#8B0000',              // 약함! (0.5배) - 어두운 검붉은 색
             selfDamage: '#FFEB3B',        // 자해 데미지 - 노란색
             conditionFailed: '#CCCCCC',   // 조건 실패 - 회색
             debuff: '#E74C3C'             // 디버프 - 빨간색
@@ -721,6 +722,16 @@ const GameConfig = {
             canExtend: true,  // 턴 연장 가능 (중복 적용 시 누적)
             get color() { return GameConfig.masterColors.statusEffects.burn; }
         },
+        ignition: {
+            nameKey: 'auto_battle_card_game.ui.status_effects.ignition',
+            descriptionKey: 'auto_battle_card_game.ui.status_effects.ignition_description',
+            name: '발화',
+            emoji: '🔆',
+            description: '불 공격카드의 공격에 세 배의 피해를 입습니다.',
+            duration: 1,
+            canExtend: true,  // 턴 연장 가능 (중복 적용 시 누적)
+            get color() { return GameConfig.masterColors.statusEffects.ignition; }
+        },
         poisoned: {
             nameKey: 'auto_battle_card_game.ui.status_effects.poisoned',
             descriptionKey: 'auto_battle_card_game.ui.status_effects.poisoned_description',
@@ -806,32 +817,37 @@ const GameConfig = {
         poisoned: {
             className: 'status-border-poison',
             get color() { return GameConfig.masterColors.statusEffects.poisoned; },
-            priority: 2
+            priority: 3
         },
         burn: {
             className: 'status-border-burn',
             get color() { return GameConfig.masterColors.statusEffects.burn; },
             priority: 1  // 최고 우선순위
         },
+        ignition: {
+            className: 'status-border-ignition',
+            get color() { return GameConfig.masterColors.statusEffects.ignition; },
+            priority: 2  // burn 다음
+        },
         sand: {
             className: 'status-border-sand',
             get color() { return GameConfig.masterColors.statusEffects.sand; },
-            priority: 3
+            priority: 4
         },
         insult: {
             className: 'status-border-insult',
             get color() { return GameConfig.masterColors.statusEffects.insult; },
-            priority: 4
+            priority: 5
         },
         slow: {
             className: 'status-border-slow',
             get color() { return GameConfig.masterColors.statusEffects.slow; },
-            priority: 5
+            priority: 6
         },
         chains: {
             className: 'status-border-chains',
             get color() { return GameConfig.masterColors.statusEffects.chains; },
-            priority: 6
+            priority: 7
         },
         wet: {
             className: 'status-border-wet',
@@ -1417,8 +1433,9 @@ const GameConfig = {
             13: {
                 hp: 130,
                 cards: [
-                    { id: 'scorched_shield', count: 1 },   // 작열방패
-                    { id: 'karura_strike', count: 1 }      // 카루라일격
+                    { id: 'scorched_shield', count: 1 },  // 작열방패
+                    { id: 'ignite', count: 1 },           // 발화
+                    { id: 'fireball', count: 1 }          // 화염구
                 ]
             },
             14: {
@@ -1447,11 +1464,11 @@ const GameConfig = {
             17: {
                 hp: 170,
                 cards: [
-                    { id: 'hot_breath', count: 1 },            // 뜨거운 입김
-                    { id: 'oil_pour', count: 1 },              // 기름 붓기
-                    { id: 'chains_of_fire', count: 1 },        // 불의 사슬
-                    { id: 'indomitable_gauntlet', count: 1 },  // 불굴의 장갑
-                    { id: 'flame_burst', count: 1 }            // 화염방사
+                    { id: 'hot_breath', count: 1 },           // 뜨거운입김
+                    { id: 'ignite', count: 1 },               // 발화
+                    { id: 'chains_of_fire', count: 1 },       // 불의 사슬
+                    { id: 'indomitable_gauntlet', count: 1 }, // 불굴의 장갑
+                    { id: 'flame_burst', count: 1 }           // 화염방사
                 ]
             },
             18: {
@@ -1884,11 +1901,14 @@ const GameConfig = {
             57: {
                 hp: 6000,
                 cards: [
+                    { id: 'battery_pack', count: 2 },      // 건전지 팩 x2
+                    { id: 'hot_breath', count: 1 },        // 뜨거운 입김
                     { id: 'fire_breath', count: 1 },       // 불의 호흡
+                    { id: 'sharpen', count: 1 },           // 벼리기
                     { id: 'opportunity_scent', count: 1 }, // 기회의 냄새
+                    { id: 'ignite', count: 1 },            // 발화
                     { id: 'hot_wind', count: 1 },          // 열풍
-                    { id: 'fireball', count: 3 },          // 화염구 x3
-                    { id: 'powder_keg', count: 1 }         // 화약통 투척
+                    { id: 'fireball', count: 2 }           // 화염구 x2
                 ]
             },
             58: {
@@ -3396,10 +3416,6 @@ const GameConfig = {
         indomitableGauntlet: {
             selfDamage: 3,     // 자해 데미지 3
             strengthGain: 3    // 힘 증가량 3
-        },
-        // 기름붓기 카드 설정
-        oilPour: {
-            turnsExtended: 2   // 화상 연장 턴 수
         },
         // 맹독 변성 카드 설정
         poisonMutation: {
