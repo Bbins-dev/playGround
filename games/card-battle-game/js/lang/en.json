@@ -102,6 +102,8 @@
       "damage": "Damage",
       "multi_hit_damage": "Multi-Hit Damage",
       "miss": "Miss!",
+      "strong_damage": "Strong!",
+      "weak_damage": "Weak!",
       "combo": "Combo",
       "turn": "Turn",
       "player_turn": "Your Turn",
@@ -120,6 +122,8 @@
         "phase_description": "When activating attack cards, 30% chance to attack yourself.",
         "burn": "Burn",
         "burn_description": "Takes 5 burn damage at turn start. Ignores defense.",
+        "ignition": "Ignition",
+        "ignition_description": "Takes triple damage from fire attack cards.",
         "poisoned": "Poison",
         "poisoned_description": "Take damage equal to remaining turns at turn end.",
         "sand": "Sand",
@@ -463,6 +467,10 @@
           "name": "Hot Breath",
           "description": "Inflicts {status:burn} on the opponent."
         },
+        "ignite": {
+          "name": "Ignite",
+          "description": "If your defense element is {fire}, inflicts {status:ignition} on the target for 1 turn."
+        },
         "insult": {
           "name": "Insult",
           "description": "{status:insult}s the opponent, reducing {cardType:defense} card activation rate by 30% for 1 turn."
@@ -470,10 +478,6 @@
         "net_throw": {
           "name": "Net Throw",
           "description": "{status:slow}s the opponent, reducing {cardType:status} card activation rate by 30% for 1 turn."
-        },
-        "oil_pour": {
-          "name": "Pour Oil",
-          "description": "If the target is {status:burn}ed, extends {status:burn} by 2 turns."
         },
         "chains_of_fire": {
           "name": "Chains of Fire",
@@ -745,9 +749,9 @@
       "push_back_failed": "Push Back failed",
       "sand_throw_failed": "Sand Throw failed",
       "hot_breath_failed": "Hot Breath failed",
+      "ignite_failed": "Ignite failed!",
       "insult_failed": "Insult failed",
       "net_throw_failed": "Net Throw failed",
-      "oil_pour_failed": "Failed!",
       "chains_of_fire_failed": "Failed!",
       "condition_failed": "Failed!",
       "templates": {
