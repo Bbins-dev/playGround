@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.3.31',                        // 버전 넘버
+        number: '0.3.32',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -3749,6 +3749,11 @@ const GameConfig = {
                 victory: 'victoryModal',
                 gameOver: 'gameOver'
             }
+        },
+
+        // 백그라운드 동작 설정 (Configuration-Driven)
+        background: {
+            pauseOnBackground: true  // 백그라운드로 전환 시 BGM 자동 일시정지 (배터리 절약)
         }
     }
 };
