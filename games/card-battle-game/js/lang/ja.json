@@ -768,6 +768,7 @@
         "poisoned_extended": "☠️ 毒+{value}ターン!",
         "wet_extended": "💧 濡れ+{value}ターン!",
         "paralysis_extended": "⚡ 麻痺+{value}ターン!",
+        "ignition_extended": "🔥 発火+{value}ターン!",
         "burn_damage": "🔥 火傷で{value}ダメージ！",
         "buff_gained": "{name} +{value}",
         "buff_gained_turns": "{name} +{value}ターン!",
