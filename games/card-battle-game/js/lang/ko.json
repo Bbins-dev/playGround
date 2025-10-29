@@ -768,6 +768,7 @@
         "poisoned_extended": "☠️ 중독+{value}턴!",
         "wet_extended": "💧 젖음+{value}턴!",
         "paralysis_extended": "⚡ 마비+{value}턴!",
+        "ignition_extended": "🔥 발화+{value}턴!",
         "burn_damage": "🔥 화상으로 {value} 피해!",
         "buff_gained": "{name} +{value}",
         "buff_gained_turns": "{name} +{value}턴!",
