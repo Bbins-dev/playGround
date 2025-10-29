@@ -102,6 +102,8 @@
       "damage": "ダメージ",
       "multi_hit_damage": "連続攻撃ダメージ",
       "miss": "ミス！",
+      "strong_damage": "抜群！",
+      "weak_damage": "弱い…",
       "combo": "コンボ",
       "turn": "ターン",
       "player_turn": "自分のターン",
@@ -120,6 +122,8 @@
         "phase_description": "攻撃カード発動時、30%の確率で自分自身を攻撃します。",
         "burn": "火傷",
         "burn_description": "ターン開始時に5の火傷ダメージを受けます。防御力を無視します。",
+        "ignition": "発火",
+        "ignition_description": "炎攻撃カードから3倍のダメージを受けます。",
         "poisoned": "毒",
         "poisoned_description": "ターン終了時に残りターン数分のダメージを受けます。",
         "sand": "砂",
@@ -463,6 +467,10 @@
           "name": "熱い息",
           "description": "相手に{status:burn}を負わせます。"
         },
+        "ignite": {
+          "name": "発火",
+          "description": "自分の防御属性が{fire}の場合、発動時に相手を1ターンの間{status:ignition}状態にします。"
+        },
         "insult": {
           "name": "侮辱",
           "description": "相手を侮辱し、1ターンの間{cardType:defense}カードの発動率を30%減少させます。"
@@ -470,10 +478,6 @@
         "net_throw": {
           "name": "網投げ",
           "description": "相手を鈍化させ、1ターンの間{cardType:status}カードの発動率を30%減少させます。"
-        },
-        "oil_pour": {
-          "name": "油を注ぐ",
-          "description": "相手が{status:burn}状態の場合、{status:burn}を2ターン延長します。"
         },
         "chains_of_fire": {
           "name": "炎の鎖",
@@ -745,9 +749,9 @@
       "push_back_failed": "押し返し失敗",
       "sand_throw_failed": "砂投げ失敗",
       "hot_breath_failed": "熱い息失敗",
+      "ignite_failed": "発火失敗！",
       "insult_failed": "侮辱失敗",
       "net_throw_failed": "網投げ失敗",
-      "oil_pour_failed": "失敗！",
       "chains_of_fire_failed": "失敗！",
       "condition_failed": "失敗！",
       "templates": {
