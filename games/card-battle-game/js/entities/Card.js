@@ -209,8 +209,8 @@ class Card {
                         console.log(`[RANDOM ACTIVATION] ${this.name || this.id}: ${baseCount}회(기본) + ${bonus}회(버프) = ${this.activationCount}회`);
                     }
 
-                    // 버프 보너스를 activationCount에 반영했으므로 modifiedActivationCount는 더 이상 사용 안함
-                    this.modifiedActivationCount = undefined;
+                    // ★ 중요: modifiedActivationCount 유지 (표시용으로 계속 사용)
+                    // 발동 중에도 버프 정보를 유지하여 "3-6" 범위 표시 유지
                 } else {
                     // 디버그 로그: 버프 없을 때
                     if (GameConfig?.debugMode?.showRandomBashCounts) {
@@ -222,9 +222,18 @@ class Card {
             }
         }
 
-        // 일반 카드 또는 랜덤 카드(이미 결정된 경우) - modifiedActivationCount 우선 사용
-        const effectiveCount = this.modifiedActivationCount !== undefined ?
-            this.modifiedActivationCount : this.activationCount;
+        // 발동 가능 여부 체크
+        // 랜덤 카드: activationCount 사용 (이미 버프가 적용된 값)
+        // 일반 카드: modifiedActivationCount 우선 사용
+        let effectiveCount;
+        if (this.isRandomBash || this.isRandomHeal) {
+            // 랜덤 카드는 activationCount 사용 (이미 버프 보너스 적용됨)
+            effectiveCount = this.activationCount;
+        } else {
+            // 일반 카드는 modifiedActivationCount 우선
+            effectiveCount = this.modifiedActivationCount !== undefined ?
+                this.modifiedActivationCount : this.activationCount;
+        }
         return this.isActive && this.currentActivations < effectiveCount;
     }
 
@@ -242,6 +251,7 @@ class Card {
                 if ((this.isRandomBash || this.isRandomHeal) && this.minActivation !== undefined && this.maxActivation !== undefined) {
                     // 랜덤 카드: 버프 적용된 범위 표시 (예: "2-5" → "3-6")
                     // modifiedActivationCount는 버프 보너스만 저장 (Player.js에서 설정)
+                    // ★ 발동 전/중/후 모두 이 범위를 표시 (activationCount 결정 여부와 무관)
                     const bonus = this.modifiedActivationCount;
                     stats.activation = `${this.minActivation + bonus}-${this.maxActivation + bonus}`;
                 } else {
@@ -292,6 +302,10 @@ class Card {
     reset() {
         this.currentActivations = 0;
         this.isActive = true;
+        // 랜덤 카드의 activationCount를 null로 리셋 (다음 턴에 다시 랜덤 결정)
+        if (this.isRandomBash || this.isRandomHeal) {
+            this.activationCount = null;
+        }
     }
 
     // 디버깅용 문자열 변환

@@ -329,7 +329,13 @@ class EffectSystem {
                     numberElement.textContent = '0';
                     break;
                 case 'strong':
+                    const strongText = I18nHelper.getText('auto_battle_card_game.ui.strong_damage');
+                    numberElement.textContent = `${strongText} -${amount}`;
+                    break;
                 case 'weak':
+                    const weakText = I18nHelper.getText('auto_battle_card_game.ui.weak_damage');
+                    numberElement.textContent = `${weakText} -${amount}`;
+                    break;
                 case 'selfDamage':
                     numberElement.textContent = `-${amount}`;
                     break;

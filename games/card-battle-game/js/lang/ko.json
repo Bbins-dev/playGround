@@ -102,6 +102,8 @@
       "damage": "피해",
       "multi_hit_damage": "연속 타격 피해",
       "miss": "빗나감!",
+      "strong_damage": "강함!",
+      "weak_damage": "약함!",
       "combo": "콤보",
       "turn": "턴",
       "player_turn": "나의 턴",
@@ -120,6 +122,8 @@
         "phase_description": "공격카드 발동 시 30%확률로 자기 자신을 공격합니다.",
         "burn": "화상",
         "burn_description": "턴 시작 시 5의 화상 대미지를 받습니다. 방어력을 무시합니다.",
+        "ignition": "발화",
+        "ignition_description": "불 공격카드의 공격에 세 배의 피해를 입습니다.",
         "poisoned": "중독",
         "poisoned_description": "턴 종료 시 남은 턴수만큼 피해를 받습니다.",
         "sand": "모래",
@@ -463,6 +467,10 @@
           "name": "뜨거운 입김",
           "description": "상대에게 {status:burn}을 입힙니다."
         },
+        "ignite": {
+          "name": "발화",
+          "description": "자신의 방어속성이 {fire}일 경우 발동 시 상대를 한 턴 간 {status:ignition}상태로 만듭니다."
+        },
         "insult": {
           "name": "모욕",
           "description": "상대를 {status:insult}하여 1턴간 {cardType:defense} 카드의 발동률 30% 감소시킵니다."
@@ -470,10 +478,6 @@
         "net_throw": {
           "name": "그물투척",
           "description": "상대를 {status:slow}시켜 1턴간 {cardType:status} 카드의 발동률을 30% 감소시킵니다."
-        },
-        "oil_pour": {
-          "name": "기름붓기",
-          "description": "상대가 {status:burn} 상태일 경우 {status:burn} 2턴을 추가합니다."
         },
         "chains_of_fire": {
           "name": "불의 사슬",
@@ -745,9 +749,9 @@
       "push_back_failed": "밀쳐내기 실패",
       "sand_throw_failed": "모래뿌리기 실패",
       "hot_breath_failed": "뜨거운 입김 실패",
+      "ignite_failed": "발화 실패!",
       "insult_failed": "모욕 실패",
       "net_throw_failed": "그물투척 실패",
-      "oil_pour_failed": "실패!",
       "chains_of_fire_failed": "실패!",
       "condition_failed": "실패!",
       "templates": {

@@ -842,6 +842,15 @@ class Player {
                     // 마비 아닐 때는 그대로 유지 (정전기 + 힘만 반영됨)
                 }
 
+                // 발화 상태 추가 데미지 (불 공격 카드만, 적이 발화 상태일 때 3배)
+                if (card.element === 'fire' && card.type === 'attack' && target) {
+                    const hasIgnition = target.hasStatusEffect('ignition');
+                    if (hasIgnition) {
+                        buffedPower = Math.floor(buffedPower * 3);
+                    }
+                    // 발화 아닐 때는 그대로 유지
+                }
+
                 // ice_breaker 카드: 적이 frozen 상태일 때 적 최대 HP의 20% (고정 피해)
                 if (card.id === 'ice_breaker' && target) {
                     const hasFrozen = target.hasStatusEffect('frozen');
@@ -903,11 +912,11 @@ class Player {
                     buffedHealAmount = hasWet ? (GameConfig?.cardEffects?.healingSpring?.healAmount || 10) : 0;
                 }
 
-                // liquify 카드: 잃은 체력의 일정 비율 회복 (실시간 동적 계산)
+                // liquify 카드: 잃은 체력의 일정 비율 회복 (실시간 동적 계산, 최소 1)
                 if (card.id === 'liquify') {
                     const lostHP = this.maxHP - this.hp;
                     const healPercent = GameConfig?.cardEffects?.liquify?.healPercent || 10;
-                    buffedHealAmount = Math.floor(lostHP * (healPercent / 100));
+                    buffedHealAmount = Math.max(1, Math.floor(lostHP * (healPercent / 100)));
                 }
 
                 // slash_water 카드: 마지막 받은 피해만큼 회복 (실시간 동적 계산)
@@ -1075,26 +1084,30 @@ class Player {
                 }
                 // 랜덤 카드 (isRandomBash/isRandomHeal): bonus만 저장
                 else if (card.isRandomBash || card.isRandomHeal) {
-                    // 고속 버프 적용 (노멀 공격카드만)
-                    if (this.hasSpeedBuff() && card.type === 'attack' && card.element === 'normal') {
-                        card.modifiedActivationCount = this.speedBonus;
+                    // activationCount가 이미 결정된 경우 (카드 발동 중) modifiedActivationCount 재설정 방지
+                    if (card.activationCount === null) {
+                        // 고속 버프 적용 (노멀 공격카드만)
+                        if (this.hasSpeedBuff() && card.type === 'attack' && card.element === 'normal') {
+                            card.modifiedActivationCount = this.speedBonus;
+                        }
+                        // 급류 버프 적용 (물 속성 공격카드만)
+                        else if (this.hasTorrentBuff() && card.type === 'attack' && card.element === 'water') {
+                            card.modifiedActivationCount = this.torrentBonus;
+                        }
+                        // 광속 버프 적용 (전기 속성 공격카드만)
+                        else if (this.hasLightSpeedBuff() && card.type === 'attack' && card.element === 'electric') {
+                            card.modifiedActivationCount = this.lightSpeedBonus;
+                        }
+                        // 연쇄 버프 적용 (독 속성 공격카드만)
+                        else if (this.hasPropagationBuff() && card.type === 'attack' && card.element === 'poison') {
+                            card.modifiedActivationCount = this.propagationBonus;
+                        }
+                        else {
+                            // 버프가 없거나 적용 대상이 아닌 경우 초기화
+                            card.modifiedActivationCount = undefined;
+                        }
                     }
-                    // 급류 버프 적용 (물 속성 공격카드만)
-                    else if (this.hasTorrentBuff() && card.type === 'attack' && card.element === 'water') {
-                        card.modifiedActivationCount = this.torrentBonus;
-                    }
-                    // 광속 버프 적용 (전기 속성 공격카드만)
-                    else if (this.hasLightSpeedBuff() && card.type === 'attack' && card.element === 'electric') {
-                        card.modifiedActivationCount = this.lightSpeedBonus;
-                    }
-                    // 연쇄 버프 적용 (독 속성 공격카드만)
-                    else if (this.hasPropagationBuff() && card.type === 'attack' && card.element === 'poison') {
-                        card.modifiedActivationCount = this.propagationBonus;
-                    }
-                    else {
-                        // 버프가 없거나 적용 대상이 아닌 경우 초기화
-                        card.modifiedActivationCount = undefined;
-                    }
+                    // activationCount가 이미 결정된 경우: modifiedActivationCount 유지 (재설정 안함)
                 }
                 else {
                     // activationCount가 없는 특수 카드 (버프 적용 불가)
