@@ -2130,6 +2130,43 @@ const CardDatabase = {
             }
         });
 
+        // 발화 카드 (불 속성, 방어속성이 불일 때 발화 상태이상 적용)
+        this.addCard({
+            id: 'ignite',
+            nameKey: 'auto_battle_card_game.ui.cards.ignite.name',
+            type: 'status',
+            element: 'fire',
+            power: 0,
+            accuracy: 75,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.ignite.description',
+            ignitionChance: 100,
+            effect: function(user, target, battleSystem) {
+                // 조건 체크: 사용자의 방어속성이 불인가?
+                if (user.defenseElement !== 'fire') {
+                    // 명중했지만 조건 실패 (방어속성이 불이 아님)
+                    return {
+                        success: true,
+                        conditionFailed: true,
+                        messageKey: 'auto_battle_card_game.ui.ignite_failed',
+                        element: this.element
+                    };
+                }
+
+                // 조건 충족: 발화 상태 적용 (통합 시스템 - 면역 메시지 지원)
+                return {
+                    success: true,
+                    statusEffect: {
+                        type: 'ignition',
+                        chance: this.ignitionChance,
+                        power: 0,
+                        duration: 1
+                    },
+                    element: this.element
+                };
+            }
+        });
+
         // 모욕 카드 (노멀 속성, 방어카드 발동률 감소)
         this.addCard({
             id: 'insult',
@@ -2176,46 +2213,6 @@ const CardDatabase = {
                         chance: this.slowChance,
                         power: GameConfig.statusEffects.slow.defaultReduction,
                         duration: 1
-                    },
-                    element: this.element
-                };
-            }
-        });
-
-        // 기름붓기 카드 (불 속성, 화상 연장)
-        this.addCard({
-            id: 'oil_pour',
-            nameKey: 'auto_battle_card_game.ui.cards.oil_pour.name',
-            type: 'status',
-            element: 'fire',
-            power: 0,
-            accuracy: 70,
-            activationCount: 1,
-            descriptionKey: 'auto_battle_card_game.ui.cards.oil_pour.description',
-            burnChance: 100,
-            effect: function(user, target, battleSystem) {
-                // 상대가 화상 상태인지 확인
-                const hasBurn = target.hasStatusEffect('burn');
-
-                if (!hasBurn) {
-                    // 명중했지만 조건 실패 (화상 상태 아님)
-                    return {
-                        success: true,           // 명중은 성공
-                        conditionFailed: true,   // 조건 실패
-                        messageKey: 'auto_battle_card_game.ui.oil_pour_failed',
-                        element: this.element
-                    };
-                }
-
-                // 화상 연장 적용 (통합 시스템 - 면역 메시지 지원)
-                const turnsToExtend = GameConfig?.cardEffects?.oilPour?.turnsExtended || 2;
-                return {
-                    success: true,
-                    statusEffect: {
-                        type: 'burn',
-                        chance: this.burnChance,
-                        power: GameConfig.statusEffects.burn.defaultPercent,
-                        duration: turnsToExtend
                     },
                     element: this.element
                 };
