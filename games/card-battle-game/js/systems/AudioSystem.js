@@ -41,6 +41,60 @@ class AudioSystem {
         this.isLoading = false;
         this.loadedCount = 0;
         this.totalCount = 0;
+
+        // 백그라운드 상태 추적
+        this.wasPlayingBeforeBackground = false;
+
+        // Page Visibility API 설정 (바인딩 필요 - 리스너 제거 시 사용)
+        this.boundVisibilityHandler = this.handleVisibilityChange.bind(this);
+        this.setupVisibilityListener();
+    }
+
+    /**
+     * Page Visibility API 리스너 설정
+     * 백그라운드로 전환 시 BGM 자동 일시정지 (배터리 절약)
+     */
+    setupVisibilityListener() {
+        try {
+            // GameConfig에서 기능 활성화 여부 확인
+            const enabled = GameConfig?.audio?.background?.pauseOnBackground ?? true;
+
+            if (enabled) {
+                document.addEventListener('visibilitychange', this.boundVisibilityHandler);
+            }
+        } catch (error) {
+            console.error('[AudioSystem] Error setting up visibility listener:', error);
+        }
+    }
+
+    /**
+     * Page Visibility 변경 핸들러
+     * document.hidden 상태에 따라 BGM 일시정지/재개
+     */
+    handleVisibilityChange() {
+        try {
+            if (!this.currentBGM) {
+                return; // BGM 없으면 무시
+            }
+
+            if (document.hidden) {
+                // 백그라운드로 전환: BGM 일시정지
+                if (!this.currentBGM.paused) {
+                    this.wasPlayingBeforeBackground = true;
+                    this.currentBGM.pause();
+                }
+            } else {
+                // 포그라운드로 복귀: BGM 재개
+                if (this.wasPlayingBeforeBackground) {
+                    this.currentBGM.play().catch(e => {
+                        console.warn('[AudioSystem] Failed to resume BGM on foreground:', e);
+                    });
+                    this.wasPlayingBeforeBackground = false;
+                }
+            }
+        } catch (error) {
+            console.error('[AudioSystem] Error handling visibility change:', error);
+        }
     }
 
     /**
@@ -156,6 +210,9 @@ class AudioSystem {
                 }
             }
 
+            // 백그라운드 플래그 리셋 (새 BGM 재생 시 초기화)
+            this.wasPlayingBeforeBackground = false;
+
             // 현재 BGM 설정
             this.currentBGM = audio;
             this.currentBGMKey = bgmKey;
@@ -188,6 +245,9 @@ class AudioSystem {
             audio.pause();
             audio.currentTime = 0;
 
+            // 백그라운드 플래그 리셋 (BGM 정지 시 초기화)
+            this.wasPlayingBeforeBackground = false;
+
             this.currentBGM = null;
             this.currentBGMKey = null;
 
@@ -218,6 +278,9 @@ class AudioSystem {
 
             // 일시정지
             this.currentBGM.pause();
+
+            // 백그라운드 플래그 리셋 (BGM 스택에 저장 시 초기화)
+            this.wasPlayingBeforeBackground = false;
 
             // 현재 BGM 초기화 (새 BGM 재생 가능하도록)
             this.currentBGM = null;
@@ -270,6 +333,9 @@ class AudioSystem {
                 console.warn('[AudioSystem] Autoplay blocked on restore:', e);
                 // Autoplay 차단 시 실패 처리하지만 에러는 던지지 않음
             }
+
+            // 백그라운드 플래그 리셋 (BGM 복원 시 초기화)
+            this.wasPlayingBeforeBackground = false;
 
             // 현재 BGM 설정
             this.currentBGM = audio;
@@ -627,12 +693,22 @@ class AudioSystem {
      * 모든 오디오 정지 및 정리
      */
     dispose() {
+        // Page Visibility 리스너 제거 (메모리 누수 방지)
+        try {
+            document.removeEventListener('visibilitychange', this.boundVisibilityHandler);
+        } catch (error) {
+            console.error('[AudioSystem] Error removing visibility listener:', error);
+        }
+
         // 현재 BGM 정지
         if (this.currentBGM) {
             this.currentBGM.pause();
             this.currentBGM = null;
             this.currentBGMKey = null;
         }
+
+        // 백그라운드 플래그 초기화
+        this.wasPlayingBeforeBackground = false;
 
         // 캐시 정리
         Object.values(this.audioCache).forEach(audio => {
