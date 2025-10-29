@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.3.33',                        // 버전 넘버
+        number: '0.3.34',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -1449,6 +1449,7 @@ const GameConfig = {
             15: {
                 hp: 150,
                 cards: [
+                    { id: 'hot_breath', count: 1 },        // 뜨거운 입김
                     { id: 'fire_breath', count: 1 },       // 불의 호흡
                     { id: 'opportunity_scent', count: 1 }, // 기회의 냄새
                     { id: 'fireball', count: 1 }           // 화염구
