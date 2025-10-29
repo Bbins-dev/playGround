@@ -80,6 +80,9 @@ class Player {
         const previousHP = this.hp;
         let remainingDamage = amount;
 
+        // 마지막 받은 대미지 기록 (방어력 차감 전 원래 데미지 - 카운터어택용)
+        this.lastDamageTaken = amount;
+
         // 방어력 먼저 소모 (보호막 방식)
         if (this.defense > 0 && remainingDamage > 0) {
             const defenseAbsorbed = Math.min(this.defense, remainingDamage);
@@ -101,9 +104,6 @@ class Player {
         }
 
         const actualDamage = previousHP - this.hp;
-
-        // 마지막 받은 대미지 기록
-        this.lastDamageTaken = actualDamage;
 
         return actualDamage;
     }
