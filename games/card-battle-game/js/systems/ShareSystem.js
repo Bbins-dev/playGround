@@ -15,9 +15,24 @@ class ShareSystem {
         // 현재 공유 데이터
         this.currentShareData = null;
 
+        // ShareImageGenerator 초기화 (나중에 설정)
+        this.imageGenerator = null;
+
         // 초기화
         this.initializeShareModal();
         this.initializeEventListeners();
+    }
+
+    /**
+     * ShareImageGenerator 설정 (GameManager에서 호출)
+     * @param {CardRenderer} cardRenderer
+     * @param {Object} i18n
+     */
+    setImageGenerator(cardRenderer, i18n) {
+        if (!this.imageGenerator && window.ShareImageGenerator) {
+            this.imageGenerator = new ShareImageGenerator(cardRenderer, GameConfig, i18n);
+            console.log('[ShareSystem] ShareImageGenerator initialized');
+        }
     }
 
     /**
@@ -222,7 +237,13 @@ class ShareSystem {
      * @returns {string} 공유 URL
      */
     generateShareUrl(type, gameStats) {
-        const baseUrl = window.location.origin + window.location.pathname;
+        // 설정에서 baseUrl 가져오기 (없으면 현재 URL 사용)
+        const baseUrl = this.config.baseUrl || (window.location.origin + window.location.pathname);
+
+        // 단순 URL 모드 (파라미터 없이 기본 URL만)
+        if (this.config.useSimpleUrl) {
+            return baseUrl;
+        }
 
         if (!this.config.urlParams?.enabled) {
             return baseUrl;
@@ -617,6 +638,178 @@ class ShareSystem {
         });
 
         console.log('[ShareSystem] Open Graph 태그 업데이트 완료');
+    }
+
+    /**
+     * 이미지와 함께 공유 (Native Share API with files)
+     * @param {Blob} imageBlob - 공유할 이미지 Blob
+     * @param {string} title - 공유 제목
+     * @param {string} text - 공유 텍스트
+     * @param {string} url - 공유 URL
+     * @returns {Promise<boolean>}
+     */
+    async shareWithImage(imageBlob, title, text, url) {
+        if (!navigator.share || !navigator.canShare) {
+            console.log('[ShareSystem] Native Share API를 지원하지 않습니다.');
+            // Fallback: 이미지 다운로드 + URL 복사
+            if (this.imageGenerator) {
+                this.imageGenerator.downloadImage(imageBlob, 'card-battle-share.png');
+            }
+            await this.copyToClipboardDirect(url);
+            return false;
+        }
+
+        try {
+            const file = new File([imageBlob], 'card-battle-share.png', { type: 'image/png' });
+            const shareData = { title, text, url, files: [file] };
+
+            // 파일 공유 지원 확인
+            if (navigator.canShare(shareData)) {
+                await navigator.share(shareData);
+                console.log('[ShareSystem] 이미지 공유 성공');
+                this.showToast(I18nHelper?.getText('auto_battle_card_game.ui.share_success') || '🎉 공유 완료!', 'success');
+                return true;
+            } else {
+                console.log('[ShareSystem] 파일 공유를 지원하지 않습니다.');
+                // Fallback: 텍스트만 공유
+                await navigator.share({ title, text, url });
+                return true;
+            }
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                console.log('[ShareSystem] 사용자가 공유를 취소했습니다.');
+                return false;
+            }
+            console.error('[ShareSystem] 공유 실패:', error);
+            // Fallback: 이미지 다운로드
+            if (this.imageGenerator) {
+                this.imageGenerator.downloadImage(imageBlob, 'card-battle-share.png');
+            }
+            return false;
+        }
+    }
+
+    /**
+     * 현재 손패 공유 (배틀 중)
+     * @param {Array} cards - 현재 손패
+     * @param {Object} gameState - { stage, playerHP, playerMaxHP, enemyHP, enemyMaxHP, element }
+     */
+    async shareHandImage(cards, gameState) {
+        if (!this.imageGenerator) {
+            console.error('[ShareSystem] ShareImageGenerator가 초기화되지 않았습니다.');
+            return;
+        }
+
+        try {
+            // 로딩 표시
+            this.showToast(I18nHelper?.getText('auto_battle_card_game.ui.share_generating_image') || '이미지 생성 중...', 'info');
+
+            // 이미지 생성
+            const imageBlob = await this.imageGenerator.generateHandImage(cards, gameState);
+
+            // 공유 메시지
+            const i18n = this.gameManager?.i18n;
+            let message = I18nHelper?.getText('auto_battle_card_game.ui.share_hand_message') || 'Stage {stage} - {element} deck challenge!';
+            message = message.replace('{stage}', gameState.stage || '?');
+            message = message.replace('{element}', gameState.element || 'Normal');
+
+            const title = I18nHelper?.getText('auto_battle_card_game.ui.share_hand_title') || '🎴 My Hand';
+            const url = this.config.baseUrl || (window.location.origin + window.location.pathname);
+
+            // 공유 실행
+            await this.shareWithImage(imageBlob, title, message, url);
+        } catch (error) {
+            console.error('[ShareSystem] 손패 이미지 공유 실패:', error);
+            this.showToast(I18nHelper?.getText('auto_battle_card_game.ui.share_failed') || '❌ 공유 실패', 'error');
+        }
+    }
+
+    /**
+     * 승리 이미지 공유 (기존 공유 개선)
+     * @param {number} stage
+     * @param {Array} cards
+     * @param {string} element
+     */
+    async shareVictoryImage(stage, cards, element) {
+        if (!this.imageGenerator) {
+            console.error('[ShareSystem] ShareImageGenerator가 초기화되지 않았습니다.');
+            return;
+        }
+
+        try {
+            this.showToast(I18nHelper?.getText('auto_battle_card_game.ui.share_generating_image') || '이미지 생성 중...', 'info');
+
+            const imageBlob = await this.imageGenerator.generateVictoryImage(stage, cards, element);
+
+            let message = I18nHelper?.getText('auto_battle_card_game.ui.share_victory_message') || 'Stage {stage} cleared!';
+            message = message.replace('{stage}', stage);
+
+            const title = 'Card Battle Game - Victory!';
+            const url = this.config.baseUrl || (window.location.origin + window.location.pathname);
+
+            await this.shareWithImage(imageBlob, title, message, url);
+        } catch (error) {
+            console.error('[ShareSystem] 승리 이미지 공유 실패:', error);
+            this.showToast(I18nHelper?.getText('auto_battle_card_game.ui.share_failed') || '❌ 공유 실패', 'error');
+        }
+    }
+
+    /**
+     * 패배/완료 이미지 공유 (기존 공유 개선)
+     * @param {number} stage - 도달 스테이지
+     * @param {Object} stats - 게임 통계 {totalDamageDealt, totalTurns, playStyle, etc.}
+     * @param {Array} cards - 최종 손패
+     * @param {string} element - 덱 속성
+     */
+    async shareDefeatImage(stage, stats, cards, element) {
+        if (!this.imageGenerator) {
+            console.error('[ShareSystem] ShareImageGenerator가 초기화되지 않았습니다.');
+            return;
+        }
+
+        try {
+            this.showToast(I18nHelper?.getText('auto_battle_card_game.ui.share_generating_image') || '이미지 생성 중...', 'info');
+
+            const imageBlob = await this.imageGenerator.generateDefeatImage(stage, stats, cards, element);
+
+            let message = I18nHelper?.getText('auto_battle_card_game.ui.share_defeat_message') || 'Reached stage {stage}!';
+            message = message.replace('{stage}', stage);
+
+            const title = 'Card Battle Game - My Record';
+            const url = this.config.baseUrl || (window.location.origin + window.location.pathname);
+
+            await this.shareWithImage(imageBlob, title, message, url);
+        } catch (error) {
+            console.error('[ShareSystem] 패배 이미지 공유 실패:', error);
+            this.showToast(I18nHelper?.getText('auto_battle_card_game.ui.share_failed') || '❌ 공유 실패', 'error');
+        }
+    }
+
+    /**
+     * URL 직접 클립보드 복사 (헬퍼 메서드)
+     * @param {string} url
+     */
+    async copyToClipboardDirect(url) {
+        try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(url);
+                this.showToast(I18nHelper?.getText('auto_battle_card_game.ui.share_copied') || '🔗 링크 복사 완료!', 'success');
+            } else {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = url;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                this.showToast(I18nHelper?.getText('auto_battle_card_game.ui.share_copied') || '🔗 링크 복사 완료!', 'success');
+            }
+        } catch (error) {
+            console.error('[ShareSystem] 클립보드 복사 실패:', error);
+        }
     }
 }
 
