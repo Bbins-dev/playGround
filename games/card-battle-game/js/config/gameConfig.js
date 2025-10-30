@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.3.36',                        // 버전 넘버
+        number: '0.3.37',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -3100,7 +3100,7 @@ const GameConfig = {
 
         // 승리 모달 - 카드 보상 선택을 위한 충분한 공간 (반응형 제거)
         victory: {
-            width: 720,      // 96% of canvas width
+            width: 800,      // 확장됨: 손패 5장이 스크롤 없이 표시되도록
             height: 1150,    // 96% of canvas height
             padding: 25
         },
