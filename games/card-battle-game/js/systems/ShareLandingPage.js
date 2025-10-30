@@ -21,33 +21,172 @@ class ShareLandingPage {
      * 초기화
      */
     initialize() {
-        // ShareSystem 참조 대기
-        this.waitForDependencies();
+        // 즉시 URL 파라미터 체크
+        const urlParams = new URLSearchParams(window.location.search);
+        const shareParam = urlParams.get('share');
+
+        console.log('[ShareLandingPage] initialize() 호출, shareParam:', shareParam ? 'exists' : 'none');
+
+        if (shareParam) {
+            console.log('[ShareLandingPage] 공유 링크 감지:', shareParam.substring(0, 20) + '...');
+
+            // 즉시 랜딩 페이지 표시 (의존성 없이)
+            this.showLandingPageImmediate();
+
+            // 게임 시작 화면 숨김
+            this.hideGameStartScreen();
+
+            // 비동기로 이미지 렌더링 (의존성 대기)
+            this.waitForDependencies(shareParam);
+        } else {
+            console.log('[ShareLandingPage] 공유 파라미터 없음 - 초기화 중단');
+        }
     }
 
     /**
-     * 의존성 대기 (ShareSystem, ShareImageGenerator)
+     * 게임 시작 화면 숨김
      */
-    async waitForDependencies() {
+    hideGameStartScreen() {
+        console.log('[ShareLandingPage] hideGameStartScreen() 호출');
+
+        // 로딩 화면 완전히 숨김 (z-index가 10000으로 매우 높음)
+        const loadingScreen = document.getElementById('loading-screen');
+        console.log('[ShareLandingPage] loading-screen 요소:', loadingScreen ? 'found' : 'NOT FOUND');
+
+        if (loadingScreen) {
+            loadingScreen.style.display = 'none';
+            loadingScreen.style.visibility = 'hidden';
+            loadingScreen.style.opacity = '0';
+            loadingScreen.style.pointerEvents = 'none';
+            loadingScreen.style.zIndex = '-1';
+            console.log('[ShareLandingPage] 로딩 화면 완전히 숨김 - 스타일 적용 완료');
+        }
+
+        // 시작 버튼도 숨김
+        const startButton = document.getElementById('start-button');
+        console.log('[ShareLandingPage] start-button 요소:', startButton ? 'found' : 'NOT FOUND');
+
+        if (startButton) {
+            startButton.style.display = 'none';
+            console.log('[ShareLandingPage] 게임 시작 버튼 숨김');
+        }
+    }
+
+    /**
+     * 랜딩 페이지 즉시 표시 (의존성 없이)
+     */
+    showLandingPageImmediate() {
+        // 모달 요소 가져오기
+        this.landingModal = document.getElementById('share-landing-modal');
+        this.landingCanvas = document.getElementById('landing-canvas');
+        this.playButton = document.getElementById('landing-play-button');
+
+        if (!this.landingModal || !this.landingCanvas || !this.playButton) {
+            console.error('[ShareLandingPage] 랜딩 모달 요소를 찾을 수 없습니다.');
+            return;
+        }
+
+        // 플레이 버튼 이벤트 설정
+        this.setupPlayButton();
+
+        // 모달 즉시 표시 + z-index 강제 설정 (로딩 화면보다 위)
+        this.landingModal.classList.remove('hidden');
+        this.landingModal.style.zIndex = '10001'; // 로딩 화면(10000)보다 높게
+
+        // Canvas에 로딩 메시지 표시
+        this.showLoadingMessage();
+
+        console.log('[ShareLandingPage] 랜딩 페이지 즉시 표시 완료 (z-index: 10001)');
+    }
+
+    /**
+     * Canvas에 로딩 메시지 표시
+     */
+    showLoadingMessage() {
+        if (!this.landingCanvas) return;
+
+        const ctx = this.landingCanvas.getContext('2d');
+        const width = 600;
+        const height = 400;
+
+        this.landingCanvas.width = width;
+        this.landingCanvas.height = height;
+        this.landingCanvas.style.width = `${width}px`;
+        this.landingCanvas.style.height = `${height}px`;
+
+        // 배경
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillRect(0, 0, width, height);
+
+        // 로딩 텍스트
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '24px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('🎮 손패 이미지 로딩 중...', width / 2, height / 2);
+    }
+
+    /**
+     * 의존성 대기 후 이미지 렌더링 (ShareSystem, ShareImageGenerator)
+     * @param {string} shareParam - Base64 인코딩된 공유 데이터
+     */
+    async waitForDependencies(shareParam) {
         const maxWait = 5000; // 5초
         const interval = 100;
         let waited = 0;
 
+        console.log('[ShareLandingPage] 의존성 대기 시작...');
+
         const checkDependencies = () => {
-            this.shareSystem = this.gameManager?.shareSystem;
-            this.imageGenerator = this.shareSystem?.imageGenerator;
+            // ShareSystem이 없으면 직접 생성
+            if (!this.shareSystem && window.ShareSystem) {
+                console.log('[ShareLandingPage] ShareSystem 직접 생성...');
+                this.shareSystem = new ShareSystem(this.gameManager);
+            }
+
+            // CardRenderer와 i18n이 준비되면 ImageGenerator 초기화
+            if (this.shareSystem && !this.imageGenerator) {
+                const cardRenderer = this.gameManager?.cardRenderer;
+                const i18nSystem = window.i18nSystem;
+
+                if (cardRenderer && i18nSystem) {
+                    console.log('[ShareLandingPage] ImageGenerator 초기화...');
+                    this.shareSystem.setImageGenerator(cardRenderer, i18nSystem);
+                    this.imageGenerator = this.shareSystem.imageGenerator;
+                }
+            }
+
+            // 디버그 로그
+            if (waited % 500 === 0) {
+                console.log(`[ShareLandingPage] 의존성 체크 (${waited}ms):`, {
+                    gameManager: !!this.gameManager,
+                    cardRenderer: !!this.gameManager?.cardRenderer,
+                    i18nSystem: !!window.i18nSystem,
+                    shareSystem: !!this.shareSystem,
+                    imageGenerator: !!this.imageGenerator
+                });
+            }
 
             if (this.shareSystem && this.imageGenerator) {
-                // 의존성 준비 완료
-                this.checkForShareParams();
+                // 의존성 준비 완료 - 이미지 렌더링
+                console.log('[ShareLandingPage] 의존성 준비 완료! 이미지 렌더링 시작');
+                this.handleShareLink(shareParam);
                 return true;
             }
 
             waited += interval;
             if (waited >= maxWait) {
-                console.warn('[ShareLandingPage] 의존성 대기 시간 초과');
-                // Fallback: 파라미터 체크만 진행
-                this.checkForShareParams();
+                console.error('[ShareLandingPage] 의존성 대기 시간 초과 (5초)');
+                console.error('[ShareLandingPage] 현재 상태:', {
+                    gameManager: !!this.gameManager,
+                    cardRenderer: !!this.gameManager?.cardRenderer,
+                    i18nSystem: !!window.i18nSystem,
+                    shareSystem: !!this.shareSystem,
+                    imageGenerator: !!this.imageGenerator
+                });
+                // Fallback: 이미지 없이 진행
+                this.updateTitle('battle'); // 기본 타이틀
+                this.showErrorMessage();
                 return true;
             }
 
@@ -59,20 +198,36 @@ class ShareLandingPage {
     }
 
     /**
-     * URL 파라미터에서 'share' 감지
+     * 이미지 로딩 실패 메시지 표시
      */
-    checkForShareParams() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const shareParam = urlParams.get('share');
+    showErrorMessage() {
+        if (!this.landingCanvas) return;
 
-        if (shareParam) {
-            console.log('[ShareLandingPage] 공유 링크 감지:', shareParam);
-            this.handleShareLink(shareParam);
-        }
+        const ctx = this.landingCanvas.getContext('2d');
+        const width = 600;
+        const height = 400;
+
+        this.landingCanvas.width = width;
+        this.landingCanvas.height = height;
+        this.landingCanvas.style.width = `${width}px`;
+        this.landingCanvas.style.height = `${height}px`;
+
+        // 배경
+        ctx.fillStyle = 'rgba(231, 76, 60, 0.3)';
+        ctx.fillRect(0, 0, width, height);
+
+        // 에러 텍스트
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '24px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('⚠️ 이미지 로딩 실패', width / 2, height / 2 - 20);
+        ctx.font = '18px Arial';
+        ctx.fillText('게임을 시작하시려면 아래 버튼을 클릭하세요', width / 2, height / 2 + 20);
     }
 
     /**
-     * 공유 링크 처리
+     * 공유 링크 처리 (이미지 렌더링)
      * @param {string} encoded - Base64 인코딩된 공유 데이터
      */
     async handleShareLink(encoded) {
@@ -91,41 +246,16 @@ class ShareLandingPage {
 
         console.log('[ShareLandingPage] 디코딩된 데이터:', shareData);
 
-        // 랜딩 페이지 표시
-        await this.showLandingPage(shareData);
-    }
-
-    /**
-     * 랜딩 페이지 표시
-     * @param {Object} shareData - { type, stage, element, cardIds, stats }
-     */
-    async showLandingPage(shareData) {
-        // 모달 요소 가져오기
-        this.landingModal = document.getElementById('share-landing-modal');
-        this.landingCanvas = document.getElementById('landing-canvas');
-        this.playButton = document.getElementById('landing-play-button');
-
-        if (!this.landingModal || !this.landingCanvas || !this.playButton) {
-            console.error('[ShareLandingPage] 랜딩 모달 요소를 찾을 수 없습니다.');
-            return;
-        }
-
         // 카드 ID → 카드 객체 변환
         const cards = this.reconstructCards(shareData.cardIds);
 
         // 손패 이미지 생성 및 렌더링
         await this.renderHandImage(cards, shareData);
 
-        // 플레이 버튼 이벤트 설정
-        this.setupPlayButton();
-
-        // 모달 표시
-        this.landingModal.classList.remove('hidden');
-
         // 타이틀 업데이트
         this.updateTitle(shareData.type);
 
-        console.log('[ShareLandingPage] 랜딩 페이지 표시 완료');
+        console.log('[ShareLandingPage] 이미지 렌더링 완료');
     }
 
     /**
@@ -141,7 +271,7 @@ class ShareLandingPage {
 
         // CardDatabase에서 카드 정보 조회
         const cards = cardIds.map(cardId => {
-            const cardData = CardDatabase?.[cardId];
+            const cardData = window.CardDatabase?.getCard(cardId);
             if (!cardData) {
                 console.warn(`[ShareLandingPage] 카드를 찾을 수 없음: ${cardId}`);
                 return null;

@@ -341,12 +341,63 @@ let cardBattleGame = null;
 
 // DOM 로드 완료 시 게임 시작
 document.addEventListener('DOMContentLoaded', async () => {
+    // URL 파라미터 조기 체크 (공유 링크 감지)
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasShareParam = urlParams.get('share');
+
+    if (hasShareParam) {
+        console.log('[Game] 공유 링크 감지, ShareLandingPage 초기화 준비');
+    }
+
+    // 공유 링크가 있으면 즉시 ShareLandingPage 초기화 시도
+    if (hasShareParam) {
+        console.log('[Game] 공유 링크용 빠른 초기화 시작...');
+
+        // GameManager 준비 대기 (최대 3초)
+        let retries = 0;
+        const maxRetries = 30; // 100ms * 30 = 3초
+
+        const waitForGameManager = setInterval(() => {
+            retries++;
+
+            if (cardBattleGame?.getGameManager && cardBattleGame.getGameManager()) {
+                clearInterval(waitForGameManager);
+
+                try {
+                    const gameManager = cardBattleGame.getGameManager();
+                    console.log('[Game] GameManager 준비 완료, ShareLandingPage 초기화 중...');
+
+                    if (window.ShareLandingPage) {
+                        window.shareLandingPageInstance = new ShareLandingPage(gameManager);
+                        console.log('[Game] ShareLandingPage 초기화 완료');
+                    } else {
+                        console.error('[Game] ShareLandingPage 클래스를 찾을 수 없습니다!');
+                    }
+                } catch (error) {
+                    console.error('[Game] ShareLandingPage 초기화 중 에러:', error);
+                }
+            } else if (retries >= maxRetries) {
+                clearInterval(waitForGameManager);
+                console.error('[Game] GameManager 대기 시간 초과 (3초)');
+            }
+        }, 100);
+    }
 
     // 잠시 대기 후 게임 시작 (모든 스크립트 로드 완료 대기)
     setTimeout(async () => {
+        console.log('[Game] setTimeout 실행됨, cardBattleGame:', !!cardBattleGame);
+
         if (!cardBattleGame) {
-            cardBattleGame = new CardBattleGame();
-            await cardBattleGame.init();
+            try {
+                console.log('[Game] CardBattleGame 초기화 시작...');
+                cardBattleGame = new CardBattleGame();
+                await cardBattleGame.init();
+                console.log('[Game] CardBattleGame 초기화 완료');
+            } catch (error) {
+                console.error('[Game] CardBattleGame 초기화 중 에러:', error);
+            }
+        } else {
+            console.warn('[Game] cardBattleGame이 이미 존재함 - 초기화 생략');
         }
     }, 100);
 });
