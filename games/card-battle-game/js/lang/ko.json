@@ -888,6 +888,13 @@
       "share_download_image": "이미지 저장하기",
       "share_save_image": "이미지 다운로드",
       "share_text_copied": "📋 메시지가 복사되었습니다! 붙여넣기로 추가하세요",
+      "share_landing_title": "공유된 손패",
+      "share_landing_title_victory": "🎉 승리 손패",
+      "share_landing_title_defeat": "⚔️ 도전 기록",
+      "share_landing_title_complete": "🏆 완주 기록",
+      "share_landing_title_battle": "🃏 전투 상황",
+      "play_now_button": "🎮 나도 플레이하기",
+      "landing_footer": "BinBox Games에서 제공하는 자동전투 카드대전!",
       "defeat_stats": {
         "final_hand": "최종 손패 (순서대로)",
         "stage_reached": "도달 스테이지",

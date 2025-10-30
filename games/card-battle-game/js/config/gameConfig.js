@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.4.4',                        // 버전 넘버
+        number: '0.4.5',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -3766,7 +3766,14 @@ const GameConfig = {
 
         // 기본 URL 설정
         baseUrl: 'https://binboxgames.com/games/card-battle-game/',  // 기본 공유 URL
-        useSimpleUrl: true,                     // 단순 URL 사용 (파라미터 제거)
+        useSimpleUrl: false,                    // 단순 URL 사용 (파라미터 제거) - 랜딩 페이지 모드에서는 false
+
+        // 랜딩 페이지 설정
+        landingPage: {
+            enabled: true,                      // 랜딩 페이지 기능 활성화
+            imageMaxWidth: 600,                 // 랜딩 페이지 이미지 최대 너비 (px)
+            showGameInfo: true                  // 게임 정보 표시 여부
+        },
 
         // 플랫폼별 설정
         platforms: {

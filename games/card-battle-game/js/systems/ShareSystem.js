@@ -906,6 +906,130 @@ class ShareSystem {
             // 조용히 실패 - 사용자에게 에러 표시 안함
         }
     }
+
+    /**
+     * 랜딩 페이지 기반 공유 (텍스트 + URL)
+     * @param {Object} shareData - { type, stage, cards, element, stats }
+     */
+    async shareWithLandingPage(shareData) {
+        try {
+            // Base64로 손패 데이터 인코딩
+            const encodedData = this.encodeShareData(shareData);
+
+            // 랜딩 페이지 URL 생성
+            const baseUrl = this.config.baseUrl || GameConfig?.sharing?.baseUrl || 'https://binboxgames.com/games/card-battle-game/';
+            const landingUrl = `${baseUrl}?share=${encodedData}`;
+
+            // 현재 언어
+            const lang = window.i18n?.currentLanguage || localStorage.getItem('selectedLanguage') || 'ko';
+
+            // 속성 이름 다국어 처리
+            const elementName = this.getElementName(shareData.element || 'normal', lang);
+
+            // 플레이 스타일 다국어 처리 (패배/완료 시)
+            let playStyleText = '';
+            if (shareData.stats?.playStyle) {
+                const playStyleKey = `auto_battle_card_game.ui.play_style_${shareData.stats.playStyle}`;
+                playStyleText = I18nHelper?.getText(playStyleKey) || shareData.stats.playStyle;
+            }
+
+            // 메시지 생성
+            const message = this.generateShareMessage(shareData.type, {
+                stage: shareData.stage || 1,
+                element: elementName,
+                style: playStyleText,
+                damage: shareData.stats?.totalDamageDealt || 0,
+                turns: shareData.stats?.totalTurns || 0
+            }, lang);
+
+            // 타이틀 생성
+            const titleKey = `auto_battle_card_game.ui.share_${shareData.type}_title`;
+            const title = I18nHelper?.getText(titleKey) || this.generateShareTitle(shareData.type, shareData, lang);
+
+            // Native Share API 시도
+            if (navigator.share) {
+                await navigator.share({
+                    title: title,
+                    text: message,
+                    url: landingUrl
+                });
+                console.log('[ShareSystem] 랜딩 페이지 공유 성공');
+                return true;
+            } else {
+                // Fallback: 클립보드 복사 (텍스트 + URL)
+                const fullText = `${message}\n\n${landingUrl}`;
+                await this.copyToClipboardDirect(fullText);
+                return false;
+            }
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                console.log('[ShareSystem] 사용자가 공유를 취소했습니다.');
+                return false;
+            }
+            console.error('[ShareSystem] 랜딩 페이지 공유 실패:', error);
+            this.showToast(I18nHelper?.getText('auto_battle_card_game.ui.share_failed') || '❌ 공유 실패', 'error');
+            return false;
+        }
+    }
+
+    /**
+     * 공유 데이터 Base64 인코딩
+     * @param {Object} data - { type, stage, cards, element, stats }
+     * @returns {string} Base64 인코딩된 문자열
+     */
+    encodeShareData(data) {
+        try {
+            // 카드 ID 배열로 변환 (필요한 데이터만)
+            const cardIds = data.cards?.map(card => card.id || card) || [];
+
+            const payload = {
+                t: data.type,                    // type
+                st: data.stage || 1,             // stage
+                e: data.element || 'normal',     // element
+                c: cardIds                       // cards (IDs only)
+            };
+
+            // stats 있으면 추가 (패배/완료 시)
+            if (data.stats) {
+                payload.s = {
+                    d: data.stats.totalDamageDealt || 0,  // damage
+                    t: data.stats.totalTurns || 0,        // turns
+                    ps: data.stats.playStyle || 'balanced', // play style
+                    gc: data.stats.isGameComplete || false  // game complete
+                };
+            }
+
+            const jsonString = JSON.stringify(payload);
+            return btoa(encodeURIComponent(jsonString));
+        } catch (error) {
+            console.error('[ShareSystem] 데이터 인코딩 실패:', error);
+            // Fallback: 최소 정보만
+            return btoa(`type=${data.type}&stage=${data.stage || 1}`);
+        }
+    }
+
+    /**
+     * Base64 인코딩된 공유 데이터 디코딩
+     * @param {string} encoded - Base64 인코딩된 문자열
+     * @returns {Object|null} 디코딩된 데이터
+     */
+    decodeShareData(encoded) {
+        try {
+            const jsonString = decodeURIComponent(atob(encoded));
+            const payload = JSON.parse(jsonString);
+
+            return {
+                type: payload.t,
+                stage: payload.st,
+                element: payload.e,
+                cardIds: payload.c || [],
+                stats: payload.s || null
+            };
+        } catch (error) {
+            console.error('[ShareSystem] 데이터 디코딩 실패:', error);
+            return null;
+        }
+    }
 }
 
 // 전역 객체로 등록
