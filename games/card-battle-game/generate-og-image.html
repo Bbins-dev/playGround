@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate OG Image</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background: linear-gradient(135deg, #4CAF50, #388E3C);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background: linear-gradient(135deg, #388E3C, #2E7D32);
+        }
+        canvas {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            margin-top: 20px;
+            display: none;
+        }
+        #preview {
+            max-width: 100%;
+            margin-top: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎴 Card Battle Game - OG Image Generator</h1>
+        <p>기본 Open Graph 이미지를 생성합니다 (1200×630px)</p>
+
+        <button onclick="generateOGImage()">이미지 생성 및 다운로드</button>
+
+        <canvas id="canvas" width="1200" height="630"></canvas>
+        <img id="preview" style="display:none;" alt="Preview">
+
+        <p id="status"></p>
+    </div>
+
+    <script>
+        function generateOGImage() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            const status = document.getElementById('status');
+
+            status.textContent = '이미지 생성 중...';
+
+            // 배경 그라디언트
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#1a1a2e');
+            gradient.addColorStop(1, '#16213e');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 타이틀
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 72px Arial, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+            ctx.shadowBlur = 20;
+            ctx.fillText('🎴 Card Battle Game', canvas.width / 2, 200);
+
+            // 서브타이틀
+            ctx.font = '36px Arial, sans-serif';
+            ctx.fillStyle = '#aaaaaa';
+            ctx.shadowBlur = 10;
+            ctx.fillText('5속성 카드 배틀 게임', canvas.width / 2, 280);
+
+            // 속성 아이콘들
+            ctx.font = '64px Arial';
+            ctx.shadowBlur = 15;
+            const icons = ['🔥', '💧', '⚡', '☠️', '👊'];
+            const startX = (canvas.width - (icons.length * 100)) / 2;
+            icons.forEach((icon, i) => {
+                ctx.fillText(icon, startX + i * 120, 420);
+            });
+
+            // Footer
+            ctx.font = '24px Arial';
+            ctx.fillStyle = '#888888';
+            ctx.shadowBlur = 5;
+            ctx.fillText('40 Stages • Strategic Deck Building • Browser Game', canvas.width / 2, 550);
+
+            ctx.shadowBlur = 0;
+
+            // 미리보기 표시
+            const preview = document.getElementById('preview');
+            preview.src = canvas.toDataURL('image/png');
+            preview.style.display = 'block';
+
+            // 다운로드
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'og-default.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                status.textContent = '✅ 이미지가 다운로드되었습니다! images/ 폴더에 저장하세요.';
+            }, 'image/png');
+        }
+    </script>
+</body>
+</html>

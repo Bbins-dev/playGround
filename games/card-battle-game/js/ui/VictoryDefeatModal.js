@@ -81,6 +81,11 @@ class VictoryDefeatModal {
         // ShareSystem 인스턴스
         this.shareSystem = new ShareSystem(gameManager);
 
+        // ShareImageGenerator 초기화 (CardRenderer와 I18n 전달)
+        if (gameManager?.cardRenderer && gameManager?.i18n) {
+            this.shareSystem.setImageGenerator(gameManager.cardRenderer, gameManager.i18n);
+        }
+
         // 공유 데이터 저장 (승리/패배 시 사용)
         this.currentShareData = null;
 
@@ -276,35 +281,31 @@ class VictoryDefeatModal {
     }
 
     /**
-     * 승리 공유 처리
+     * 승리 공유 처리 (이미지 포함)
      */
-    handleVictoryShare() {
-        const shareData = {
-            stage: this.currentStage || this.gameManager?.currentStage || 1,
-            player: this.gameManager?.player?.name || 'Player',
-            element: this.gameManager?.player?.defenseElement || 'normal',
-            deck: this.gameManager?.player?.hand?.map(c => c.id) || [],
-            turns: this.gameManager?.totalTurns || 0
-        };
+    async handleVictoryShare() {
+        const stage = this.currentStage || this.gameManager?.currentStage || 1;
+        const cards = this.gameManager?.player?.hand || [];
+        const element = this.gameManager?.player?.defenseElement || 'normal';
 
-        this.shareSystem.share('victory', shareData);
+        await this.shareSystem.shareVictoryImage(stage, cards, element);
     }
 
     /**
-     * 패배 공유 처리
+     * 패배 공유 처리 (이미지 포함)
      */
-    handleDefeatShare() {
-        const shareData = {
-            stage: this.gameStats?.finalStage || 1,
-            player: this.gameManager?.player?.name || 'Player',
-            style: this.gameStats?.playStyle || 'balanced',
-            damage: this.gameStats?.totalDamageDealt || 0,
-            turns: this.gameStats?.totalTurns || 0,
-            deck: this.gameManager?.player?.hand?.map(c => c.id) || []
+    async handleDefeatShare() {
+        const stage = this.gameStats?.finalStage || 1;
+        const stats = {
+            totalDamageDealt: this.gameStats?.totalDamageDealt || 0,
+            totalTurns: this.gameStats?.totalTurns || 0,
+            playStyle: this.gameStats?.playStyle || 'balanced',
+            isGameComplete: this.gameStats?.isGameComplete || false
         };
+        const cards = this.gameManager?.player?.hand || [];
+        const element = this.gameManager?.player?.defenseElement || 'normal';
 
-        const type = this.gameStats?.isGameComplete ? 'complete' : 'defeat';
-        this.shareSystem.share(type, shareData);
+        await this.shareSystem.shareDefeatImage(stage, stats, cards, element);
     }
 
     /**
