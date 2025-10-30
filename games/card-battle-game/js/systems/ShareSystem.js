@@ -916,8 +916,19 @@ class ShareSystem {
             // Base64로 손패 데이터 인코딩
             const encodedData = this.encodeShareData(shareData);
 
-            // 랜딩 페이지 URL 생성
-            const baseUrl = this.config.baseUrl || GameConfig?.sharing?.baseUrl || 'https://binboxgames.com/games/card-battle-game/';
+            // 랜딩 페이지 URL 생성 (환경 자동 감지)
+            let baseUrl;
+            const currentOrigin = window.location.origin;
+            const currentPath = window.location.pathname;
+            const isLocal = currentOrigin.includes('localhost') || currentOrigin.includes('127.0.0.1');
+
+            if (isLocal) {
+                // 로컬 환경: 현재 URL 사용 (예: http://localhost:3000/games/card-battle-game/)
+                baseUrl = `${currentOrigin}${currentPath}`;
+            } else {
+                // 배포 환경: 설정된 baseUrl 사용
+                baseUrl = this.config.baseUrl || GameConfig?.sharing?.baseUrl || `${currentOrigin}${currentPath}`;
+            }
             const landingUrl = `${baseUrl}?share=${encodedData}`;
 
             // 현재 언어
