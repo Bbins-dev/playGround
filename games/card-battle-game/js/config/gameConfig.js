@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.4.0',                        // 버전 넘버
+        number: '0.4.1',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -3959,7 +3959,36 @@ const GameConfig = {
                 showIndicator: true,            // 로딩 표시
                 message: 'Generating image...',  // 로딩 메시지
                 timeout: 10000                  // 타임아웃 (ms)
-            }
+            },
+
+            // Footer 텍스트 설정 (타입별 다국어)
+            footerTexts: {
+                hand: {
+                    ko: 'binboxgames.com',
+                    en: 'binboxgames.com',
+                    ja: 'binboxgames.com'
+                },
+                victory: {
+                    ko: '당신도 도전해보세요! → binboxgames.com',
+                    en: 'Try it yourself! → binboxgames.com',
+                    ja: 'あなたも挑戦してみて! → binboxgames.com'
+                },
+                defeat: {
+                    ko: '나보다 더 갈 수 있어?',
+                    en: 'Can you beat my record?',
+                    ja: '私より進める?'
+                },
+                deck: {
+                    ko: 'binboxgames.com/games/card-battle-game',
+                    en: 'binboxgames.com/games/card-battle-game',
+                    ja: 'binboxgames.com/games/card-battle-game'
+                }
+            },
+
+            // Badge 색상 설정
+            badgeColor: '#FFD700',              // Gold 색상 (승리 뱃지)
+            badgeShadowColor: 'rgba(0, 0, 0, 0.8)',
+            badgeShadowBlur: 15
         },
 
         // 공유 통계 (향후 확장용)

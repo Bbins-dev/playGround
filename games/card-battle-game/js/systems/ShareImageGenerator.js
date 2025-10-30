@@ -69,7 +69,7 @@ class ShareImageGenerator {
         }
 
         // URL 렌더링 (하단)
-        this.renderFooter(ctx, canvas, 'binboxgames.com');
+        this.renderFooter(ctx, canvas, 'hand');
 
         // Blob 변환
         return await this.canvasToBlob(canvas);
@@ -111,7 +111,7 @@ class ShareImageGenerator {
         });
 
         // Footer
-        this.renderFooter(ctx, canvas, 'Try it yourself! → binboxgames.com');
+        this.renderFooter(ctx, canvas, 'victory');
 
         return await this.canvasToBlob(canvas);
     }
@@ -153,7 +153,7 @@ class ShareImageGenerator {
         });
 
         // Footer
-        this.renderFooter(ctx, canvas, 'Can you beat my record?');
+        this.renderFooter(ctx, canvas, 'defeat');
 
         return await this.canvasToBlob(canvas);
     }
@@ -189,7 +189,7 @@ class ShareImageGenerator {
         });
 
         // Footer
-        this.renderFooter(ctx, canvas, 'binboxgames.com/games/card-battle-game');
+        this.renderFooter(ctx, canvas, 'deck');
 
         return await this.canvasToBlob(canvas);
     }
@@ -346,12 +346,17 @@ class ShareImageGenerator {
         const y = 30;
         const fontSize = 42;
 
-        ctx.fillStyle = '#FFD700'; // Gold
+        // Configuration-Driven: Badge 색상
+        const badgeColor = this.config?.badgeColor || '#FFD700';
+        const shadowColor = this.config?.badgeShadowColor || 'rgba(0, 0, 0, 0.8)';
+        const shadowBlur = this.config?.badgeShadowBlur || 15;
+
+        ctx.fillStyle = badgeColor;
         ctx.font = `bold ${fontSize}px Arial, sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-        ctx.shadowBlur = 15;
+        ctx.shadowColor = shadowColor;
+        ctx.shadowBlur = shadowBlur;
         ctx.fillText(text, x, y);
         ctx.shadowBlur = 0;
     }
@@ -387,11 +392,16 @@ class ShareImageGenerator {
      * Footer 텍스트 렌더링
      * @param {CanvasRenderingContext2D} ctx
      * @param {HTMLCanvasElement} canvas
-     * @param {string} text
+     * @param {string} type - 공유 타입 ('hand', 'victory', 'defeat', 'deck')
      */
-    renderFooter(ctx, canvas, text) {
+    renderFooter(ctx, canvas, type) {
         const fontSize = this.config?.overlay?.fontSize?.info || 18;
         const color = this.config?.overlay?.textColor || '#ffffff';
+
+        // 다국어 Footer 텍스트 가져오기
+        const currentLang = window.i18n?.currentLanguage || localStorage.getItem('selectedLanguage') || 'ko';
+        const footerTexts = this.config?.footerTexts?.[type];
+        const text = footerTexts?.[currentLang] || footerTexts?.['ko'] || 'binboxgames.com';
 
         ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         ctx.fillRect(0, canvas.height - 40, canvas.width, 40);
