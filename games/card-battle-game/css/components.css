@@ -128,7 +128,8 @@
     display: flex;
     justify-content: center;
     gap: 20px;
-    margin-top: 25px;
+    margin-top: 0;
+    flex-wrap: wrap;
 }
 
 .ui-button.primary {
@@ -1341,7 +1342,7 @@
 
 /* 카드 보상 선택 영역 */
 .card-rewards-container {
-    margin: 20px 0;
+    margin: 5px 0 20px 0;
     padding: 20px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 12px;
@@ -1361,7 +1362,7 @@
     font-size: 20px;
     color: var(--color-text-muted);
     margin-top: 10px;
-    margin-bottom: 0;
+    margin-bottom: -10px;
     font-weight: bold;
 }
 
@@ -1522,9 +1523,9 @@
     flex-wrap: wrap;
 }
 
-/* 손패 확인 버튼 행 (2행 중앙 배치) */
+/* 손패 확인 버튼 행 (1행 중앙 배치) */
 #victory-view-hand-row {
-    margin-top: 10px;
+    margin-top: 0;
     width: 100%;
     flex-basis: 100%;
 }
@@ -1674,7 +1675,7 @@
     font-size: 20px !important;
     font-style: normal !important;
     font-weight: 500 !important;
-    margin: 20px 0 25px 0 !important;
+    margin: 10px 0 5px 0 !important;
     text-align: center;
 }
 
@@ -2293,5 +2294,215 @@
     100% {
         -webkit-mask-position: center var(--turn-arrow-animation-distance, 180px);
         mask-position: center var(--turn-arrow-animation-distance, 180px);
+    }
+}
+
+/* ========================================
+   공유 시스템 (Share System)
+   ======================================== */
+
+/* 공유 버튼 스타일 */
+.share-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 8px auto;
+    min-width: 140px;
+}
+
+.share-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.6);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.share-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* 승리 모달 공유 버튼 행 */
+#victory-share-row {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 0;
+    width: 100%;
+    flex-basis: 100%;
+}
+
+/* 공유 모달 스타일 */
+.share-modal-content {
+    max-width: 400px;
+    width: 90%;
+    padding: 24px;
+    text-align: center;
+}
+
+.share-modal-content h3 {
+    margin: 0 0 20px 0;
+    font-size: 24px;
+    color: var(--glass-text-primary);
+}
+
+/* 플랫폼 버튼 컨테이너 */
+.share-platforms {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+/* 플랫폼 버튼 스타일 */
+.platform-button {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px;
+    padding: 16px 20px;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--glass-bg);
+    border: 2px solid var(--glass-border);
+    color: var(--glass-text-primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.platform-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border-color: var(--glass-text-primary);
+}
+
+.platform-button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 플랫폼 아이콘 */
+.platform-icon {
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+}
+
+/* 플랫폼 텍스트 */
+.platform-text {
+    flex: 1;
+    text-align: left;
+}
+
+/* 플랫폼별 색상 (hover 시) */
+.platform-button.twitter:hover {
+    background: linear-gradient(135deg, #1DA1F2 0%, #0d8bd9 100%);
+    color: white;
+    border-color: #1DA1F2;
+}
+
+.platform-button.facebook:hover {
+    background: linear-gradient(135deg, #1877F2 0%, #165ed4 100%);
+    color: white;
+    border-color: #1877F2;
+}
+
+.platform-button.discord:hover {
+    background: linear-gradient(135deg, #5865F2 0%, #4752c4 100%);
+    color: white;
+    border-color: #5865F2;
+}
+
+.platform-button.copy:hover {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: white;
+    border-color: #10B981;
+}
+
+/* 공유 모달 취소 버튼 */
+.share-modal-content .ui-button.secondary {
+    width: 100%;
+    margin-top: 12px;
+}
+
+/* 토스트 메시지 (ShareSystem에서 동적 생성) */
+.share-toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.share-toast-success {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.share-toast-error {
+    background-color: #f44336;
+    color: white;
+}
+
+.share-toast-info {
+    background-color: #2196F3;
+    color: white;
+}
+
+/* 모바일 최적화 */
+@media (max-width: 768px) {
+    .share-modal-content {
+        max-width: 90%;
+        padding: 20px;
+    }
+
+    .platform-button {
+        padding: 14px 18px;
+        font-size: 16px;
+    }
+
+    .platform-icon {
+        font-size: 24px;
+        min-width: 28px;
+    }
+
+    .share-button {
+        font-size: 14px;
+        padding: 10px 20px;
+        min-width: 120px;
+    }
+}
+
+/* 다크 모드 지원 (선택) */
+@media (prefers-color-scheme: dark) {
+    .share-button {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+
+    .share-button:hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
 }
