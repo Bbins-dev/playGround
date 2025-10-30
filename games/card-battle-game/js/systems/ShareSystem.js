@@ -15,6 +15,9 @@ class ShareSystem {
         // 현재 공유 데이터
         this.currentShareData = null;
 
+        // 공유 진행 상태 (중복 호출 방지)
+        this.isSharing = false;
+
         // ShareImageGenerator 초기화 (나중에 설정)
         this.imageGenerator = null;
 
@@ -181,32 +184,33 @@ class ShareSystem {
     }
 
     /**
-     * 공유 제목 생성
+     * 공유 제목 생성 (i18n 사용)
      * @param {string} type - 공유 타입
      * @param {Object} gameStats - 게임 통계
      * @param {string} lang - 언어 코드
      * @returns {string} 제목
      */
     generateShareTitle(type, gameStats, lang) {
-        const titles = {
-            victory: {
-                ko: `스테이지 ${gameStats.stage} 클리어!`,
-                en: `Stage ${gameStats.stage} Cleared!`,
-                ja: `ステージ ${gameStats.stage} クリア!`
-            },
-            defeat: {
-                ko: `스테이지 ${gameStats.stage}까지 도달!`,
-                en: `Reached Stage ${gameStats.stage}!`,
-                ja: `ステージ ${gameStats.stage} まで到達!`
-            },
-            complete: {
-                ko: '게임 클리어!',
-                en: 'Game Complete!',
-                ja: 'ゲームクリア!'
-            }
+        // i18n 키 매핑
+        const i18nKeys = {
+            victory: 'auto_battle_card_game.ui.share_victory_title',
+            defeat: 'auto_battle_card_game.ui.share_defeat_title',
+            complete: 'auto_battle_card_game.ui.share_complete_title',
+            battle: 'auto_battle_card_game.ui.share_battle_title'
         };
 
-        return titles[type]?.[lang] || titles[type]?.['ko'] || 'Card Battle Game';
+        // 기본값 매핑
+        const fallbacks = {
+            victory: '🎉 Stage Clear!',
+            defeat: '⚔️ My Record',
+            complete: '🏆 Game Complete!',
+            battle: '🃏 Current Battle'
+        };
+
+        const i18nKey = i18nKeys[type];
+        const fallback = fallbacks[type] || 'Card Battle Game';
+
+        return I18nHelper?.getText(i18nKey) || fallback;
     }
 
     /**
@@ -430,7 +434,8 @@ class ShareSystem {
      */
     shareToDiscord() {
         console.warn('[ShareSystem] Discord 공유는 아직 구현되지 않았습니다.');
-        this.showToast('Discord 공유는 곧 지원 예정입니다!', 'info');
+        const message = I18nHelper?.getText('auto_battle_card_game.ui.share_discord_coming_soon') || 'Discord sharing coming soon!';
+        this.showToast(message, 'info');
     }
 
     /**
@@ -649,6 +654,12 @@ class ShareSystem {
      * @returns {Promise<boolean>}
      */
     async shareWithImage(imageBlob, title, text, url) {
+        // 중복 호출 방지
+        if (this.isSharing) {
+            console.warn('[ShareSystem] 이미 공유 진행 중입니다.');
+            return false;
+        }
+
         if (!navigator.share || !navigator.canShare) {
             console.log('[ShareSystem] Native Share API를 지원하지 않습니다.');
             // Fallback: 이미지 다운로드 + URL 복사
@@ -660,6 +671,8 @@ class ShareSystem {
         }
 
         try {
+            this.isSharing = true;
+
             const file = new File([imageBlob], 'card-battle-share.png', { type: 'image/png' });
             const shareData = { title, text, url, files: [file] };
 
@@ -686,6 +699,8 @@ class ShareSystem {
                 this.imageGenerator.downloadImage(imageBlob, 'card-battle-share.png');
             }
             return false;
+        } finally {
+            this.isSharing = false;
         }
     }
 
@@ -707,14 +722,21 @@ class ShareSystem {
             // 이미지 생성
             const imageBlob = await this.imageGenerator.generateHandImage(cards, gameState);
 
-            // 공유 메시지
-            const i18n = this.gameManager?.i18n;
-            let message = I18nHelper?.getText('auto_battle_card_game.ui.share_hand_message') || 'Stage {stage} - {element} deck challenge!';
-            message = message.replace('{stage}', gameState.stage || '?');
-            message = message.replace('{element}', gameState.element || 'Normal');
+            // 현재 언어 가져오기
+            const lang = window.i18n?.currentLanguage || localStorage.getItem('selectedLanguage') || 'ko';
 
-            const title = I18nHelper?.getText('auto_battle_card_game.ui.share_hand_title') || '🎴 My Hand';
-            const url = this.config.baseUrl || (window.location.origin + window.location.pathname);
+            // 속성 이름 다국어 처리
+            const elementName = this.getElementName(gameState.element || 'normal', lang);
+
+            // GameConfig 'battle' 템플릿 사용하여 메시지 생성
+            const message = this.generateShareMessage('battle', {
+                stage: gameState.stage || 1,
+                element: elementName
+            }, lang);
+
+            // i18n 타이틀 사용
+            const title = I18nHelper?.getText('auto_battle_card_game.ui.share_battle_title') || '🃏 Current Battle';
+            const url = this.config.baseUrl || 'https://binboxgames.com/games/card-battle-game/';
 
             // 공유 실행
             await this.shareWithImage(imageBlob, title, message, url);
@@ -741,11 +763,21 @@ class ShareSystem {
 
             const imageBlob = await this.imageGenerator.generateVictoryImage(stage, cards, element);
 
-            let message = I18nHelper?.getText('auto_battle_card_game.ui.share_victory_message') || 'Stage {stage} cleared!';
-            message = message.replace('{stage}', stage);
+            // 현재 언어 가져오기
+            const lang = window.i18n?.currentLanguage || localStorage.getItem('selectedLanguage') || 'ko';
 
-            const title = 'Card Battle Game - Victory!';
-            const url = this.config.baseUrl || (window.location.origin + window.location.pathname);
+            // 속성 이름 다국어 처리
+            const elementName = this.getElementName(element, lang);
+
+            // GameConfig 템플릿 사용하여 메시지 생성
+            const message = this.generateShareMessage('victory', {
+                stage: stage,
+                element: elementName
+            }, lang);
+
+            // i18n 타이틀 사용
+            const title = I18nHelper?.getText('auto_battle_card_game.ui.share_victory_title') || '🎉 Stage Clear!';
+            const url = this.config.baseUrl || 'https://binboxgames.com/games/card-battle-game/';
 
             await this.shareWithImage(imageBlob, title, message, url);
         } catch (error) {
@@ -757,7 +789,7 @@ class ShareSystem {
     /**
      * 패배/완료 이미지 공유 (기존 공유 개선)
      * @param {number} stage - 도달 스테이지
-     * @param {Object} stats - 게임 통계 {totalDamageDealt, totalTurns, playStyle, etc.}
+     * @param {Object} stats - 게임 통계 {totalDamageDealt, totalTurns, playStyle, isGameComplete, etc.}
      * @param {Array} cards - 최종 손패
      * @param {string} element - 덱 속성
      */
@@ -772,11 +804,32 @@ class ShareSystem {
 
             const imageBlob = await this.imageGenerator.generateDefeatImage(stage, stats, cards, element);
 
-            let message = I18nHelper?.getText('auto_battle_card_game.ui.share_defeat_message') || 'Reached stage {stage}!';
-            message = message.replace('{stage}', stage);
+            // 현재 언어 가져오기
+            const lang = window.i18n?.currentLanguage || localStorage.getItem('selectedLanguage') || 'ko';
 
-            const title = 'Card Battle Game - My Record';
-            const url = this.config.baseUrl || (window.location.origin + window.location.pathname);
+            // 게임 클리어 여부에 따라 공유 타입 결정
+            const type = stats?.isGameComplete ? 'complete' : 'defeat';
+
+            // 속성 이름 다국어 처리
+            const elementName = this.getElementName(element, lang);
+
+            // 플레이 스타일 다국어 처리
+            const playStyleKey = `auto_battle_card_game.ui.play_style_${stats?.playStyle || 'balanced'}`;
+            const playStyleText = I18nHelper?.getText(playStyleKey) || stats?.playStyle || 'Balanced';
+
+            // GameConfig 템플릿 사용하여 메시지 생성
+            const message = this.generateShareMessage(type, {
+                stage: stage,
+                element: elementName,
+                style: playStyleText,
+                damage: stats?.totalDamageDealt || 0,
+                turns: stats?.totalTurns || 0
+            }, lang);
+
+            // 게임 클리어 여부에 따라 타이틀 결정
+            const titleKey = type === 'complete' ? 'auto_battle_card_game.ui.share_complete_title' : 'auto_battle_card_game.ui.share_defeat_title';
+            const title = I18nHelper?.getText(titleKey) || (type === 'complete' ? '🏆 Game Complete!' : '⚔️ My Record');
+            const url = this.config.baseUrl || 'https://binboxgames.com/games/card-battle-game/';
 
             await this.shareWithImage(imageBlob, title, message, url);
         } catch (error) {

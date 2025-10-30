@@ -96,6 +96,18 @@ class BattleSystem {
             this.effectSystem = new EffectSystem();
         }
 
+        // ShareSystem 초기화 (직접 생성)
+        if (!this.shareSystem && window.ShareSystem) {
+            this.shareSystem = new ShareSystem(this.gameManager);
+            // CardRenderer와 i18n 전달
+            if (this.gameManager?.cardRenderer && window.i18nSystem) {
+                this.shareSystem.setImageGenerator(this.gameManager.cardRenderer, window.i18nSystem);
+                console.log('[BattleSystem] ShareSystem 초기화 완료');
+            } else {
+                console.warn('[BattleSystem] CardRenderer 또는 i18nSystem이 없어 ShareImageGenerator를 초기화할 수 없습니다.');
+            }
+        }
+
         // EffectSystem에 AudioSystem 주입 (사운드 통합)
         if (this.gameManager && this.gameManager.audioSystem) {
             this.effectSystem.audioSystem = this.gameManager.audioSystem;
@@ -1919,26 +1931,22 @@ class BattleSystem {
             return;
         }
 
-        // ShareSystem 가져오기 (VictoryDefeatModal에서 초기화된 인스턴스)
+        // ShareSystem 확인 (initializeSystems에서 초기화됨)
         if (!this.shareSystem) {
-            // VictoryDefeatModal의 shareSystem 재사용
-            const victoryDefeatModal = this.gameManager?.victoryDefeatModal;
-            if (victoryDefeatModal && victoryDefeatModal.shareSystem) {
-                this.shareSystem = victoryDefeatModal.shareSystem;
-            } else {
-                console.error('[BattleSystem] ShareSystem을 찾을 수 없습니다.');
-                return;
-            }
+            console.error('[BattleSystem] ShareSystem이 초기화되지 않았습니다.');
+            return;
         }
 
         // 현재 게임 상태 수집
         const gameState = {
             stage: this.gameManager?.currentStage || 1,
             playerHP: this.player.hp,
-            playerMaxHP: this.player.maxHp,
+            playerMaxHP: this.player.maxHP,
+            playerName: this.player.name || 'Player',
             enemyHP: this.enemy.hp,
-            enemyMaxHP: this.enemy.maxHp,
-            element: this.player.element || 'normal'
+            enemyMaxHP: this.enemy.maxHP,
+            enemyName: this.enemy.name || 'Enemy',
+            element: this.player.defenseElement || 'normal'
         };
 
         // 현재 손패 (player.hand)
