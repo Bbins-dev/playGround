@@ -61,7 +61,7 @@
     --modal-game-tutorial-height: 1150px;
     --modal-game-tutorial-padding: 30px;
 
-    --modal-victory-width: 720px;
+    --modal-victory-width: 800px;
     --modal-victory-height: 1500px;
     --modal-victory-padding: 25px;
 
@@ -2013,9 +2013,9 @@ body[data-game-state="menu"] .game-wrapper.status-border-oblivion {
 }
 
 #victory-modal .card-selection-hint {
-    font-size: 18px;
+    font-size: 20px;
     color: #666;
-    font-style: italic;
+    font-weight: bold;
     margin-top: 15px;
 }
 
