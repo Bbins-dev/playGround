@@ -888,6 +888,7 @@
       "share_image_ready": "Image ready!",
       "share_download_image": "Save Image",
       "share_save_image": "Download Image",
+      "share_text_copied": "📋 Message copied! Paste it to add text",
       "defeat_stats": {
         "final_hand": "Final Hand (in order)",
         "stage_reached": "Stage Reached",
