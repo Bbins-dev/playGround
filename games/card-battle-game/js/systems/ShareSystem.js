@@ -674,7 +674,10 @@ class ShareSystem {
             this.isSharing = true;
 
             const file = new File([imageBlob], 'card-battle-share.png', { type: 'image/png' });
-            const shareData = { title, text, url, files: [file] };
+
+            // 텍스트에 URL 포함 (파일 공유 시 text만 인식되는 플랫폼 대응)
+            const fullText = text.includes(url) ? text : `${text}\n\n${url}`;
+            const shareData = { files: [file], text: fullText };
 
             // 파일 공유 지원 확인
             if (navigator.canShare(shareData)) {
@@ -685,7 +688,7 @@ class ShareSystem {
             } else {
                 console.log('[ShareSystem] 파일 공유를 지원하지 않습니다.');
                 // Fallback: 텍스트만 공유
-                await navigator.share({ title, text, url });
+                await navigator.share({ title, text: fullText });
                 return true;
             }
         } catch (error) {
