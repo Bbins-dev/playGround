@@ -755,6 +755,37 @@ class ShareSystem {
     }
 
     /**
+     * 패배/완료 이미지 공유 (기존 공유 개선)
+     * @param {number} stage - 도달 스테이지
+     * @param {Object} stats - 게임 통계 {totalDamageDealt, totalTurns, playStyle, etc.}
+     * @param {Array} cards - 최종 손패
+     * @param {string} element - 덱 속성
+     */
+    async shareDefeatImage(stage, stats, cards, element) {
+        if (!this.imageGenerator) {
+            console.error('[ShareSystem] ShareImageGenerator가 초기화되지 않았습니다.');
+            return;
+        }
+
+        try {
+            this.showToast(I18nHelper?.getText('auto_battle_card_game.ui.share_generating_image') || '이미지 생성 중...', 'info');
+
+            const imageBlob = await this.imageGenerator.generateDefeatImage(stage, stats, cards, element);
+
+            let message = I18nHelper?.getText('auto_battle_card_game.ui.share_defeat_message') || 'Reached stage {stage}!';
+            message = message.replace('{stage}', stage);
+
+            const title = 'Card Battle Game - My Record';
+            const url = this.config.baseUrl || (window.location.origin + window.location.pathname);
+
+            await this.shareWithImage(imageBlob, title, message, url);
+        } catch (error) {
+            console.error('[ShareSystem] 패배 이미지 공유 실패:', error);
+            this.showToast(I18nHelper?.getText('auto_battle_card_game.ui.share_failed') || '❌ 공유 실패', 'error');
+        }
+    }
+
+    /**
      * URL 직접 클립보드 복사 (헬퍼 메서드)
      * @param {string} url
      */
