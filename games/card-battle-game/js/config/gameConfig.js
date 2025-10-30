@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.3.35',                        // 버전 넘버
+        number: '0.3.36',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -1494,7 +1494,6 @@ const GameConfig = {
             20: {
                 hp: 300,
                 cards: [
-                    { id: 'one_times_hundred', count: 1 }, // 1x100
                     { id: 'sharpen', count: 1 },           // 벼리기
                     { id: 'karura_strike', count: 1 },     // 카루라 일격
                     { id: 'lava_prison', count: 1 }        // 용암 감옥
@@ -1718,11 +1717,12 @@ const GameConfig = {
             40: {
                 hp: 1000,
                 cards: [
+                    { id: 'blinding_flash', count: 1 },     // 눈부신 섬광
+                    { id: 'battery_pack', count: 2 },       // 건전지팩 x2
                     { id: 'super_conductivity', count: 1 }, // 초전도
                     { id: 'light_speed', count: 1 },        // 빛의 속도
                     { id: 'static', count: 1 },             // 정전기
-                    { id: 'lightning_storm', count: 1 },    // 번개 폭풍
-                    { id: 'catalyst', count: 1 }            // 촉진제
+                    { id: 'thunder_strike', count: 1 }      // 번개일격
                 ]
             },
             41: {
