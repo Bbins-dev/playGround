@@ -888,6 +888,13 @@
       "share_download_image": "画像を保存",
       "share_save_image": "画像をダウンロード",
       "share_text_copied": "📋 メッセージがコピーされました！貼り付けてテキストを追加",
+      "share_landing_title": "共有された手札",
+      "share_landing_title_victory": "🎉 勝利の手札",
+      "share_landing_title_defeat": "⚔️ 挑戦記録",
+      "share_landing_title_complete": "🏆 完走記録",
+      "share_landing_title_battle": "🃏 バトル状況",
+      "play_now_button": "🎮 今すぐプレイ",
+      "landing_footer": "BinBox Gamesが提供する自動戦闘カードゲーム！",
       "defeat_stats": {
         "final_hand": "最終手札（順序通り）",
         "stage_reached": "到達ステージ",
