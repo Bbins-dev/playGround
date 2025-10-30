@@ -284,18 +284,26 @@ class VictoryDefeatModal {
     }
 
     /**
-     * 승리 공유 처리 (이미지 포함)
+     * 승리 공유 처리 (랜딩 페이지 방식)
      */
     async handleVictoryShare() {
         const stage = this.currentStage || this.gameManager?.currentStage || 1;
         const cards = this.gameManager?.player?.hand || [];
         const element = this.gameManager?.player?.defenseElement || 'normal';
 
-        await this.shareSystem.shareVictoryImage(stage, cards, element);
+        // 랜딩 페이지 공유 데이터 생성
+        const shareData = {
+            type: 'victory',
+            stage: stage,
+            cards: cards,
+            element: element
+        };
+
+        await this.shareSystem.shareWithLandingPage(shareData);
     }
 
     /**
-     * 패배 공유 처리 (이미지 포함)
+     * 패배 공유 처리 (랜딩 페이지 방식)
      */
     async handleDefeatShare() {
         const stage = this.gameStats?.finalStage || 1;
@@ -308,7 +316,19 @@ class VictoryDefeatModal {
         const cards = this.gameManager?.player?.hand || [];
         const element = this.gameManager?.player?.defenseElement || 'normal';
 
-        await this.shareSystem.shareDefeatImage(stage, stats, cards, element);
+        // 공유 타입 결정 (완료 vs 패배)
+        const type = stats.isGameComplete ? 'complete' : 'defeat';
+
+        // 랜딩 페이지 공유 데이터 생성
+        const shareData = {
+            type: type,
+            stage: stage,
+            cards: cards,
+            element: element,
+            stats: stats
+        };
+
+        await this.shareSystem.shareWithLandingPage(shareData);
     }
 
     /**
