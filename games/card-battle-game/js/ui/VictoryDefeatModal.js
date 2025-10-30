@@ -82,8 +82,11 @@ class VictoryDefeatModal {
         this.shareSystem = new ShareSystem(gameManager);
 
         // ShareImageGenerator 초기화 (CardRenderer와 I18n 전달)
-        if (gameManager?.cardRenderer && gameManager?.i18n) {
-            this.shareSystem.setImageGenerator(gameManager.cardRenderer, gameManager.i18n);
+        if (gameManager?.cardRenderer && window.i18nSystem) {
+            this.shareSystem.setImageGenerator(gameManager.cardRenderer, window.i18nSystem);
+            console.log('[VictoryDefeatModal] ShareImageGenerator 초기화 시도');
+        } else {
+            console.warn('[VictoryDefeatModal] CardRenderer 또는 i18nSystem이 없어 ShareImageGenerator를 초기화할 수 없습니다.');
         }
 
         // 공유 데이터 저장 (승리/패배 시 사용)
