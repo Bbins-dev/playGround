@@ -48,6 +48,17 @@ class BattleSystem {
 
         // 활성 타이머 배열 초기화
         this.activeTimers = [];
+
+        // 공유 버튼 초기화
+        this.shareBtn = document.getElementById('battle-share-btn');
+        this.shareSystem = null; // VictoryDefeatModal에서 초기화된 인스턴스 재사용
+
+        // 공유 버튼 이벤트
+        if (this.shareBtn) {
+            this.shareBtn.addEventListener('click', () => {
+                this.handleShareHand();
+            });
+        }
     }
 
     // 전투 시작
@@ -65,6 +76,9 @@ class BattleSystem {
 
         // 시스템 초기화
         await this.initializeSystems();
+
+        // 공유 버튼 표시
+        this.toggleShareButton(true);
 
         // 첫 턴 시작
         this.startTurn();
@@ -1383,6 +1397,8 @@ class BattleSystem {
 
         this.battlePhase = 'ended';
 
+        // 공유 버튼 숨김
+        this.toggleShareButton(false);
 
         // 게임 매니저에 결과 전달
         if (this.gameManager) {
@@ -1892,6 +1908,60 @@ class BattleSystem {
             turnProgress: { ...this.turnProgress },
             stats: this.getBattleStats()
         };
+    }
+
+    /**
+     * 손패 공유 핸들러 (배틀 중 공유 버튼 클릭 시)
+     */
+    async handleShareHand() {
+        if (!this.player || !this.enemy) {
+            console.warn('[BattleSystem] 전투가 진행 중이 아닙니다.');
+            return;
+        }
+
+        // ShareSystem 가져오기 (VictoryDefeatModal에서 초기화된 인스턴스)
+        if (!this.shareSystem) {
+            // VictoryDefeatModal의 shareSystem 재사용
+            const victoryDefeatModal = this.gameManager?.victoryDefeatModal;
+            if (victoryDefeatModal && victoryDefeatModal.shareSystem) {
+                this.shareSystem = victoryDefeatModal.shareSystem;
+            } else {
+                console.error('[BattleSystem] ShareSystem을 찾을 수 없습니다.');
+                return;
+            }
+        }
+
+        // 현재 게임 상태 수집
+        const gameState = {
+            stage: this.gameManager?.currentStage || 1,
+            playerHP: this.player.hp,
+            playerMaxHP: this.player.maxHp,
+            enemyHP: this.enemy.hp,
+            enemyMaxHP: this.enemy.maxHp,
+            element: this.player.element || 'normal'
+        };
+
+        // 현재 손패 (player.hand)
+        const currentHand = this.player.hand || [];
+
+        // ShareSystem의 shareHandImage 메서드 호출
+        await this.shareSystem.shareHandImage(currentHand, gameState);
+    }
+
+    /**
+     * 공유 버튼 표시/숨김
+     * @param {boolean} visible
+     */
+    toggleShareButton(visible) {
+        if (this.shareBtn) {
+            if (visible) {
+                this.shareBtn.classList.remove('hidden');
+                this.shareBtn.style.display = 'flex';
+            } else {
+                this.shareBtn.classList.add('hidden');
+                this.shareBtn.style.display = 'none';
+            }
+        }
     }
 }
 
