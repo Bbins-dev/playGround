@@ -3759,6 +3759,10 @@ const GameConfig = {
     sharing: {
         enabled: true,                          // 공유 기능 활성화
 
+        // 기본 URL 설정
+        baseUrl: 'https://binboxgames.com/games/card-battle-game/',  // 기본 공유 URL
+        useSimpleUrl: true,                     // 단순 URL 사용 (파라미터 제거)
+
         // 플랫폼별 설정
         platforms: {
             // Native Share API (모바일 우선)
@@ -3845,10 +3849,117 @@ const GameConfig = {
             enabled: true,                      // Open Graph 활성화
             defaultTitle: 'Card Battle Game',   // 기본 제목
             defaultDescription: '5속성 카드 배틀 게임! 전략적인 덱 구성으로 40스테이지를 클리어하세요!',
-            defaultImage: '/images/og-default.png',  // 기본 이미지 (향후 추가)
-            dynamicImage: false,                // 동적 이미지 생성 (Phase 2 - Canvas to Image)
+            defaultImage: '/images/og-default.png',  // 기본 이미지
+            dynamicImage: true,                 // 동적 이미지 생성 활성화
             siteName: 'BinBox Games',           // 사이트 이름
             type: 'website'                     // Open Graph 타입
+        },
+
+        // 이미지 생성 설정 (Canvas 기반)
+        imageGeneration: {
+            enabled: true,                      // 이미지 생성 활성화
+
+            // 이미지 크기 (SNS 최적화)
+            dimensions: {
+                width: 1200,                    // 너비 (px) - SNS 권장 크기
+                height: 630,                    // 높이 (px) - SNS 권장 비율 (1.91:1)
+                cardWidth: 150,                 // 카드 너비
+                cardHeight: 210                 // 카드 높이
+            },
+
+            // 이미지 품질 설정
+            quality: 0.85,                      // JPEG 품질 (0.0 ~ 1.0)
+            format: 'png',                      // 이미지 포맷 ('png' or 'jpeg')
+            backgroundColor: '#1a1a2e',         // 기본 배경색
+
+            // 레이아웃별 설정
+            layouts: {
+                // 손패 공유 (5장)
+                hand: {
+                    enabled: true,
+                    maxCards: 5,                // 최대 카드 수
+                    columns: 3,                 // 카드 열 개수
+                    cardSpacing: 15,            // 카드 간격 (px)
+                    showOverlay: true,          // 스테이지/HP 오버레이 표시
+                    title: {
+                        fontSize: 32,
+                        fontWeight: 'bold',
+                        color: '#ffffff'
+                    }
+                },
+
+                // 승리 공유
+                victory: {
+                    enabled: true,
+                    maxCards: 3,                // 대표 카드 3장
+                    columns: 3,
+                    cardSpacing: 20,
+                    showBadge: true,            // 승리 뱃지 표시
+                    badgeText: '🎉 CLEAR!'
+                },
+
+                // 패배 공유
+                defeat: {
+                    enabled: true,
+                    maxCards: 3,                // 대표 카드 3장
+                    columns: 3,
+                    cardSpacing: 20,
+                    showStats: true,            // 통계 정보 표시
+                    statsOpacity: 0.9
+                },
+
+                // 덱 전체 공유
+                deck: {
+                    enabled: true,
+                    maxCards: 10,               // 전체 덱 10장
+                    columns: 5,
+                    cardSpacing: 10,
+                    showElement: true           // 속성 표시
+                }
+            },
+
+            // 속성별 배경 그라디언트
+            elementBackgrounds: {
+                fire: {
+                    start: '#ff6b6b',
+                    end: '#ee5a24'
+                },
+                water: {
+                    start: '#4facfe',
+                    end: '#00f2fe'
+                },
+                electric: {
+                    start: '#f9d423',
+                    end: '#ff4e50'
+                },
+                poison: {
+                    start: '#8e44ad',
+                    end: '#c0392b'
+                },
+                normal: {
+                    start: '#bdc3c7',
+                    end: '#7f8c8d'
+                }
+            },
+
+            // 오버레이 설정
+            overlay: {
+                padding: 30,                    // 오버레이 패딩
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                textColor: '#ffffff',
+                fontSize: {
+                    title: 36,
+                    subtitle: 24,
+                    info: 18
+                }
+            },
+
+            // 로딩 설정
+            loading: {
+                showIndicator: true,            // 로딩 표시
+                message: 'Generating image...',  // 로딩 메시지
+                timeout: 10000                  // 타임아웃 (ms)
+            }
         },
 
         // 공유 통계 (향후 확장용)
