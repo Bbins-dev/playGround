@@ -107,8 +107,11 @@ class BattleSystem {
                 console.warn('[BattleSystem] CardRenderer 또는 i18nSystem이 없어 ShareImageGenerator를 초기화할 수 없습니다.');
             }
 
-            // ShareLandingPage 초기화
-            if (window.ShareLandingPage) {
+            // ShareLandingPage 초기화 (전역 인스턴스가 있으면 재사용)
+            if (window.shareLandingPageInstance) {
+                this.shareLandingPage = window.shareLandingPageInstance;
+                console.log('[BattleSystem] ShareLandingPage 전역 인스턴스 재사용');
+            } else if (window.ShareLandingPage) {
                 this.shareLandingPage = new ShareLandingPage(this.gameManager);
                 console.log('[BattleSystem] ShareLandingPage 초기화 완료');
             }
