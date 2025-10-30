@@ -81,6 +81,11 @@ class VictoryDefeatModal {
         // ShareSystem 인스턴스
         this.shareSystem = new ShareSystem(gameManager);
 
+        // ShareImageGenerator 초기화 (CardRenderer와 I18n 전달)
+        if (gameManager?.cardRenderer && gameManager?.i18n) {
+            this.shareSystem.setImageGenerator(gameManager.cardRenderer, gameManager.i18n);
+        }
+
         // 공유 데이터 저장 (승리/패배 시 사용)
         this.currentShareData = null;
 
