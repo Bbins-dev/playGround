@@ -44,27 +44,32 @@ class ShareImageGenerator {
         this.renderBackground(ctx, canvas, gameState.element || 'normal');
 
         // 타이틀 렌더링
-        this.renderTitle(ctx, canvas, this.i18n?.getMessage('share_hand_title') || '🎴 My Hand');
+        const titleY = layout.titleY ?? 50;
+        this.renderTitle(ctx, canvas, this.i18n?.t('auto_battle_card_game.ui.share_hand_title') || '🃏 My Hand', titleY);
 
         // 스테이지 정보 렌더링
         const subtitle = `Stage ${gameState.stage || '?'}`;
-        this.renderSubtitle(ctx, canvas, subtitle, 80);
+        const subtitleY = layout.subtitleY ?? 115;
+        this.renderSubtitle(ctx, canvas, subtitle, subtitleY);
 
         // 카드 렌더링 (중앙 배치)
         const visibleCards = cards.slice(0, layout.maxCards || 5);
+        const cardStartY = layout.cardStartY ?? 150;
         await this.renderCards(ctx, canvas, visibleCards, {
             columns: layout.columns || 3,
             spacing: layout.cardSpacing || 15,
-            startY: 150
+            startY: cardStartY
         });
 
         // HP 오버레이 렌더링
         if (layout.showOverlay && gameState.playerHP !== undefined) {
             this.renderHPOverlay(ctx, canvas, {
                 playerHP: gameState.playerHP,
-                playerMaxHP: gameState.playerMaxHP || 100,
+                playerMaxHP: gameState.playerMaxHP ?? 100,
+                playerName: gameState.playerName || 'Player',
                 enemyHP: gameState.enemyHP,
-                enemyMaxHP: gameState.enemyMaxHP || 100
+                enemyMaxHP: gameState.enemyMaxHP ?? 100,
+                enemyName: gameState.enemyName || 'Enemy'
             });
         }
 
@@ -99,8 +104,10 @@ class ShareImageGenerator {
             this.renderBadge(ctx, canvas, layout.badgeText || '🎉 CLEAR!');
         }
 
-        // 스테이지 정보
-        this.renderTitle(ctx, canvas, `Stage ${stage} Cleared!`);
+        // 스테이지 정보 (뱃지와 겹치지 않도록 y=90)
+        let title = this.i18n?.t('auto_battle_card_game.ui.stage_cleared') || 'Stage {stage} Clear!';
+        title = title.replace('{stage}', stage);
+        this.renderTitle(ctx, canvas, title, 90);
 
         // 카드 렌더링
         const visibleCards = cards.slice(0, layout.maxCards || 3);
@@ -137,7 +144,9 @@ class ShareImageGenerator {
         this.renderBackground(ctx, canvas, element || 'normal');
 
         // 타이틀
-        this.renderTitle(ctx, canvas, `Reached Stage ${stage}`);
+        let title = this.i18n?.t('auto_battle_card_game.ui.stage_reached_template') || 'Reached Stage {stage}';
+        title = title.replace('{stage}', stage);
+        this.renderTitle(ctx, canvas, title);
 
         // 통계 정보
         if (layout.showStats) {
@@ -178,7 +187,7 @@ class ShareImageGenerator {
 
         // 타이틀
         const elementName = element ? element.charAt(0).toUpperCase() + element.slice(1) : 'Normal';
-        this.renderTitle(ctx, canvas, `🎴 ${elementName} Deck`);
+        this.renderTitle(ctx, canvas, `🃏 ${elementName} Deck`);
 
         // 카드 렌더링 (2×5 그리드)
         const visibleCards = cards.slice(0, layout.maxCards || 10);
@@ -331,8 +340,8 @@ class ShareImageGenerator {
         const leftX = canvas.width / 3;
         const rightX = (canvas.width / 3) * 2;
 
-        ctx.fillText(`Player HP: ${hpData.playerHP}/${hpData.playerMaxHP}`, leftX, centerY);
-        ctx.fillText(`Enemy HP: ${hpData.enemyHP}/${hpData.enemyMaxHP}`, rightX, centerY);
+        ctx.fillText(`${hpData.playerName || 'Player'}: ${hpData.playerHP}/${hpData.playerMaxHP}`, leftX, centerY);
+        ctx.fillText(`${hpData.enemyName || 'Enemy'}: ${hpData.enemyHP}/${hpData.enemyMaxHP}`, rightX, centerY);
     }
 
     /**
