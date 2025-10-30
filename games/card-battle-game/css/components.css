@@ -845,7 +845,7 @@
     flex-direction: column;
     gap: 8px;
     max-width: 640px;  /* 700px → 640px: 카드 5장 + 작은 간격에 최적화 */
-    margin: 15px auto 0;
+    margin: 15px auto 40px;
     width: 100%;
 }
 
@@ -1349,19 +1349,20 @@
 }
 
 .reward-cards-grid {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 20px;
     justify-content: center;
-    gap: 8px;
-    flex-wrap: wrap;
+    justify-items: center;
 }
 
 .card-selection-hint {
     text-align: center;
-    font-size: 14px;
+    font-size: 20px;
     color: var(--color-text-muted);
     margin-top: 10px;
     margin-bottom: 0;
-    font-style: italic;
+    font-weight: bold;
 }
 
 .reward-card {
@@ -1480,7 +1481,7 @@
     justify-content: center;
     gap: 15px;
     flex-wrap: wrap;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
 }
 
 .hand-card {
