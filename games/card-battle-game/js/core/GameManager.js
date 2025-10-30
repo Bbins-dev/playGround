@@ -17,6 +17,7 @@ class GameManager {
         this.audioSystem = null;
         this.loadingScreen = null;
         this.volumeControl = null;
+        this.cardRenderer = null;
 
         // 화면 관리
         this.mainMenu = null;
@@ -284,6 +285,12 @@ class GameManager {
         // TimerManager에 저장된 속도 즉시 적용
         if (window.TimerManager) {
             window.TimerManager.setGameSpeed(savedSpeed);
+        }
+
+        // CardRenderer 초기화 (다른 시스템보다 먼저, 공유 기능에서 사용)
+        if (window.CardRenderer) {
+            this.cardRenderer = new CardRenderer();
+            console.log('[GameManager] CardRenderer initialized');
         }
 
         // 오디오 시스템 초기화 (가장 먼저)
@@ -852,7 +859,9 @@ class GameManager {
         this.switchScreen('battle');
 
         // 적 생성
-        this.enemy = new Enemy(`스테이지 ${stageNumber} 적`, stageNumber);
+        const enemyNameTemplate = this.i18n?.t('auto_battle_card_game.ui.enemy_name_template') || 'Stage {stage} Enemy';
+        const enemyName = enemyNameTemplate.replace('{stage}', stageNumber);
+        this.enemy = new Enemy(enemyName, stageNumber);
         this.enemy.buildDeck();
 
         // 스테이지 인디케이터 업데이트 (실제 스테이지 번호 표시)
@@ -1118,7 +1127,9 @@ class GameManager {
      */
     setupNextBattle() {
         // 새로운 적 생성
-        this.enemy = new Enemy(`스테이지 ${this.currentStage} 적`, this.currentStage);
+        const enemyNameTemplate = this.i18n?.t('auto_battle_card_game.ui.enemy_name_template') || 'Stage {stage} Enemy';
+        const enemyName = enemyNameTemplate.replace('{stage}', this.currentStage);
+        this.enemy = new Enemy(enemyName, this.currentStage);
 
         // 적 덱 구성
         this.enemy.buildDeck();
