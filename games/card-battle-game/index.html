@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="auto_battle_card_game.page_title">자동전투 카드대전</title>
+
+    <!-- Open Graph / SNS Meta Tags -->
+    <meta property="og:title" content="Card Battle Game - 5속성 카드 배틀">
+    <meta property="og:description" content="전략적인 덱 구성으로 40스테이지를 클리어하세요! 불, 물, 전기, 독, 노멀 5가지 속성의 카드로 전투하는 브라우저 게임.">
+    <meta property="og:image" content="https://binboxgames.com/games/card-battle-game/images/og-default.png">
+    <meta property="og:url" content="https://binboxgames.com/games/card-battle-game/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="BinBox Games">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Card Battle Game - 5속성 카드 배틀">
+    <meta name="twitter:description" content="전략적인 덱 구성으로 40스테이지를 클리어하세요!">
+    <meta name="twitter:image" content="https://binboxgames.com/games/card-battle-game/images/og-default.png">
+
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔️</text></svg>">
     <link rel="stylesheet" href="style.css?v=0.4.0">
     <link rel="stylesheet" href="css/components.css?v=0.4.0">
@@ -155,6 +170,9 @@
         <!-- 인게임 볼륨 컨트롤 (ui-overlay 외부 배치 - z-index 독립) -->
         <!-- 인게임 볼륨 조절 버튼 -->
         <button id="volume-control-btn" class="ui-button volume-btn" title="Volume">🔊</button>
+
+        <!-- 인게임 공유 버튼 (배틀 중 손패 공유) -->
+        <button id="battle-share-btn" class="ui-button share-btn hidden" title="Share Hand" data-i18n-title="auto_battle_card_game.ui.share_hand_button">📤</button>
 
         <!-- 인게임 볼륨 팝업 패널 -->
         <div id="volume-popup-panel" class="volume-popup-panel hidden">
@@ -608,6 +626,7 @@
     <!-- 오디오 시스템 -->
     <script src="js/systems/AudioSystem.js?v=0.4.0"></script>
     <!-- 공유 시스템 -->
+    <script src="js/systems/ShareImageGenerator.js?v=0.4.0"></script>
     <script src="js/systems/ShareSystem.js?v=0.4.0"></script>
     <script src="js/ui/HPBarSystem.js?v=0.4.0"></script>
     <script src="js/ui/BuffStatusTooltipModal.js?v=0.4.0"></script>
