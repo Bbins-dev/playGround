@@ -683,7 +683,10 @@ class ShareSystem {
             if (navigator.canShare(shareData)) {
                 await navigator.share(shareData);
                 console.log('[ShareSystem] 이미지 공유 성공');
-                this.showToast(I18nHelper?.getText('auto_battle_card_game.ui.share_success') || '🎉 공유 완료!', 'success');
+
+                // 이미지 공유 후 텍스트를 클립보드에 자동 복사
+                await this.copyTextToClipboard(fullText);
+
                 return true;
             } else {
                 console.log('[ShareSystem] 파일 공유를 지원하지 않습니다.');
@@ -865,6 +868,42 @@ class ShareSystem {
             }
         } catch (error) {
             console.error('[ShareSystem] 클립보드 복사 실패:', error);
+        }
+    }
+
+    /**
+     * 텍스트를 클립보드에 복사 (이미지 공유 후 자동 호출)
+     * @param {string} text - 복사할 텍스트
+     */
+    async copyTextToClipboard(text) {
+        try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(text);
+
+                const message = I18nHelper?.getText('auto_battle_card_game.ui.share_text_copied')
+                    || '📋 메시지가 복사되었습니다! 붙여넣기로 추가하세요';
+
+                this.showToast(message, 'success');
+            } else {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+
+                const message = I18nHelper?.getText('auto_battle_card_game.ui.share_text_copied')
+                    || '📋 메시지가 복사되었습니다! 붙여넣기로 추가하세요';
+
+                this.showToast(message, 'success');
+            }
+        } catch (error) {
+            console.warn('[ShareSystem] 클립보드 복사 실패 (무시):', error);
+            // 조용히 실패 - 사용자에게 에러 표시 안함
         }
     }
 }
