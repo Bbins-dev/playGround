@@ -73,6 +73,21 @@ class VictoryDefeatModal {
         // ★ DOM 이벤트 보호: 주기적 검증 타이머 (치트 방지)
         this.integrityTimer = null;
 
+        // 공유 버튼 요소들
+        this.victoryShareBtn = document.getElementById('victory-share');
+        this.victoryShareRow = document.getElementById('victory-share-row');
+        this.defeatShareBtn = document.getElementById('defeat-share');
+
+        // ShareSystem 인스턴스
+        this.shareSystem = new ShareSystem(gameManager);
+
+        // 공유 데이터 저장 (승리/패배 시 사용)
+        this.currentShareData = null;
+
+        // 게임 데이터 저장 (공유 기능용)
+        this.currentStage = null;
+        this.gameStats = null;
+
         this.initializeEventListeners();
         this.setupDOMIntegrityCheck();
     }
@@ -220,6 +235,27 @@ class VictoryDefeatModal {
             });
         }
 
+        // 공유 버튼 이벤트
+        if (this.victoryShareBtn) {
+            this.victoryShareBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.handleVictoryShare();
+            });
+        }
+
+        if (this.defeatShareBtn) {
+            this.defeatShareBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.handleDefeatShare();
+            });
+        }
+
         // 모달 외부 클릭 방지
         [this.victoryModal, this.defeatModal].forEach(modal => {
             if (modal) {
@@ -237,6 +273,38 @@ class VictoryDefeatModal {
         //         this.hideAll();
         //     }
         // });
+    }
+
+    /**
+     * 승리 공유 처리
+     */
+    handleVictoryShare() {
+        const shareData = {
+            stage: this.currentStage || this.gameManager?.currentStage || 1,
+            player: this.gameManager?.player?.name || 'Player',
+            element: this.gameManager?.player?.defenseElement || 'normal',
+            deck: this.gameManager?.player?.hand?.map(c => c.id) || [],
+            turns: this.gameManager?.totalTurns || 0
+        };
+
+        this.shareSystem.share('victory', shareData);
+    }
+
+    /**
+     * 패배 공유 처리
+     */
+    handleDefeatShare() {
+        const shareData = {
+            stage: this.gameStats?.finalStage || 1,
+            player: this.gameManager?.player?.name || 'Player',
+            style: this.gameStats?.playStyle || 'balanced',
+            damage: this.gameStats?.totalDamageDealt || 0,
+            turns: this.gameStats?.totalTurns || 0,
+            deck: this.gameManager?.player?.hand?.map(c => c.id) || []
+        };
+
+        const type = this.gameStats?.isGameComplete ? 'complete' : 'defeat';
+        this.shareSystem.share(type, shareData);
     }
 
     /**
@@ -259,9 +327,12 @@ class VictoryDefeatModal {
         // 콜백 설정 (resetVictoryState 이후에!)
         this.onVictoryContinue = callback;
 
+        // 스테이지 번호 저장 (공유 기능용)
+        this.currentStage = stage || 1;
+
         // 스테이지 번호 표시
         if (this.victoryStageSpan) {
-            this.victoryStageSpan.textContent = stage || 1;
+            this.victoryStageSpan.textContent = this.currentStage;
         }
 
         // 카드 보상이 있는 경우
@@ -293,6 +364,9 @@ class VictoryDefeatModal {
     showDefeat(gameStats, restartCallback, mainMenuCallback) {
         // 상태이상 효과 제거
         this.clearStatusEffects();
+
+        // 게임 통계 저장 (공유 기능용)
+        this.gameStats = gameStats;
 
         this.onDefeatRestart = restartCallback;
         this.onDefeatMainMenu = mainMenuCallback;
@@ -706,6 +780,10 @@ class VictoryDefeatModal {
         if (this.victoryHandConfirmationButtons) {
             this.victoryHandConfirmationButtons.classList.add('hidden');
         }
+        // 공유 버튼 숨김 (초기 상태)
+        if (this.victoryShareRow) {
+            this.victoryShareRow.classList.add('hidden');
+        }
 
         // 모든 카드 선택 상태 초기화
         this.updateCardSelection(-1);
@@ -726,6 +804,11 @@ class VictoryDefeatModal {
         // 카드 보상 영역 표시
         if (this.victoryCardRewards) {
             this.victoryCardRewards.classList.remove('hidden');
+        }
+
+        // 공유 버튼 표시 (보상 카드 선택 화면)
+        if (this.victoryShareRow) {
+            this.victoryShareRow.classList.remove('hidden');
         }
 
         // 보상 카드들 렌더링
@@ -836,6 +919,11 @@ class VictoryDefeatModal {
             // 보상 카드 3개 숨기기
             if (this.victoryCardRewards) {
                 this.victoryCardRewards.classList.add('hidden');
+            }
+
+            // 공유 버튼 숨김 (확대 화면)
+            if (this.victoryShareRow) {
+                this.victoryShareRow.classList.add('hidden');
             }
 
             // 선택된 카드 확대 표시
@@ -1060,6 +1148,11 @@ class VictoryDefeatModal {
             this.victoryCardRewards.classList.add('hidden');
         }
 
+        // 공유 버튼 숨김 (손패 교체 화면)
+        if (this.victoryShareRow) {
+            this.victoryShareRow.classList.add('hidden');
+        }
+
         // 모든 버튼 그룹 숨기기 (손패 교체 시에는 취소 버튼만 보이도록)
         if (this.victorySelectionButtons) {
             this.victorySelectionButtons.classList.add('hidden');
@@ -1089,6 +1182,11 @@ class VictoryDefeatModal {
         // 카드 보상 영역 숨기기
         if (this.victoryCardRewards) {
             this.victoryCardRewards.classList.add('hidden');
+        }
+
+        // 공유 버튼 숨김 (손패 확인 화면)
+        if (this.victoryShareRow) {
+            this.victoryShareRow.classList.add('hidden');
         }
 
         // 모든 버튼 그룹 숨기기
@@ -1392,6 +1490,11 @@ class VictoryDefeatModal {
             this.victoryCardRewards.classList.remove('hidden');
         }
 
+        // 공유 버튼 다시 표시 (보상 카드 선택 화면으로 복귀)
+        if (this.victoryShareRow) {
+            this.victoryShareRow.classList.remove('hidden');
+        }
+
         // 기본 버튼들 다시 표시
         if (this.victorySelectionButtons) {
             this.victorySelectionButtons.classList.add('hidden');
@@ -1431,6 +1534,11 @@ class VictoryDefeatModal {
             // 카드 보상 영역 다시 표시
             if (this.victoryCardRewards) {
                 this.victoryCardRewards.classList.remove('hidden');
+            }
+
+            // 공유 버튼 다시 표시 (보상 카드 선택 화면으로 복귀)
+            if (this.victoryShareRow) {
+                this.victoryShareRow.classList.remove('hidden');
             }
 
             // 기본 버튼 표시
