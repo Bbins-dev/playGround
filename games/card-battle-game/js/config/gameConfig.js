@@ -3753,6 +3753,110 @@ const GameConfig = {
                 gameOver: 'gameOver'
             }
         }
+    },
+
+    // 공유 시스템 설정 (SNS 공유, URL 생성 등)
+    sharing: {
+        enabled: true,                          // 공유 기능 활성화
+
+        // 플랫폼별 설정
+        platforms: {
+            // Native Share API (모바일 우선)
+            native: {
+                enabled: true,                  // Native Share API 활성화
+                mobileOnly: true,               // 모바일에서만 표시 (PC는 플랫폼 버튼 사용)
+                title: 'Card Battle Game',      // 기본 공유 제목
+                fallbackToClipboard: true       // Native Share 지원 안 되면 URL 복사
+            },
+
+            // Twitter/X 공유
+            twitter: {
+                enabled: true,                  // Twitter 공유 활성화
+                baseUrl: 'https://twitter.com/intent/tweet',
+                hashtags: ['CardBattleGame', 'IndieGame', 'BrowserGame'],  // 해시태그 (자동 추가)
+                via: '',                        // 트위터 계정 (비어있으면 생략)
+                related: ''                     // 관련 계정 (비어있으면 생략)
+            },
+
+            // Facebook 공유
+            facebook: {
+                enabled: true,                  // Facebook 공유 활성화
+                baseUrl: 'https://www.facebook.com/sharer/sharer.php',
+                appId: ''                       // Facebook App ID (선택, Open Graph에 필요)
+            },
+
+            // Discord 공유 (향후 확장용)
+            discord: {
+                enabled: false,                 // Discord 공유 비활성화 (Phase 2)
+                webhookUrl: ''                  // Discord Webhook URL
+            },
+
+            // URL 복사 (Clipboard API)
+            clipboard: {
+                enabled: true,                  // 클립보드 복사 활성화
+                showToast: true,                // 복사 완료 토스트 메시지 표시
+                toastDuration: 2000             // 토스트 표시 시간 (ms)
+            }
+        },
+
+        // 메시지 템플릿 (다국어 지원)
+        messageTemplates: {
+            // 승리 모달 (스테이지 클리어)
+            victory: {
+                ko: '🎉 스테이지 {stage} 클리어!\n{element} 속성 덱으로 돌파했어요!\n\n당신도 도전해보세요! 👇',
+                en: '🎉 Stage {stage} Cleared!\n{element} element deck victory!\n\nTry it yourself! 👇',
+                ja: '🎉 ステージ {stage} クリア!\n{element} 属性デッキで突破!\n\nあなたも挑戦してみて! 👇'
+            },
+
+            // 패배 모달 (게임 오버)
+            defeat: {
+                ko: '⚔️ 스테이지 {stage}까지 도달!\n플레이 스타일: {style}\n총 대미지: {damage}\n\n나보다 더 갈 수 있어? 👇',
+                en: '⚔️ Reached Stage {stage}!\nPlay Style: {style}\nTotal Damage: {damage}\n\nCan you beat my record? 👇',
+                ja: '⚔️ ステージ {stage} まで到達!\nプレイスタイル: {style}\n総ダメージ: {damage}\n\n私より進める? 👇'
+            },
+
+            // 게임 클리어 모달 (40 스테이지 완료)
+            complete: {
+                ko: '🏆 게임 클리어! (40/40)\n총 턴 수: {turns}\n플레이 스타일: {style}\n\n당신도 완주에 도전해보세요! 👇',
+                en: '🏆 Game Complete! (40/40)\nTotal Turns: {turns}\nPlay Style: {style}\n\nYour turn to complete it! 👇',
+                ja: '🏆 ゲームクリア! (40/40)\n総ターン数: {turns}\nプレイスタイル: {style}\n\nあなたも挑戦してみて! 👇'
+            }
+        },
+
+        // URL 파라미터 설정
+        urlParams: {
+            enabled: true,                      // URL 파라미터 활성화
+            compress: true,                     // Base64 압축 사용 (긴 URL 방지)
+            maxLength: 2000,                    // URL 최대 길이 (브라우저 제한)
+            paramNames: {
+                share: 's',                     // 공유 타입 (victory/defeat/complete)
+                stage: 'st',                    // 스테이지 번호
+                player: 'p',                    // 플레이어 이름
+                element: 'e',                   // 속성
+                deck: 'd',                      // 덱 구성 (카드 ID 리스트)
+                style: 'ps',                    // 플레이 스타일
+                damage: 'dm',                   // 총 대미지
+                turns: 't'                      // 총 턴 수
+            }
+        },
+
+        // Open Graph 메타태그 설정 (SNS 미리보기)
+        openGraph: {
+            enabled: true,                      // Open Graph 활성화
+            defaultTitle: 'Card Battle Game',   // 기본 제목
+            defaultDescription: '5속성 카드 배틀 게임! 전략적인 덱 구성으로 40스테이지를 클리어하세요!',
+            defaultImage: '/images/og-default.png',  // 기본 이미지 (향후 추가)
+            dynamicImage: false,                // 동적 이미지 생성 (Phase 2 - Canvas to Image)
+            siteName: 'BinBox Games',           // 사이트 이름
+            type: 'website'                     // Open Graph 타입
+        },
+
+        // 공유 통계 (향후 확장용)
+        analytics: {
+            enabled: false,                     // 통계 추적 비활성화 (Phase 2)
+            trackPlatform: false,               // 플랫폼별 공유 추적
+            trackSuccess: false                 // 공유 성공/실패 추적
+        }
     }
 };
 
