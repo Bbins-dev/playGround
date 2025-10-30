@@ -2359,6 +2359,57 @@ body[data-game-state="menu"] .game-wrapper.status-border-oblivion {
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
+/* 인게임 공유 버튼 (손패 공유) */
+.share-btn {
+    position: fixed;
+    top: calc(20px + 50px + 20px + 64px + 20px); /* 볼륨 버튼 아래 (간격 20px) */
+    left: 20px;
+    width: 64px;
+    height: 64px;
+    font-size: 32px;
+
+    /* 중앙 정렬 */
+    display: none; /* 기본 숨김, 전투 중에만 표시 */
+    align-items: center;
+    justify-content: center;
+
+    /* 스타일 */
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.95), rgba(56, 142, 60, 0.95));
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    box-shadow:
+        0 4px 15px rgba(76, 175, 80, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+    color: white;
+    cursor: pointer;
+    z-index: var(--z-volume-button, 900);
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.share-btn:hover {
+    background: linear-gradient(135deg, rgba(56, 142, 60, 1), rgba(46, 125, 50, 1));
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow:
+        0 6px 20px rgba(76, 175, 80, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.share-btn.active {
+    background: linear-gradient(135deg, rgba(56, 142, 60, 0.95), rgba(46, 125, 50, 0.95));
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow:
+        0 6px 20px rgba(76, 175, 80, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.share-btn.hidden {
+    display: none !important;
+}
+
 /* 인게임 볼륨 팝업 패널 */
 .volume-popup-panel {
     position: fixed;
