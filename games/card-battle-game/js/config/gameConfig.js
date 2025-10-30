@@ -1435,7 +1435,7 @@ const GameConfig = {
                 cards: [
                     { id: 'scorched_shield', count: 1 },  // 작열방패
                     { id: 'ignite', count: 1 },           // 발화
-                    { id: 'fireball', count: 1 }          // 화염구
+                    { id: 'flame_throw', count: 1 }       // 불꽃 던지기
                 ]
             },
             14: {
@@ -1458,8 +1458,9 @@ const GameConfig = {
             16: {
                 hp: 160,
                 cards: [
-                    { id: 'red_pendant', count: 1 },       // 붉은 펜던트
-                    { id: 'flame_ascension', count: 2 }    // 화염승천 x2
+                    { id: 'nutrient_supplement', count: 1 }, // 영양제
+                    { id: 'red_pendant', count: 1 },         // 붉은 펜던트
+                    { id: 'flame_ascension', count: 2 }      // 화염승천 x2
                 ]
             },
             17: {
@@ -1486,16 +1487,17 @@ const GameConfig = {
                 cards: [
                     { id: 'red_pendant', count: 1 },           // 붉은 펜던트
                     { id: 'indomitable_gauntlet', count: 1 },  // 불굴의 장갑
-                    { id: 'karura_strike', count: 1 }          // 카루라 일격
+                    { id: 'fireball', count: 1 },              // 화염구
+                    { id: 'miracle_revival', count: 1 }        // 기사회생
                 ]
             },
             20: {
                 hp: 300,
                 cards: [
+                    { id: 'one_times_hundred', count: 1 }, // 1x100
+                    { id: 'sharpen', count: 1 },           // 벼리기
                     { id: 'karura_strike', count: 1 },     // 카루라 일격
-                    { id: 'lava_prison', count: 1 },       // 용암 감옥
-                    { id: 'powder_keg', count: 1 },        // 화약통 투척
-                    { id: 'sharpen', count: 1 }            // 벼리기
+                    { id: 'lava_prison', count: 1 }        // 용암 감옥
                 ]
             },
             21: {
@@ -1895,7 +1897,7 @@ const GameConfig = {
                 hp: 5500,
                 cards: [
                     { id: 'purification', count: 1 },      // 정화
-                    { id: 'moisture_absorption', count: 2 }, // 수분흡수 x2
+                    { id: 'moisture_absorption', count: 4 }, // 수분흡수 x4
                     { id: 'tsunami', count: 5 }            // 쓰나미 x5
                 ]
             },
