@@ -106,6 +106,12 @@ class BattleSystem {
             } else {
                 console.warn('[BattleSystem] CardRenderer 또는 i18nSystem이 없어 ShareImageGenerator를 초기화할 수 없습니다.');
             }
+
+            // ShareLandingPage 초기화
+            if (window.ShareLandingPage) {
+                this.shareLandingPage = new ShareLandingPage(this.gameManager);
+                console.log('[BattleSystem] ShareLandingPage 초기화 완료');
+            }
         }
 
         // EffectSystem에 AudioSystem 주입 (사운드 통합)
@@ -1952,8 +1958,16 @@ class BattleSystem {
         // 현재 손패 (player.hand)
         const currentHand = this.player.hand || [];
 
-        // ShareSystem의 shareHandImage 메서드 호출
-        await this.shareSystem.shareHandImage(currentHand, gameState);
+        // 랜딩 페이지 공유 데이터 생성
+        const shareData = {
+            type: 'battle',
+            stage: gameState.stage,
+            cards: currentHand,
+            element: gameState.element
+        };
+
+        // ShareSystem의 shareWithLandingPage 메서드 호출
+        await this.shareSystem.shareWithLandingPage(shareData);
     }
 
     /**
