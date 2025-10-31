@@ -480,7 +480,15 @@ async function initializeI18n() {
         return;
     }
 
-    const savedLang = localStorage.getItem('selectedLanguage') || 'ko';
+    // URL 파라미터 우선, 그 다음 localStorage, 마지막으로 기본값
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlLang = urlParams.get('lang');
+    const savedLang = urlLang || localStorage.getItem('selectedLanguage') || 'ko';
+
+    // URL에서 언어를 읽었으면 localStorage에도 저장
+    if (urlLang && ['ko', 'en', 'ja'].includes(urlLang)) {
+        localStorage.setItem('selectedLanguage', urlLang);
+    }
 
     // 기존 window.i18n 인스턴스 사용 (새로 생성하지 않음)
     if (!window.i18n) {
@@ -497,7 +505,7 @@ async function initializeI18n() {
         languageSelect.value = savedLang;
     }
 
-    console.log('[Game] i18n initialized successfully');
+    console.log('[Game] i18n initialized with language:', savedLang);
 }
 
 function changeLanguage(lang) {
