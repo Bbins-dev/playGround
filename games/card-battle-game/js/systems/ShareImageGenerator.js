@@ -36,7 +36,7 @@ class ShareImageGenerator {
             throw new Error('Hand image generation is disabled');
         }
 
-        // 캔버스 생성
+        // 캔버스 생성 (createCanvas 사용 - 단일 진실의 원천)
         const canvas = this.createCanvas();
         const ctx = canvas.getContext('2d');
 
@@ -44,20 +44,18 @@ class ShareImageGenerator {
         this.renderBackground(ctx, canvas, gameState.element || 'normal');
 
         // 타이틀 렌더링
-        const titleY = layout.titleY ?? 50;
+        const titleY = layout.titleY ?? 80;
         this.renderTitle(ctx, canvas, this.i18n?.t('auto_battle_card_game.ui.share_hand_title') || '🃏 My Hand', titleY);
 
         // 스테이지 정보 렌더링
         const subtitle = `Stage ${gameState.stage || '?'}`;
-        const subtitleY = layout.subtitleY ?? 115;
+        const subtitleY = layout.subtitleY ?? 150;
         this.renderSubtitle(ctx, canvas, subtitle, subtitleY);
 
-        // 카드 렌더링 (중앙 배치)
-        const visibleCards = cards.slice(0, layout.maxCards || 5);
-        const cardStartY = layout.cardStartY ?? 150;
+        // 카드 렌더링 (여백 없이 꽉 채움)
+        const visibleCards = cards.slice(0, layout.maxCards || 10);
+        const cardStartY = layout.cardStartY ?? 250;
         await this.renderCards(ctx, canvas, visibleCards, {
-            columns: layout.columns || 3,
-            spacing: layout.cardSpacing || 15,
             startY: cardStartY
         });
 
@@ -93,6 +91,7 @@ class ShareImageGenerator {
             throw new Error('Victory image generation is disabled');
         }
 
+        // 캔버스 생성 (createCanvas 사용 - 단일 진실의 원천)
         const canvas = this.createCanvas();
         const ctx = canvas.getContext('2d');
 
@@ -104,17 +103,15 @@ class ShareImageGenerator {
             this.renderBadge(ctx, canvas, layout.badgeText || '🎉 CLEAR!');
         }
 
-        // 스테이지 정보 (뱃지와 겹치지 않도록 y=90)
+        // 스테이지 정보
         let title = this.i18n?.t('auto_battle_card_game.ui.stage_cleared') || 'Stage {stage} Clear!';
         title = title.replace('{stage}', stage);
-        this.renderTitle(ctx, canvas, title, 90);
+        this.renderTitle(ctx, canvas, title, 150);
 
-        // 카드 렌더링
-        const visibleCards = cards.slice(0, layout.maxCards || 3);
+        // 카드 렌더링 (hand와 동일)
+        const visibleCards = cards.slice(0, layout.maxCards || 10);
         await this.renderCards(ctx, canvas, visibleCards, {
-            columns: layout.columns || 3,
-            spacing: layout.cardSpacing || 20,
-            startY: 180
+            startY: 250
         });
 
         // Footer
@@ -137,6 +134,7 @@ class ShareImageGenerator {
             throw new Error('Defeat image generation is disabled');
         }
 
+        // 캔버스 생성 (createCanvas 사용 - 단일 진실의 원천)
         const canvas = this.createCanvas();
         const ctx = canvas.getContext('2d');
 
@@ -146,19 +144,17 @@ class ShareImageGenerator {
         // 타이틀
         let title = this.i18n?.t('auto_battle_card_game.ui.stage_reached_template') || 'Reached Stage {stage}';
         title = title.replace('{stage}', stage);
-        this.renderTitle(ctx, canvas, title);
+        this.renderTitle(ctx, canvas, title, 80);
 
         // 통계 정보
         if (layout.showStats) {
-            this.renderStats(ctx, canvas, stats, 90);
+            this.renderStats(ctx, canvas, stats, 180);
         }
 
-        // 카드 렌더링
-        const visibleCards = cards.slice(0, layout.maxCards || 3);
+        // 카드 렌더링 (hand와 동일)
+        const visibleCards = cards.slice(0, layout.maxCards || 10);
         await this.renderCards(ctx, canvas, visibleCards, {
-            columns: layout.columns || 3,
-            spacing: layout.cardSpacing || 20,
-            startY: 200
+            startY: 250
         });
 
         // Footer
@@ -179,6 +175,7 @@ class ShareImageGenerator {
             throw new Error('Deck image generation is disabled');
         }
 
+        // 캔버스 생성 (createCanvas 사용 - 단일 진실의 원천)
         const canvas = this.createCanvas();
         const ctx = canvas.getContext('2d');
 
@@ -187,14 +184,12 @@ class ShareImageGenerator {
 
         // 타이틀
         const elementName = element ? element.charAt(0).toUpperCase() + element.slice(1) : 'Normal';
-        this.renderTitle(ctx, canvas, `🃏 ${elementName} Deck`);
+        this.renderTitle(ctx, canvas, `🃏 ${elementName} Deck`, 80);
 
-        // 카드 렌더링 (2×5 그리드)
+        // 카드 렌더링 (hand와 동일)
         const visibleCards = cards.slice(0, layout.maxCards || 10);
         await this.renderCards(ctx, canvas, visibleCards, {
-            columns: layout.columns || 5,
-            spacing: layout.cardSpacing || 10,
-            startY: 120
+            startY: 200
         });
 
         // Footer
@@ -206,12 +201,14 @@ class ShareImageGenerator {
     // ==================== Helper Methods ====================
 
     /**
-     * 캔버스 생성
+     * 캔버스 생성 (단일 진실의 원천)
      * @returns {HTMLCanvasElement}
      */
     createCanvas() {
-        const width = this.config?.dimensions?.width || 1200;
-        const height = this.config?.dimensions?.height || 630;
+        // landingPage dimensions 우선 사용 (모든 공유 타입에 동일 적용)
+        const landingDimensions = GameConfig?.sharing?.landingPage?.dimensions;
+        const width = landingDimensions?.width || this.config?.dimensions?.width || 1200;
+        const height = landingDimensions?.height || this.config?.dimensions?.height || 1000;
 
         const canvas = document.createElement('canvas');
         canvas.width = width;
@@ -247,8 +244,8 @@ class ShareImageGenerator {
      * @param {string} text
      * @param {number} y
      */
-    renderTitle(ctx, canvas, text, y = 50) {
-        const fontSize = this.config?.overlay?.fontSize?.title || 36;
+    renderTitle(ctx, canvas, text, y = 80) {
+        const fontSize = this.config?.overlay?.fontSize?.title || 64;  // 큰 폰트
         const color = this.config?.overlay?.textColor || '#ffffff';
 
         ctx.fillStyle = color;
@@ -269,7 +266,7 @@ class ShareImageGenerator {
      * @param {number} y
      */
     renderSubtitle(ctx, canvas, text, y) {
-        const fontSize = this.config?.overlay?.fontSize?.subtitle || 24;
+        const fontSize = this.config?.overlay?.fontSize?.subtitle || 48;  // 큰 폰트
         const color = this.config?.overlay?.textColor || '#ffffff';
 
         ctx.fillStyle = color;
@@ -287,23 +284,53 @@ class ShareImageGenerator {
      * @param {Object} options - { columns, spacing, startY }
      */
     async renderCards(ctx, canvas, cards, options = {}) {
-        const { columns = 3, spacing = 15, startY = 150 } = options;
-        const cardWidth = this.config?.dimensions?.cardWidth || 150;
-        const cardHeight = this.config?.dimensions?.cardHeight || 210;
+        // GameConfig에서 landingPage layout 설정 가져오기
+        const landingConfig = GameConfig?.sharing?.landingPage?.layout || {};
+        const {
+            columns = landingConfig.cardsPerRow || 5,
+            rows = landingConfig.rows || 2,
+            spacing = landingConfig.cardSpacing || 0,        // 여백 없이
+            rowSpacing = landingConfig.rowSpacing || 20,
+            startY = 150
+        } = options;
 
-        const rows = Math.ceil(cards.length / columns);
-        const totalWidth = columns * cardWidth + (columns - 1) * spacing;
-        const totalHeight = rows * cardHeight + (rows - 1) * spacing;
+        // landingPage dimensions 사용 (큰 카드 크기)
+        const landingDimensions = GameConfig?.sharing?.landingPage?.dimensions;
+        const cardWidth = landingDimensions?.cardWidth || this.config?.dimensions?.cardWidth || 230;
+        const cardHeight = landingDimensions?.cardHeight || this.config?.dimensions?.cardHeight || 322;
 
-        const startX = (canvas.width - totalWidth) / 2;
-        const gridStartY = startY;
-
+        // 2행 레이아웃 (Renderer.js 플레이어 손패와 완전히 동일)
         for (let i = 0; i < cards.length; i++) {
-            const col = i % columns;
-            const row = Math.floor(i / columns);
+            let targetRow, cardIndexInRow;
 
-            const x = startX + col * (cardWidth + spacing);
-            const y = gridStartY + row * (cardHeight + spacing);
+            if (cards.length <= 5) {
+                // 5장 이하: 모두 1행
+                targetRow = 0;
+                cardIndexInRow = i;
+            } else {
+                // 6장 이상: n-5장은 위, 5장은 아래
+                const newCardsCount = cards.length - 5;
+                if (i < newCardsCount) {
+                    targetRow = 0;  // 윗줄 (새 카드)
+                    cardIndexInRow = i;
+                } else {
+                    targetRow = 1;  // 아랫줄 (오래된 5장)
+                    cardIndexInRow = i - newCardsCount;
+                }
+            }
+
+            // 이 행에 있는 카드 수 계산
+            const cardsInThisRow = targetRow === 0
+                ? (cards.length <= 5 ? cards.length : cards.length - 5)  // 윗줄
+                : 5;  // 아랫줄은 항상 5장
+
+            // 중앙 정렬 계산
+            const totalWidth = cardsInThisRow * cardWidth + (cardsInThisRow - 1) * spacing;
+            const startX = (canvas.width - totalWidth) / 2;
+
+            // 카드 위치 계산
+            const x = startX + cardIndexInRow * (cardWidth + spacing);
+            const y = startY + targetRow * (cardHeight + rowSpacing);
 
             // CardRenderer 사용
             this.cardRenderer.renderCard(ctx, cards[i], x, y, cardWidth, cardHeight, {
