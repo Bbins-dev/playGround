@@ -56,7 +56,9 @@
   },
   "auto_battle_card_game": {
     "title": "Auto Battle Card Dual",
-    "subtitle": "Turn-based Auto Battle Card Game!",
+    "subtitle": "5-Element Auto Battle Card Game",
+    "full_title": "Auto Battle Card Dual - 5-Element Auto Battle Card Game",
+    "og_description": "Clear 60 stages with strategic deck building! Browser card battle game with 5 elements: Fire, Water, Electric, Poison, and Normal.",
     "version": {
       "early_access_beta": "Early Access Beta"
     },
@@ -66,12 +68,6 @@
     "page_title": "Auto Battle Card Dual - BinBox Games",
     "description": "Turn-based auto battle card game! Strategically arrange your card order and use the synergy of 5 different elements to achieve victory!",
     "genre": "Strategy",
-    "auto_battle_card_game": {
-      "title": "Auto Battle Card Dual",
-      "subtitle": "5-Element Auto Battle Card Game",
-      "full_title": "Auto Battle Card Dual - 5-Element Auto Battle Card Game",
-      "og_description": "Clear 60 stages with strategic deck building! Browser card battle game with 5 elements: Fire, Water, Electric, Poison, and Normal."
-    },
     "ui": {
       "loading_title": "⚔️ Auto Battle Card Dual",
       "loading_message": "Loading Assets...",
