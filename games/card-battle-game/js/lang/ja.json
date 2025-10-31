@@ -54,24 +54,21 @@
       }
     }
   },
+  "version": {
+    "early_access_beta": "アーリーアクセスベータ"
+  },
+  "credits": {
+    "text": "© {year} {company}"
+  },
+  "page_title": "オートバトルカード対戦 - BinBox Games",
+  "description": "ターン制自動戦闘カードゲーム！カードの順序を戦略的に配置し、5つの属性の相性を活用して勝利を目指そう！",
+  "genre": "戦略",
   "auto_battle_card_game": {
     "title": "オートバトルカード対戦",
-    "subtitle": "ターン制自動戦闘カードゲーム！",
-    "version": {
-      "early_access_beta": "アーリーアクセスベータ"
-    },
-    "credits": {
-      "text": "© {year} {company}"
-    },
-    "page_title": "オートバトルカード対戦 - BinBox Games",
-    "description": "ターン制自動戦闘カードゲーム！カードの順序を戦略的に配置し、5つの属性の相性を活用して勝利を目指そう！",
-    "genre": "戦略",
-    "auto_battle_card_game": {
-      "title": "オートバトルカード対戦",
-      "subtitle": "5属性オートバトルカードゲーム",
-      "full_title": "オートバトルカード対戦 - 5属性オートバトルカードゲーム",
-      "og_description": "戦略的なデッキ構成で60ステージをクリアしよう！火、水、電気、毒、ノーマルの5つの属性で戦うブラウザカードゲーム。"
-    },
+    "subtitle": "5属性オートバトルカードゲーム",
+    "full_title": "オートバトルカード対戦 - 5属性オートバトルカードゲーム",
+    "og_description": "戦略的なデッキ構成で60ステージをクリアしよう！火、水、電気、毒、ノーマルの5つの属性で戦うブラウザカードゲーム。"
+  },
     "ui": {
       "loading_title": "⚔️ オートバトルカード対戦",
       "loading_message": "読み込み中...",
