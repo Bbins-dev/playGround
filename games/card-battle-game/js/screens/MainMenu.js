@@ -250,7 +250,7 @@ class MainMenu {
         ctx.fillStyle = GameConfig.colors?.ui?.text?.secondary || '#E0E0E0';
         ctx.font = `${GameConfig.fonts?.weights?.bold || 'bold'} ${subtitleConfig.size}px ${GameConfig.fonts?.families?.main || 'Arial'}`;
         const gameDescription = (typeof getI18nText === 'function') ?
-            getI18nText('auto_battle_card_game.subtitle') || '턴 기반 자동 전투 카드 게임!' : '턴 기반 자동 전투 카드 게임!';
+            getI18nText('auto_battle_card_game.subtitle') || '5속성 자동전투 카드게임' : '5속성 자동전투 카드게임';
         ctx.strokeStyle = GameConfig.colors?.ui?.text?.outline || '#000000';
         ctx.lineWidth = 1;
         const subtitleY = titleY + subtitleConfig.offsetY;
