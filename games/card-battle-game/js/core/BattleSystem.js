@@ -1935,6 +1935,11 @@ class BattleSystem {
      * 손패 공유 핸들러 (배틀 중 공유 버튼 클릭 시)
      */
     async handleShareHand() {
+        // 버튼 클릭 사운드 재생
+        if (this.gameManager?.audioSystem) {
+            this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+        }
+
         if (!this.player || !this.enemy) {
             console.warn('[BattleSystem] 전투가 진행 중이 아닙니다.');
             return;
