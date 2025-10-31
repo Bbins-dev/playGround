@@ -54,24 +54,21 @@
       }
     }
   },
+  "version": {
+    "early_access_beta": "얼리 액세스 베타"
+  },
+  "credits": {
+    "text": "© {year} {company}"
+  },
+  "page_title": "자동전투 카드대전 - BinBox Games",
+  "description": "턴 기반 자동 전투 카드 게임! 카드 순서를 전략적으로 배치하고 5가지 속성의 상성을 활용하여 승리하세요!",
+  "genre": "전략",
   "auto_battle_card_game": {
     "title": "자동전투 카드대전",
-    "subtitle": "턴 기반 자동 전투 카드 게임!",
-    "version": {
-      "early_access_beta": "얼리 액세스 베타"
-    },
-    "credits": {
-      "text": "© {year} {company}"
-    },
-    "page_title": "자동전투 카드대전 - BinBox Games",
-    "description": "턴 기반 자동 전투 카드 게임! 카드 순서를 전략적으로 배치하고 5가지 속성의 상성을 활용하여 승리하세요!",
-    "genre": "전략",
-    "auto_battle_card_game": {
-      "title": "자동전투 카드대전",
-      "subtitle": "5속성 자동전투 카드게임",
-      "full_title": "자동전투 카드대전 - 5속성 자동전투 카드게임",
-      "og_description": "전략적인 덱 구성으로 60스테이지를 클리어하세요! 불, 물, 전기, 독, 노멀 5가지 속성의 카드로 전투하는 브라우저 게임."
-    },
+    "subtitle": "5속성 자동전투 카드게임",
+    "full_title": "자동전투 카드대전 - 5속성 자동전투 카드게임",
+    "og_description": "전략적인 덱 구성으로 60스테이지를 클리어하세요! 불, 물, 전기, 독, 노멀 5가지 속성의 카드로 전투하는 브라우저 게임."
+  },
     "ui": {
       "loading_title": "⚔️ 자동전투 카드대전",
       "loading_message": "게임 로딩 중...",
