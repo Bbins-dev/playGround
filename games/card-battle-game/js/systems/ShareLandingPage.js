@@ -24,8 +24,18 @@ class ShareLandingPage {
         // 즉시 URL 파라미터 체크
         const urlParams = new URLSearchParams(window.location.search);
         const shareParam = urlParams.get('share');
+        const langParam = urlParams.get('lang');
 
         console.log('[ShareLandingPage] initialize() 호출, shareParam:', shareParam ? 'exists' : 'none');
+
+        // 언어 감지 및 설정
+        if (langParam && ['ko', 'en', 'ja'].includes(langParam)) {
+            console.log('[ShareLandingPage] 언어 파라미터 감지:', langParam);
+            localStorage.setItem('selectedLanguage', langParam);
+            if (window.i18n) {
+                window.i18n.setLanguage(langParam);
+            }
+        }
 
         if (shareParam) {
             console.log('[ShareLandingPage] 공유 링크 감지:', shareParam.substring(0, 20) + '...');
@@ -132,7 +142,8 @@ class ShareLandingPage {
         ctx.font = '48px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('🎮 손패 이미지 로딩 중...', width / 2, height / 2);
+        const loadingText = I18nHelper?.getText('auto_battle_card_game.ui.share_image_loading_message') || '🎮 Loading hand image...';
+        ctx.fillText(loadingText, width / 2, height / 2);
     }
 
     /**
@@ -230,9 +241,11 @@ class ShareLandingPage {
         ctx.font = '24px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('⚠️ 이미지 로딩 실패', width / 2, height / 2 - 20);
+        const errorTitle = I18nHelper?.getText('auto_battle_card_game.ui.share_image_load_failed_title') || '⚠️ Image Load Failed';
+        ctx.fillText(errorTitle, width / 2, height / 2 - 20);
         ctx.font = '18px Arial';
-        ctx.fillText('게임을 시작하시려면 아래 버튼을 클릭하세요', width / 2, height / 2 + 20);
+        const errorMessage = I18nHelper?.getText('auto_battle_card_game.ui.share_image_load_failed_message') || 'Click the button below to start the game';
+        ctx.fillText(errorMessage, width / 2, height / 2 + 20);
     }
 
     /**
@@ -400,15 +413,18 @@ class ShareLandingPage {
             );
         }
 
-        // URL 파라미터 제거하고 메인 게임으로 이동
+        // 현재 언어 가져오기
+        const currentLang = localStorage.getItem('selectedLanguage') || window.i18n?.currentLanguage || 'ko';
+
+        // URL 파라미터 제거하고 메인 게임으로 이동 (언어는 유지)
         const baseUrl = GameConfig?.sharing?.baseUrl || window.location.origin + window.location.pathname;
 
-        // 같은 도메인이면 파라미터만 제거
+        // 같은 도메인이면 파라미터만 제거하고 언어 파라미터 추가
         if (window.location.origin === new URL(baseUrl).origin) {
-            window.location.href = window.location.pathname;
+            window.location.href = `${window.location.pathname}?lang=${currentLang}`;
         } else {
-            // 다른 도메인이면 baseUrl로 이동
-            window.location.href = baseUrl;
+            // 다른 도메인이면 baseUrl로 이동 (언어 파라미터 포함)
+            window.location.href = `${baseUrl}?lang=${currentLang}`;
         }
     }
 
