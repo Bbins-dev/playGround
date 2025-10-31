@@ -694,6 +694,11 @@ class GameManager {
             this.volumeControl.hideIngameVolumeButton();
         }
 
+        // 인게임 공유 버튼 숨기기 (전투 중에만 표시)
+        if (this.battleSystem) {
+            this.battleSystem.toggleShareButton(false);
+        }
+
         // UI Manager를 통해 화면 전환
         if (this.uiManager) {
             this.uiManager.switchScreen('menu');
