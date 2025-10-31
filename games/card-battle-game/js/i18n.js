@@ -33,7 +33,9 @@ class I18n {
 
     async loadLanguage(lang) {
         try {
-            const response = await fetch(`${this.basePath}${lang}.json`);
+            // 캐시 버스팅을 위한 버전 파라미터 추가
+            const version = (typeof GameConfig !== 'undefined' && GameConfig.version) ? GameConfig.version : Date.now();
+            const response = await fetch(`${this.basePath}${lang}.json?v=${version}`);
             if (response.ok) {
                 this.translations[lang] = await response.json();
             } else {
