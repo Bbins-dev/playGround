@@ -142,12 +142,6 @@ class BattleSystem {
         const currentPlayer = this.currentTurn === 'player' ? this.player : this.enemy;
         const isPlayerTurn = this.currentTurn === 'player';
 
-        // 턴 배경 인디케이터 업데이트 (화살표 패턴 애니메이션)
-        if (this.gameManager && this.gameManager.uiManager) {
-            this.gameManager.uiManager.updateTurnBackground(isPlayerTurn);
-        }
-
-
         this.battlePhase = 'turnTransition';
         this.turnProgress.currentPlayer = currentPlayer;
         this.turnProgress.currentCardIndex = 0;
@@ -1935,6 +1929,11 @@ class BattleSystem {
      * 손패 공유 핸들러 (배틀 중 공유 버튼 클릭 시)
      */
     async handleShareHand() {
+        // 버튼 클릭 사운드 재생
+        if (this.gameManager?.audioSystem) {
+            this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+        }
+
         if (!this.player || !this.enemy) {
             console.warn('[BattleSystem] 전투가 진행 중이 아닙니다.');
             return;

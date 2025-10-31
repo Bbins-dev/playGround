@@ -429,28 +429,28 @@ class Renderer {
     renderBattleStatus(battleSystem) {
         const info = battleSystem.getBattleInfo();
 
-        // 중앙 영역에 턴 정보 표시
-        const centerX = this.width / 2;
-        const centerY = this.height / 2;
+        // 중앙 영역에 턴 정보 표시 - 숨김 (DOM 기반 턴 인디케이터 사용)
+        // const centerX = this.width / 2;
+        // const centerY = this.height / 2;
 
-        if (info.phase === 'cardActivation') {
-            const text = I18nHelper.getText('auto_battle_card_game.ui.card_activating') || '카드 발동 중...';
-            this.drawBattlePhase(text, centerX, centerY);
-        } else if (info.phase === 'turnTransition') {
-            let turnText;
-            if (info.currentTurn === 'player') {
-                // 플레이어 턴의 경우 플레이어 이름을 포함한 템플릿 사용
-                const playerTurnTemplate = I18nHelper.getText('auto_battle_card_game.ui.player_turn_template') || '{name}의 턴';
-                const playerName = info.player ? info.player.name : (I18nHelper.getText('auto_battle_card_game.ui.default_player_name') || '플레이어');
-                turnText = playerTurnTemplate.replace('{name}', playerName);
-            } else {
-                // 적 턴의 경우 적 이름을 포함한 템플릿 사용
-                const enemyTurnTemplate = I18nHelper.getText('auto_battle_card_game.ui.enemy_turn_template') || '{name}의 턴';
-                const enemyName = info.enemy ? info.enemy.name : (I18nHelper.getText('auto_battle_card_game.ui.default_enemy_name') || '적');
-                turnText = enemyTurnTemplate.replace('{name}', enemyName);
-            }
-            this.drawBattlePhase(turnText, centerX, centerY);
-        }
+        // if (info.phase === 'cardActivation') {
+        //     const text = I18nHelper.getText('auto_battle_card_game.ui.card_activating') || '카드 발동 중...';
+        //     this.drawBattlePhase(text, centerX, centerY);
+        // } else if (info.phase === 'turnTransition') {
+        //     let turnText;
+        //     if (info.currentTurn === 'player') {
+        //         // 플레이어 턴의 경우 플레이어 이름을 포함한 템플릿 사용
+        //         const playerTurnTemplate = I18nHelper.getText('auto_battle_card_game.ui.player_turn_template') || '{name}의 턴';
+        //         const playerName = info.player ? info.player.name : (I18nHelper.getText('auto_battle_card_game.ui.default_player_name') || '플레이어');
+        //         turnText = playerTurnTemplate.replace('{name}', playerName);
+        //     } else {
+        //         // 적 턴의 경우 적 이름을 포함한 템플릿 사용
+        //         const enemyTurnTemplate = I18nHelper.getText('auto_battle_card_game.ui.enemy_turn_template') || '{name}의 턴';
+        //         const enemyName = info.enemy ? info.enemy.name : (I18nHelper.getText('auto_battle_card_game.ui.default_enemy_name') || '적');
+        //         turnText = enemyTurnTemplate.replace('{name}', enemyName);
+        //     }
+        //     this.drawBattlePhase(turnText, centerX, centerY);
+        // }
     }
 
     // 전투 단계 표시

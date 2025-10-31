@@ -1634,17 +1634,20 @@ class GameManager {
             });
         }
 
-        // 턴 배경 인디케이터 설정 - Configuration-Driven
-        if (GameConfig.battleHUD && GameConfig.battleHUD.turnIndicator && GameConfig.battleHUD.turnIndicator.arrows) {
-            const arrows = GameConfig.battleHUD.turnIndicator.arrows;
-            root.style.setProperty('--turn-arrow-size', `${arrows.size}px`);
-            root.style.setProperty('--turn-arrow-spacing', `${arrows.spacing}px`);
-            root.style.setProperty('--turn-arrow-opacity', arrows.opacity);
-            root.style.setProperty('--turn-arrow-blur', `${arrows.blur}px`);
-            root.style.setProperty('--turn-arrow-player-color', arrows.playerColor);
-            root.style.setProperty('--turn-arrow-enemy-color', arrows.enemyColor);
-            root.style.setProperty('--turn-arrow-animation-duration', `${arrows.animationDuration}s`);
-            root.style.setProperty('--turn-arrow-animation-distance', `${arrows.animationDistance}px`);
+        // 턴 메시지 인디케이터 설정 - Configuration-Driven
+        if (GameConfig.battleHUD?.turnIndicator?.message) {
+            const msg = GameConfig.battleHUD.turnIndicator.message;
+            root.style.setProperty('--turn-message-font-size', `${msg.fontSize}px`);
+            root.style.setProperty('--turn-message-min-width', `${msg.minWidth}px`);
+            root.style.setProperty('--turn-message-padding', `${msg.padding}px`);
+            root.style.setProperty('--turn-message-player-color', msg.playerColor);
+            root.style.setProperty('--turn-message-enemy-color', msg.enemyColor);
+            root.style.setProperty('--turn-message-animation-duration', `${msg.animationDuration}s`);
+
+            if (msg.textShadow) {
+                const shadow = `${msg.textShadow.offsetX}px ${msg.textShadow.offsetY}px ${msg.textShadow.blur}px ${msg.textShadow.color}`;
+                root.style.setProperty('--turn-message-text-shadow', shadow);
+            }
         }
 
         // z-index 레이어 동기화 - Configuration-Driven (하드코딩 방지)
