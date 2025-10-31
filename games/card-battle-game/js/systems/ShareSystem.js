@@ -307,6 +307,10 @@ class ShareSystem {
             }
         }
 
+        // 언어 (i18n 지원)
+        const currentLang = window.i18n?.currentLanguage || localStorage.getItem('selectedLanguage') || 'ko';
+        params.set(paramNames.lang || 'lang', currentLang);
+
         const fullUrl = `${baseUrl}?${params.toString()}`;
 
         // URL 길이 체크
