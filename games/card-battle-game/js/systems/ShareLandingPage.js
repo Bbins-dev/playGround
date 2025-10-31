@@ -106,21 +106,30 @@ class ShareLandingPage {
         if (!this.landingCanvas) return;
 
         const ctx = this.landingCanvas.getContext('2d');
-        const width = 600;
-        const height = 400;
+        // GameConfig에서 캔버스 크기 가져오기
+        const dimensions = GameConfig?.sharing?.landingPage?.dimensions || { width: 1200, height: 1000 };
+        const width = dimensions.width;
+        const height = dimensions.height;
 
         this.landingCanvas.width = width;
         this.landingCanvas.height = height;
-        this.landingCanvas.style.width = `${width}px`;
-        this.landingCanvas.style.height = `${height}px`;
+
+        // CSS 스타일은 화면에 맞게 축소 (비율 유지)
+        const maxWidth = GameConfig?.sharing?.landingPage?.imageMaxWidth || 600;
+        const scale = Math.min(1, maxWidth / width);
+        const displayWidth = width * scale;
+        const displayHeight = height * scale;
+
+        this.landingCanvas.style.width = `${displayWidth}px`;
+        this.landingCanvas.style.height = `${displayHeight}px`;
 
         // 배경
         ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         ctx.fillRect(0, 0, width, height);
 
-        // 로딩 텍스트
+        // 로딩 텍스트 (큰 폰트)
         ctx.fillStyle = '#ffffff';
-        ctx.font = '24px Arial';
+        ctx.font = '48px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText('🎮 손패 이미지 로딩 중...', width / 2, height / 2);
@@ -329,27 +338,27 @@ class ShareLandingPage {
             const url = URL.createObjectURL(imageBlob);
 
             img.onload = () => {
-                // Canvas 크기 조정
+                // 캔버스는 원본 크기로 설정 (고해상도 유지)
+                this.landingCanvas.width = img.width;
+                this.landingCanvas.height = img.height;
+
+                // CSS 스타일은 화면에 맞게 축소 (비율 유지)
                 const maxWidth = GameConfig?.sharing?.landingPage?.imageMaxWidth || 600;
-                const aspectRatio = img.height / img.width;
-                const canvasWidth = Math.min(img.width, maxWidth);
-                const canvasHeight = canvasWidth * aspectRatio;
+                const scale = Math.min(1, maxWidth / img.width);
+                const displayWidth = img.width * scale;
+                const displayHeight = img.height * scale;
 
-                this.landingCanvas.width = canvasWidth;
-                this.landingCanvas.height = canvasHeight;
+                this.landingCanvas.style.width = `${displayWidth}px`;
+                this.landingCanvas.style.height = `${displayHeight}px`;
 
-                // Canvas 스타일 설정 (CSS 크기)
-                this.landingCanvas.style.width = `${canvasWidth}px`;
-                this.landingCanvas.style.height = `${canvasHeight}px`;
-
-                // 이미지 그리기
+                // 이미지 그리기 (원본 크기 그대로)
                 const ctx = this.landingCanvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+                ctx.drawImage(img, 0, 0);
 
                 // 메모리 해제
                 URL.revokeObjectURL(url);
 
-                console.log('[ShareLandingPage] 이미지 렌더링 완료');
+                console.log('[ShareLandingPage] 이미지 렌더링 완료:', img.width, 'x', img.height, '→ 표시:', displayWidth, 'x', displayHeight);
             };
 
             img.onerror = () => {
