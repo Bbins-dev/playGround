@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.4.7',                        // 버전 넘버
+        number: '0.4.8',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -3844,9 +3844,9 @@ const GameConfig = {
 
             // 배틀 중 공유 (인게임 전투 상황)
             battle: {
-                ko: '🎴 스테이지 {stage} 도전 중!\n{element} 속성 덱으로 전투 중!\n\n나와 함께 도전해보세요! 👇',
-                en: '🎴 Challenging Stage {stage}!\nBattling with {element} deck!\n\nJoin the challenge! 👇',
-                ja: '🎴 ステージ {stage} 挑戦中!\n{element} 属性デッキで戦闘中!\n\n一緒に挑戦しよう! 👇'
+                ko: '⚔️ 스테이지 {stage} 도전 중!\n{element} 속성 덱으로 전투 중!\n\n나와 함께 도전해보세요! 👇',
+                en: '⚔️ Challenging Stage {stage}!\nBattling with {element} deck!\n\nJoin the challenge! 👇',
+                ja: '⚔️ ステージ {stage} 挑戦中!\n{element} 属性デッキで戦闘中!\n\n一緒に挑戦しよう! 👇'
             }
         },
 
@@ -3867,15 +3867,30 @@ const GameConfig = {
             }
         },
 
+        // 게임 메타데이터 (단일 진실의 원천)
+        metadata: {
+            game: {
+                // 게임 기본 정보 (상수)
+                totalStages: 60,                // 총 스테이지 수
+                elementCount: 5,                // 속성 개수
+                genre: 'strategy',              // 장르
+
+                // i18n 키 참조 (다국어 지원)
+                titleKey: 'auto_battle_card_game.title',              // 짧은 제목
+                subtitleKey: 'auto_battle_card_game.subtitle',        // 부제목
+                fullTitleKey: 'auto_battle_card_game.full_title',     // 전체 제목 (제목 - 부제목)
+                descriptionKey: 'auto_battle_card_game.og_description' // SNS 설명
+            }
+        },
+
         // Open Graph 메타태그 설정 (SNS 미리보기)
         openGraph: {
             enabled: true,                      // Open Graph 활성화
-            defaultTitle: 'Card Battle Game',   // 기본 제목
-            defaultDescription: '5속성 카드 배틀 게임! 전략적인 덱 구성으로 40스테이지를 클리어하세요!',
             defaultImage: '/images/og-default.png',  // 기본 이미지
             dynamicImage: true,                 // 동적 이미지 생성 활성화
             siteName: 'BinBox Games',           // 사이트 이름
             type: 'website'                     // Open Graph 타입
+            // 제목/설명은 metadata.game의 i18n 키 사용
         },
 
         // 이미지 생성 설정 (Canvas 기반)
