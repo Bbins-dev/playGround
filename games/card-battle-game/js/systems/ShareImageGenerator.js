@@ -432,6 +432,7 @@ class ShareImageGenerator {
      */
     renderFooter(ctx, canvas, type) {
         const fontSize = this.config?.overlay?.fontSize?.info || 18;
+        const footerHeight = this.config?.overlay?.footerHeight || 40;
         const color = this.config?.overlay?.textColor || '#ffffff';
 
         // 다국어 Footer 텍스트 가져오기
@@ -439,14 +440,16 @@ class ShareImageGenerator {
         const footerTexts = this.config?.footerTexts?.[type];
         const text = footerTexts?.[currentLang] || footerTexts?.['ko'] || 'binboxgames.com';
 
+        // Footer 배경
         ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-        ctx.fillRect(0, canvas.height - 40, canvas.width, 40);
+        ctx.fillRect(0, canvas.height - footerHeight, canvas.width, footerHeight);
 
+        // Footer 텍스트 (중앙 정렬)
         ctx.fillStyle = color;
-        ctx.font = `${fontSize}px Arial, sans-serif`;
+        ctx.font = `bold ${fontSize}px Arial, sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(text, canvas.width / 2, canvas.height - 20);
+        ctx.fillText(text, canvas.width / 2, canvas.height - footerHeight / 2);
     }
 
     /**
