@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.4.11',                        // 버전 넘버
+        number: '0.4.12',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -3967,7 +3967,7 @@ const GameConfig = {
                     cardsPerRow: 5,
                     cardSpacing: 0,             // 여백 없이
                     rowSpacing: 20,
-                    showStats: true,            // 통계 정보 표시
+                    showStats: false,           // 통계 정보 표시 안함 (카드와 겹침 방지)
                     statsOpacity: 0.9
                 },
 
@@ -4015,8 +4015,9 @@ const GameConfig = {
                 fontSize: {
                     title: 36,
                     subtitle: 24,
-                    info: 18
-                }
+                    info: 40                    // Footer 텍스트 크기 (크게 키움)
+                },
+                footerHeight: 80                // Footer 영역 높이 (큰 텍스트 수용)
             },
 
             // 로딩 설정

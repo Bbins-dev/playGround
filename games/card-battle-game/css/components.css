@@ -2229,9 +2229,9 @@
    공유 시스템 (Share System)
    ======================================== */
 
-/* 공유 버튼 스타일 */
+/* 공유 버튼 스타일 (초록색 - 인게임 공유 버튼과 통일) */
 .share-button {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.95) 0%, rgba(56, 142, 60, 0.95) 100%);
     border: none;
     color: white;
     font-weight: bold;
@@ -2240,7 +2240,7 @@
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2251,13 +2251,13 @@
 
 .share-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.6);
-    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    box-shadow: 0 6px 16px rgba(76, 175, 80, 0.6);
+    background: linear-gradient(135deg, rgba(56, 142, 60, 1) 0%, rgba(46, 125, 50, 1) 100%);
 }
 
 .share-button:active {
     transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
 }
 
 /* 승리 모달 공유 버튼 행 */
@@ -2498,10 +2498,10 @@
 /* 다크 모드 지원 (선택) */
 @media (prefers-color-scheme: dark) {
     .share-button {
-        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        background: linear-gradient(135deg, rgba(76, 175, 80, 0.95) 0%, rgba(56, 142, 60, 0.95) 100%);
     }
 
     .share-button:hover {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, rgba(56, 142, 60, 1) 0%, rgba(46, 125, 50, 1) 100%);
     }
 }
