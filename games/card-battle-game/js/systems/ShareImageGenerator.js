@@ -413,10 +413,14 @@ class ShareImageGenerator {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
 
+        const damageLabel = I18nHelper?.getText('auto_battle_card_game.ui.share_stat_damage_label') || 'Damage:';
+        const turnsLabel = I18nHelper?.getText('auto_battle_card_game.ui.share_stat_turns_label') || 'Turns:';
+        const styleLabel = I18nHelper?.getText('auto_battle_card_game.ui.share_stat_style_label') || 'Style:';
+
         const lines = [
-            `Damage: ${stats.damage || 0}`,
-            `Turns: ${stats.turns || 0}`,
-            `Style: ${stats.style || 'Unknown'}`
+            `${damageLabel} ${stats.damage || 0}`,
+            `${turnsLabel} ${stats.turns || 0}`,
+            `${styleLabel} ${stats.style || 'Unknown'}`
         ];
 
         lines.forEach((line, i) => {
