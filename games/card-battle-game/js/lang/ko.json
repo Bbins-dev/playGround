@@ -897,6 +897,12 @@
       "share_landing_title_battle": "전투 상황",
       "play_now_button": "🎮 나도 플레이하기",
       "landing_footer": "BinBox Games에서 제공하는 자동전투 카드대전!",
+    "share_image_loading_message": "🎮 손패 이미지 로딩 중...",
+    "share_image_load_failed_title": "⚠️ 이미지 로딩 실패",
+    "share_image_load_failed_message": "게임을 시작하시려면 아래 버튼을 클릭하세요",
+    "share_stat_damage_label": "데미지:",
+    "share_stat_turns_label": "턴:",
+    "share_stat_style_label": "스타일:",
       "defeat_stats": {
         "final_hand": "최종 손패 (순서대로)",
         "stage_reached": "도달 스테이지",
