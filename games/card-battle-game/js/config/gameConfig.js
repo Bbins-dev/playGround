@@ -1356,7 +1356,7 @@ const GameConfig = {
             4: {
                 hp: 9,
                 cards: [
-                    { id: 'wear_armor', count: 1 },
+                    { id: 'raise_shield', count: 1 },
                     { id: 'shield_bash', count: 1 }
                 ]
             },
@@ -1373,7 +1373,7 @@ const GameConfig = {
                 cards: [
                     { id: 'sand_throw', count: 1 },
                     { id: 'heavy_strike', count: 1 },
-                    { id: 'crouch', count: 1 }
+                    { id: 'large_shield', count: 1 }
                 ]
             },
             7: {
@@ -1397,17 +1397,15 @@ const GameConfig = {
             9: {
                 hp: 60,
                 cards: [
-                    { id: 'sword_dance', count: 1 },
                     { id: 'fast_attack', count: 1 },
                     { id: 'heavy_strike', count: 1 },
-                    { id: 'large_shield', count: 1 },
-                    { id: 'crouch', count: 1 }
+                    { id: 'large_shield', count: 1 }
                 ]
             },
             10: {
                 hp: 100,
                 cards: [
-                    { id: 'raise_shield', count: 7 },
+                    { id: 'raise_shield', count: 5 },
                     { id: 'shield_bash', count: 1 }
                 ]
             },
@@ -2674,22 +2672,28 @@ const GameConfig = {
             maxRows: 4
         },
 
-        // 턴 배경 인디케이터 - 화살표 패턴 애니메이션
+        // 턴 메시지 인디케이터 (항상 표시)
         turnIndicator: {
-            arrows: {
-                // 화살표 패턴 설정
-                size: 700,                   // 화살표 크기 (px) - 매우 크게 (화면 대부분 차지)
-                spacing: 700,                // 화살표 간격 (px)
-                opacity: 0.3,               // 투명도 (더 진하게)
-                blur: 1,                    // 블러 효과 (px) - 매우 선명하게
+            message: {
+                // 폰트 및 크기 설정
+                fontSize: 56,               // 폰트 크기 (px) - 크고 명확하게
+                minWidth: 300,              // 최소 너비 (px) - 두 줄 방지
+                padding: 20,                // 내부 여백 (px)
 
                 // 색상 설정
-                get playerColor() { return GameConfig.masterColors.elements.normal; },   // 플레이어 턴 (밝은 베이지)
+                get playerColor() { return GameConfig.masterColors.ui.success; },   // 플레이어 턴 (녹색)
                 get enemyColor() { return GameConfig.masterColors.cardTypes.attack; },   // 적 턴 (빨강)
 
-                // 애니메이션 설정
-                animationDuration: 3,        // 애니메이션 지속시간 (초) - 느리게
-                animationDistance: 700       // 이동 거리 (px) - size와 일치
+                // 텍스트 그림자 설정
+                textShadow: {
+                    offsetX: 3,
+                    offsetY: 3,
+                    blur: 6,
+                    color: 'rgba(0, 0, 0, 0.8)'
+                },
+
+                // 전환 애니메이션 설정
+                animationDuration: 0.6      // 전환 애니메이션 지속시간 (초)
             }
         }
     },

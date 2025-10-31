@@ -732,42 +732,56 @@ class HPBarSystem {
         gameContainer.style.borderStyle = '';
     }
 
-    // 턴 인디케이터 표시
+    // 턴 인디케이터 표시 (턴 시작 시에만)
     showTurnIndicator(playerName, isPlayerTurn = true) {
         const container = document.getElementById('turn-indicator-container');
-
-        // 기존 인디케이터 제거
-        const existing = container.querySelector('.turn-indicator');
-        if (existing) {
-            existing.remove();
+        if (!container) {
+            console.warn('[HPBarSystem] 턴 인디케이터 컨테이너를 찾을 수 없습니다');
+            return;
         }
 
-        // 새 턴 인디케이터 생성
-        const indicator = document.createElement('div');
-        indicator.className = 'turn-indicator';
+        // 기존 인디케이터 재사용 또는 생성
+        let indicator = container.querySelector('.turn-indicator');
+        if (!indicator) {
+            indicator = document.createElement('div');
+            indicator.className = 'turn-indicator';
+            container.appendChild(indicator);
+        }
 
+        // 텍스트 및 색상 업데이트
+        const config = GameConfig?.battleHUD?.turnIndicator?.message;
         if (isPlayerTurn) {
-            // 플레이어 턴의 경우 플레이어 이름을 포함한 템플릿 사용
+            // 플레이어 턴
             const playerTurnTemplate = I18nHelper.getText('auto_battle_card_game.ui.player_turn_template') || '{name}의 턴';
             const turnText = playerTurnTemplate.replace('{name}', playerName);
             indicator.textContent = turnText;
-            indicator.style.color = '#2ECC71';
+            indicator.style.color = config?.playerColor || '#2ECC71';
         } else {
-            // 적 턴의 경우 적 이름을 포함한 템플릿 사용
+            // 적 턴
             const enemyTurnTemplate = I18nHelper.getText('auto_battle_card_game.ui.enemy_turn_template') || '{name}의 턴';
             const turnText = enemyTurnTemplate.replace('{name}', playerName);
             indicator.textContent = turnText;
-            indicator.style.color = '#E74C3C';
+            indicator.style.color = config?.enemyColor || '#E74C3C';
         }
 
-        container.appendChild(indicator);
+        // 표시 (visible 클래스 추가)
+        indicator.classList.add('visible');
 
-        // 자동 제거
-        setTimeout(() => {
-            if (indicator.parentNode) {
-                indicator.remove();
-            }
-        }, 2000);
+        // 턴 전환 애니메이션 트리거 (약간의 크기 변화)
+        indicator.classList.remove('turn-change');
+        void indicator.offsetWidth; // 리플로우 강제 (애니메이션 재시작)
+        indicator.classList.add('turn-change');
+    }
+
+    // 턴 인디케이터 숨기기 (스테이지 종료/시작 시)
+    hideTurnIndicator() {
+        const container = document.getElementById('turn-indicator-container');
+        if (!container) return;
+
+        const indicator = container.querySelector('.turn-indicator');
+        if (indicator) {
+            indicator.classList.remove('visible');
+        }
     }
 
     // 전체 플레이어 정보 업데이트 (통합 메서드)
