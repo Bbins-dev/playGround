@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.4.10',                        // 버전 넘버
+        number: '0.4.11',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -3775,8 +3775,24 @@ const GameConfig = {
         // 랜딩 페이지 설정
         landingPage: {
             enabled: true,                      // 랜딩 페이지 기능 활성화
-            imageMaxWidth: 600,                 // 랜딩 페이지 이미지 최대 너비 (px)
-            showGameInfo: true                  // 게임 정보 표시 여부
+            imageMaxWidth: 600,                 // 랜딩 페이지 이미지 최대 너비 (px) - deprecated, dimensions 사용
+            showGameInfo: true,                 // 게임 정보 표시 여부
+
+            // 랜딩 페이지 캔버스 크기 (고해상도, 표시할 때 600px로 축소)
+            dimensions: {
+                width: 1200,                    // 2배 크기 (표시: 600px)
+                height: 1000,                   // 컴팩트 (타이틀 + 카드 2행 + footer)
+                cardWidth: 230,                 // 큰 카드 (표시: 115px)
+                cardHeight: 322                 // 5:7 비율 유지 (230 × 1.4)
+            },
+
+            // 랜딩 페이지 레이아웃
+            layout: {
+                rows: 2,                        // 최대 행 수
+                cardsPerRow: 5,                 // 행당 최대 카드 수
+                cardSpacing: 5,                 // 카드 간 좌우 간격 (px)
+                rowSpacing: 20                  // 행 간 최소 간격
+            }
         },
 
         // 플랫폼별 설정
@@ -3912,49 +3928,57 @@ const GameConfig = {
 
             // 레이아웃별 설정
             layouts: {
-                // 손패 공유 (5장)
+                // 손패 공유 (10장, 2행 레이아웃)
                 hand: {
                     enabled: true,
-                    maxCards: 5,                // 최대 카드 수
-                    columns: 3,                 // 카드 열 개수
-                    cardSpacing: 15,            // 카드 간격 (px)
+                    maxCards: 10,               // 최대 카드 수 (2행 지원)
+                    rows: 2,                    // 최대 행 수
+                    cardsPerRow: 5,             // 행당 최대 카드 수
+                    cardSpacing: 0,             // 여백 없이 붙어있게
+                    rowSpacing: 20,             // 행 간 최소 간격
                     showOverlay: true,          // 스테이지/HP 오버레이 표시
-                    titleY: 50,                 // 타이틀 Y 위치
-                    subtitleY: 95,              // 서브타이틀(스테이지) Y 위치 (50 + 45px 간격)
-                    cardStartY: 150,            // 카드 시작 Y 위치
+                    titleY: 80,                 // 타이틀 Y 위치
+                    subtitleY: 150,             // 서브타이틀(스테이지) Y 위치
+                    cardStartY: 250,            // 카드 시작 Y 위치 (여유 있게)
                     title: {
-                        fontSize: 32,
+                        fontSize: 64,           // 큰 폰트
                         fontWeight: 'bold',
                         color: '#ffffff'
                     }
                 },
 
-                // 승리 공유
+                // 승리 공유 (hand와 동일)
                 victory: {
                     enabled: true,
-                    maxCards: 3,                // 대표 카드 3장
-                    columns: 3,
-                    cardSpacing: 20,
+                    maxCards: 10,               // hand와 동일
+                    rows: 2,
+                    cardsPerRow: 5,
+                    cardSpacing: 0,             // 여백 없이
+                    rowSpacing: 20,
                     showBadge: true,            // 승리 뱃지 표시
                     badgeText: '🎉 CLEAR!'
                 },
 
-                // 패배 공유
+                // 패배 공유 (hand와 동일)
                 defeat: {
                     enabled: true,
-                    maxCards: 3,                // 대표 카드 3장
-                    columns: 3,
-                    cardSpacing: 20,
+                    maxCards: 10,               // hand와 동일
+                    rows: 2,
+                    cardsPerRow: 5,
+                    cardSpacing: 0,             // 여백 없이
+                    rowSpacing: 20,
                     showStats: true,            // 통계 정보 표시
                     statsOpacity: 0.9
                 },
 
-                // 덱 전체 공유
+                // 덱 전체 공유 (hand와 동일)
                 deck: {
                     enabled: true,
-                    maxCards: 10,               // 전체 덱 10장
-                    columns: 5,
-                    cardSpacing: 10,
+                    maxCards: 10,               // hand와 동일
+                    rows: 2,
+                    cardsPerRow: 5,
+                    cardSpacing: 0,             // 여백 없이
+                    rowSpacing: 20,
                     showElement: true           // 속성 표시
                 }
             },
