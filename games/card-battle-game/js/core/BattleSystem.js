@@ -1076,6 +1076,27 @@ class BattleSystem {
         // 통합 상태이상 처리 (신규 방식 - 면역 메시지 지원)
         if (result.statusEffect) {
             await this.tryApplyStatusEffect(result.statusEffect, target, targetPosition);
+
+            // ★ Phase + Stun 즉시 턴 넘김 처리
+            // 자기 자신에게 Stun을 적용한 경우 (Phase 상태에서 자신을 기절시킨 경우)
+            if (result.statusEffect.type === 'stun' && target === user) {
+                // 기절 상태 확인 (실제로 적용되었는지 - 면역이 아닌 경우)
+                if (user.hasStatusEffect && user.hasStatusEffect('stun')) {
+                    // 메시지는 tryApplyStatusEffect()에서 이미 표시되었으므로 생략
+
+                    // 기절 즉시 해제 (1턴 소비)
+                    user.removeStatusEffect('stun');
+
+                    // UI 업데이트
+                    const isPlayerTurn = (user === this.player);
+                    this.hpBarSystem.updateStatusEffects(user, isPlayerTurn);
+
+                    // 즉시 턴 종료 (모든 턴 기반 시스템 정상 차감)
+                    await this.endTurn();
+                    return;
+                }
+            }
+
             return; // 통합 시스템으로 처리했으면 레거시 처리 건너뛰기
         }
 

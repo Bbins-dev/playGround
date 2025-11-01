@@ -295,6 +295,11 @@ class VolumeControl {
             this.isMuted = false;
             this.applyVolumesToAudioSystem();
 
+            // BGM 재개
+            if (this.audioSystem && this.audioSystem.resumeBGM) {
+                this.audioSystem.resumeBGM();
+            }
+
             // 체크박스 상태 업데이트
             this.updateMuteButtonText(false);
 
@@ -308,6 +313,11 @@ class VolumeControl {
             if (this.audioSystem) {
                 this.audioSystem.setVolume('bgm', 0);
                 this.audioSystem.setVolume('sfx', 0);
+
+                // BGM 일시정지
+                if (this.audioSystem.pauseBGM) {
+                    this.audioSystem.pauseBGM();
+                }
             }
 
             // 체크박스 상태 업데이트

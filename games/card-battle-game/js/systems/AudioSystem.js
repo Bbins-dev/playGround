@@ -45,6 +45,9 @@ class AudioSystem {
         // 백그라운드 상태 추적
         this.wasPlayingBeforeBackground = false;
 
+        // 음소거로 인한 BGM 일시정지 상태 추적
+        this.bgmPausedByMute = false;
+
         // Page Visibility API 설정 (바인딩 필요 - 리스너 제거 시 사용)
         this.boundVisibilityHandler = this.handleVisibilityChange.bind(this);
         this.setupVisibilityListener();
@@ -268,6 +271,42 @@ class AudioSystem {
         } catch (error) {
             console.error('[AudioSystem] Error stopping BGM:', error);
         }
+    }
+
+    /**
+     * BGM 일시정지 (음소거 시 사용)
+     * @returns {boolean} 성공 여부
+     */
+    pauseBGM() {
+        if (this.currentBGM && !this.currentBGM.paused) {
+            this.currentBGM.pause();
+            this.bgmPausedByMute = true;  // 음소거로 인한 일시정지 표시
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * BGM 재개 (음소거 해제 시 사용)
+     * @returns {boolean} 성공 여부
+     */
+    resumeBGM() {
+        if (this.currentBGM && this.currentBGM.paused && this.bgmPausedByMute) {
+            this.currentBGM.play().catch(error => {
+                console.error('[AudioSystem] Error resuming BGM:', error);
+            });
+            this.bgmPausedByMute = false;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * BGM 재생 상태 확인
+     * @returns {boolean} 재생 중이면 true
+     */
+    isBGMPlaying() {
+        return this.currentBGM && !this.currentBGM.paused;
     }
 
     /**
