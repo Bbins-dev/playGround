@@ -2505,3 +2505,127 @@
         background: linear-gradient(135deg, rgba(56, 142, 60, 1) 0%, rgba(46, 125, 50, 1) 100%);
     }
 }
+
+/* ===================================
+   [18] Mute Toggle Button & Checkbox
+   =================================== */
+
+/* Mute Toggle Button - Match other UI buttons */
+.mute-toggle-button {
+    /* Layout */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 18px 22px;
+    margin-top: 12px;
+    gap: 16px;
+
+    /* Glass Morphism - Brighter background */
+    background: linear-gradient(
+        135deg,
+        rgba(100, 150, 255, 0.35) 0%,
+        rgba(80, 120, 200, 0.25) 100%
+    );
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.15),
+        inset 0 1px 1px rgba(255, 255, 255, 0.2);
+
+    /* Typography - Larger text */
+    font-size: 17px;
+    font-weight: 600;
+    color: #ffffff;
+    text-align: left;
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.4),
+        0 0 8px rgba(255, 255, 255, 0.1);
+
+    /* Interaction */
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mute-toggle-button:hover {
+    background: linear-gradient(
+        135deg,
+        rgba(120, 170, 255, 0.45) 0%,
+        rgba(100, 140, 220, 0.35) 100%
+    );
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.2),
+        inset 0 1px 1px rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.mute-toggle-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Button Text */
+.mute-button-text {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: normal;
+    word-break: keep-all;
+}
+
+/* iOS-Style Toggle Checkbox Container */
+.mute-checkbox {
+    position: relative;
+    width: 52px;
+    height: 28px;
+    background: rgba(120, 120, 128, 0.32);
+    border-radius: 14px;
+    flex-shrink: 0;
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Toggle Checkbox - Checked State (Muted) */
+.mute-checkbox.checked {
+    background: linear-gradient(
+        135deg,
+        #34c759 0%,
+        #30d158 100%
+    );
+}
+
+/* Toggle Checkbox Inner Indicator */
+.mute-checkbox-inner {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 24px;
+    height: 24px;
+    background: #ffffff;
+    border-radius: 50%;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.2),
+        0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Toggle Checkbox - Checked State Inner Movement */
+.mute-checkbox.checked .mute-checkbox-inner {
+    transform: translateX(24px);
+}
+
+/* Responsive - Mobile Adjustments */
+@media (max-width: 768px) {
+    .mute-toggle-button {
+        padding: 16px 20px;
+        font-size: 16px;
+    }
+
+    .mute-button-text {
+        font-size: 15px;
+    }
+}
