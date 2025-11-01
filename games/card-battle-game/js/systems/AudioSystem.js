@@ -133,14 +133,6 @@ class AudioSystem {
             const audio = new Audio(fullPath);
             audio.volume = this.getEffectiveVolume('bgm');
 
-            // 모바일 오디오 믹싱 설정 (다른 앱 오디오와 공존)
-            const allowMixing = GameConfig?.audio?.background?.allowAudioMixing ?? true;
-            if (allowMixing) {
-                audio.setAttribute('x-webkit-airplay', 'allow');  // AirPlay 허용
-                audio.setAttribute('playsinline', 'true');         // 인라인 재생 (iOS 필수)
-                // 참고: HTML5 Audio는 완벽한 믹싱 제어 불가 (브라우저/OS 의존)
-            }
-
             // 에러 핸들러 추가 (파일 누락/경로 오류 감지)
             audio.addEventListener('error', (e) => {
                 console.error(`[AudioSystem] Failed to load audio file for '${bgmKey}':`, fullPath);
@@ -186,6 +178,11 @@ class AudioSystem {
      */
     async playBGM(bgmKey, loop = true, fade = true) {
         try {
+            // 마스터 볼륨 0이면 오디오 비활성화 (유튜브 등 백그라운드 오디오와 충돌 방지)
+            if (this.volumes.master === 0) {
+                return false;
+            }
+
             // 이미 같은 BGM이 재생 중이면 무시
             if (this.currentBGMKey === bgmKey && this.currentBGM && !this.currentBGM.paused) {
                 return true;
@@ -582,14 +579,6 @@ class AudioSystem {
             const audio = new Audio(fullPath);
             audio.volume = this.getEffectiveVolume('sfx');
 
-            // 모바일 오디오 믹싱 설정 (다른 앱 오디오와 공존)
-            const allowMixing = GameConfig?.audio?.background?.allowAudioMixing ?? true;
-            if (allowMixing) {
-                audio.setAttribute('x-webkit-airplay', 'allow');  // AirPlay 허용
-                audio.setAttribute('playsinline', 'true');         // 인라인 재생 (iOS 필수)
-                // 참고: HTML5 Audio는 완벽한 믹싱 제어 불가 (브라우저/OS 의존)
-            }
-
             // 에러 핸들러 추가
             audio.addEventListener('error', (e) => {
                 console.error(`[AudioSystem] Failed to load SFX file for '${sfxKey}':`, fullPath);
@@ -614,6 +603,11 @@ class AudioSystem {
      */
     playSFX(sfxKey, volume = 1.0) {
         try {
+            // 마스터 볼륨 0이면 오디오 비활성화 (유튜브 등 백그라운드 오디오와 충돌 방지)
+            if (this.volumes.master === 0) {
+                return false;
+            }
+
             const audio = this.getSFXAudio(sfxKey);
             if (!audio) {
                 console.warn(`[AudioSystem] Cannot play SFX '${sfxKey}'`);
