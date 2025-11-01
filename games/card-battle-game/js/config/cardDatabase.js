@@ -1172,8 +1172,8 @@ const CardDatabase = {
                 if (user.hasStaticBuff && user.hasStaticBuff()) {
                     return {
                         success: true,
-                        conditionFailed: true,
-                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        conditionNotMet: true,
+                        messageKey: 'auto_battle_card_game.ui.templates.buff_already_active',
                         element: this.element
                     };
                 }
@@ -1927,8 +1927,8 @@ const CardDatabase = {
                     // 젖음 상태가 아니면 조건 실패
                     return {
                         success: true,           // 명중은 성공
-                        conditionFailed: true,   // 조건 실패
-                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        conditionNotMet: true,   // 조건 미충족
+                        messageKey: 'auto_battle_card_game.ui.templates.no_wet',
                         element: this.element
                     };
                 }
@@ -2147,8 +2147,8 @@ const CardDatabase = {
                     // 명중했지만 조건 실패 (방어속성이 불이 아님)
                     return {
                         success: true,
-                        conditionFailed: true,
-                        messageKey: 'auto_battle_card_game.ui.ignite_failed',
+                        conditionNotMet: true,
+                        messageKey: 'auto_battle_card_game.ui.templates.no_fire_defense',
                         element: this.element
                     };
                 }
@@ -2239,8 +2239,8 @@ const CardDatabase = {
                     // 명중했지만 조건 실패 (중독 상태 아님)
                     return {
                         success: true,           // 명중은 성공
-                        conditionFailed: true,   // 조건 실패
-                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        conditionNotMet: true,   // 조건 미충족
+                        messageKey: 'auto_battle_card_game.ui.templates.no_poison',
                         element: this.element
                     };
                 }
@@ -2284,8 +2284,8 @@ const CardDatabase = {
                     // 명중했지만 조건 실패 (적용 가능한 상태이상 없음)
                     return {
                         success: true,           // 명중은 성공
-                        conditionFailed: true,   // 조건 실패
-                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        conditionNotMet: true,   // 조건 미충족
+                        messageKey: 'auto_battle_card_game.ui.templates.no_status_effect',
                         element: this.element
                     };
                 }
@@ -2330,8 +2330,8 @@ const CardDatabase = {
                     // 명중했지만 조건 실패 (적용 가능한 상태이상 없음)
                     return {
                         success: true,           // 명중은 성공
-                        conditionFailed: true,   // 조건 실패
-                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        conditionNotMet: true,   // 조건 미충족
+                        messageKey: 'auto_battle_card_game.ui.templates.no_status_effect',
                         element: this.element
                     };
                 }
@@ -2724,8 +2724,8 @@ const CardDatabase = {
                     // 명중했지만 조건 실패 (화상 상태 아님)
                     return {
                         success: true,           // 명중은 성공
-                        conditionFailed: true,   // 조건 실패
-                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        conditionNotMet: true,   // 조건 미충족
+                        messageKey: 'auto_battle_card_game.ui.templates.no_burn',
                         element: this.element
                     };
                 }
@@ -2763,8 +2763,8 @@ const CardDatabase = {
                     // 명중했지만 조건 실패 (화상 상태 아님)
                     return {
                         success: true,           // 명중은 성공
-                        conditionFailed: true,   // 조건 실패
-                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        conditionNotMet: true,   // 조건 미충족
+                        messageKey: 'auto_battle_card_game.ui.templates.no_burn',
                         element: this.element
                     };
                 }
@@ -2821,8 +2821,8 @@ const CardDatabase = {
                     // 명중했지만 조건 실패 (화상 상태 아님)
                     return {
                         success: true,           // 명중은 성공
-                        conditionFailed: true,   // 조건 실패
-                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        conditionNotMet: true,   // 조건 미충족
+                        messageKey: 'auto_battle_card_game.ui.templates.no_burn',
                         element: this.element
                     };
                 }
@@ -2860,8 +2860,8 @@ const CardDatabase = {
                 if (user.hasSharpenBuff && user.hasSharpenBuff()) {
                     return {
                         success: true,
-                        conditionFailed: true,
-                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        conditionNotMet: true,
+                        messageKey: 'auto_battle_card_game.ui.templates.buff_already_active',
                         element: this.element
                     };
                 }
@@ -2997,8 +2997,8 @@ const CardDatabase = {
                     // Li⁺ 버프가 없으면 조건 실패
                     return {
                         success: true,
-                        conditionFailed: true,
-                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        conditionNotMet: true,
+                        messageKey: 'auto_battle_card_game.ui.templates.no_lithium',
                         element: this.element
                     };
                 }
@@ -3036,9 +3036,9 @@ const CardDatabase = {
                 if (user.defenseElement !== 'water') {
                     // 조건 미충족 (물 방어속성 아님)
                     return {
-                        success: false,
-                        conditionFailed: true,
-                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        success: true,
+                        conditionNotMet: true,
+                        messageKey: 'auto_battle_card_game.ui.templates.no_water_defense',
                         element: this.element
                     };
                 }
@@ -3104,9 +3104,9 @@ const CardDatabase = {
                 // 젖음 상태가 아니면 조건 실패
                 if (healAmount === 0) {
                     return {
-                        success: false,
-                        conditionFailed: true,
-                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        success: true,
+                        conditionNotMet: true,
+                        messageKey: 'auto_battle_card_game.ui.templates.no_wet',
                         element: this.element
                     };
                 }
@@ -3234,9 +3234,9 @@ const CardDatabase = {
                 // 젖음 상태가 아니면 조건 실패 (발동률 성공해도 실패 메시지)
                 if (!hasWet) {
                     return {
-                        success: false,
-                        conditionFailed: true,
-                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        success: true,
+                        conditionNotMet: true,
+                        messageKey: 'auto_battle_card_game.ui.templates.no_wet',
                         element: this.element
                     };
                 }
@@ -3277,9 +3277,9 @@ const CardDatabase = {
                 // 젖음도 얼음도 없으면 조건 실패 (발동률 성공해도 실패 메시지)
                 if (!hasWet && !hasFrozen) {
                     return {
-                        success: false,
-                        conditionFailed: true,
-                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        success: true,
+                        conditionNotMet: true,
+                        messageKey: 'auto_battle_card_game.ui.templates.no_wet_or_frozen',
                         element: this.element
                     };
                 }
@@ -3428,8 +3428,8 @@ const CardDatabase = {
                 if (user.defenseElement !== 'water') {
                     return {
                         success: true,
-                        conditionFailed: true,
-                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        conditionNotMet: true,
+                        messageKey: 'auto_battle_card_game.ui.templates.no_water_defense',
                         element: this.element
                     };
                 }
