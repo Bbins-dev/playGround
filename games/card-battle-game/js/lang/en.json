@@ -76,6 +76,8 @@
       "game_tutorial": "Game Guide",
       "card_gallery": "Card Gallery",
       "settings": "Volume",
+      "mute_for_external": "🔇 Mute (Allow External Audio)",
+      "unmute": "🔊 Unmute",
       "back_to_main": "← Back to Main",
       "back_to_homepage": "← Back to Homepage",
       "back_to_menu": "←",
