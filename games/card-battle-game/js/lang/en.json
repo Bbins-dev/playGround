@@ -240,7 +240,7 @@
         },
         "counter_attack": {
           "name": "Counter Attack",
-          "description": "Deal damage equal to the last damage you took to the opponent."
+          "description": "Deal double the last damage you took to the opponent."
         },
         "raise_shield": {
           "name": "Raise Shield",
@@ -292,7 +292,7 @@
         },
         "flame_ascension": {
           "name": "Flame Ascension",
-          "description": "Deal 5 damage to yourself, then deal 10 damage to the opponent and gain 1 {buff:strength} on hit. Has a chance to inflict {status:burn}."
+          "description": "Deal 4 damage to yourself, then deal 10 damage to the opponent and gain 1 {buff:strength} on hit. Has a chance to inflict {status:burn}."
         },
         "bubble_strike": {
           "name": "Bubble Strike",
@@ -464,7 +464,7 @@
         },
         "karura_strike": {
           "name": "Karura Strike",
-          "description": "A technique learned from the Karura clan. Deal 10 damage to yourself, then deal 20 damage to opponent and inflict {status:burn}."
+          "description": "A technique learned from the Karura clan. Deal 7 damage to yourself, then deal 20 damage to opponent and inflict {status:burn}."
         },
         "fireball": {
           "name": "Fireball",
@@ -476,7 +476,7 @@
         },
         "ignite": {
           "name": "Ignite",
-          "description": "If your defense element is {fire}, inflicts {status:ignition} on the target for 1 turn."
+          "description": "If your defense element is {fire}, inflicts {status:ignition} on the target for 1 turn, causing {fire} {cardType:attack} cards to deal triple damage."
         },
         "insult": {
           "name": "Insult",
@@ -532,7 +532,7 @@
         },
         "hot_wind": {
           "name": "Hot Wind",
-          "description": "Deal 5 damage to yourself and gain {buff:hotWind} for one turn. The number of {fire} {cardType:attack} cards in hand multiplies the power of all {fire} {cardType:attack} cards. {buff:hotWind} does not stack."
+          "description": "Deal 3 damage to yourself, then multiply the power of {fire} {cardType:attack} cards by the number of {fire} {cardType:attack} cards in hand. {buff:hotWind} does not stack."
         },
         "battery_explosion": {
           "name": "Battery Blast",
