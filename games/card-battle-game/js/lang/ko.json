@@ -76,6 +76,8 @@
       "game_tutorial": "게임 설명",
       "card_gallery": "카드 갤러리",
       "settings": "볼륨",
+      "mute_for_external": "🔇 음소거 (외부 프로그램 오디오 재생가능)",
+      "unmute": "🔊 음소거 해제",
       "back_to_main": "메인으로",
       "back_to_homepage": "홈페이지로",
       "back_to_menu": "←",
