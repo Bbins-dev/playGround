@@ -76,6 +76,8 @@
       "game_tutorial": "ゲーム説明",
       "card_gallery": "カードギャラリー",
       "settings": "音量",
+      "bgm_label": "音楽",
+      "sfx_label": "効果音",
       "mute_for_external": "🔇 ミュート（外部オーディオ再生可能）",
       "unmute": "🔊 ミュート解除",
       "back_to_main": "← メインに戻る",
