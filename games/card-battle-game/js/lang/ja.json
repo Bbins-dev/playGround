@@ -807,7 +807,9 @@
         "no_fire_defense": "火防御属性ではない!",
         "no_water_defense": "水防御属性ではない!",
         "no_lithium": "Li⁺なし!",
-        "buff_already_active": "重複不可!"
+        "buff_already_active": "重複不可!",
+        "hp_sufficient": "HP十分!",
+        "hp_not_one": "HP 1じゃない!"
       },
       "card_selection": {
         "initial_title": "スタートカード選択",
