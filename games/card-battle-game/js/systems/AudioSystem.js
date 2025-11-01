@@ -133,6 +133,14 @@ class AudioSystem {
             const audio = new Audio(fullPath);
             audio.volume = this.getEffectiveVolume('bgm');
 
+            // 모바일 오디오 믹싱 설정 (다른 앱 오디오와 공존)
+            const allowMixing = GameConfig?.audio?.background?.allowAudioMixing ?? true;
+            if (allowMixing) {
+                audio.setAttribute('x-webkit-airplay', 'allow');  // AirPlay 허용
+                audio.setAttribute('playsinline', 'true');         // 인라인 재생 (iOS 필수)
+                // 참고: HTML5 Audio는 완벽한 믹싱 제어 불가 (브라우저/OS 의존)
+            }
+
             // 에러 핸들러 추가 (파일 누락/경로 오류 감지)
             audio.addEventListener('error', (e) => {
                 console.error(`[AudioSystem] Failed to load audio file for '${bgmKey}':`, fullPath);
@@ -150,14 +158,23 @@ class AudioSystem {
     }
 
     /**
-     * 실제 적용되는 볼륨 계산 (마스터 * BGM/SFX)
+     * 실제 적용되는 볼륨 계산 (마스터 * BGM/SFX + 커브 적용)
      * @param {string} type - 'bgm' 또는 'sfx'
      * @returns {number} 0.0 ~ 1.0
      */
     getEffectiveVolume(type) {
         const master = this.volumes.master ?? 1.0;
         const typeVolume = this.volumes[type] ?? 1.0;
-        return Math.max(0, Math.min(1, master * typeVolume));
+        let volume = master * typeVolume;
+
+        // 볼륨 커브 적용 (로그 스케일 시뮬레이션 - 인지 개선)
+        const curveEnabled = GameConfig?.audio?.volumeCurve?.enabled ?? true;
+        if (curveEnabled) {
+            const exponent = GameConfig?.audio?.volumeCurve?.exponent || 2.0;
+            volume = Math.pow(volume, exponent);
+        }
+
+        return Math.max(0, Math.min(1, volume));
     }
 
     /**
@@ -564,6 +581,14 @@ class AudioSystem {
             // 오디오 객체 생성
             const audio = new Audio(fullPath);
             audio.volume = this.getEffectiveVolume('sfx');
+
+            // 모바일 오디오 믹싱 설정 (다른 앱 오디오와 공존)
+            const allowMixing = GameConfig?.audio?.background?.allowAudioMixing ?? true;
+            if (allowMixing) {
+                audio.setAttribute('x-webkit-airplay', 'allow');  // AirPlay 허용
+                audio.setAttribute('playsinline', 'true');         // 인라인 재생 (iOS 필수)
+                // 참고: HTML5 Audio는 완벽한 믹싱 제어 불가 (브라우저/OS 의존)
+            }
 
             // 에러 핸들러 추가
             audio.addEventListener('error', (e) => {
