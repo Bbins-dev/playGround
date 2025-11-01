@@ -76,6 +76,8 @@
       "game_tutorial": "Game Guide",
       "card_gallery": "Card Gallery",
       "settings": "Volume",
+      "bgm_label": "BGM",
+      "sfx_label": "SFX",
       "mute_for_external": "🔇 Mute (Allow External Audio)",
       "unmute": "🔊 Unmute",
       "back_to_main": "← Back to Main",
