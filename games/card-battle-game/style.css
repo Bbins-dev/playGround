@@ -2561,11 +2561,22 @@ body[data-game-state="menu"] .game-wrapper.status-border-oblivion {
 /* 설정 모달 전용 스타일 */
 .settings-modal-content {
     width: 450px;
+    height: auto;
     padding: 30px;
 }
 
 .settings-body {
-    margin: 30px 0;
+    margin: 30px 0 20px 0;
+}
+
+/* 설정 모달 닫기 버튼 - 중앙 정렬 & 적절한 크기 */
+#settings-modal #close-settings {
+    width: fit-content;
+    align-self: center;
+    padding: 14px 28px;
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 10px;
 }
 
 .volume-setting-group {
