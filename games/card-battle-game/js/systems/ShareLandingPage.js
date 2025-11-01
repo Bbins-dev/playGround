@@ -28,10 +28,12 @@ class ShareLandingPage {
 
         console.log('[ShareLandingPage] initialize() 호출, shareParam:', shareParam ? 'exists' : 'none');
 
-        // 언어 감지 및 설정
-        if (langParam && ['ko', 'en', 'ja'].includes(langParam)) {
-            console.log('[ShareLandingPage] 언어 파라미터 감지:', langParam);
+        // 언어 감지 및 설정 (최초 1회만 적용)
+        const hasAppliedUrlLang = sessionStorage.getItem('urlLangApplied');
+        if (langParam && !hasAppliedUrlLang && ['ko', 'en', 'ja'].includes(langParam)) {
+            console.log('[ShareLandingPage] URL 언어 파라미터 적용:', langParam);
             localStorage.setItem('selectedLanguage', langParam);
+            sessionStorage.setItem('urlLangApplied', 'true');
             if (window.i18n) {
                 window.i18n.setLanguage(langParam);
             }

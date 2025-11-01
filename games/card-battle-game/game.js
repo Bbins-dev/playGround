@@ -480,14 +480,23 @@ async function initializeI18n() {
         return;
     }
 
-    // URL 파라미터 우선, 그 다음 localStorage, 마지막으로 기본값
+    // 언어 결정 로직: 최초 1회만 URL 파라미터 적용
+    const hasAppliedUrlLang = sessionStorage.getItem('urlLangApplied');
     const urlParams = new URLSearchParams(window.location.search);
     const urlLang = urlParams.get('lang');
-    const savedLang = urlLang || localStorage.getItem('selectedLanguage') || 'ko';
 
-    // URL에서 언어를 읽었으면 localStorage에도 저장
-    if (urlLang && ['ko', 'en', 'ja'].includes(urlLang)) {
+    let initialLang;
+
+    if (urlLang && !hasAppliedUrlLang && ['ko', 'en', 'ja'].includes(urlLang)) {
+        // 공유 링크 첫 방문: URL 언어 적용 → localStorage 저장
+        initialLang = urlLang;
         localStorage.setItem('selectedLanguage', urlLang);
+        sessionStorage.setItem('urlLangApplied', 'true');
+        console.log('[Game] URL 언어 파라미터 적용:', urlLang);
+    } else {
+        // 이후 방문: localStorage 우선 (사용자 선택 존중)
+        initialLang = localStorage.getItem('selectedLanguage') || 'ko';
+        console.log('[Game] localStorage 언어 적용:', initialLang);
     }
 
     // 기존 window.i18n 인스턴스 사용 (새로 생성하지 않음)
@@ -496,16 +505,16 @@ async function initializeI18n() {
     }
 
     // 초기화 및 동일 객체 참조
-    await window.i18n.init(savedLang, 'js/lang/');
+    await window.i18n.init(initialLang, 'js/lang/');
     window.i18nSystem = window.i18n;
 
     // 언어 선택기 동기화
     const languageSelect = document.getElementById('languageSelect');
     if (languageSelect) {
-        languageSelect.value = savedLang;
+        languageSelect.value = initialLang;
     }
 
-    console.log('[Game] i18n initialized with language:', savedLang);
+    console.log('[Game] i18n initialized with language:', initialLang);
 }
 
 function changeLanguage(lang) {
