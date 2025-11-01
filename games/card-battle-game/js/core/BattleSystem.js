@@ -684,6 +684,19 @@ class BattleSystem {
      * @param {Player} user - 카드를 사용한 플레이어 (버프 적용 대상자, target 파라미터 없음!)
      */
     async processBuffResult(result, user) {
+        // 조건 미충족 시 특별 메시지 처리 (억제제 카드 등)
+        if (result.conditionNotMet && result.messageKey) {
+            const userPosition = user.isPlayer ?
+                this.effectSystem.getPlayerPosition() :
+                this.effectSystem.getEnemyPosition();
+
+            const template = I18nHelper.getText(result.messageKey);
+            await this.effectSystem.showDamageNumber(0, userPosition, 'status', template, {
+                isPlayerTarget: (user === this.player)
+            });
+            return; // 조건 미충족이면 추가 처리 중단
+        }
+
         // 조건 실패 체크 (명중했지만 조건 미달)
         if (result.conditionFailed) {
             // targetPosition 계산 (버프는 user에게 적용되지만, 조건 체크는 상대에 대한 것)
@@ -1007,6 +1020,15 @@ class BattleSystem {
             this.hpBarSystem.updateStatusEffects(target, isTargetPlayer);
 
             return; // 촉진제 처리 완료
+        }
+
+        // 조건 미충족 시 특별 메시지 처리 (일관성을 위해 추가)
+        if (result.conditionNotMet && result.messageKey) {
+            const template = I18nHelper.getText(result.messageKey);
+            await this.effectSystem.showDamageNumber(0, targetPosition, 'status', template, {
+                isPlayerTarget: (target === this.player)
+            });
+            return; // 조건 미충족이면 추가 처리 중단
         }
 
         // 조건 실패 체크 (명중했지만 조건 미달)

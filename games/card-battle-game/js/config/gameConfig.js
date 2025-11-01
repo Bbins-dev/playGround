@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.4.19',                        // 버전 넘버
+        number: '0.4.20',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -1458,7 +1458,8 @@ const GameConfig = {
                 cards: [
                     { id: 'nutrient_supplement', count: 1 }, // 영양제
                     { id: 'red_pendant', count: 1 },         // 붉은 펜던트
-                    { id: 'flame_ascension', count: 2 }      // 화염승천 x2
+                    { id: 'flame_throw', count: 1 },         // 불꽃던지기
+                    { id: 'flame_ascension', count: 1 }      // 화염승천
                 ]
             },
             17: {
@@ -1486,7 +1487,7 @@ const GameConfig = {
                     { id: 'red_pendant', count: 1 },           // 붉은 펜던트
                     { id: 'indomitable_gauntlet', count: 1 },  // 불굴의 장갑
                     { id: 'fireball', count: 1 },              // 화염구
-                    { id: 'miracle_revival', count: 1 }        // 기사회생
+                    { id: 'crouch', count: 1 }                 // 웅크리기
                 ]
             },
             20: {
@@ -1679,7 +1680,6 @@ const GameConfig = {
             37: {
                 hp: 700,
                 cards: [
-                    { id: 'miracle_revival', count: 1 },   // 기사회생
                     { id: 'endless_effort', count: 1 },    // 끝없는 노력
                     { id: 'conductive_armor', count: 1 },  // 전도갑옷
                     { id: 'current_wall', count: 1 },      // 전류 벽
@@ -1687,7 +1687,8 @@ const GameConfig = {
                     { id: 'lightning_storm', count: 3 },   // 번개폭풍 x3
                     { id: 'electric_shock', count: 1 },    // 감전
                     { id: 'overload', count: 1 },          // 과부하
-                    { id: 'short_circuit', count: 1 }      // 쇼트
+                    { id: 'short_circuit', count: 1 },     // 쇼트
+                    { id: 'crouch', count: 1 }             // 웅크리기
                 ]
             },
             38: {
