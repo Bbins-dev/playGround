@@ -197,7 +197,7 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.counter_attack.description',
             effect: function(user, target, battleSystem) {
-                let baseDamage = user.lastDamageTaken + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0); // 받은 대미지 + 힘 버프
+                let baseDamage = (user.lastDamageTaken * 2) + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0); // 받은 대미지의 2배 + 힘 버프
 
                 // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
                 if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
@@ -1138,7 +1138,7 @@ const CardDatabase = {
             type: 'status',
             element: 'electric',
             power: 0,
-            accuracy: 25,
+            accuracy: 30,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.defibrillator.description',
             stunChance: 100,
@@ -1838,7 +1838,7 @@ const CardDatabase = {
             type: 'status',
             element: 'normal',
             power: 0,
-            accuracy: 25,
+            accuracy: 30,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.push_back.description',
             stunChance: 100,
@@ -1956,7 +1956,7 @@ const CardDatabase = {
             accuracy: 90,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.karura_strike.description',
-            selfDamage: 10,
+            selfDamage: 7,
             burnChance: 100, // 명중 시 100% 확률로 화상
             effect: function(user, target, battleSystem) {
                 // 자해 데미지는 BattleSystem.preprocessSelfDamage()에서 이미 처리됨
@@ -2037,7 +2037,7 @@ const CardDatabase = {
             accuracy: 80,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.flame_ascension.description',
-            selfDamage: 5,
+            selfDamage: 4,
             burnChance: 40, // 명중 시 40% 확률로 화상
             effect: function(user, target, battleSystem) {
                 // 자해 데미지는 BattleSystem.preprocessSelfDamage()에서 이미 처리됨
