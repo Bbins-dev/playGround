@@ -865,6 +865,12 @@ class Player {
                     // 이후 일반 버프 계산 계속 진행 (속성 → 강화 → Li⁺)
                 }
 
+                // counter_attack 카드: 마지막 받은 대미지의 2배 (동적 계산)
+                if (card.id === 'counter_attack') {
+                    buffedPower = (this.lastDamageTaken || 0) * 2;
+                    // 이후 일반 버프 계산 계속 진행 (힘 → 강화)
+                }
+
                 // ★ 4단계: 속성 보너스 덧셈
 
                 // 냄새 버프 적용 (불 속성만)

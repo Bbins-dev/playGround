@@ -240,7 +240,7 @@
         },
         "counter_attack": {
           "name": "카운터어택",
-          "description": "상대에게 자신이 마지막 받은 피해를 가합니다."
+          "description": "마지막으로 받은 대미지를 상대에게 두 배로 돌려줍니다."
         },
         "raise_shield": {
           "name": "방패들기",
@@ -292,7 +292,7 @@
         },
         "flame_ascension": {
           "name": "화염승천",
-          "description": "자신에게 5의 피해를 입힌 후 상대에게 피해 10을 주고 명중 시 {buff:strength}을 1 얻습니다. 일정확률로 {status:burn}을 입힙니다."
+          "description": "자신에게 4의 피해를 입힌 후 상대에게 피해 10을 주고 명중 시 {buff:strength}을 1 얻습니다. 일정확률로 {status:burn}을 입힙니다."
         },
         "bubble_strike": {
           "name": "거품타격",
@@ -464,7 +464,7 @@
         },
         "karura_strike": {
           "name": "카루라 일격",
-          "description": "카루라 일족에게 배운 기술입니다. 자신에게 피해 10을 입힌 후 상대에게 피해 20을 주고 {status:burn}을 입힙니다."
+          "description": "카루라 일족에게 배운 기술입니다. 자신에게 피해 7을 입힌 후 상대에게 피해 20을 주고 {status:burn}을 입힙니다."
         },
         "fireball": {
           "name": "화염구",
@@ -476,7 +476,7 @@
         },
         "ignite": {
           "name": "발화",
-          "description": "자신의 방어속성이 {fire}일 경우 발동 시 상대를 한 턴 간 {status:ignition}상태로 만듭니다."
+          "description": "자신의 방어속성이 {fire}일 경우 발동 시 상대를 한 턴 간 {status:ignition}상태로 만들며 {fire}{cardType:attack}카드가 세 배의 피해를 입힙니다."
         },
         "insult": {
           "name": "모욕",
@@ -532,7 +532,7 @@
         },
         "hot_wind": {
           "name": "열풍",
-          "description": "자신에게 피해를 5 입힌 뒤 한 턴 간 {buff:hotWind} 획득. 손패의 {fire} {cardType:attack} 카드 수가 모든 {fire} {cardType:attack} 카드의 공격력에 곱해집니다. {buff:hotWind}은 중첩되지 않습니다."
+          "description": "자신에게 피해를 3 입힌 후 손패의 {fire}{cardType:attack}카드 수를 {fire}{cardType:attack}카드의 공격력에 곱합니다. {buff:hotWind}은 중첩되지 않습니다."
         },
         "battery_explosion": {
           "name": "배터리폭발",

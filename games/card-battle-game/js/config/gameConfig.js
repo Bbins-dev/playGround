@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.4.20',                        // 버전 넘버
+        number: '0.4.21',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -3468,7 +3468,7 @@ const GameConfig = {
         },
         // 열풍 카드 설정
         hotWind: {
-            selfDamage: 5      // 자해 데미지 5
+            selfDamage: 3      // 자해 데미지 3
         },
         // 쓰나미 카드 설정
         tsunami: {
