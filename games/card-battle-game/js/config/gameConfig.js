@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.4.14',                        // 버전 넘버
+        number: '0.4.15',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -3686,6 +3686,14 @@ const GameConfig = {
             sfx: 0.8       // SFX 볼륨
         },
 
+        // 볼륨 커브 설정 (인지 개선 - 로그 스케일 시뮬레이션)
+        volumeCurve: {
+            enabled: true,     // 볼륨 커브 적용 여부 (false = 선형)
+            exponent: 2.0      // 제곱 지수 (2.0 = 제곱, 2.5 = 더 강한 커브, 1.0 = 선형)
+            // 예시: 90% → 81%, 80% → 64%, 50% → 25% (exponent=2.0)
+            // 인간의 청각은 로그 스케일이므로 제곱 적용 시 체감 차이 증가
+        },
+
         // 페이드 효과 타이밍 (ms)
         fade: {
             duration: 300,       // 일반 페이드 인/아웃 시간 (빠른 전환)
@@ -3760,7 +3768,8 @@ const GameConfig = {
 
         // 백그라운드 동작 설정 (Configuration-Driven)
         background: {
-            pauseOnBackground: true  // 백그라운드로 전환 시 BGM 자동 일시정지 (배터리 절약)
+            pauseOnBackground: true,     // 백그라운드로 전환 시 BGM 자동 일시정지 (배터리 절약)
+            allowAudioMixing: true       // 다른 앱 오디오와 믹싱 허용 (모바일에서 유튜브 등 백그라운드 오디오 유지)
         }
     },
 
