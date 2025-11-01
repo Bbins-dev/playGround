@@ -23,6 +23,7 @@ class VolumeControl {
         this.settingsSfxSlider = document.getElementById('settings-sfx-slider');
         this.settingsBgmValue = document.getElementById('settings-bgm-value');
         this.settingsSfxValue = document.getElementById('settings-sfx-value');
+        this.settingsMuteToggle = document.getElementById('settings-mute-toggle');
 
         // DOM 요소 - 인게임 볼륨 팝업
         this.volumeControlBtn = document.getElementById('volume-control-btn');
@@ -31,6 +32,11 @@ class VolumeControl {
         this.ingameSfxSlider = document.getElementById('ingame-sfx-slider');
         this.ingameBgmValue = document.getElementById('ingame-bgm-value');
         this.ingameSfxValue = document.getElementById('ingame-sfx-value');
+        this.ingameMuteToggle = document.getElementById('ingame-mute-toggle');
+
+        // DOM 요소 - 체크박스
+        this.settingsCheckbox = this.settingsMuteToggle?.querySelector('.mute-checkbox');
+        this.ingameCheckbox = this.ingameMuteToggle?.querySelector('.mute-checkbox');
 
         // LocalStorage 키
         this.storageKeys = {
@@ -43,6 +49,9 @@ class VolumeControl {
             bgm: this.getStoredVolume('bgm') ?? (GameConfig?.audio?.volume?.bgm * 100 || 60),
             sfx: this.getStoredVolume('sfx') ?? (GameConfig?.audio?.volume?.sfx * 100 || 80)
         };
+
+        // 음소거 상태 추적
+        this.isMuted = false;
 
         // 초기화
         this.init();
@@ -222,6 +231,20 @@ class VolumeControl {
                 this.hideVolumePopup();
             }
         });
+
+        // 음소거 토글 버튼 - 설정 모달
+        if (this.settingsMuteToggle) {
+            this.settingsMuteToggle.addEventListener('click', () => {
+                this.toggleMute();
+            });
+        }
+
+        // 음소거 토글 버튼 - 인게임 팝업
+        if (this.ingameMuteToggle) {
+            this.ingameMuteToggle.addEventListener('click', () => {
+                this.toggleMute();
+            });
+        }
     }
 
     /**
@@ -236,8 +259,10 @@ class VolumeControl {
         // 모든 슬라이더 동기화
         this.updateAllSliders();
 
-        // AudioSystem에 즉시 적용
-        this.applyVolumesToAudioSystem();
+        // 음소거 상태가 아닐 때만 AudioSystem에 적용
+        if (!this.isMuted) {
+            this.applyVolumesToAudioSystem();
+        }
 
         // LocalStorage에 저장
         this.saveVolume(type, value);
@@ -259,6 +284,58 @@ class VolumeControl {
         if (!this.settingsModal) return;
 
         this.settingsModal.classList.add('hidden');
+    }
+
+    /**
+     * 음소거 토글 (BGM + SFX 동시)
+     */
+    toggleMute() {
+        if (this.isMuted) {
+            // 음소거 해제 - 현재 슬라이더 값으로 볼륨 적용
+            this.isMuted = false;
+            this.applyVolumesToAudioSystem();
+
+            // 체크박스 상태 업데이트
+            this.updateMuteButtonText(false);
+
+            // 클릭 사운드 재생
+            if (this.gameManager?.audioSystem) {
+                this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+            }
+        } else {
+            // 음소거 - AudioSystem만 0으로 (슬라이더는 유지)
+            this.isMuted = true;
+            if (this.audioSystem) {
+                this.audioSystem.setVolume('bgm', 0);
+                this.audioSystem.setVolume('sfx', 0);
+            }
+
+            // 체크박스 상태 업데이트
+            this.updateMuteButtonText(true);
+        }
+    }
+
+    /**
+     * 음소거 체크박스 상태 업데이트
+     * @param {boolean} isMuted - 음소거 상태
+     */
+    updateMuteButtonText(isMuted) {
+        // 체크박스 상태 토글 (음소거 ON = 체크됨)
+        if (this.settingsCheckbox) {
+            if (isMuted) {
+                this.settingsCheckbox.classList.add('checked');
+            } else {
+                this.settingsCheckbox.classList.remove('checked');
+            }
+        }
+
+        if (this.ingameCheckbox) {
+            if (isMuted) {
+                this.ingameCheckbox.classList.add('checked');
+            } else {
+                this.ingameCheckbox.classList.remove('checked');
+            }
+        }
     }
 
     /**
