@@ -807,7 +807,9 @@
         "no_fire_defense": "불 방어속성 아님!",
         "no_water_defense": "물 방어속성 아님!",
         "no_lithium": "Li⁺ 없음!",
-        "buff_already_active": "중복 안됨!"
+        "buff_already_active": "중복 안됨!",
+        "hp_sufficient": "HP 충분함!",
+        "hp_not_one": "HP 1 아님!"
       },
       "card_selection": {
         "initial_title": "시작 카드 선택",
