@@ -240,7 +240,7 @@
         },
         "counter_attack": {
           "name": "カウンターアタック",
-          "description": "最後に受けたダメージと同じダメージを相手に与えます。"
+          "description": "最後に受けたダメージの2倍のダメージを相手に与えます。"
         },
         "raise_shield": {
           "name": "シールド構え",
@@ -292,7 +292,7 @@
         },
         "flame_ascension": {
           "name": "炎昇天",
-          "description": "自分に5ダメージを与えた後、相手に10ダメージを与え、命中時に{buff:strength}を1得ます。一定確率で{status:burn}を与えます。"
+          "description": "自分に4ダメージを与えた後、相手に10ダメージを与え、命中時に{buff:strength}を1得ます。一定確率で{status:burn}を与えます。"
         },
         "bubble_strike": {
           "name": "バブルストライク",
@@ -464,7 +464,7 @@
         },
         "karura_strike": {
           "name": "カルラ一撃",
-          "description": "カルラ一族に学んだ技です。自分に10ダメージを与えた後、相手に20ダメージを与えて{status:burn}を負わせます。"
+          "description": "カルラ一族に学んだ技です。自分に7ダメージを与えた後、相手に20ダメージを与えて{status:burn}を負わせます。"
         },
         "fireball": {
           "name": "ファイアボール",
@@ -476,7 +476,7 @@
         },
         "ignite": {
           "name": "発火",
-          "description": "自分の防御属性が{fire}の場合、発動時に相手を1ターンの間{status:ignition}状態にします。"
+          "description": "自分の防御属性が{fire}の場合、発動時に相手を1ターンの間{status:ignition}状態にし、{fire}{cardType:attack}カードが3倍のダメージを与えます。"
         },
         "insult": {
           "name": "侮辱",
@@ -532,7 +532,7 @@
         },
         "hot_wind": {
           "name": "熱風",
-          "description": "自分に5ダメージを与えて1ターンの間{buff:hotWind}獲得。手札の{fire}{cardType:attack}カードの数がすべての{fire}{cardType:attack}カードの攻撃力に乗算されます。{buff:hotWind}は重複しません。"
+          "description": "自分に3ダメージを与えた後、手札の{fire}{cardType:attack}カードの数を{fire}{cardType:attack}カードの攻撃力に乗算します。{buff:hotWind}は重複しません。"
         },
         "battery_explosion": {
           "name": "バッテリー爆発",
