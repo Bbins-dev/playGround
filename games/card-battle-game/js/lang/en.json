@@ -796,7 +796,16 @@
         "light_speed_buff_gained": "⚡ L.SPEED +{value}({turns})!",
         "catalyst_success": "☠️ Catalyzed!",
         "inhibitor_success": "☠️ Suppressed!",
-        "mirror_reaction_no_poison": "No Poison!"
+        "mirror_reaction_no_poison": "No Poison!",
+        "no_burn": "No Burn!",
+        "no_poison": "No Poison!",
+        "no_wet": "Not Wet!",
+        "no_wet_or_frozen": "Not Wet/Frozen!",
+        "no_status_effect": "No Status Effect!",
+        "no_fire_defense": "Not Fire Defense!",
+        "no_water_defense": "Not Water Defense!",
+        "no_lithium": "No Li⁺!",
+        "buff_already_active": "Cannot Duplicate!"
       },
       "card_selection": {
         "initial_title": "Start Card Selection",

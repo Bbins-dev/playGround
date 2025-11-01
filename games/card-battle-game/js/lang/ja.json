@@ -796,7 +796,16 @@
         "pack_heal": "🔋 パック +{value}!",
         "catalyst_success": "☠️ 触媒!",
         "inhibitor_success": "☠️ 抑制!",
-        "mirror_reaction_no_poison": "毒なし!"
+        "mirror_reaction_no_poison": "毒なし!",
+        "no_burn": "火傷なし!",
+        "no_poison": "毒なし!",
+        "no_wet": "濡れなし!",
+        "no_wet_or_frozen": "濡れ/氷なし!",
+        "no_status_effect": "状態異常なし!",
+        "no_fire_defense": "火防御属性ではない!",
+        "no_water_defense": "水防御属性ではない!",
+        "no_lithium": "Li⁺なし!",
+        "buff_already_active": "重複不可!"
       },
       "card_selection": {
         "initial_title": "スタートカード選択",
