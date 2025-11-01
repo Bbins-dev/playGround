@@ -894,12 +894,31 @@
     padding-bottom: 40px;
 }
 
-/* 튜토리얼 모달 닫기 버튼 */
+/* 튜토리얼 모달 닫기 버튼 - 하단 고정 & 강조 */
 .tutorial-modal #close-tutorial {
+    position: sticky;
+    bottom: 0;
     margin-top: 30px;
-    margin-bottom: 10px;
-    width: 100%;
-    min-height: 45px;
+    margin-bottom: 0;
+    width: fit-content;
+    align-self: center;
+    padding: 24px 28px;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg,
+        rgba(59, 130, 246, 0.95),
+        rgba(99, 102, 241, 0.95));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 10;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15),
+                0 3px 12px rgba(59, 130, 246, 0.3);
+    border: 1px solid rgba(147, 197, 253, 0.3);
+    border-radius: 12px;
 }
 
 /* 튜토리얼 섹션 구분 */
