@@ -1731,8 +1731,8 @@ const CardDatabase = {
                     // 조건 미충족
                     return {
                         success: false,
-                        conditionFailed: true,
-                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        conditionNotMet: true,
+                        messageKey: 'auto_battle_card_game.ui.templates.hp_sufficient',
                         element: this.element
                     };
                 }
@@ -1767,12 +1767,12 @@ const CardDatabase = {
                 // turnsLeft > 0인 활성 상태이상만 필터링
                 const activeStatusEffects = (user.statusEffects || []).filter(e => e.turnsLeft > 0);
 
-                // 상태이상 없으면 조건 실패
+                // 상태이상 없으면 조건 미충족
                 if (activeStatusEffects.length === 0) {
                     return {
                         success: true,
-                        conditionFailed: true,
-                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        conditionNotMet: true,
+                        messageKey: 'auto_battle_card_game.ui.templates.no_status_effect',
                         element: this.element
                     };
                 }
@@ -1810,8 +1810,8 @@ const CardDatabase = {
                     // 조건 미충족
                     return {
                         success: false,
-                        conditionFailed: true,
-                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        conditionNotMet: true,
+                        messageKey: 'auto_battle_card_game.ui.templates.hp_not_one',
                         element: this.element
                     };
                 }
@@ -2925,12 +2925,12 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.fire_breath.description',
             effect: function(user, target, battleSystem) {
-                // 중복 체크 (이미 호흡 버프가 있으면 실패)
+                // 중복 체크 (이미 호흡 버프가 있으면 조건 미충족)
                 if (user.hasBreathBuff && user.hasBreathBuff()) {
                     return {
                         success: true,
-                        conditionFailed: true,
-                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        conditionNotMet: true,
+                        messageKey: 'auto_battle_card_game.ui.templates.buff_already_active',
                         element: this.element
                     };
                 }
@@ -3567,12 +3567,12 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.super_conductivity.description',
             effect: function(user, target, battleSystem) {
-                // 중복 체크 (이미 초전도 버프가 있으면 실패)
+                // 중복 체크 (이미 초전도 버프가 있으면 조건 미충족)
                 if (user.hasSuperConductivityBuff && user.hasSuperConductivityBuff()) {
                     return {
                         success: true,
-                        conditionFailed: true,
-                        messageKey: 'auto_battle_card_game.ui.condition_failed',
+                        conditionNotMet: true,
+                        messageKey: 'auto_battle_card_game.ui.templates.buff_already_active',
                         element: this.element
                     };
                 }
