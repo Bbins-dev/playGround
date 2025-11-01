@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.4.15',                        // 버전 넘버
+        number: '0.4.16',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -3768,8 +3768,8 @@ const GameConfig = {
 
         // 백그라운드 동작 설정 (Configuration-Driven)
         background: {
-            pauseOnBackground: true,     // 백그라운드로 전환 시 BGM 자동 일시정지 (배터리 절약)
-            allowAudioMixing: true       // 다른 앱 오디오와 믹싱 허용 (모바일에서 유튜브 등 백그라운드 오디오 유지)
+            pauseOnBackground: true      // 백그라운드로 전환 시 BGM 자동 일시정지 (배터리 절약)
+            // 참고: 모바일에서 유튜브 등 백그라운드 오디오와 충돌 방지는 마스터 볼륨 0%로 게임 음소거
         }
     },
 
