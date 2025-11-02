@@ -277,10 +277,17 @@ class HPBarSystem {
             const statusElement = document.createElement('div');
             statusElement.className = 'status-label';
 
-            // 지속 턴수가 있는 경우 카운트다운 표시 (즉시 해제 상태는 제외)
+            // 지속 턴수 또는 배수 표시
             let countdownHtml = '';
             const instantReleaseStatuses = ['frozen', 'stun', 'taunt', 'oblivion'];
-            if (effect.turnsLeft && effect.turnsLeft > 0 && !instantReleaseStatuses.includes(effect.type)) {
+
+            // 발화: 스택 기반 배수 표시 (×3, ×9, ×27...)
+            if (effect.type === 'ignition' && effect.stacks) {
+                const multiplier = Math.pow(GameConfig?.statusEffects?.ignition?.stackMultiplier || 3, effect.stacks);
+                countdownHtml = `×${multiplier}`;
+            }
+            // 다른 상태이상: 기존 턴수 표시
+            else if (effect.turnsLeft && effect.turnsLeft > 0 && !instantReleaseStatuses.includes(effect.type)) {
                 countdownHtml = `(${effect.turnsLeft})`;
             }
 
