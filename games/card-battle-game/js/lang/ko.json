@@ -344,11 +344,11 @@
         },
         "poison_throw": {
           "name": "독극물 투척",
-          "description": "적에게 3의 피해를 주는 독극물을 투척하고 1턴 간 {status:poisoned}시킵니다."
+          "description": "적에게 3의 피해를 주는 독극물을 투척하고 2턴 간 {status:poisoned}시킵니다."
         },
         "poison_fang": {
           "name": "독 이빨",
-          "description": "작지만 치명적입니다. 3의 피해를 입히고 3턴 간 {status:poisoned}시킵니다."
+          "description": "작지만 치명적입니다. 3의 피해를 입히고 5턴 간 {status:poisoned}시킵니다."
         },
         "toxic_gas": {
           "name": "유독가스",
@@ -580,7 +580,7 @@
         },
         "massive_weight": {
           "name": "상당한 질량",
-          "description": "한 턴 간 자신의 현재 체력의 15%에 해당하는 수치를 {water}{cardType:attack} 카드 기본공격력에 더합니다. {buff:mass} 버프 획득."
+          "description": "한 턴 간 자신의 현재 체력의 20%에 해당하는 수치를 {water}{cardType:attack} 카드 기본공격력에 더합니다. {buff:mass} 버프 획득."
         },
         "torrent": {
           "name": "급류",
@@ -632,7 +632,7 @@
         },
         "static": {
           "name": "정전기",
-          "description": "한 턴 간 손패의 {electric}속성 카드 수가 {electric}{cardType:attack}카드의 기본 공격력에 더해집니다. {buff:static}는 중첩되지 않습니다."
+          "description": "한 턴 간 손패의 {electric}속성 카드 1장당 5씩 {electric}{cardType:attack}카드의 기본 공격력에 더해집니다. {buff:static}는 중첩되지 않습니다."
         },
         "battery_pack": {
           "name": "건전지 팩",
@@ -672,7 +672,7 @@
         "breath": "호흡",
         "breath_description": "불 속성 버프 카드의 발동이 항상 성공합니다.",
         "mass": "질량",
-        "mass_description": "물 속성 공격 카드의 공격력에 현재 체력의 15%가 중첩 횟수만큼 추가됩니다. 한 턴 동안 지속됩니다.",
+        "mass_description": "물 속성 공격 카드의 공격력에 현재 체력의 20%가 중첩 횟수만큼 추가됩니다. 한 턴 동안 지속됩니다.",
         "torrent": "급류",
         "torrent_description": "물 속성 공격 카드의 발동 횟수가 증가합니다.",
         "absorption": "흡수",
@@ -682,7 +682,7 @@
         "superConductivity": "초전도",
         "superConductivity_description": "전기 속성 공격 카드의 명중률이 40% 증가합니다.",
         "static": "정전기",
-        "static_description": "손패의 전기속성 카드 수가 전기 공격카드의 기본 공격력에 더해집니다. 중첩되지 않습니다.",
+        "static_description": "손패의 전기속성 카드 1장당 5씩 전기 공격카드의 기본 공격력에 더해집니다. 중첩되지 않습니다.",
         "pack": "팩",
         "pack_description": "턴 시작 시 팩 수치 × 8만큼 HP를 회복합니다. 회복 후 즉시 사라집니다. 중첩 가능합니다.",
         "propagation": "연쇄",
