@@ -1119,7 +1119,7 @@ const GameConfig = {
             descriptionKey: 'auto_battle_card_game.ui.buffs.static_description',
             name: '정전기',
             emoji: '⚡',
-            description: '전기속성 카드 수 만큼 전기 공격카드의 기본공격력이 강해집니다',
+            description: '전기속성 카드 1장당 5씩 전기 공격카드의 기본공격력이 강해집니다',
             get color() { return GameConfig.masterColors.buffs.static; }, // 오렌지 (피뢰침 색상 계승)
             get maxStack() { return 1; }, // 중첩 불가 (항상 1)
             targetSelf: true, // 자신에게 적용되는 버프
@@ -1129,7 +1129,7 @@ const GameConfig = {
                 format: '({value})'
             },
             effect: {
-                damagePerCard: 1  // 전기 카드당 추가 대미지
+                damagePerCard: 5  // 전기 카드당 추가 대미지
             }
         },
         pack: {
@@ -3508,7 +3508,7 @@ const GameConfig = {
         },
         // 상당한 질량 카드 설정
         massiveWeight: {
-            hpPercent: 15,    // 현재 체력의 15%
+            hpPercent: 20,    // 현재 체력의 20%
             fixedTurns: 1     // 1턴 고정 지속
         },
         // 수분흡수 카드 설정

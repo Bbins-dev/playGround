@@ -344,11 +344,11 @@
         },
         "poison_throw": {
           "name": "Poison Throw",
-          "description": "Throw poison to deal 3 damage and inflict {status:poisoned} for 1 turn."
+          "description": "Throw poison to deal 3 damage and inflict {status:poisoned} for 2 turns."
         },
         "poison_fang": {
           "name": "Poison Fang",
-          "description": "Small but deadly. Deal 3 damage and inflict {status:poisoned} for 3 turns."
+          "description": "Small but deadly. Deal 3 damage and inflict {status:poisoned} for 5 turns."
         },
         "toxic_gas": {
           "name": "Toxic Gas",
@@ -580,7 +580,7 @@
         },
         "massive_weight": {
           "name": "Massive Weight",
-          "description": "For 1 turn, adds 15% of your current HP to {water}{cardType:attack} card base power. Gain {buff:mass} buff."
+          "description": "For 1 turn, adds 20% of your current HP to {water}{cardType:attack} card base power. Gain {buff:mass} buff."
         },
         "torrent": {
           "name": "Torrent",
@@ -632,7 +632,7 @@
         },
         "static": {
           "name": "Static",
-          "description": "For one turn, the number of {electric} cards in hand is added to the base power of {electric}{cardType:attack} cards. {buff:static} does not stack."
+          "description": "For one turn, each {electric} card in hand adds 5 to the base power of {electric}{cardType:attack} cards. {buff:static} does not stack."
         },
         "battery_pack": {
           "name": "Battery Pack",
@@ -672,7 +672,7 @@
         "breath": "BRE",
         "breath_description": "Fire element buff cards always activate successfully.",
         "mass": "Mass",
-        "mass_description": "Adds 15% of current HP to water element attack card power per stack. Lasts 1 turn.",
+        "mass_description": "Adds 20% of current HP to water element attack card power per stack. Lasts 1 turn.",
         "torrent": "TRN",
         "torrent_description": "Increases the activation count of water element attack cards.",
         "absorption": "ABS",
@@ -682,7 +682,7 @@
         "superConductivity": "S.COND",
         "superConductivity_description": "Increases electric attack card accuracy by 40%.",
         "static": "STATIC",
-        "static_description": "The number of electric cards in hand is added to the base power of electric attack cards. Does not stack.",
+        "static_description": "Each electric card in hand adds 5 to the base power of electric attack cards. Does not stack.",
         "pack": "PACK",
         "pack_description": "Restore HP equal to Pack value × 8 at turn start. Disappears immediately after healing. Stackable.",
         "propagation": "PROP",
