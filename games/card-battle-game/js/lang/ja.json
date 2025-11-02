@@ -262,6 +262,10 @@
           "name": "棘の鎧",
           "description": "自分にダメージ１を与えて{buff:strength}２を得ます。"
         },
+        "unbreakable_mind": {
+          "name": "折れない心",
+          "description": "防御属性が{ノーマル}の場合、発動時１ターンの間{状態異常}にかかりません。{心}は重複しません。"
+        },
         "indomitable_gauntlet": {
           "name": "不屈の篭手",
           "description": "自分に3ダメージを与え、{buff:strength}3を得る。"
@@ -665,6 +669,8 @@
         "scent_description": "火属性攻撃カードのダメージがスタックごとに10増加します。",
         "sharpen": "研ぎ",
         "sharpen_description": "次のターン開始までHPが1以下にならなくなります。起死回生効果。",
+        "mind": "心",
+        "mind_description": "1ターンの間状態異常にかかりません。重複しません。",
         "hotWind": "熱風",
         "hotWind_description": "手札の火攻撃カードの数がすべての火攻撃カードの攻撃力に乗算されます。",
         "lithium": "Li⁺",
@@ -746,6 +752,8 @@
       "shield_failed": "シールド使用失敗",
       "thorn_armor_effect": "棘の鎧で自分にダメージを与えました",
       "thorn_armor_failed": "棘の鎧使用失敗",
+      "unbreakable_mind_effect": "折れない心を得ました",
+      "no_normal_defense": "ノーマル防御属性ではありません！",
       "indomitable_gauntlet_effect": "不屈の篭手で力を得ました",
       "indomitable_gauntlet_failed": "不屈の篭手使用失敗",
       "heal_effect": "体力を回復しました",

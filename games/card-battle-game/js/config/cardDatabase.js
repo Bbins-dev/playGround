@@ -417,6 +417,45 @@ const CardDatabase = {
             }
         });
 
+        // 꺾이지 않는 마음 카드 (노멀 방어속성일 때 1턴 간 모든 상태이상 면역)
+        this.addCard({
+            id: 'unbreakable_mind',
+            nameKey: 'auto_battle_card_game.ui.cards.unbreakable_mind.name',
+            type: 'buff',
+            element: 'normal',
+            power: 0,
+            accuracy: 75,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.unbreakable_mind.description',
+            effect: function(user, target, battleSystem) {
+                // 방어속성이 노멀인지 확인
+                if (user.defenseElement !== 'normal') {
+                    return {
+                        success: false,
+                        messageKey: 'auto_battle_card_game.ui.no_normal_defense',
+                        element: this.element
+                    };
+                }
+
+                // 마음 버프는 중첩 불가 - 이미 있으면 실패
+                if (user.hasMindBuff()) {
+                    return {
+                        success: false,
+                        messageKey: 'auto_battle_card_game.ui.buff_already_active',
+                        element: this.element
+                    };
+                }
+
+                // 마음 버프 1턴 부여
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.unbreakable_mind_effect',
+                    mindGain: 1,
+                    element: this.element
+                };
+            }
+        });
+
         // 불굴의 장갑 카드 (자해 데미지 + 힘 증가)
         this.addCard({
             id: 'indomitable_gauntlet',
@@ -2650,7 +2689,7 @@ const CardDatabase = {
             type: 'buff',
             element: 'normal',
             power: 0,
-            accuracy: 70,
+            accuracy: 80,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.barricade.description',
             effect: function(user, target, battleSystem) {
