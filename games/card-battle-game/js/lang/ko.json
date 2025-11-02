@@ -264,7 +264,7 @@
         },
         "unbreakable_mind": {
           "name": "꺾이지 않는 마음",
-          "description": "자신의 방어속성이 {노멀}일 경우 발동 시 한 턴 간 {상태이상}에 걸리지 않습니다. {마음}은 중첩되지 않습니다."
+          "description": "자신의 방어속성이 {normal}일 경우 발동 시 한 턴 간 {cardType:status}적용을 막습니다. {buff:mind}는 중첩되지 않습니다."
         },
         "indomitable_gauntlet": {
           "name": "불굴의 장갑",
