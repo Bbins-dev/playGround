@@ -1268,7 +1268,7 @@ const CardDatabase = {
             type: 'attack',
             element: 'poison',
             power: 3,
-            accuracy: 70,
+            accuracy: 80,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.poison_throw.description',
             poisonChance: 100,
@@ -1283,7 +1283,7 @@ const CardDatabase = {
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
-                // 중독 적용 (통합 시스템 - 명중 시 100% 확률로 1턴 중독)
+                // 중독 적용 (통합 시스템 - 명중 시 100% 확률로 2턴 중독)
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.damage',
@@ -1292,7 +1292,7 @@ const CardDatabase = {
                         type: 'poisoned',
                         chance: this.poisonChance,
                         power: null,
-                        duration: 1  // 1턴 중독
+                        duration: 2  // 2턴 중독
                     },
                     element: this.element,
                     effectiveness: effectiveness
@@ -1300,7 +1300,7 @@ const CardDatabase = {
             }
         });
 
-        // 독 이빨 카드 (독 속성, 명중 시 100% 확률로 3턴 중독)
+        // 독 이빨 카드 (독 속성, 명중 시 100% 확률로 5턴 중독)
         this.addCard({
             id: 'poison_fang',
             nameKey: 'auto_battle_card_game.ui.cards.poison_fang.name',
@@ -1322,7 +1322,7 @@ const CardDatabase = {
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
-                // 중독 적용 (통합 시스템 - 명중 시 100% 확률로 3턴 중독)
+                // 중독 적용 (통합 시스템 - 명중 시 100% 확률로 5턴 중독)
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.damage',
@@ -1331,7 +1331,7 @@ const CardDatabase = {
                         type: 'poisoned',
                         chance: this.poisonChance,
                         power: null,
-                        duration: 3  // 3턴 중독
+                        duration: 5  // 5턴 중독
                     },
                     element: this.element,
                     effectiveness: effectiveness
