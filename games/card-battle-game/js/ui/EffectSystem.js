@@ -608,6 +608,7 @@ class EffectSystem {
                 speed: 'addSpeedBuff',
                 scent: 'addScentBuff',
                 sharpen: 'addSharpenBuff',
+                mind: 'addMindBuff',
                 hotWind: 'addHotWindBuff',
                 lithium: 'addLithiumBuff',
                 breath: 'addBreathBuff',
