@@ -5,6 +5,7 @@
   "scripts": {
     "sync-version": "node update-version.js",
     "version": "npm run sync-version && git add index.html js/config/gameConfig.js",
+    "postversion": "git tag -f v$(node -p \"require('./package.json').version\")",
     "bump": "npm version patch",
     "bump:minor": "npm version minor",
     "bump:major": "npm version major"
