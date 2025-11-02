@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.4.26',                        // 버전 넘버
+        number: '0.4.27',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -727,13 +727,13 @@ const GameConfig = {
             descriptionKey: 'auto_battle_card_game.ui.status_effects.ignition_description',
             name: '발화',
             emoji: '🔆',
-            description: '불 공격카드의 공격에 세 배의 피해를 입습니다.',
+            description: '불 공격카드의 공격에 스택당 세 배의 피해를 입습니다.',
             duration: 1,
             canExtend: false,  // 턴 연장 비활성화
             canStack: true,    // 강도 기반 중첩 활성화
             maxStacks: 10,     // 최대 중첩 (밸런스용)
             stackMultiplier: 3, // 기본 배수
-            damageFormula: 'exponential', // 3^stacks
+            damageFormula: 'linear', // 계산식: 3 × stacks (선형)
             get color() { return GameConfig.masterColors.statusEffects.ignition; }
         },
         poisoned: {
@@ -1713,7 +1713,7 @@ const GameConfig = {
             38: {
                 hp: 750,
                 cards: [
-                    { id: 'defibrillator', count: 1 },     // 제세동기
+                    { id: 'paralysis_trap', count: 1 },    // 마비 덫
                     { id: 'battery_pack', count: 6 },      // 건전지 팩 x6
                     { id: 'battery_explosion', count: 1 }, // 배터리 폭발
                     { id: 'overcharge_battery', count: 1 }, // 과충전
