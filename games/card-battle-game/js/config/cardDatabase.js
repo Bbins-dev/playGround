@@ -431,7 +431,8 @@ const CardDatabase = {
                 // 방어속성이 노멀인지 확인
                 if (user.defenseElement !== 'normal') {
                     return {
-                        success: false,
+                        success: true,
+                        conditionNotMet: true,
                         messageKey: 'auto_battle_card_game.ui.no_normal_defense',
                         element: this.element
                     };
@@ -440,7 +441,8 @@ const CardDatabase = {
                 // 마음 버프는 중첩 불가 - 이미 있으면 실패
                 if (user.hasMindBuff()) {
                     return {
-                        success: false,
+                        success: true,
+                        conditionNotMet: true,
                         messageKey: 'auto_battle_card_game.ui.buff_already_active',
                         element: this.element
                     };
