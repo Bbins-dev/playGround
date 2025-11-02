@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.4.25',                        // 버전 넘버
+        number: '0.4.26',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -1855,7 +1855,7 @@ const GameConfig = {
                     { id: 'chain_reaction', count: 1 },    // 연쇄 반응
                     { id: 'poison_needle', count: 1 },     // 독침
                     { id: 'toxic_gas', count: 1 },         // 유독가스
-                    { id: 'poison_mutation', count: 2 },   // 맹독변성 x2
+                    { id: 'poison_mutation', count: 1 },   // 맹독변성
                     { id: 'toxic_blast', count: 1 },       // 맹독 폭발
                     { id: 'mirror_reaction', count: 1 },   // 거울 반응
                     { id: 'gas_absorption', count: 1 }     // 가스 흡수
