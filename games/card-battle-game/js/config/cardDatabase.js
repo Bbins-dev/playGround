@@ -2962,7 +2962,7 @@ const CardDatabase = {
             type: 'buff',
             element: 'fire',
             power: 0,
-            accuracy: 80,
+            accuracy: 90,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.fire_breath.description',
             effect: function(user, target, battleSystem) {
