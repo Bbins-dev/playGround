@@ -1272,10 +1272,21 @@ class BattleSystem {
         });
     }
 
-    // 상태이상 적용 시도 (통합 시스템 - Configuration-Driven)
+    /**
+     * 상태이상 적용 시도 (통합 시스템 - Configuration-Driven)
+     *
+     * 면역 우선순위 시스템:
+     * 1순위: 방어속성 면역 (Player.addStatusEffect에서 체크, 소비 없음)
+     * 2순위: 마음 버프 (전체 면역, 소비 없음, 턴 시작 시 차감)
+     * 3순위: 우비 버프 (전체 면역, 소비형 - 1스택/차단, 턴 시작 시 전체 초기화)
+     * 4순위: 유황/코팅 버프 (특정 상태이상 면역, 소비 없음, 턴 시작 시 차감)
+     *
+     * @param {Object} statusInfo - { type, chance, power, duration }
+     * @param {Player} target - 상태이상 대상
+     * @param {Object} targetPosition - 화면 좌표 { x, y }
+     * @returns {Object} { success, reason, blocked, ... }
+     */
     async tryApplyStatusEffect(statusInfo, target, targetPosition) {
-        // statusInfo: { type, chance, power, duration }
-
         // 1. 확률 체크
         if (statusInfo.chance < 100) {
             const roll = Math.random() * 100;
@@ -1289,37 +1300,25 @@ class BattleSystem {
             }
         }
 
-        // 2. 마음 버프 보호 체크 (한 턴 간 모든 상태이상 면역)
+        // 2. [우선순위 2순위] 마음 버프 보호 체크 (한 턴 간 모든 상태이상 면역)
         if (target.hasMindBuff()) {
             // 마음 버프는 소모되지 않음 (턴 시작 시 차감)
 
-            // 차단 메시지 표시
-            this.effectSystem.showDamageNumber(
-                '🛡️ 마음!',
-                targetPosition,
-                'immune',
-                null,
-                { isPlayerTarget: (target === this.player) }
-            );
+            // 차단 메시지 표시 (언어팩 사용)
+            await this.effectSystem.showEffectMessage('mind', targetPosition, 'mind_blocked');
 
             // UI는 이미 표시되어 있으므로 업데이트 불필요
 
             return { success: false, blocked: 'mind', statusType: statusInfo.type };
         }
 
-        // 3. 우비 버프 보호 체크 (모든 상태이상 차단, 1회용)
+        // 3. [우선순위 3순위] 우비 버프 보호 체크 (모든 상태이상 차단, 소비형)
         if (target.hasRaincoatProtection()) {
-            // 우비 1스택 소모
+            // 우비 1스택 소모 (턴 시작 시 전체 초기화됨)
             target.consumeRaincoatStack();
 
-            // 차단 메시지 표시
-            this.effectSystem.showDamageNumber(
-                '🌂 차단!',
-                targetPosition,
-                'immune',
-                null,
-                { isPlayerTarget: (target === this.player) }
-            );
+            // 차단 메시지 표시 (언어팩 사용)
+            await this.effectSystem.showEffectMessage('raincoat', targetPosition, 'raincoat_blocked');
 
             // 버프 UI 즉시 업데이트 (스택 감소 반영)
             const isTargetPlayer = target === this.player;
@@ -1328,7 +1327,7 @@ class BattleSystem {
             return { success: false, blocked: 'raincoat', statusType: statusInfo.type };
         }
 
-        // 3. 상태이상 적용 시도
+        // 4. [우선순위 1순위/4순위] 상태이상 적용 시도 (방어속성/유황/코팅 면역 체크)
         const result = target.addStatusEffect(
             statusInfo.type,
             statusInfo.power || null,

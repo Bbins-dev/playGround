@@ -193,7 +193,7 @@ class Player {
             return { success: false, reason: 'invalid_input' };
         }
 
-        // 면역 체크 (속성 기반)
+        // [우선순위 1순위] 방어속성 기반 면역 체크 (소비 없음)
         const isImmune = GameConfig.utils.isImmuneToStatus(this.defenseElement, statusType);
         if (isImmune) {
             if (GameConfig?.debugMode?.showStatusEffects) {
@@ -202,7 +202,7 @@ class Player {
             return { success: false, reason: 'immune' };
         }
 
-        // 버프 기반 면역 체크
+        // [우선순위 4순위] 버프 기반 면역 체크 (소비 없음, 턴 시작 시 차감)
         if (statusType === 'frozen' && this.hasSulfurBuff()) {
             if (GameConfig?.debugMode?.showStatusEffects) {
                 console.log(`[STATUS] ${this.name} 유황 버프로 얼음 면역`);
