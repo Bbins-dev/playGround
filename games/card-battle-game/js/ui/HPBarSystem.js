@@ -388,6 +388,17 @@ class HPBarSystem {
             );
         }
 
+        // 마음 버프 표시 (showValue: false - 턴 표시 없음)
+        if (player.hasMindBuff && player.hasMindBuff()) {
+            this._createBuffElement(
+                buffsContainer,
+                effectsContainer,
+                'mind',
+                player.mindTurns,
+                isPlayer
+            );
+        }
+
         // 열풍 버프 표시
         if (player.hasHotWindBuff && player.hasHotWindBuff()) {
             this._createBuffElement(

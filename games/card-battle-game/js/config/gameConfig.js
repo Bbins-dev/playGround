@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.4.23',                        // 버전 넘버
+        number: '0.4.24',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -971,6 +971,21 @@ const GameConfig = {
             description: '다음 턴 시작까지 체력이 1 아래로 내려가지 않음',
             get color() { return GameConfig.masterColors.buffs.sharpen; }, // 불 속성 색상
             get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수
+            targetSelf: true, // 자신에게 적용되는 버프
+            durationType: 'special', // 특수 (값 표시 없음)
+            display: {
+                showValue: false,  // 턴 표시 없음
+                format: ''  // 빈 문자열 (이모지 + 이름만)
+            }
+        },
+        mind: {
+            nameKey: 'auto_battle_card_game.ui.buffs.mind',
+            descriptionKey: 'auto_battle_card_game.ui.buffs.mind_description',
+            name: '마음',
+            emoji: '🛡️',
+            description: '한 턴 간 상태이상에 걸리지 않습니다',
+            get color() { return GameConfig.masterColors.buffs.enhance; }, // 보호 - 금색 계열
+            get maxStack() { return 1; },     // 중첩 불가
             targetSelf: true, // 자신에게 적용되는 버프
             durationType: 'special', // 특수 (값 표시 없음)
             display: {
