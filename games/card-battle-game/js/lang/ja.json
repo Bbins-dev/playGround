@@ -775,6 +775,8 @@
         "status_immune": "{name} 無効!",
         "sulfur_immune": "硫黄!",
         "coating_immune": "コート!",
+        "mind_blocked": "🛡️ 心!",
+        "raincoat_blocked": "🌂 防御!",
         "status_cleansed": "浄化！",
         "status_removed": "{name}解除!",
         "paralysis_triggered": "⚡ 麻痺！",
