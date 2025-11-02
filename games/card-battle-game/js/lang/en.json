@@ -376,11 +376,11 @@
         },
         "catalyst": {
           "name": "Catalyst",
-          "description": "Adds 1 turn to all turn-based {cardType:status} effects currently on the opponent."
+          "description": "Adds 1 turn to all stackable turn-based {cardType:status} effects currently on the opponent."
         },
         "inhibitor": {
           "name": "Inhibitor",
-          "description": "Reduces 1 turn from all turn-based {cardType:status} effects currently on yourself."
+          "description": "Reduces 1 turn from all stackable turn-based {cardType:status} effects currently on yourself."
         },
         "chain_reaction": {
           "name": "Chain Reaction",
