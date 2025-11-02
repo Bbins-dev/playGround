@@ -327,15 +327,15 @@ class Player {
     }
 
     /**
-     * 발화 상태이상의 데미지 배수를 반환 (지수 증가)
-     * @returns {number} 배수 (1 = 발화 없음, 3 = 1스택, 9 = 2스택, 27 = 3스택...)
+     * 발화 상태이상의 데미지 배수를 반환 (선형 증가)
+     * @returns {number} 배수 (1 = 발화 없음, 3 = 1스택, 6 = 2스택, 9 = 3스택...)
      */
     getIgnitionMultiplier() {
         const stacks = this.getIgnitionStacks();
         if (stacks === 0) return 1;
 
         const baseMultiplier = GameConfig?.statusEffects?.ignition?.stackMultiplier || 3;
-        return Math.pow(baseMultiplier, stacks);
+        return baseMultiplier * stacks;
     }
 
     clearAllStatusEffects() {
@@ -897,7 +897,7 @@ class Player {
                     // 마비 아닐 때는 그대로 유지 (정전기 + 힘만 반영됨)
                 }
 
-                // 발화 상태 추가 데미지 (불 공격 카드만, 적이 발화 상태일 때 3^stacks 배)
+                // 발화 상태 추가 데미지 (불 공격 카드만, 적이 발화 상태일 때 3*stacks 배)
                 if (card.element === 'fire' && card.type === 'attack' && target) {
                     const multiplier = target.getIgnitionMultiplier();
                     if (multiplier > 1) {

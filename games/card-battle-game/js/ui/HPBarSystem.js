@@ -281,9 +281,9 @@ class HPBarSystem {
             let countdownHtml = '';
             const instantReleaseStatuses = ['frozen', 'stun', 'taunt', 'oblivion'];
 
-            // 발화: 스택 기반 배수 표시 (×3, ×9, ×27...)
+            // 발화: 스택 기반 배수 표시 (×3, ×6, ×9...)
             if (effect.type === 'ignition' && effect.stacks) {
-                const multiplier = Math.pow(GameConfig?.statusEffects?.ignition?.stackMultiplier || 3, effect.stacks);
+                const multiplier = (GameConfig?.statusEffects?.ignition?.stackMultiplier || 3) * effect.stacks;
                 countdownHtml = `×${multiplier}`;
             }
             // 다른 상태이상: 기존 턴수 표시
