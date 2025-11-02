@@ -916,7 +916,7 @@ class BattleSystem {
             await this.effectSystem.showEffectMessage(result.removedStatusType, userPosition, 'status_removed');
         }
 
-        // 억제제 효과 처리 (턴 기반 상태이상 턴수 감소)
+        // 억제제 효과 처리 (턴 중첩형 상태이상 턴수 감소)
         if (result.inhibitorApplied) {
             // user의 위치에서 메시지 표시 (버프카드지만 상태이상 관련)
             const userPosition = user.isPlayer ?
@@ -1020,7 +1020,7 @@ class BattleSystem {
             return;
         }
 
-        // 촉진제 효과 처리 (턴 기반 상태이상 턴수 연장)
+        // 촉진제 효과 처리 (턴 중첩형 상태이상 턴수 연장)
         if (result.catalystApplied) {
             // 촉진제 메시지 표시
             const template = I18nHelper.getText(result.messageKey);
