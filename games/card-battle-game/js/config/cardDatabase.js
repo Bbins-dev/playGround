@@ -451,7 +451,8 @@ const CardDatabase = {
                 // 마음 버프 1턴 부여
                 return {
                     success: true,
-                    messageKey: 'auto_battle_card_game.ui.unbreakable_mind_effect',
+                    messageKey: 'auto_battle_card_game.ui.templates.buff_gained',
+                    buffType: 'mind',
                     mindGain: 1,
                     element: this.element
                 };
@@ -2999,7 +3000,7 @@ const CardDatabase = {
             type: 'buff',
             element: 'fire',
             power: 0,
-            accuracy: 70,
+            accuracy: 75,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.battery_explosion.description',
             effect: function(user, target, battleSystem) {
