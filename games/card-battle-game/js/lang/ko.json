@@ -130,7 +130,7 @@
         "burn": "화상",
         "burn_description": "턴 시작 시 5의 화상 대미지를 받습니다. 방어력을 무시합니다.",
         "ignition": "발화",
-        "ignition_description": "불 공격카드의 공격에 세 배의 피해를 입습니다.",
+        "ignition_description": "불 공격카드의 공격에 중첩당 3배씩 피해를 입습니다.",
         "poisoned": "중독",
         "poisoned_description": "턴 종료 시 남은 턴수만큼 피해를 받습니다.",
         "sand": "모래",
@@ -480,7 +480,7 @@
         },
         "ignite": {
           "name": "발화",
-          "description": "자신의 방어속성이 {fire}일 경우 발동 시 한 턴 간 적을 {status:ignition}시킵니다. {fire}{cardType:attack}카드에 {status:ignition} 중첩당 세 배씩 곱해진 피해를 입게 합니다."
+          "description": "자신의 방어속성이 {fire}일 경우 발동 시 한 턴 간 적을 {status:ignition}시킵니다. {fire}{cardType:attack}카드에 {status:ignition} 중첩당 3배씩 피해 증가를 입게 합니다."
         },
         "insult": {
           "name": "모욕",

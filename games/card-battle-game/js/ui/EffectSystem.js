@@ -173,7 +173,7 @@ class EffectSystem {
     }
 
     // 템플릿 기반 효과 메시지 표시 (async - 읽기 시간 포함)
-    async showEffectMessage(effectType, position, templateType, value = 0) {
+    async showEffectMessage(effectType, position, templateType, value = 0, extraParams = {}) {
         // GameConfig에서 효과 설정 가져오기
         const config = GameConfig.statusEffects[effectType] || GameConfig.buffs[effectType];
         if (!config) {
@@ -195,6 +195,13 @@ class EffectSystem {
         let message = template
             .replace('{name}', fullName)
             .replace('{value}', value);
+
+        // extraParams의 키-값 치환 (발화 배수 등 동적 파라미터)
+        if (extraParams && typeof extraParams === 'object') {
+            for (const [key, val] of Object.entries(extraParams)) {
+                message = message.replace(`{${key}}`, val);
+            }
+        }
 
         // 메시지 타입 결정: 상태이상은 status 존, 버프는 buff 존
         const messageTypeForZone = GameConfig.statusEffects[effectType] ? 'status' : 'buff';

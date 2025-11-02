@@ -130,7 +130,7 @@
         "burn": "火傷",
         "burn_description": "ターン開始時に5の火傷ダメージを受けます。防御力を無視します。",
         "ignition": "発火",
-        "ignition_description": "炎攻撃カードから3倍のダメージを受けます。",
+        "ignition_description": "炎攻撃カードからスタック毎に3倍のダメージを受けます。",
         "poisoned": "毒",
         "poisoned_description": "ターン終了時に残りターン数分のダメージを受けます。",
         "sand": "砂",
@@ -480,7 +480,7 @@
         },
         "ignite": {
           "name": "発火",
-          "description": "自分の防御属性が{fire}の場合、発動時に1ターンの間相手を{status:ignition}状態にします。{fire}{cardType:attack}カードに{status:ignition}のスタック毎に3倍ずつ乗算されたダメージを与えます。"
+          "description": "自分の防御属性が{fire}の場合、発動時に1ターンの間相手を{status:ignition}状態にします。{fire}{cardType:attack}カードに{status:ignition}のスタック毎に3倍ずつ追加のダメージを与えます。"
         },
         "insult": {
           "name": "侮辱",
