@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.4.27',                        // 버전 넘버
+        number: '0.4.28',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -1751,7 +1751,6 @@ const GameConfig = {
                     { id: 'poison_needle', count: 1 },     // 독침
                     { id: 'liquid_coating', count: 1 },    // 액체 코팅
                     { id: 'poison_fang', count: 1 },       // 독 이빨
-                    { id: 'poison_mutation', count: 1 },   // 맹독 변성
                     { id: 'gas_absorption', count: 1 }     // 가스 흡수
                 ]
             },
@@ -1821,7 +1820,6 @@ const GameConfig = {
                     { id: 'poison_throw', count: 2 },      // 독극물 투척 x2
                     { id: 'poison_fang', count: 1 },       // 독 이빨
                     { id: 'poison_barrage', count: 1 },    // 독침 연발
-                    { id: 'poison_mutation', count: 1 },   // 맹독 변성
                     { id: 'toxic_blast', count: 1 },       // 맹독 폭발
                     { id: 'mirror_reaction', count: 1 }    // 거울 반응
                 ]
