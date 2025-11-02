@@ -476,7 +476,7 @@
         },
         "ignite": {
           "name": "発火",
-          "description": "自分の防御属性が{fire}の場合、発動時に相手を1ターンの間{status:ignition}状態にし、{fire}{cardType:attack}カードが3倍のダメージを与えます。"
+          "description": "自分の防御属性が{fire}の場合、発動時に1ターンの間相手を{status:ignition}状態にします。{fire}{cardType:attack}カードに{status:ignition}のスタック毎に3倍ずつ乗算されたダメージを与えます。"
         },
         "insult": {
           "name": "侮辱",
@@ -775,7 +775,7 @@
         "poisoned_extended": "☠️ 毒+{value}ターン!",
         "wet_extended": "💧 濡れ+{value}ターン!",
         "paralysis_extended": "⚡ 麻痺+{value}ターン!",
-        "ignition_extended": "🔥 発火+{value}ターン!",
+        "ignition_stacked": "🔆 {statusName}×{multiplier}!",
         "burn_damage": "🔥 火傷で{value}ダメージ！",
         "buff_gained": "{name} +{value}",
         "buff_gained_turns": "{name} +{value}ターン!",
