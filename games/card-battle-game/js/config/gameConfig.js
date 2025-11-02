@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.4.21',                        // 버전 넘버
+        number: '0.4.22',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -729,7 +729,11 @@ const GameConfig = {
             emoji: '🔆',
             description: '불 공격카드의 공격에 세 배의 피해를 입습니다.',
             duration: 1,
-            canExtend: true,  // 턴 연장 가능 (중복 적용 시 누적)
+            canExtend: false,  // 턴 연장 비활성화
+            canStack: true,    // 강도 기반 중첩 활성화
+            maxStacks: 10,     // 최대 중첩 (밸런스용)
+            stackMultiplier: 3, // 기본 배수
+            damageFormula: 'exponential', // 3^stacks
             get color() { return GameConfig.masterColors.statusEffects.ignition; }
         },
         poisoned: {

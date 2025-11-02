@@ -476,7 +476,7 @@
         },
         "ignite": {
           "name": "발화",
-          "description": "자신의 방어속성이 {fire}일 경우 발동 시 상대를 한 턴 간 {status:ignition}상태로 만들며 {fire}{cardType:attack}카드가 세 배의 피해를 입힙니다."
+          "description": "자신의 방어속성이 {fire}일 경우 발동 시 한 턴 간 적을 {status:ignition}시킵니다. {fire}{cardType:attack}카드에 {status:ignition} 중첩당 세 배씩 곱해진 피해를 입게 합니다."
         },
         "insult": {
           "name": "모욕",
@@ -775,7 +775,7 @@
         "poisoned_extended": "☠️ 중독+{value}턴!",
         "wet_extended": "💧 젖음+{value}턴!",
         "paralysis_extended": "⚡ 마비+{value}턴!",
-        "ignition_extended": "🔥 발화+{value}턴!",
+        "ignition_stacked": "🔆 {statusName}×{multiplier}!",
         "burn_damage": "🔥 화상으로 {value} 피해!",
         "buff_gained": "{name} +{value}",
         "buff_gained_turns": "{name} +{value}턴!",
