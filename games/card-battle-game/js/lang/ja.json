@@ -264,7 +264,7 @@
         },
         "unbreakable_mind": {
           "name": "折れない心",
-          "description": "防御属性が{ノーマル}の場合、発動時１ターンの間{状態異常}にかかりません。{心}は重複しません。"
+          "description": "防御属性が{normal}の場合、発動時１ターンの間{cardType:status}適用を防ぎます。{buff:mind}は重複しません。"
         },
         "indomitable_gauntlet": {
           "name": "不屈の篭手",
