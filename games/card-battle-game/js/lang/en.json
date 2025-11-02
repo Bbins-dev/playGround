@@ -264,7 +264,7 @@
         },
         "unbreakable_mind": {
           "name": "Unbreakable Mind",
-          "description": "If your defense element is {normal}, gain immunity to all {status effects} for one turn. {Mind} does not stack."
+          "description": "If your defense element is {normal}, blocks {cardType:status} applications for one turn. {buff:mind} does not stack."
         },
         "indomitable_gauntlet": {
           "name": "Indomitable Gauntlet",
