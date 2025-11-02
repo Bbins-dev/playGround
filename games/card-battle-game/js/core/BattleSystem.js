@@ -185,6 +185,14 @@ class BattleSystem {
             this.hpBarSystem.updateBuffs(currentPlayer, isPlayerTurn);
         }
 
+        // 마음 버프 차감 (턴 시작 시 - "다음 턴 시작까지" 지속)
+        if (currentPlayer.mindTurns > 0) {
+            currentPlayer.mindTurns--;
+
+            // 버프 UI 즉시 업데이트
+            this.hpBarSystem.updateBuffs(currentPlayer, isPlayerTurn);
+        }
+
         // ===== 2. 방어력 초기화 =====
         if (currentPlayer.defense > 0) {
             // 방어력 감소 애니메이션 실행
@@ -753,6 +761,11 @@ class BattleSystem {
             await this.effectSystem.showBuffEffect('sharpen', user, result.sharpenGain);
         }
 
+        // 마음 버프 획득 처리 (꺾이지 않는 마음 카드) - 새로운 통합 메서드 사용
+        if (result.mindGain && result.mindGain > 0) {
+            await this.effectSystem.showBuffEffect('mind', user, result.mindGain);
+        }
+
         // 열풍 버프 획득 처리 (열풍 카드) - 새로운 통합 메서드 사용
         if (result.hotWindGain && result.hotWindGain > 0) {
             await this.effectSystem.showBuffEffect('hotWind', user, result.hotWindGain);
@@ -1276,7 +1289,25 @@ class BattleSystem {
             }
         }
 
-        // 2. 우비 버프 보호 체크 (모든 상태이상 차단)
+        // 2. 마음 버프 보호 체크 (한 턴 간 모든 상태이상 면역)
+        if (target.hasMindBuff()) {
+            // 마음 버프는 소모되지 않음 (턴 시작 시 차감)
+
+            // 차단 메시지 표시
+            this.effectSystem.showDamageNumber(
+                '🛡️ 마음!',
+                targetPosition,
+                'immune',
+                null,
+                { isPlayerTarget: (target === this.player) }
+            );
+
+            // UI는 이미 표시되어 있으므로 업데이트 불필요
+
+            return { success: false, blocked: 'mind', statusType: statusInfo.type };
+        }
+
+        // 3. 우비 버프 보호 체크 (모든 상태이상 차단, 1회용)
         if (target.hasRaincoatProtection()) {
             // 우비 1스택 소모
             target.consumeRaincoatStack();

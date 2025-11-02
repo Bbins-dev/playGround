@@ -55,6 +55,7 @@ class Player {
         this.sulfurTurns = 0; // 유황 버프 남은 턴 수 (얼음 면역)
         this.coatingTurns = 0; // 코팅 버프 남은 턴 수 (화상 면역)
         this.raincoatStacks = 0; // 우비 버프 스택 수 (상태이상 차단, 턴이 아닌 스택 기반)
+        this.mindTurns = 0; // 마음 버프 남은 턴 수 (모든 상태이상 면역, 1턴 고정)
 
         // 턴 관련
         this.currentCardIndex = 0;
@@ -444,6 +445,16 @@ class Player {
 
     addSharpenBuff(turns) {
         this.sharpenTurns = turns;  // 중첩 불가이므로 덮어쓰기 (카드에 중복 체크 있음)
+        return turns;
+    }
+
+    // 마음 버프 관련 메서드
+    hasMindBuff() {
+        return this.mindTurns > 0;
+    }
+
+    addMindBuff(turns) {
+        this.mindTurns = turns;  // 중첩 불가이므로 덮어쓰기 (1턴만 유지)
         return turns;
     }
 

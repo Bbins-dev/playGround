@@ -262,6 +262,10 @@
           "name": "Thorn Armor",
           "description": "Deal 1 damage to yourself and gain 2 {buff:strength}."
         },
+        "unbreakable_mind": {
+          "name": "Unbreakable Mind",
+          "description": "If your defense element is {normal}, gain immunity to all {status effects} for one turn. {Mind} does not stack."
+        },
         "indomitable_gauntlet": {
           "name": "Indomitable Gauntlet",
           "description": "Deal 3 damage to yourself and gain 3 {buff:strength}."
@@ -665,6 +669,8 @@
         "scent_description": "Increases fire element attack card damage by 10 per stack.",
         "sharpen": "SRP",
         "sharpen_description": "HP cannot go below 1 until next turn starts. Last stand effect.",
+        "mind": "MIND",
+        "mind_description": "Immune to all status effects for one turn. Does not stack.",
         "hotWind": "HTW",
         "hotWind_description": "The number of fire attack cards in hand multiplies the power of all fire attack cards.",
         "lithium": "Li⁺",
@@ -746,6 +752,8 @@
       "shield_failed": "Shield failed",
       "thorn_armor_effect": "Thorn armor dealt damage to self",
       "thorn_armor_failed": "Thorn armor failed",
+      "unbreakable_mind_effect": "Gained Unbreakable Mind",
+      "no_normal_defense": "Not normal defense!",
       "indomitable_gauntlet_effect": "Gained strength from Indomitable Gauntlet",
       "indomitable_gauntlet_failed": "Indomitable Gauntlet failed",
       "heal_effect": "HP restored",
