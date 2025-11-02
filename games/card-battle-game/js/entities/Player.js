@@ -223,8 +223,30 @@ class Player {
             return { success: false, reason: 'invalid_status' };
         }
 
-        // 연장 가능한 상태이상 (Configuration-Driven - 하드코딩 제거)
+        // 강도 기반 중첩 시스템 (발화 전용)
         const existingEffect = this.statusEffects.find(effect => effect.type === statusType);
+        if (existingEffect && statusConfig.canStack) {
+            // 발화: 스택 증가 + 턴은 1로 리셋
+            const maxStacks = statusConfig.maxStacks || 10;
+            existingEffect.stacks = Math.min((existingEffect.stacks || 1) + 1, maxStacks);
+            existingEffect.turnsLeft = 1; // 항상 1턴으로 리셋
+
+            if (GameConfig?.debugMode?.showStatusEffects) {
+                console.log(`[STATUS] ${statusType} 중첩: ${this.name} (×${existingEffect.stacks})`);
+            }
+
+            // 자신의 런타임 스탯 업데이트
+            this.updateRuntimeCardStats();
+
+            // 상대방의 런타임 스탯 즉시 업데이트 (동적 공격력 계산)
+            if (this.opponent) {
+                this.opponent.updateRuntimeCardStats();
+            }
+
+            return { success: true, stacked: true, stacks: existingEffect.stacks, statusType: statusType };
+        }
+
+        // 턴 연장 가능한 상태이상 (기존 시스템 - burn, poison 등)
         if (existingEffect && statusConfig.canExtend) {
             // 중복 적용 시 턴 수 누적
             const additionalTurns = duration || statusConfig.duration || 1;
@@ -255,7 +277,8 @@ class Player {
             type: statusType,
             power: power || statusConfig.defaultDamage || statusConfig.defaultChance || 0,
             duration: duration || statusConfig.duration || -1, // -1은 영구
-            turnsLeft: duration || statusConfig.duration || -1
+            turnsLeft: duration || statusConfig.duration || -1,
+            stacks: statusConfig.canStack ? 1 : undefined // 강도 기반 중첩용
         };
 
         this.statusEffects.push(statusEffect);
@@ -291,6 +314,27 @@ class Player {
         return this.statusEffects.some(effect =>
             effect.type === statusType && effect.turnsLeft > 0
         );
+    }
+
+    /**
+     * 발화 상태이상의 스택 수를 반환
+     * @returns {number} 발화 스택 (0 = 발화 없음)
+     */
+    getIgnitionStacks() {
+        const ignition = this.statusEffects.find(e => e.type === 'ignition' && e.turnsLeft > 0);
+        return ignition?.stacks || 0;
+    }
+
+    /**
+     * 발화 상태이상의 데미지 배수를 반환 (지수 증가)
+     * @returns {number} 배수 (1 = 발화 없음, 3 = 1스택, 9 = 2스택, 27 = 3스택...)
+     */
+    getIgnitionMultiplier() {
+        const stacks = this.getIgnitionStacks();
+        if (stacks === 0) return 1;
+
+        const baseMultiplier = GameConfig?.statusEffects?.ignition?.stackMultiplier || 3;
+        return Math.pow(baseMultiplier, stacks);
     }
 
     clearAllStatusEffects() {
@@ -842,13 +886,13 @@ class Player {
                     // 마비 아닐 때는 그대로 유지 (정전기 + 힘만 반영됨)
                 }
 
-                // 발화 상태 추가 데미지 (불 공격 카드만, 적이 발화 상태일 때 3배)
+                // 발화 상태 추가 데미지 (불 공격 카드만, 적이 발화 상태일 때 3^stacks 배)
                 if (card.element === 'fire' && card.type === 'attack' && target) {
-                    const hasIgnition = target.hasStatusEffect('ignition');
-                    if (hasIgnition) {
-                        buffedPower = Math.floor(buffedPower * 3);
+                    const multiplier = target.getIgnitionMultiplier();
+                    if (multiplier > 1) {
+                        buffedPower = Math.floor(buffedPower * multiplier);
                     }
-                    // 발화 아닐 때는 그대로 유지
+                    // 발화 없을 때는 그대로 유지 (multiplier === 1)
                 }
 
                 // ice_breaker 카드: 적이 frozen 상태일 때 적 최대 HP의 20% (고정 피해)

@@ -1956,7 +1956,7 @@ const CardDatabase = {
             accuracy: 90,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.karura_strike.description',
-            selfDamage: 7,
+            selfDamage: 9,
             burnChance: 100, // 명중 시 100% 확률로 화상
             effect: function(user, target, battleSystem) {
                 // 자해 데미지는 BattleSystem.preprocessSelfDamage()에서 이미 처리됨
@@ -2037,7 +2037,7 @@ const CardDatabase = {
             accuracy: 80,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.flame_ascension.description',
-            selfDamage: 4,
+            selfDamage: 5,
             burnChance: 40, // 명중 시 40% 확률로 화상
             effect: function(user, target, battleSystem) {
                 // 자해 데미지는 BattleSystem.preprocessSelfDamage()에서 이미 처리됨

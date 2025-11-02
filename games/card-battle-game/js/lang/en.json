@@ -476,7 +476,7 @@
         },
         "ignite": {
           "name": "Ignite",
-          "description": "If your defense element is {fire}, inflicts {status:ignition} on the target for 1 turn, causing {fire} {cardType:attack} cards to deal triple damage."
+          "description": "If your defense element is {fire}, inflicts {status:ignition} on the target for 1 turn. {fire} {cardType:attack} cards deal damage multiplied by 3 per {status:ignition} stack."
         },
         "insult": {
           "name": "Insult",
@@ -775,7 +775,7 @@
         "poisoned_extended": "☠️ Poison+{value}T!",
         "wet_extended": "💧 Wet+{value}T!",
         "paralysis_extended": "⚡ Paralysis+{value}T!",
-        "ignition_extended": "🔥 Ignition+{value}T!",
+        "ignition_stacked": "🔆 {statusName}×{multiplier}!",
         "burn_damage": "🔥 {value} burn damage!",
         "buff_gained": "{name} +{value}",
         "buff_gained_turns": "{name} +{value}T!",
