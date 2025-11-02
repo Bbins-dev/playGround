@@ -775,6 +775,8 @@
         "status_immune": "{name} Immune!",
         "sulfur_immune": "Sulfur!",
         "coating_immune": "Coating!",
+        "mind_blocked": "🛡️ Mind!",
+        "raincoat_blocked": "🌂 Blocked!",
         "status_cleansed": "Cleansed!",
         "status_removed": "{name} Removed!",
         "paralysis_triggered": "⚡ Paralyzed!",

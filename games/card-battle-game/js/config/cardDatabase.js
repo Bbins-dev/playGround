@@ -2895,12 +2895,11 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.sharpen.description',
             effect: function(user, target, battleSystem) {
-                // 중복 체크 (이미 벼리기 버프가 있으면 실패)
+                // 중복 체크 (이미 벼리기 버프가 있으면 실패 - Mind 버프와 동일한 패턴)
                 if (user.hasSharpenBuff && user.hasSharpenBuff()) {
                     return {
-                        success: true,
-                        conditionNotMet: true,
-                        messageKey: 'auto_battle_card_game.ui.templates.buff_already_active',
+                        success: false,  // Mind와 동일한 명확한 실패 처리
+                        messageKey: 'auto_battle_card_game.ui.buff_already_active',
                         element: this.element
                     };
                 }

@@ -970,7 +970,7 @@ const GameConfig = {
             emoji: '⚒️',
             description: '다음 턴 시작까지 체력이 1 아래로 내려가지 않음',
             get color() { return GameConfig.masterColors.buffs.sharpen; }, // 불 속성 색상
-            get maxStack() { return GameConfig.constants.limits.maxBuffStacks; },     // 최대 중첩 수
+            get maxStack() { return 1; },     // 중첩 불가 (카드 레벨에서 중복 차단됨)
             targetSelf: true, // 자신에게 적용되는 버프
             durationType: 'special', // 특수 (값 표시 없음)
             display: {
@@ -3544,7 +3544,7 @@ const GameConfig = {
         },
         // 고압 전류 카드 설정
         highVoltageCurrent: {
-            activationChance: 70,  // 70% 발동률
+            activationChance: 60,  // 60% 발동률 (밸런스 조정: 70% → 60%)
             successKey: 'auto_battle_card_game.ui.templates.high_voltage_current_success',
             noBuffsKey: 'auto_battle_card_game.ui.condition_failed'
         },

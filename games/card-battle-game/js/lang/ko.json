@@ -775,6 +775,8 @@
         "status_immune": "{name} 면역!",
         "sulfur_immune": "유황!",
         "coating_immune": "코팅!",
+        "mind_blocked": "🛡️ 마음!",
+        "raincoat_blocked": "🌂 차단!",
         "status_cleansed": "정화!",
         "status_removed": "{name} 제거!",
         "paralysis_triggered": "⚡ 마비!",
