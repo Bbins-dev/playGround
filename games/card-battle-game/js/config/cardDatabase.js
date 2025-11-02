@@ -2311,10 +2311,10 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.catalyst.description',
             catalystChance: 100,
             effect: function(user, target, battleSystem) {
-                // 턴 기반 상태이상 목록 (즉시 해제 상태이상 제외)
-                const turnBasedStatuses = ['burn', 'poisoned', 'wet', 'paralysis', 'sand', 'insult', 'slow', 'chains', 'frozen'];
+                // 턴 중첩형 상태이상 목록 (즉시 해제 상태이상 제외)
+                const turnBasedStatuses = ['burn', 'poisoned', 'wet', 'paralysis', 'sand', 'insult', 'slow', 'chains', 'phase'];
 
-                // 상대의 턴 기반 상태이상 찾기
+                // 상대의 턴 중첩형 상태이상 찾기
                 const statusesToExtend = target.statusEffects?.filter(e =>
                     turnBasedStatuses.includes(e.type) && e.turnsLeft > 0
                 ) || [];
@@ -2357,10 +2357,10 @@ const CardDatabase = {
             descriptionKey: 'auto_battle_card_game.ui.cards.inhibitor.description',
             inhibitorChance: 100,
             effect: function(user, target, battleSystem) {
-                // 턴 기반 상태이상 목록 (즉시 해제 상태이상 제외)
-                const turnBasedStatuses = ['burn', 'poisoned', 'wet', 'paralysis', 'sand', 'insult', 'slow', 'chains', 'frozen'];
+                // 턴 중첩형 상태이상 목록 (즉시 해제 상태이상 제외)
+                const turnBasedStatuses = ['burn', 'poisoned', 'wet', 'paralysis', 'sand', 'insult', 'slow', 'chains', 'phase'];
 
-                // 자신(user)의 턴 기반 상태이상 찾기
+                // 자신(user)의 턴 중첩형 상태이상 찾기
                 const statusesToReduce = user.statusEffects?.filter(e =>
                     turnBasedStatuses.includes(e.type) && e.turnsLeft > 0
                 ) || [];

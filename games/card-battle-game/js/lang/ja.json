@@ -376,11 +376,11 @@
         },
         "catalyst": {
           "name": "触媒剤",
-          "description": "現在相手に存在するターン数ベースの{cardType:status}のターンをすべて1ターン追加します。"
+          "description": "現在相手に存在する重複可能ターンの{cardType:status}のターンをすべて1ターン追加します。"
         },
         "inhibitor": {
           "name": "抑制剤",
-          "description": "現在自分に存在するターン数ベースの{cardType:status}のターンをすべて1ターン減少させます。"
+          "description": "現在自分に存在する重複可能ターンの{cardType:status}のターンをすべて1ターン減少させます。"
         },
         "chain_reaction": {
           "name": "連鎖反応",
