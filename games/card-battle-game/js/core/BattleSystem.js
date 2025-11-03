@@ -699,7 +699,7 @@ class BattleSystem {
                 this.effectSystem.getEnemyPosition();
 
             const template = I18nHelper.getText(result.messageKey);
-            await this.effectSystem.showDamageNumber(0, userPosition, 'status', template, {
+            await this.effectSystem.showDamageNumber(0, userPosition, 'conditionFailed', template, {
                 isPlayerTarget: (user === this.player)
             });
             return; // 조건 미충족이면 추가 처리 중단
@@ -1038,7 +1038,7 @@ class BattleSystem {
         // 조건 미충족 시 특별 메시지 처리 (일관성을 위해 추가)
         if (result.conditionNotMet && result.messageKey) {
             const template = I18nHelper.getText(result.messageKey);
-            await this.effectSystem.showDamageNumber(0, targetPosition, 'status', template, {
+            await this.effectSystem.showDamageNumber(0, targetPosition, 'conditionFailed', template, {
                 isPlayerTarget: (target === this.player)
             });
             return; // 조건 미충족이면 추가 처리 중단
@@ -1178,7 +1178,7 @@ class BattleSystem {
         // 조건 미충족 시 특별 메시지 처리 (거울반응 카드 등)
         if (result.conditionNotMet && result.messageKey) {
             const template = I18nHelper.getText(result.messageKey);
-            await this.effectSystem.showDamageNumber(0, userPosition, 'status', template, {
+            await this.effectSystem.showDamageNumber(0, userPosition, 'conditionFailed', template, {
                 isPlayerTarget: (user === this.player)
             });
             return; // 조건 미충족이면 추가 처리 중단
@@ -1379,10 +1379,11 @@ class BattleSystem {
             // 중복 - 이미 상태이상 걸림
             await this.effectSystem.showEffectMessage(statusInfo.type, targetPosition, 'already_status');
             return { success: false, duplicate: true, statusType: statusInfo.type };
-        } else if (result.reason === 'immune') {
-            // 면역 - 방어속성으로 인한 면역
-            await this.effectSystem.showEffectMessage(statusInfo.type, targetPosition, 'status_immune');
-            return { success: false, immune: true, statusType: statusInfo.type };
+        // [IMMUNITY_REMOVAL] 2025-11-03: 속성별 면역 시스템 제거 (롤백 가능)
+        // } else if (result.reason === 'immune') {
+        //     // 면역 - 방어속성으로 인한 면역
+        //     await this.effectSystem.showEffectMessage(statusInfo.type, targetPosition, 'status_immune');
+        //     return { success: false, immune: true, statusType: statusInfo.type };
         } else if (result.reason === 'buff_immune') {
             // 버프 면역 - 유황/코팅 버프로 인한 면역
             const buffType = result.buffType; // 'sulfur' or 'coating'
