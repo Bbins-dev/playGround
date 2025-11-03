@@ -2124,10 +2124,10 @@ const GameConfig = {
                         {
                             name: 'deck1',
                             cards: [
-                                { id: 'insult', count: 1 },
-                                { id: 'heavy_strike', count: 1 },
-                                { id: 'large_shield', count: 1 },
-                                { id: 'barricade', count: 1 }
+                                { id: 'concussion', count: 1 },
+                                { id: 'wear_armor', count: 1 },
+                                { id: 'raise_shield', count: 1 },
+                                { id: 'shield_bash', count: 1 }
                             ]
                         },
                         {
@@ -2153,8 +2153,9 @@ const GameConfig = {
                         {
                             name: 'deck1',
                             cards: [
-                                { id: 'counter_attack', count: 1 },
-                                { id: 'thorn_armor', count: 1 },
+                                { id: 'taunt', count: 1 },
+                                { id: 'wear_armor', count: 1 },
+                                { id: 'random_bash', count: 1 },
                                 { id: 'shield_bash', count: 1 }
                             ]
                         },
@@ -2183,9 +2184,9 @@ const GameConfig = {
                         {
                             name: 'deck1',
                             cards: [
-                                { id: 'barricade', count: 1 },
-                                { id: 'net_throw', count: 1 },
-                                { id: 'shield_bash', count: 1 }
+                                { id: 'fast_attack', count: 1 },
+                                { id: 'heavy_strike', count: 1 },
+                                { id: 'large_shield', count: 1 }
                             ]
                         },
                         {
@@ -2211,8 +2212,7 @@ const GameConfig = {
                         {
                             name: 'deck1',
                             cards: [
-                                { id: 'push_back', count: 1 },
-                                { id: 'barricade', count: 1 },
+                                { id: 'raise_shield', count: 5 },
                                 { id: 'shield_bash', count: 1 }
                             ]
                         },
@@ -2230,6 +2230,304 @@ const GameConfig = {
                                 { id: 'wear_armor', count: 1 },
                                 { id: 'raise_shield', count: 1 },
                                 { id: 'heavy_strike', count: 3 }
+                            ]
+                        }
+                    ]
+                },
+                11: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'fire_shield', count: 1 },
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'chains_of_fire', count: 1 },
+                                { id: 'powder_keg', count: 1 },
+                                { id: 'fireball', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'nutrient_supplement', count: 1 },
+                                { id: 'flame_ascension', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'flame_wall', count: 1 },
+                                { id: 'fireball', count: 2 }
+                            ]
+                        }
+                    ]
+                },
+                12: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'fire_breath', count: 1 },
+                                { id: 'opportunity_scent', count: 1 },
+                                { id: 'flame_ascension', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'indomitable_gauntlet', count: 1 },
+                                { id: 'flame_burst', count: 1 },
+                                { id: 'first_aid', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'red_pendant', count: 2 },
+                                { id: 'chains_of_fire', count: 1 },
+                                { id: 'ignite', count: 1 },
+                                { id: 'flame_throw', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                13: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'scorched_shield', count: 1 },
+                                { id: 'ignite', count: 1 },
+                                { id: 'flame_throw', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'hot_wind', count: 1 },
+                                { id: 'flame_throw', count: 2 },
+                                { id: 'bandage', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'fire_breath', count: 1 },
+                                { id: 'sharpen', count: 1 },
+                                { id: 'endless_effort', count: 1 },
+                                { id: 'sword_dance', count: 1 },
+                                { id: 'fireball', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                14: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'battery_explosion', count: 2 },
+                                { id: 'flame_throw', count: 1 },
+                                { id: 'chains_of_fire', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'fire_shield', count: 1 },
+                                { id: 'battery_explosion', count: 1 },
+                                { id: 'overcharge_battery', count: 1 },
+                                { id: 'flame_throw', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'powder_keg', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                15: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'fire_breath', count: 1 },
+                                { id: 'opportunity_scent', count: 1 },
+                                { id: 'fireball', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'scorched_shield', count: 1 },
+                                { id: 'flame_ascension', count: 1 },
+                                { id: 'nutrient_supplement', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'red_pendant', count: 1 },
+                                { id: 'flame_burst', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                16: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'nutrient_supplement', count: 1 },
+                                { id: 'red_pendant', count: 1 },
+                                { id: 'flame_throw', count: 1 },
+                                { id: 'flame_ascension', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'scorched_shield', count: 1 },
+                                { id: 'nutrient_supplement', count: 1 },
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'powder_keg', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'lava_prison', count: 1 },
+                                { id: 'indomitable_gauntlet', count: 1 },
+                                { id: 'fireball', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                17: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'ignite', count: 1 },
+                                { id: 'chains_of_fire', count: 1 },
+                                { id: 'indomitable_gauntlet', count: 1 },
+                                { id: 'flame_burst', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'flame_wall', count: 1 },
+                                { id: 'red_pendant', count: 1 },
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'opportunity_scent', count: 1 },
+                                { id: 'fireball', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'first_aid', count: 1 },
+                                { id: 'fireball', count: 1 },
+                                { id: 'flame_ascension', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                18: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'fire_breath', count: 1 },
+                                { id: 'hot_wind', count: 1 },
+                                { id: 'red_pendant', count: 1 },
+                                { id: 'flame_throw', count: 2 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'fire_shield', count: 2 },
+                                { id: 'flame_wall', count: 2 },
+                                { id: 'red_pendant', count: 2 },
+                                { id: 'scorched_shield', count: 2 },
+                                { id: 'flame_throw', count: 2 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'flame_wall', count: 1 },
+                                { id: 'scorched_shield', count: 1 },
+                                { id: 'shield_bash', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                19: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'red_pendant', count: 1 },
+                                { id: 'indomitable_gauntlet', count: 1 },
+                                { id: 'fireball', count: 1 },
+                                { id: 'crouch', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'karura_strike', count: 1 },
+                                { id: 'first_aid', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'powder_keg', count: 2 },
+                                { id: 'nutrient_supplement', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                20: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'sharpen', count: 1 },
+                                { id: 'karura_strike', count: 1 },
+                                { id: 'lava_prison', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'sharpen', count: 1 },
+                                { id: 'sword_dance', count: 1 },
+                                { id: 'flame_ascension', count: 1 },
+                                { id: 'flame_throw', count: 1 },
+                                { id: 'chains_of_fire', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'sharpen', count: 1 },
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'flame_wall', count: 1 },
+                                { id: 'hot_wind', count: 1 },
+                                { id: 'fireball', count: 2 }
                             ]
                         }
                     ]
