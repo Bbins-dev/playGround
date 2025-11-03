@@ -206,9 +206,12 @@ class EffectSystem {
         // 메시지 타입 결정: 상태이상은 status 존, 버프는 buff 존
         const messageTypeForZone = GameConfig.statusEffects[effectType] ? 'status' : 'buff';
 
-        // 상태이상 획득 사운드 재생 (버프는 showBuffEffect에서 재생)
+        // 상태이상 메시지 사운드 재생 (버프는 showBuffEffect에서 재생)
         if (GameConfig.statusEffects[effectType] && this.audioSystem) {
-            const sfxKey = GameConfig?.audio?.battleSounds?.messageEffects?.statusGain;
+            // 차단 메시지는 statusBlocked 사운드, 적용 메시지는 statusGain 사운드
+            const isBlocked = templateType?.includes('_blocked');
+            const soundKey = isBlocked ? 'statusBlocked' : 'statusGain';
+            const sfxKey = GameConfig?.audio?.battleSounds?.messageEffects?.[soundKey];
             if (sfxKey) {
                 this.audioSystem.playSFX(sfxKey);
             }

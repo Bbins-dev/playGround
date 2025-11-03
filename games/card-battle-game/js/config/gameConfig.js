@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.4.32',                        // 버전 넘버
+        number: '0.4.33',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -566,7 +566,7 @@ const GameConfig = {
             emoji: '🔥',
             strong: 'poison',       // 독에 강함
             weak: 'water',         // 물에 약함
-            immunity: 'burn',       // 화상 면역
+            // immunity: 'burn',       // [IMMUNITY_REMOVAL] 2025-11-03: 화상 면역 제거
             elementNames: {
                 ko: '불',
                 en: 'Fire',
@@ -595,7 +595,7 @@ const GameConfig = {
             emoji: '⚡',
             strong: 'water',       // 물에 강함
             weak: 'poison',        // 독에 약함
-            immunity: 'paralysis',  // 마비 면역
+            // immunity: 'paralysis',  // [IMMUNITY_REMOVAL] 2025-11-03: 마비 면역 제거
             elementNames: {
                 ko: '전기',
                 en: 'Electric',
@@ -610,7 +610,7 @@ const GameConfig = {
             emoji: '☠️',
             strong: 'electric',    // 전기에 강함
             weak: 'fire',          // 불에 약함
-            immunity: 'poisoned',   // 중독 면역
+            // immunity: 'poisoned',   // [IMMUNITY_REMOVAL] 2025-11-03: 중독 면역 제거
             elementNames: {
                 ko: '독',
                 en: 'Poison',
@@ -625,7 +625,7 @@ const GameConfig = {
             emoji: '👊',
             strong: null,          // 강점 없음
             weak: null,           // 약점 없음
-            immunity: null,        // 면역 없음
+            // immunity: null,        // [IMMUNITY_REMOVAL] 2025-11-03: 면역 없음
             elementNames: {
                 ko: '노멀',
                 en: 'Normal',
@@ -639,7 +639,7 @@ const GameConfig = {
             emoji: '🔮',
             strong: null,          // 강점 없음
             weak: null,           // 약점 없음
-            immunity: null,        // 면역 없음
+            // immunity: null,        // [IMMUNITY_REMOVAL] 2025-11-03: 면역 없음
             elementNames: {
                 ko: '특수',
                 en: 'Special',
@@ -3225,15 +3225,16 @@ const GameConfig = {
         const adjusted = Math.round(baseTime / speedMultiplier);
         const threshold = GameConfig?.gameSpeed?.minTimingThreshold || 50;
         return Math.max(threshold, adjusted); // 최소 임계값 보장
-    },
-
-    // 상태이상 면역 체크
-    isImmuneToStatus: function(defenseElement, statusType) {
-        const element = GameConfig.elements[defenseElement];
-        if (!element || !element.immunity) return false;
-
-        return element.immunity === statusType;
     }
+
+    // [IMMUNITY_REMOVAL] 2025-11-03: 속성별 면역 시스템 제거 (롤백 가능)
+    // // 상태이상 면역 체크
+    // isImmuneToStatus: function(defenseElement, statusType) {
+    //     const element = GameConfig.elements[defenseElement];
+    //     if (!element || !element.immunity) return false;
+    //
+    //     return element.immunity === statusType;
+    // }
     },
 
     // 색상 시스템 - 모든 하드코딩된 색상을 중앙 관리
@@ -3680,6 +3681,7 @@ const GameConfig = {
             defenseGain: 'sfx/snd_deffense_gain.mp3',
             buffGain: 'sfx/snd_buff_gain.mp3',
             statusGain: 'sfx/snd_status_gain.mp3',
+            statusBlocked: 'sfx/snd_status_blocked.mp3',
             heal: 'sfx/snd_heal.mp3',
 
             // 카드 획득 (랜덤 재생용)
@@ -3774,7 +3776,8 @@ const GameConfig = {
                 miss: 'miss',
                 heal: 'heal',
                 failed: 'failed',
-                statusGain: 'statusGain'
+                statusGain: 'statusGain',
+                statusBlocked: 'statusBlocked'
             },
 
             // 모달 사운드
