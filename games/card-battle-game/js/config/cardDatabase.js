@@ -1133,7 +1133,7 @@ const CardDatabase = {
             accuracy: 80,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.blinding_flash.description',
-            slowChance: 80,
+            slowChance: 100,  // 명중 시 100% 적용 (확률 통합)
             effect: function(user, target, battleSystem) {
                 // 둔화 적용 (통합 시스템 - 면역 메시지 지원)
                 return {
@@ -1142,7 +1142,7 @@ const CardDatabase = {
                         type: 'slow',
                         chance: this.slowChance,
                         power: null,
-                        duration: GameConfig?.statusEffects?.slow?.duration || 2
+                        duration: 1  // 1턴 둔화
                     }
                 };
             }

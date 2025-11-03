@@ -1202,7 +1202,7 @@ body {
     flex-wrap: wrap;
     gap: var(--effect-vertical-spacing, 6px) var(--effect-spacing, 8px);
     left: 0;
-    max-width: calc(var(--effect-columns, 2) * 150px); /* 최대 2열 너비 */
+    max-width: calc(var(--effect-columns, 2) * 125px); /* 최대 2열 너비 (250px: 3개 방지) */
 }
 
 /* 버프 그리드 (오른쪽 정렬) - Flexbox 사용 */
@@ -1212,7 +1212,7 @@ body {
     flex-wrap: wrap;
     gap: var(--effect-vertical-spacing, 6px) var(--effect-spacing, 8px);
     right: 0;
-    max-width: calc(var(--effect-columns, 2) * 150px); /* 최대 2열 너비 */
+    max-width: calc(var(--effect-columns, 2) * 125px); /* 최대 2열 너비 (250px: 3개 방지) */
     direction: rtl;  /* 오른쪽부터 왼쪽으로 요소 채움 */
 }
 
