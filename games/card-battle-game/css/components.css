@@ -1078,11 +1078,11 @@
     text-shadow: var(--glass-text-shadow);
 }
 
+/* [IMMUNITY_REMOVAL] 2025-11-03: 속성별 면역 시스템 제거 (롤백 가능) */
 /* =============================================== */
 /* 인라인 면역 배지 스타일 */
 /* =============================================== */
-
-/* 인라인 면역 배지 - 간결한 크기 */
+/*
 .immunity-badge-inline {
     display: inline-block;
     padding: 3px 8px;
@@ -1095,7 +1095,6 @@
     transition: all 0.2s ease;
 }
 
-/* 언어별 인라인 배지 폰트 크기 조정 */
 .lang-ko .immunity-badge-inline {
     font-size: 17px;
 }
@@ -1108,31 +1107,28 @@
     font-size: 16px;
 }
 
-/* 인라인 배지 호버 효과 (최소화) */
 .immunity-badge-inline:hover {
     transform: scale(1.05);
 }
 
-/* 화상 면역 - 인라인 */
 .immunity-badge-inline.burn {
     background: rgba(255, 107, 107, 0.25);
     border-color: rgba(255, 107, 107, 0.7);
     color: #FF6B6B !important;
 }
 
-/* 마비 면역 - 인라인 */
 .immunity-badge-inline.paralysis {
     background: rgba(255, 215, 0, 0.25);
     border-color: rgba(255, 215, 0, 0.7);
     color: #FFD700 !important;
 }
 
-/* 중독 면역 - 인라인 */
 .immunity-badge-inline.poisoned {
     background: rgba(155, 89, 182, 0.25);
     border-color: rgba(155, 89, 182, 0.7);
     color: #9B59B6 !important;
 }
+*/
 
 /* 언어별 속성 이름 폰트 크기 조정 */
 .lang-ko .element-name {
@@ -2039,16 +2035,15 @@
     }
 }
 
+/* [IMMUNITY_REMOVAL] 2025-11-03: 속성별 면역 시스템 제거 (롤백 가능) */
 /* =============================================== */
 /* 면역 시스템 가이드 스타일 */
 /* =============================================== */
-
-/* 면역 가이드 섹션 */
+/*
 .immunity-guide {
     margin-top: 20px;
 }
 
-/* 면역 효과 표시 영역 */
 .immunity-effectiveness {
     display: flex;
     flex-direction: column;
@@ -2056,7 +2051,6 @@
     margin: 15px 0;
 }
 
-/* 면역 효과 각 행 */
 .immunity-row {
     display: flex;
     align-items: center;
@@ -2074,7 +2068,6 @@
     transform: translateX(3px);
 }
 
-/* Muted row (면역 없음) */
 .immunity-row.muted {
     opacity: 0.6;
     background: rgba(255, 255, 255, 0.04);
@@ -2085,7 +2078,6 @@
     transform: translateX(1px);
 }
 
-/* 면역 화살표 */
 .immunity-arrow {
     font-size: 20px !important;
     color: var(--glass-text-secondary) !important;
@@ -2093,7 +2085,6 @@
     text-shadow: var(--glass-text-shadow);
 }
 
-/* 면역 배지 */
 .immunity-badge {
     display: flex;
     align-items: center;
@@ -2107,7 +2098,6 @@
     transition: all 0.3s ease;
 }
 
-/* 언어별 면역 배지 폰트 크기 조정 */
 .lang-ko .immunity-badge {
     font-size: 18px;
 }
@@ -2120,13 +2110,11 @@
     font-size: 16px;
 }
 
-/* 면역 배지 호버 효과 */
 .immunity-badge:not(.none):hover {
     transform: translateY(-1px) scale(1.02);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-/* 화상 면역 */
 .immunity-badge.burn {
     background: rgba(255, 107, 107, 0.2);
     border-color: rgba(255, 107, 107, 0.6);
@@ -2134,7 +2122,6 @@
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* 마비 면역 */
 .immunity-badge.paralysis {
     background: rgba(255, 215, 0, 0.2);
     border-color: rgba(255, 215, 0, 0.6);
@@ -2142,7 +2129,6 @@
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* 중독 면역 */
 .immunity-badge.poisoned {
     background: rgba(155, 89, 182, 0.2);
     border-color: rgba(155, 89, 182, 0.6);
@@ -2150,7 +2136,6 @@
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* 면역 없음 */
 .immunity-badge.none {
     background: rgba(189, 195, 199, 0.15);
     border-color: rgba(189, 195, 199, 0.4);
@@ -2159,18 +2144,15 @@
     font-style: italic;
 }
 
-/* 면역 배지 이모지 */
 .immunity-emoji {
     font-size: 24px !important;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
 }
 
-/* 면역 배지 텍스트 */
 .immunity-text {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* 면역 주석 영역 */
 .immunity-notes {
     margin-top: 20px;
     display: flex;
@@ -2192,7 +2174,6 @@
     text-shadow: var(--glass-text-shadow);
 }
 
-/* 언어별 면역 주석 폰트 크기 조정 */
 .lang-ko .immunity-description,
 .lang-ko .immunity-note {
     font-size: 21px;
@@ -2208,18 +2189,17 @@
     font-size: 19px;
 }
 
-/* 면역 설명 특별 스타일 */
 .immunity-description {
     border-left-color: rgba(52, 152, 219, 0.6);
     background: rgba(52, 152, 219, 0.08);
 }
 
-/* 면역 노트 특별 스타일 (💡) */
 .immunity-note {
     border-left-color: rgba(243, 156, 18, 0.6);
     background: rgba(243, 156, 18, 0.08);
     color: rgba(255, 255, 255, 0.85) !important;
 }
+*/
 
 /* 물/노멀 속성 미니 표시 */
 .element-items-mini {
