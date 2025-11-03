@@ -626,6 +626,13 @@ class BattleSystem {
         // 통합 상태이상 처리 (신규 방식 - 면역 메시지 지원)
         if (result.statusEffect) {
             await this.tryApplyStatusEffect(result.statusEffect, target, targetPosition);
+
+            // 자가 기절 시 즉시 턴 종료 처리
+            const isPlayerTurn = (user === this.player);
+            const turnEnded = await this.handleSelfStunTurnEnd(result, user, target, isPlayerTurn);
+            if (turnEnded) {
+                return; // 턴이 종료되었으므로 더 이상 처리하지 않음
+            }
         }
 
         // 자해 대미지 처리 (공격 카드의 경우)
@@ -1112,24 +1119,11 @@ class BattleSystem {
         if (result.statusEffect) {
             await this.tryApplyStatusEffect(result.statusEffect, target, targetPosition);
 
-            // ★ Phase + Stun 즉시 턴 넘김 처리
-            // 자기 자신에게 Stun을 적용한 경우 (Phase 상태에서 자신을 기절시킨 경우)
-            if (result.statusEffect.type === 'stun' && target === user) {
-                // 기절 상태 확인 (실제로 적용되었는지 - 면역이 아닌 경우)
-                if (user.hasStatusEffect && user.hasStatusEffect('stun')) {
-                    // 메시지는 tryApplyStatusEffect()에서 이미 표시되었으므로 생략
-
-                    // 기절 즉시 해제 (1턴 소비)
-                    user.removeStatusEffect('stun');
-
-                    // UI 업데이트
-                    const isPlayerTurn = (user === this.player);
-                    this.hpBarSystem.updateStatusEffects(user, isPlayerTurn);
-
-                    // 즉시 턴 종료 (모든 턴 기반 시스템 정상 차감)
-                    await this.endTurn();
-                    return;
-                }
+            // 자가 기절 시 즉시 턴 종료 처리 (공통 헬퍼 사용)
+            const isPlayerTurn = (user === this.player);
+            const turnEnded = await this.handleSelfStunTurnEnd(result, user, target, isPlayerTurn);
+            if (turnEnded) {
+                return; // 턴이 종료되었으므로 더 이상 처리하지 않음
             }
 
             return; // 통합 시스템으로 처리했으면 레거시 처리 건너뛰기
@@ -1394,6 +1388,37 @@ class BattleSystem {
 
         // 기타 실패 (invalid_input, invalid_status 등)
         return { success: false, reason: result.reason };
+    }
+
+    /**
+     * 자가 기절 턴 종료 처리
+     * Phase 상태이상으로 자신을 기절시킨 경우, 즉시 턴을 종료
+     *
+     * @param {Object} result - 카드 효과 결과 객체
+     * @param {Player} user - 카드 사용자
+     * @param {Player} target - 카드 타겟
+     * @param {boolean} isPlayerTurn - 현재 플레이어 턴인지 여부
+     * @returns {boolean} 턴이 종료되었으면 true, 아니면 false
+     */
+    async handleSelfStunTurnEnd(result, user, target, isPlayerTurn) {
+        // 자기 자신에게 Stun을 적용한 경우만 처리
+        if (result.statusEffect?.type === 'stun' && target === user) {
+            // 기절 상태 확인 (실제로 적용되었는지 - 면역이 아닌 경우)
+            if (user.hasStatusEffect && user.hasStatusEffect('stun')) {
+                // 메시지는 tryApplyStatusEffect()에서 이미 표시되었으므로 생략
+
+                // 기절 즉시 해제 (1턴 소비)
+                user.removeStatusEffect('stun');
+
+                // UI 업데이트
+                this.hpBarSystem.updateStatusEffects(user, isPlayerTurn);
+
+                // 즉시 턴 종료 (모든 턴 기반 시스템 정상 차감)
+                await this.endTurn();
+                return true;
+            }
+        }
+        return false;
     }
 
     // 대미지 계산 및 적용 (첫 번째 버전 - 간단한 형태)
