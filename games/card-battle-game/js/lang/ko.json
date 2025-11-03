@@ -704,13 +704,13 @@
       },
       "elements": {
         "fire": "불",
-        "fire_description": "불 속성 카드를 뜻합니다. 손패 비율에 따라 방어속성이 불 속성으로 결정될 경우 물 공격에 1.5배, 독 공격에 0.5배 데미지를 받습니다. 화상 상태이상에 면역입니다.",
+        "fire_description": "불 속성 카드를 뜻합니다. 손패 비율에 따라 방어속성이 불 속성으로 결정될 경우 물 공격에 1.5배, 독 공격에 0.5배 데미지를 받습니다.",
         "water": "물",
         "water_description": "물 속성 카드를 뜻합니다. 손패 비율에 따라 방어속성이 물 속성으로 결정될 경우 전기 공격에 1.5배, 불 공격에 0.5배 데미지를 받습니다.",
         "electric": "전기",
-        "electric_description": "전기 속성 카드를 뜻합니다. 손패 비율에 따라 방어속성이 전기 속성으로 결정될 경우 독 공격에 1.5배, 물 공격에 0.5배 데미지를 받습니다. 마비 상태이상에 면역입니다.",
+        "electric_description": "전기 속성 카드를 뜻합니다. 손패 비율에 따라 방어속성이 전기 속성으로 결정될 경우 독 공격에 1.5배, 물 공격에 0.5배 데미지를 받습니다.",
         "poison": "독",
-        "poison_description": "독 속성 카드를 뜻합니다. 손패 비율에 따라 방어속성이 독 속성으로 결정될 경우 불 공격에 1.5배, 전기 공격에 0.5배 데미지를 받습니다. 중독 상태이상에 면역입니다.",
+        "poison_description": "독 속성 카드를 뜻합니다. 손패 비율에 따라 방어속성이 독 속성으로 결정될 경우 불 공격에 1.5배, 전기 공격에 0.5배 데미지를 받습니다.",
         "normal": "노멀",
         "normal_description": "노멀 속성 카드를 뜻합니다. 손패 비율에 따라 방어속성이 노멀 속성으로 결정될 경우 모든 속성 공격에 동일한 데미지를 받습니다.",
         "special": "특수"
@@ -771,7 +771,6 @@
       "templates": {
         "status_applied": "{name}!!",
         "already_status": "이미 {name}!",
-        "status_immune": "{name} 면역!",
         "sulfur_immune": "유황!",
         "coating_immune": "코팅!",
         "mind_blocked": "🛡️ 마음!",
@@ -967,14 +966,7 @@
       "defense_line3": "• 같은 수의 카드를 가진 속성끼리는 상쇄되어 노멀속성이 됩니다",
       "defense_line6": "• 노멀 방어는 모든 속성 공격에 1.0배 피해 (강점/약점 없음)",
       "neutral": "균형 1.0배",
-      "all_elements": "모든 속성",
-      "immunity_system": "🛡️ 속성별 특수 능력 - 상태이상 면역",
-      "immunity_description": "방어속성이 해당 속성일 때, 연관된 상태이상에 완전히 면역됩니다",
-      "immunity_note": "💡 면역 효과는 방어속성이 변경되면 즉시 변경됩니다",
-      "immunity_none": "(면역 없음)",
-      "immunity_burn": "화상🚫",
-      "immunity_paralysis": "마비🚫",
-      "immunity_poison": "중독🚫"
+      "all_elements": "모든 속성"
     }
   },
   "upcoming_games": {

@@ -193,14 +193,15 @@ class Player {
             return { success: false, reason: 'invalid_input' };
         }
 
-        // [우선순위 1순위] 방어속성 기반 면역 체크 (소비 없음)
-        const isImmune = GameConfig.utils.isImmuneToStatus(this.defenseElement, statusType);
-        if (isImmune) {
-            if (GameConfig?.debugMode?.showStatusEffects) {
-                console.log(`[STATUS] ${this.name} 면역: ${statusType}`);
-            }
-            return { success: false, reason: 'immune' };
-        }
+        // [IMMUNITY_REMOVAL] 2025-11-03: 속성별 면역 시스템 제거 (롤백 가능)
+        // // [우선순위 1순위] 방어속성 기반 면역 체크 (소비 없음)
+        // const isImmune = GameConfig.utils.isImmuneToStatus(this.defenseElement, statusType);
+        // if (isImmune) {
+        //     if (GameConfig?.debugMode?.showStatusEffects) {
+        //         console.log(`[STATUS] ${this.name} 면역: ${statusType}`);
+        //     }
+        //     return { success: false, reason: 'immune' };
+        // }
 
         // [우선순위 4순위] 버프 기반 면역 체크 (소비 없음, 턴 시작 시 차감)
         if (statusType === 'frozen' && this.hasSulfurBuff()) {
