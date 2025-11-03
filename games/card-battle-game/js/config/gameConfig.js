@@ -1961,6 +1961,280 @@ const GameConfig = {
                     { id: 'liquify', count: 1 }            // 액체화
                 ]
             }
+        },
+
+        // 랜덤 인카운터 시스템 (스테이지별 덱 풀)
+        randomEncounters: {
+            enabled: true,  // 랜덤 인카운터 활성화 토글
+
+            // 스테이지별 덱 풀 정의
+            stages: {
+                1: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'random_bash', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'heavy_strike', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'concussion', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                2: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'heavy_strike', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'raise_shield', count: 1 },
+                                { id: 'shield_bash', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'counter_attack', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                3: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'sand_throw', count: 1 },
+                                { id: 'random_bash', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'thorn_armor', count: 1 },
+                                { id: 'concussion', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'insult', count: 1 },
+                                { id: 'heavy_strike', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                4: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'raise_shield', count: 1 },
+                                { id: 'shield_bash', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'wear_armor', count: 1 },
+                                { id: 'shield_bash', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'net_throw', count: 1 },
+                                { id: 'random_bash', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                5: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'taunt', count: 1 },
+                                { id: 'wear_armor', count: 1 },
+                                { id: 'shield_bash', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'taunt', count: 1 },
+                                { id: 'endless_effort', count: 1 },
+                                { id: 'concussion', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'taunt', count: 1 },
+                                { id: 'counter_attack', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                6: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'sand_throw', count: 1 },
+                                { id: 'heavy_strike', count: 1 },
+                                { id: 'large_shield', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'push_back', count: 1 },
+                                { id: 'random_bash', count: 1 },
+                                { id: 'wear_armor', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'net_throw', count: 1 },
+                                { id: 'wear_armor', count: 1 },
+                                { id: 'shield_bash', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                7: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'insult', count: 1 },
+                                { id: 'heavy_strike', count: 1 },
+                                { id: 'large_shield', count: 1 },
+                                { id: 'barricade', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'raise_shield', count: 1 },
+                                { id: 'barricade', count: 1 },
+                                { id: 'shield_bash', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'sword_dance', count: 1 },
+                                { id: 'wear_armor', count: 1 },
+                                { id: 'shield_bash', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                8: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'counter_attack', count: 1 },
+                                { id: 'thorn_armor', count: 1 },
+                                { id: 'shield_bash', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'raise_shield', count: 1 },
+                                { id: 'endless_effort', count: 1 },
+                                { id: 'thorn_armor', count: 1 },
+                                { id: 'shield_bash', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'taunt', count: 1 },
+                                { id: 'sword_dance', count: 1 },
+                                { id: 'raise_shield', count: 1 },
+                                { id: 'heavy_strike', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                9: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'barricade', count: 1 },
+                                { id: 'net_throw', count: 1 },
+                                { id: 'shield_bash', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'wear_armor', count: 1 },
+                                { id: 'barricade', count: 1 },
+                                { id: 'shield_bash', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'sword_dance', count: 1 },
+                                { id: 'endless_effort', count: 1 },
+                                { id: 'heavy_strike', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                10: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'push_back', count: 1 },
+                                { id: 'barricade', count: 1 },
+                                { id: 'shield_bash', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'large_shield', count: 1 },
+                                { id: 'barricade', count: 1 },
+                                { id: 'shield_bash', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'wear_armor', count: 1 },
+                                { id: 'raise_shield', count: 1 },
+                                { id: 'heavy_strike', count: 3 }
+                            ]
+                        }
+                    ]
+                }
+            }
         }
     },
 
