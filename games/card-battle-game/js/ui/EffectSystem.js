@@ -208,9 +208,19 @@ class EffectSystem {
 
         // 상태이상 메시지 사운드 재생 (버프는 showBuffEffect에서 재생)
         if (GameConfig.statusEffects[effectType] && this.audioSystem) {
-            // 차단 메시지는 statusBlocked 사운드, 적용 메시지는 statusGain 사운드
+            // 메시지 타입에 따라 사운드 선택
+            const isCleansed = templateType?.includes('_cleansed');
             const isBlocked = templateType?.includes('_blocked');
-            const soundKey = isBlocked ? 'statusBlocked' : 'statusGain';
+
+            let soundKey;
+            if (isCleansed) {
+                soundKey = 'cleansed';  // 정화 사운드 (실제로 상태이상 제거됨)
+            } else if (isBlocked) {
+                soundKey = 'statusBlocked';  // 차단 사운드 (예방)
+            } else {
+                soundKey = 'statusGain';  // 적용 사운드 (새로 걸림)
+            }
+
             const sfxKey = GameConfig?.audio?.battleSounds?.messageEffects?.[soundKey];
             if (sfxKey) {
                 this.audioSystem.playSFX(sfxKey);
