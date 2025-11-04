@@ -1,0 +1,11 @@
+# robots.txt for Auto Battle Card Dual
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://binboxgames.com/games/card-battle-game/sitemap.xml
+
+# Crawl-delay (optional, only if needed)
+# Crawl-delay: 1

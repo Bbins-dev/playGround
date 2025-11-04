@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+    <!-- Korean Version -->
+    <url>
+        <loc>https://binboxgames.com/games/card-battle-game/?lang=ko</loc>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://binboxgames.com/games/card-battle-game/?lang=ko"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://binboxgames.com/games/card-battle-game/?lang=en"/>
+        <xhtml:link rel="alternate" hreflang="ja" href="https://binboxgames.com/games/card-battle-game/?lang=ja"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://binboxgames.com/games/card-battle-game/?lang=en"/>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    <!-- English Version -->
+    <url>
+        <loc>https://binboxgames.com/games/card-battle-game/?lang=en</loc>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://binboxgames.com/games/card-battle-game/?lang=ko"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://binboxgames.com/games/card-battle-game/?lang=en"/>
+        <xhtml:link rel="alternate" hreflang="ja" href="https://binboxgames.com/games/card-battle-game/?lang=ja"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://binboxgames.com/games/card-battle-game/?lang=en"/>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    <!-- Japanese Version -->
+    <url>
+        <loc>https://binboxgames.com/games/card-battle-game/?lang=ja</loc>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://binboxgames.com/games/card-battle-game/?lang=ko"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://binboxgames.com/games/card-battle-game/?lang=en"/>
+        <xhtml:link rel="alternate" hreflang="ja" href="https://binboxgames.com/games/card-battle-game/?lang=ja"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://binboxgames.com/games/card-battle-game/?lang=en"/>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+</urlset>
