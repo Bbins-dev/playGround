@@ -926,10 +926,10 @@ class GameManager {
     // 플레이어 승리 처리
     handlePlayerVictory() {
         try {
-            // 승리 BGM 재생 (반복 없음)
+            // 승리 BGM 재생
             if (this.audioSystem) {
                 this.audioSystem.stopBGM(true);
-                this.audioSystem.playBGM('victoryModal', false, true);
+                this.audioSystem.playBGM('victoryModal', true, true);
             }
 
             // 스테이지 클리어 효과 재생
@@ -954,7 +954,7 @@ class GameManager {
                 // 승리 BGM 재생
                 if (this.audioSystem) {
                     this.audioSystem.stopBGM(true);
-                    this.audioSystem.playBGM('victory', false, true);
+                    this.audioSystem.playBGM('victoryModal', true, true);
                 }
 
                 // 통계 finalize
@@ -1008,10 +1008,10 @@ class GameManager {
         try {
             this.changeGameState('gameOver');
 
-            // 패배 BGM 재생 (반복 없음)
+            // 패배 BGM 재생
             if (this.audioSystem) {
                 this.audioSystem.stopBGM(true);
-                this.audioSystem.playBGM('gameOver', false, true);
+                this.audioSystem.playBGM('gameOver', true, true);
             }
 
             // 통계 마무리 및 사망 원인 설정
