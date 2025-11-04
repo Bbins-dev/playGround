@@ -222,9 +222,26 @@ const coords = CanvasUtils.getCanvasCoordinates(event, canvas);
 ## 🚀 Quick Reference
 
 ### 서버 실행
+
+#### ⚠️ 중요: Cloudflare Workers 사용 시
+**이 프로젝트는 Cloudflare Workers를 사용하여 동적 메타태그를 주입합니다.**
+
 ```bash
-cd games/card-battle-game && npx serve -p 3000
+# ❌ 일반 serve는 Workers 미지원 (템플릿 마커가 그대로 보임)
+npx serve -p 3000
+
+# ✅ Wrangler 사용 필수 (Workers 실행, 메타태그 정상 작동)
+npx wrangler pages dev . --port 8788
 ```
+
+**로컬 개발 시 주의사항**:
+- `npx serve`로 실행하면 `{{LANG}}`, `{{DESCRIPTION}}` 같은 템플릿 마커가 그대로 보입니다
+- Cloudflare Workers 미들웨어(`functions/_middleware.js`)가 실행되지 않습니다
+- **반드시 `npx wrangler pages dev`를 사용**하여 Workers를 로컬에서 테스트해야 합니다
+
+**배포 환경**:
+- Cloudflare Pages에 배포 시 자동으로 Workers가 실행됩니다
+- `/functions/_middleware.js`가 자동으로 인식되어 메타태그 주입이 작동합니다
 
 ### 핵심 파일
 - **설정**: `js/config/gameConfig.js`
