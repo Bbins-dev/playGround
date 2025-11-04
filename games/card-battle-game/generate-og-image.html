@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generate OG Image</title>
+    <title>Generate OG Images - Multi-language</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,6 +17,17 @@
         .container {
             text-align: center;
             padding: 40px;
+            max-width: 1300px;
+        }
+        h1 {
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+        .button-group {
+            margin: 20px 0;
         }
         button {
             padding: 15px 30px;
@@ -31,6 +42,12 @@
         button:hover {
             background: linear-gradient(135deg, #388E3C, #2E7D32);
         }
+        button.secondary {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+        }
+        button.secondary:hover {
+            background: linear-gradient(135deg, #1976D2, #1565C0);
+        }
         canvas {
             border: 2px solid rgba(255, 255, 255, 0.3);
             margin-top: 20px;
@@ -42,14 +59,37 @@
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 8px;
         }
+        #status {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        .info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🃏 Card Battle Game - OG Image Generator</h1>
-        <p>기본 Open Graph 이미지를 생성합니다 (1200×630px)</p>
+        <h1>⚔️ Auto Battle Card Dual - OG Image Generator</h1>
+        <p class="subtitle">다국어 Open Graph 이미지 생성 도구 (1200×630px)</p>
 
-        <button onclick="generateOGImage()">이미지 생성 및 다운로드</button>
+        <div class="info">
+            <p><strong>생성될 이미지:</strong></p>
+            <p>🇰🇷 og-ko.png | 🇺🇸 og-en.png | 🇯🇵 og-ja.png</p>
+        </div>
+
+        <div class="button-group">
+            <button onclick="generateOGImage('ko')">🇰🇷 한국어 생성</button>
+            <button onclick="generateOGImage('en')">🇺🇸 English 생성</button>
+            <button onclick="generateOGImage('ja')">🇯🇵 日本語 生成</button>
+        </div>
+
+        <div class="button-group">
+            <button class="secondary" onclick="generateAll()">🌐 모든 언어 일괄 생성</button>
+        </div>
 
         <canvas id="canvas" width="1200" height="630"></canvas>
         <img id="preview" style="display:none;" alt="Preview">
@@ -58,12 +98,40 @@
     </div>
 
     <script>
-        function generateOGImage() {
+        // 언어별 메타데이터 (Configuration-Driven)
+        const META_CONFIG = {
+            ko: {
+                title: '⚔️ 자동전투 카드대전',
+                subtitle: '5속성 카드 배틀 게임',
+                footer: '60 스테이지 • 전략적 덱 빌딩 • 브라우저 게임',
+                filename: 'og-ko.png'
+            },
+            en: {
+                title: '⚔️ Auto Battle Card Dual',
+                subtitle: '5-Element Card Battle Game',
+                footer: '60 Stages • Strategic Deck Building • Browser Game',
+                filename: 'og-en.png'
+            },
+            ja: {
+                title: '⚔️ オートバトルカード対戦',
+                subtitle: '5属性カードバトルゲーム',
+                footer: '60ステージ • 戦略的デッキ構築 • ブラウザゲーム',
+                filename: 'og-ja.png'
+            }
+        };
+
+        function generateOGImage(lang) {
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d');
             const status = document.getElementById('status');
+            const config = META_CONFIG[lang];
 
-            status.textContent = '이미지 생성 중...';
+            if (!config) {
+                status.textContent = `❌ 지원하지 않는 언어입니다: ${lang}`;
+                return;
+            }
+
+            status.textContent = `${config.filename} 생성 중...`;
 
             // 배경 그라디언트
             const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
@@ -79,13 +147,13 @@
             ctx.textBaseline = 'middle';
             ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
             ctx.shadowBlur = 20;
-            ctx.fillText('🃏 Card Battle Game', canvas.width / 2, 200);
+            ctx.fillText(config.title, canvas.width / 2, 200);
 
             // 서브타이틀
             ctx.font = '36px Arial, sans-serif';
             ctx.fillStyle = '#aaaaaa';
             ctx.shadowBlur = 10;
-            ctx.fillText('5속성 카드 배틀 게임', canvas.width / 2, 280);
+            ctx.fillText(config.subtitle, canvas.width / 2, 280);
 
             // 속성 아이콘들
             ctx.font = '64px Arial';
@@ -100,7 +168,7 @@
             ctx.font = '24px Arial';
             ctx.fillStyle = '#888888';
             ctx.shadowBlur = 5;
-            ctx.fillText('40 Stages • Strategic Deck Building • Browser Game', canvas.width / 2, 550);
+            ctx.fillText(config.footer, canvas.width / 2, 550);
 
             ctx.shadowBlur = 0;
 
@@ -114,14 +182,30 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'og-default.png';
+                a.download = config.filename;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
 
-                status.textContent = '✅ 이미지가 다운로드되었습니다! images/ 폴더에 저장하세요.';
+                status.textContent = `✅ ${config.filename}이(가) 다운로드되었습니다! images/ 폴더에 저장하세요.`;
             }, 'image/png');
+        }
+
+        // 모든 언어 일괄 생성
+        async function generateAll() {
+            const status = document.getElementById('status');
+            status.textContent = '🌐 모든 언어 이미지 생성 중...';
+
+            const languages = ['ko', 'en', 'ja'];
+            for (const lang of languages) {
+                await new Promise(resolve => {
+                    generateOGImage(lang);
+                    setTimeout(resolve, 500); // 각 생성 사이 0.5초 대기
+                });
+            }
+
+            status.textContent = '✅ 모든 언어 이미지가 생성되었습니다! (og-ko.png, og-en.png, og-ja.png)';
         }
     </script>
 </body>
