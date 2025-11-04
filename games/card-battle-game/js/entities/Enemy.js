@@ -84,7 +84,40 @@ class Enemy extends Player {
     buildDeck() {
         this.hand = [];
 
-        // GameConfig에서 스테이지별 카드 구성 가져오기
+        // 1. 랜덤 인카운터 시스템 체크 (최우선)
+        const randomEncounters = GameConfig?.enemy?.randomEncounters;
+        if (randomEncounters?.enabled && randomEncounters?.stages?.[this.stage]) {
+            const stageEncounter = randomEncounters.stages[this.stage];
+            const deckPool = stageEncounter.deckPool || [];
+
+            // 덱 풀이 비어있지 않으면 랜덤 선택
+            if (deckPool.length > 0) {
+                const randomIndex = Math.floor(Math.random() * deckPool.length);
+                const selectedDeck = deckPool[randomIndex];
+
+                // 선택된 덱의 카드 구성 적용
+                if (selectedDeck?.cards) {
+                    for (const cardConfig of selectedDeck.cards) {
+                        for (let i = 0; i < cardConfig.count; i++) {
+                            const card = CardDatabase.createCardInstance(cardConfig.id);
+                            if (card) {
+                                this.addCard(card);
+                            }
+                        }
+                    }
+
+                    // 디버그 로그 (선택사항)
+                    if (GameConfig?.debug?.enabled) {
+                        console.log(`[Random Encounter] Stage ${this.stage}: Selected deck "${selectedDeck.name || 'unnamed'}"`);
+                    }
+
+                    this.updateDefenseElement();
+                    return; // 랜덤 인카운터 적용 완료, 나머지 로직 스킵
+                }
+            }
+        }
+
+        // 2. 기존 고정 스테이지 설정 (하위호환)
         const stageConfig = GameConfig.enemy.stageConfigs[this.stage];
 
         if (stageConfig && stageConfig.cards) {
