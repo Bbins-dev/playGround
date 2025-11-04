@@ -15,7 +15,10 @@ class I18n {
 
         // Use config default if no initial language provided
         const defaultLang = window.PlayGroundConfig?.site.defaultLanguage || 'ko';
-        this.currentLanguage = initialLang || defaultLang;
+
+        // Check URL parameter first (for SEO and direct language links)
+        const urlLang = this.getLanguageFromURL();
+        this.currentLanguage = urlLang || initialLang || defaultLang;
 
         // Load default language
         await this.loadLanguage(this.currentLanguage);
@@ -26,9 +29,44 @@ class I18n {
         // Apply translations
         this.applyTranslations();
 
+        // Update HTML lang attribute
+        document.documentElement.lang = this.currentLanguage;
+
         // 초기화 완료 플래그 설정
         this.isReady = true;
         console.log('[I18n] System ready');
+    }
+
+    /**
+     * Get language from URL parameter (?lang=ko)
+     * @returns {string|null} Language code or null
+     */
+    getLanguageFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const langParam = urlParams.get('lang');
+
+        // Validate language parameter against supported languages
+        const supportedLanguages = ['ko', 'en', 'ja'];
+        if (langParam && supportedLanguages.includes(langParam)) {
+            return langParam;
+        }
+        return null;
+    }
+
+    /**
+     * Update URL with language parameter without page reload
+     * @param {string} lang - Language code
+     */
+    updateURLParameter(lang) {
+        const url = new URL(window.location);
+        url.searchParams.set('lang', lang);
+        window.history.replaceState({}, '', url);
+
+        // Update canonical tag
+        const canonical = document.querySelector('link[rel="canonical"]');
+        if (canonical) {
+            canonical.href = url.href;
+        }
     }
 
     async loadLanguage(lang) {
@@ -72,6 +110,9 @@ class I18n {
 
             this.currentLanguage = lang;
             document.documentElement.lang = lang;
+
+            // Update URL parameter for SEO
+            this.updateURLParameter(lang);
 
             // Add language class to body for language-specific styling
             document.body.className = document.body.className.replace(/lang-\w+/g, '');

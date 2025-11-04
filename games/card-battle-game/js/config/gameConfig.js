@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.5.1',                        // 버전 넘버
+        number: '0.5.2',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -5687,6 +5687,43 @@ const GameConfig = {
             enabled: false,                     // 통계 추적 비활성화 (Phase 2)
             trackPlatform: false,               // 플랫폼별 공유 추적
             trackSuccess: false                 // 공유 성공/실패 추적
+        }
+    },
+
+    // SEO 설정 (다국어 검색 엔진 최적화)
+    seo: {
+        baseURL: 'https://binboxgames.com/games/card-battle-game/',
+        supportedLanguages: ['ko', 'en', 'ja'],
+        defaultLanguage: 'ko',
+        hreflangXDefault: 'en',     // 기본 fallback 언어
+
+        /**
+         * Get all hreflang URLs for SEO
+         * @returns {Array<{lang: string, url: string}>}
+         */
+        getHreflangURLs() {
+            return this.supportedLanguages.map(lang => ({
+                lang,
+                url: `${this.baseURL}?lang=${lang}`
+            }));
+        },
+
+        /**
+         * Get canonical URL for current language
+         * @param {string} lang - Language code
+         * @returns {string}
+         */
+        getCanonicalURL(lang) {
+            return `${this.baseURL}?lang=${lang || this.defaultLanguage}`;
+        },
+
+        /**
+         * Validate language code
+         * @param {string} lang - Language code to validate
+         * @returns {boolean}
+         */
+        isValidLanguage(lang) {
+            return this.supportedLanguages.includes(lang);
         }
     }
 };
