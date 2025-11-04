@@ -779,6 +779,7 @@
         "status_removed": "{name} 제거!",
         "paralysis_triggered": "⚡ 마비!",
         "phase_self_attack": "🌀 자신을 공격!",
+        "phase_extended": "🌀 위상+{value}턴!",
         "burn_extended": "🔥 화상+{value}턴!",
         "poisoned_extended": "☠️ 중독+{value}턴!",
         "wet_extended": "💧 젖음+{value}턴!",
@@ -815,6 +816,8 @@
         "no_fire_defense": "불 방어속성 아님!",
         "no_water_defense": "물 방어속성 아님!",
         "no_lithium": "Li⁺ 없음!",
+        "no_defense": "방어력 없음!",
+        "no_paralysis": "마비 없음!",
         "buff_already_active": "중복 안됨!",
         "hp_sufficient": "HP 충분함!",
         "hp_not_one": "HP 1 아님!"
