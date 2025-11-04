@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="{{LANG}}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,25 +9,36 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <title data-i18n="auto_battle_card_game.page_title">자동전투 카드대전</title>
+    <!-- SEO Meta Tags (Dynamically replaced by Cloudflare Workers) -->
+    <meta name="description" content="{{DESCRIPTION}}" data-i18n-content="auto_battle_card_game.meta.description">
+    <meta name="keywords" content="{{KEYWORDS}}" data-i18n-content="auto_battle_card_game.meta.keywords">
 
-    <!-- Open Graph / SNS Meta Tags -->
-    <meta property="og:title" content="Auto Battle Card Dual - 5-Element Auto Battle Card Game">
-    <meta property="og:description" content="Clear 60 stages with strategic deck building! Browser card battle game with 5 elements: Fire, Water, Electric, Poison, and Normal.">
+    <title data-i18n="auto_battle_card_game.page_title">{{PAGE_TITLE}}</title>
+
+    <!-- Canonical & Language Alternate URLs (hreflang) -->
+    <link rel="canonical" href="https://binboxgames.com/games/card-battle-game/?lang={{LANG}}">
+    <link rel="alternate" hreflang="ko" href="https://binboxgames.com/games/card-battle-game/?lang=ko">
+    <link rel="alternate" hreflang="en" href="https://binboxgames.com/games/card-battle-game/?lang=en">
+    <link rel="alternate" hreflang="ja" href="https://binboxgames.com/games/card-battle-game/?lang=ja">
+    <link rel="alternate" hreflang="x-default" href="https://binboxgames.com/games/card-battle-game/?lang=en">
+
+    <!-- Open Graph / SNS Meta Tags (Dynamically replaced by Cloudflare Workers) -->
+    <meta property="og:title" content="{{OG_TITLE}}" data-i18n-content="auto_battle_card_game.meta.og_title">
+    <meta property="og:description" content="{{OG_DESCRIPTION}}" data-i18n-content="auto_battle_card_game.meta.og_description">
     <meta property="og:image" content="https://binboxgames.com/games/card-battle-game/images/og-default.png">
-    <meta property="og:url" content="https://binboxgames.com/games/card-battle-game/">
+    <meta property="og:url" content="https://binboxgames.com/games/card-battle-game/?lang={{LANG}}">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="BinBox Games">
 
-    <!-- Twitter Card Meta Tags -->
+    <!-- Twitter Card Meta Tags (Dynamically replaced by Cloudflare Workers) -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Auto Battle Card Dual - 5-Element Auto Battle Card Game">
-    <meta name="twitter:description" content="Clear 60 stages with strategic deck building! Browser card battle game with 5 elements: Fire, Water, Electric, Poison, and Normal.">
+    <meta name="twitter:title" content="{{TWITTER_TITLE}}" data-i18n-content="auto_battle_card_game.meta.twitter_title">
+    <meta name="twitter:description" content="{{TWITTER_DESCRIPTION}}" data-i18n-content="auto_battle_card_game.meta.twitter_description">
     <meta name="twitter:image" content="https://binboxgames.com/games/card-battle-game/images/og-default.png">
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔️</text></svg>">
-    <link rel="stylesheet" href="style.css?v=0.5.1">
-    <link rel="stylesheet" href="css/components.css?v=0.5.1">
+    <link rel="stylesheet" href="style.css?v=0.5.2">
+    <link rel="stylesheet" href="css/components.css?v=0.5.2">
 
     <!-- 공유 링크 조기 감지 스크립트 (head에서 즉시 실행) -->
     <script>
@@ -671,54 +682,54 @@
 
     <!-- 스크립트 로드 -->
     <!-- 설정 파일들 먼저 로드 -->
-    <script src="js/config/gameConfig.js?v=0.5.1"></script>
+    <script src="js/config/gameConfig.js?v=0.5.2"></script>
     <!-- i18n 시스템 -->
-    <script src="js/i18n.js?v=0.5.1"></script>
+    <script src="js/i18n.js?v=0.5.2"></script>
     <!-- 유틸리티 클래스들 -->
-    <script src="js/utils/I18nHelper.js?v=0.5.1"></script>
-    <script src="js/utils/CanvasUtils.js?v=0.5.1"></script>
-    <script src="js/utils/TextRenderer.js?v=0.5.1"></script>
-    <script src="js/utils/ColorUtils.js?v=0.5.1"></script>
-    <script src="js/utils/TimerManager.js?v=0.5.1"></script>
-    <script src="js/utils/RenderOptimizer.js?v=0.5.1"></script>
-    <script src="js/utils/DescriptionParser.js?v=0.5.1"></script>
-    <script src="js/config/cardDatabase.js?v=0.5.1"></script>
-    <script src="js/entities/Card.js?v=0.5.1"></script>
-    <script src="js/entities/Player.js?v=0.5.1"></script>
-    <script src="js/entities/Enemy.js?v=0.5.1"></script>
+    <script src="js/utils/I18nHelper.js?v=0.5.2"></script>
+    <script src="js/utils/CanvasUtils.js?v=0.5.2"></script>
+    <script src="js/utils/TextRenderer.js?v=0.5.2"></script>
+    <script src="js/utils/ColorUtils.js?v=0.5.2"></script>
+    <script src="js/utils/TimerManager.js?v=0.5.2"></script>
+    <script src="js/utils/RenderOptimizer.js?v=0.5.2"></script>
+    <script src="js/utils/DescriptionParser.js?v=0.5.2"></script>
+    <script src="js/config/cardDatabase.js?v=0.5.2"></script>
+    <script src="js/entities/Card.js?v=0.5.2"></script>
+    <script src="js/entities/Player.js?v=0.5.2"></script>
+    <script src="js/entities/Enemy.js?v=0.5.2"></script>
     <!-- 오디오 시스템 -->
-    <script src="js/systems/AudioSystem.js?v=0.5.1"></script>
+    <script src="js/systems/AudioSystem.js?v=0.5.2"></script>
     <!-- 공유 시스템 -->
-    <script src="js/systems/ShareImageGenerator.js?v=0.5.1"></script>
-    <script src="js/systems/ShareSystem.js?v=0.5.1"></script>
-    <script src="js/systems/ShareLandingPage.js?v=0.5.1"></script>
-    <script src="js/ui/HPBarSystem.js?v=0.5.1"></script>
-    <script src="js/ui/BuffStatusTooltipModal.js?v=0.5.1"></script>
-    <script src="js/ui/EffectSystem.js?v=0.5.1"></script>
+    <script src="js/systems/ShareImageGenerator.js?v=0.5.2"></script>
+    <script src="js/systems/ShareSystem.js?v=0.5.2"></script>
+    <script src="js/systems/ShareLandingPage.js?v=0.5.2"></script>
+    <script src="js/ui/HPBarSystem.js?v=0.5.2"></script>
+    <script src="js/ui/BuffStatusTooltipModal.js?v=0.5.2"></script>
+    <script src="js/ui/EffectSystem.js?v=0.5.2"></script>
     <!-- UI 기본 컴포넌트 먼저 로드 -->
-    <script src="js/ui/LoadingScreen.js?v=0.5.1"></script>
-    <script src="js/ui/VolumeControl.js?v=0.5.1"></script>
-    <script src="js/ui/CardRenderer.js?v=0.5.1"></script>
-    <script src="js/ui/DOMCardRenderer.js?v=0.5.1"></script>
-    <script src="js/ui/Renderer.js?v=0.5.1"></script>
-    <script src="js/ui/AnimationManager.js?v=0.5.1"></script>
-    <script src="js/ui/StageIndicator.js?v=0.5.1"></script>
+    <script src="js/ui/LoadingScreen.js?v=0.5.2"></script>
+    <script src="js/ui/VolumeControl.js?v=0.5.2"></script>
+    <script src="js/ui/CardRenderer.js?v=0.5.2"></script>
+    <script src="js/ui/DOMCardRenderer.js?v=0.5.2"></script>
+    <script src="js/ui/Renderer.js?v=0.5.2"></script>
+    <script src="js/ui/AnimationManager.js?v=0.5.2"></script>
+    <script src="js/ui/StageIndicator.js?v=0.5.2"></script>
 
     <!-- 모달 클래스들 -->
-    <script src="js/ui/PlayerNameModal.js?v=0.5.1"></script>
-    <script src="js/ui/CardSelectionModal.js?v=0.5.1"></script>
-    <script src="js/ui/VictoryDefeatModal.js?v=0.5.1"></script>
+    <script src="js/ui/PlayerNameModal.js?v=0.5.2"></script>
+    <script src="js/ui/CardSelectionModal.js?v=0.5.2"></script>
+    <script src="js/ui/VictoryDefeatModal.js?v=0.5.2"></script>
 
     <!-- 화면 클래스들 -->
-    <script src="js/screens/MainMenu.js?v=0.5.1"></script>
+    <script src="js/screens/MainMenu.js?v=0.5.2"></script>
 
     <!-- UI 관리자 (모든 UI 컴포넌트 이후) -->
-    <script src="js/ui/UIManager.js?v=0.5.1"></script>
+    <script src="js/ui/UIManager.js?v=0.5.2"></script>
 
     <!-- 코어 시스템들 (UI 이후) -->
-    <script src="js/core/BattleSystem.js?v=0.5.1"></script>
-    <script src="js/core/CardManager.js?v=0.5.1"></script>
-    <script src="js/core/GameManager.js?v=0.5.1"></script>
+    <script src="js/core/BattleSystem.js?v=0.5.2"></script>
+    <script src="js/core/CardManager.js?v=0.5.2"></script>
+    <script src="js/core/GameManager.js?v=0.5.2"></script>
     <!-- CardSelection.js 제거 - CardSelectionModal.js로 대체됨 -->
     <script src="game.js"></script>
 </body>
