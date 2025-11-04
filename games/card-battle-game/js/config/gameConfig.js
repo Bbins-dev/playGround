@@ -1706,8 +1706,7 @@ const GameConfig = {
                     { id: 'lightning_storm', count: 3 },   // 번개폭풍 x3
                     { id: 'electric_shock', count: 1 },    // 감전
                     { id: 'overload', count: 1 },          // 과부하
-                    { id: 'short_circuit', count: 1 },     // 쇼트
-                    { id: 'crouch', count: 1 }             // 웅크리기
+                    { id: 'short_circuit', count: 1 }      // 쇼트
                 ]
             },
             38: {
@@ -2528,6 +2527,1030 @@ const GameConfig = {
                                 { id: 'flame_wall', count: 1 },
                                 { id: 'hot_wind', count: 1 },
                                 { id: 'fireball', count: 2 }
+                            ]
+                        }
+                    ]
+                },
+                21: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'water_play', count: 1 },
+                                { id: 'healing_spring', count: 1 },
+                                { id: 'mud_bath', count: 1 },
+                                { id: 'water_bomb', count: 1 },
+                                { id: 'freezing_wind', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'tsunami', count: 1 },
+                                { id: 'skin_breathing', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'rain', count: 1 },
+                                { id: 'sleet', count: 1 },
+                                { id: 'cold_snap', count: 1 },
+                                { id: 'ice_breaker', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                22: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'rain', count: 1 },
+                                { id: 'sleet', count: 1 },
+                                { id: 'mud_bath', count: 1 },
+                                { id: 'cold_snap', count: 1 },
+                                { id: 'ice_breaker', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'water_play', count: 1 },
+                                { id: 'endless_effort', count: 1 },
+                                { id: 'bubble_strike', count: 1 },
+                                { id: 'slash_water', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'tsunami', count: 1 },
+                                { id: 'water_healing', count: 2 },
+                                { id: 'moisture_absorption', count: 2 }
+                            ]
+                        }
+                    ]
+                },
+                23: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'slash_water', count: 1 },
+                                { id: 'water_healing', count: 1 },
+                                { id: 'healing_spring', count: 1 },
+                                { id: 'purification', count: 1 },
+                                { id: 'torrent', count: 4 },
+                                { id: 'water_bomb', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'moisture_absorption', count: 3 },
+                                { id: 'rain', count: 1 },
+                                { id: 'freezing_wind', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'rain', count: 1 },
+                                { id: 'water_bomb', count: 6 },
+                                { id: 'skin_breathing', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                24: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'tsunami', count: 1 },
+                                { id: 'moisture_absorption', count: 3 },
+                                { id: 'healing_spring', count: 1 },
+                                { id: 'skin_breathing', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'rain', count: 1 },
+                                { id: 'skin_breathing', count: 1 },
+                                { id: 'water_bomb', count: 1 },
+                                { id: 'freezing_wind', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'purification', count: 1 },
+                                { id: 'rain', count: 1 },
+                                { id: 'cold_burn', count: 1 },
+                                { id: 'cold_snap', count: 1 },
+                                { id: 'ice_breaker', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                25: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'slash_water', count: 1 },
+                                { id: 'mud_bath', count: 1 },
+                                { id: 'purification', count: 1 },
+                                { id: 'rain', count: 1 },
+                                { id: 'torrent', count: 1 },
+                                { id: 'freezing_wind', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'thorn_armor', count: 1 },
+                                { id: 'bubble_strike', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'water_play', count: 1 },
+                                { id: 'skin_breathing', count: 1 },
+                                { id: 'water_bomb', count: 1 },
+                                { id: 'tsunami', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                26: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'rain', count: 1 },
+                                { id: 'cold_snap', count: 1 },
+                                { id: 'cold_burn', count: 1 },
+                                { id: 'skin_breathing', count: 1 },
+                                { id: 'water_healing', count: 1 },
+                                { id: 'ice_breaker', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'purification', count: 1 },
+                                { id: 'torrent', count: 2 },
+                                { id: 'endless_effort', count: 1 },
+                                { id: 'water_bomb', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'rain', count: 1 },
+                                { id: 'sword_dance', count: 1 },
+                                { id: 'freezing_wind', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                27: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'endless_effort', count: 1 },
+                                { id: 'water_play', count: 1 },
+                                { id: 'skin_breathing', count: 1 },
+                                { id: 'healing_spring', count: 1 },
+                                { id: 'water_healing', count: 1 },
+                                { id: 'torrent', count: 3 },
+                                { id: 'bubble_strike', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'endless_effort', count: 1 },
+                                { id: 'torrent', count: 4 },
+                                { id: 'water_bomb', count: 1 },
+                                { id: 'liquify', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'endless_effort', count: 1 },
+                                { id: 'rain', count: 1 },
+                                { id: 'skin_breathing', count: 1 },
+                                { id: 'freezing_wind', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                28: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'sword_dance', count: 1 },
+                                { id: 'tsunami', count: 1 },
+                                { id: 'water_healing', count: 1 },
+                                { id: 'skin_breathing', count: 1 },
+                                { id: 'slash_water', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'sword_dance', count: 1 },
+                                { id: 'water_bomb', count: 5 },
+                                { id: 'skin_breathing', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'rain', count: 1 },
+                                { id: 'sword_dance', count: 1 },
+                                { id: 'healing_spring', count: 1 },
+                                { id: 'cold_burn', count: 1 },
+                                { id: 'freezing_wind', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                29: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'water_bomb', count: 1 },
+                                { id: 'freezing_wind', count: 1 },
+                                { id: 'ice_breaker', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'water_bomb', count: 1 },
+                                { id: 'cold_snap', count: 1 },
+                                { id: 'ice_breaker', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'rain', count: 1 },
+                                { id: 'freezing_wind', count: 1 },
+                                { id: 'ice_breaker', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                30: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'rain', count: 1 },
+                                { id: 'moisture_absorption', count: 1 },
+                                { id: 'purification', count: 1 },
+                                { id: 'torrent', count: 1 },
+                                { id: 'tsunami', count: 1 },
+                                { id: 'slash_water', count: 1 },
+                                { id: 'cold_snap', count: 1 },
+                                { id: 'cold_burn', count: 1 },
+                                { id: 'skin_breathing', count: 1 },
+                                { id: 'liquify', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'rain', count: 1 },
+                                { id: 'skin_breathing', count: 1 },
+                                { id: 'purification', count: 1 },
+                                { id: 'sword_dance', count: 1 },
+                                { id: 'torrent', count: 2 },
+                                { id: 'freezing_wind', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'rain', count: 1 },
+                                { id: 'healing_spring', count: 1 },
+                                { id: 'cold_snap', count: 1 },
+                                { id: 'ice_breaker', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                31: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'phase_shock', count: 1 },
+                                { id: 'high_voltage_current', count: 1 },
+                                { id: 'battery_explosion', count: 1 },
+                                { id: 'overcharge_battery', count: 1 },
+                                { id: 'super_conductivity', count: 1 },
+                                { id: 'thunder_strike', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'super_conductivity', count: 1 },
+                                { id: 'light_speed', count: 4 },
+                                { id: 'thunder_strike', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'paralysis_trap', count: 1 },
+                                { id: 'high_voltage_gloves', count: 1 },
+                                { id: 'barricade', count: 1 },
+                                { id: 'shield_bash', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                32: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'conductive_armor', count: 1 },
+                                { id: 'current_wall', count: 1 },
+                                { id: 'light_speed', count: 1 },
+                                { id: 'lightning_storm', count: 1 },
+                                { id: 'electric_shock', count: 1 },
+                                { id: 'overload', count: 1 },
+                                { id: 'short_circuit', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'conductive_armor', count: 1 },
+                                { id: 'battery_pack', count: 2 },
+                                { id: 'battery_explosion', count: 1 },
+                                { id: 'overcharge_battery', count: 1 },
+                                { id: 'rain', count: 1 },
+                                { id: 'electric_shock', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'conductive_armor', count: 1 },
+                                { id: 'current_wall', count: 1 },
+                                { id: 'battery_pack', count: 1 },
+                                { id: 'battery_explosion', count: 1 },
+                                { id: 'overcharge_battery', count: 1 },
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'overload', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                33: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'battery_pack', count: 2 },
+                                { id: 'light_speed', count: 1 },
+                                { id: 'paralysis_trap', count: 1 },
+                                { id: 'high_voltage_current', count: 1 },
+                                { id: 'high_voltage_gloves', count: 1 },
+                                { id: 'endless_effort', count: 1 },
+                                { id: 'short_circuit', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'battery_pack', count: 2 },
+                                { id: 'light_speed', count: 1 },
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'high_voltage_current', count: 1 },
+                                { id: 'indomitable_gauntlet', count: 1 },
+                                { id: 'overload', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'battery_pack', count: 2 },
+                                { id: 'light_speed', count: 3 },
+                                { id: 'rain', count: 1 },
+                                { id: 'high_voltage_current', count: 1 },
+                                { id: 'electric_shock', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                34: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'paralysis_trap', count: 1 },
+                                { id: 'high_voltage_gloves', count: 1 },
+                                { id: 'current_wall', count: 1 },
+                                { id: 'barricade', count: 1 },
+                                { id: 'battery_explosion', count: 1 },
+                                { id: 'overcharge_battery', count: 1 },
+                                { id: 'lightning_storm', count: 1 },
+                                { id: 'overload', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'phase_shock', count: 1 },
+                                { id: 'battery_pack', count: 2 },
+                                { id: 'light_speed', count: 4 },
+                                { id: 'rain', count: 1 },
+                                { id: 'electric_shock', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'paralysis_trap', count: 1 },
+                                { id: 'high_voltage_gloves', count: 1 },
+                                { id: 'current_wall', count: 1 },
+                                { id: 'barricade', count: 2 },
+                                { id: 'shield_bash', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                35: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'super_conductivity', count: 1 },
+                                { id: 'light_speed', count: 2 },
+                                { id: 'indomitable_gauntlet', count: 1 },
+                                { id: 'phase_shock', count: 1 },
+                                { id: 'thunder_strike', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'super_conductivity', count: 1 },
+                                { id: 'light_speed', count: 1 },
+                                { id: 'indomitable_gauntlet', count: 1 },
+                                { id: 'phase_shock', count: 1 },
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'overload', count: 1 },
+                                { id: 'battery_pack', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'super_conductivity', count: 1 },
+                                { id: 'light_speed', count: 1 },
+                                { id: 'indomitable_gauntlet', count: 1 },
+                                { id: 'phase_shock', count: 1 },
+                                { id: 'rain', count: 1 },
+                                { id: 'electric_shock', count: 1 },
+                                { id: 'battery_pack', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                36: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'sword_dance', count: 1 },
+                                { id: 'purification', count: 1 },
+                                { id: 'paralysis_trap', count: 1 },
+                                { id: 'blinding_flash', count: 1 },
+                                { id: 'electromagnetic_barrier', count: 1 },
+                                { id: 'red_pendant', count: 1 },
+                                { id: 'light_speed', count: 2 },
+                                { id: 'overload', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'rain', count: 1 },
+                                { id: 'sword_dance', count: 1 },
+                                { id: 'purification', count: 1 },
+                                { id: 'paralysis_trap', count: 1 },
+                                { id: 'blinding_flash', count: 1 },
+                                { id: 'electromagnetic_barrier', count: 1 },
+                                { id: 'red_pendant', count: 1 },
+                                { id: 'light_speed', count: 2 },
+                                { id: 'electric_shock', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'paralysis_trap', count: 1 },
+                                { id: 'sword_dance', count: 1 },
+                                { id: 'purification', count: 1 },
+                                { id: 'phase_shock', count: 1 },
+                                { id: 'blinding_flash', count: 1 },
+                                { id: 'electromagnetic_barrier', count: 1 },
+                                { id: 'red_pendant', count: 1 },
+                                { id: 'light_speed', count: 1 },
+                                { id: 'short_circuit', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                37: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'endless_effort', count: 1 },
+                                { id: 'conductive_armor', count: 1 },
+                                { id: 'current_wall', count: 1 },
+                                { id: 'high_voltage_gloves', count: 1 },
+                                { id: 'lightning_storm', count: 3 },
+                                { id: 'electric_shock', count: 1 },
+                                { id: 'overload', count: 1 },
+                                { id: 'short_circuit', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'endless_effort', count: 4 },
+                                { id: 'light_speed', count: 2 },
+                                { id: 'thunder_strike', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'phase_shock', count: 1 },
+                                { id: 'battery_pack', count: 2 },
+                                { id: 'lightning_storm', count: 3 },
+                                { id: 'electric_shock', count: 1 },
+                                { id: 'overload', count: 1 },
+                                { id: 'short_circuit', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                38: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'paralysis_trap', count: 1 },
+                                { id: 'battery_pack', count: 6 },
+                                { id: 'battery_explosion', count: 1 },
+                                { id: 'overcharge_battery', count: 1 },
+                                { id: 'short_circuit', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'rain', count: 1 },
+                                { id: 'battery_pack', count: 6 },
+                                { id: 'battery_explosion', count: 1 },
+                                { id: 'overcharge_battery', count: 1 },
+                                { id: 'electric_shock', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'battery_pack', count: 6 },
+                                { id: 'battery_explosion', count: 1 },
+                                { id: 'overcharge_battery', count: 1 },
+                                { id: 'overload', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                39: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'rain', count: 1 },
+                                { id: 'super_conductivity', count: 1 },
+                                { id: 'light_speed', count: 3 },
+                                { id: 'paralysis_trap', count: 1 },
+                                { id: 'high_voltage_gloves', count: 1 },
+                                { id: 'conductive_armor', count: 1 },
+                                { id: 'electric_shock', count: 2 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'super_conductivity', count: 1 },
+                                { id: 'light_speed', count: 3 },
+                                { id: 'paralysis_trap', count: 1 },
+                                { id: 'high_voltage_gloves', count: 1 },
+                                { id: 'conductive_armor', count: 1 },
+                                { id: 'overload', count: 2 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'thorn_armor', count: 1 },
+                                { id: 'super_conductivity', count: 1 },
+                                { id: 'light_speed', count: 1 },
+                                { id: 'paralysis_trap', count: 1 },
+                                { id: 'high_voltage_gloves', count: 1 },
+                                { id: 'conductive_armor', count: 1 },
+                                { id: 'short_circuit', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                40: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'blinding_flash', count: 1 },
+                                { id: 'battery_pack', count: 2 },
+                                { id: 'super_conductivity', count: 1 },
+                                { id: 'light_speed', count: 1 },
+                                { id: 'static', count: 1 },
+                                { id: 'thunder_strike', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'blinding_flash', count: 1 },
+                                { id: 'super_conductivity', count: 1 },
+                                { id: 'endless_effort', count: 1 },
+                                { id: 'thunder_strike', count: 7 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'battery_pack', count: 2 },
+                                { id: 'static', count: 1 },
+                                { id: 'rain', count: 1 },
+                                { id: 'electric_shock', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                51: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'heavy_strike', count: 10 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'super_conductivity', count: 1 },
+                                { id: 'thunder_strike', count: 9 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'fireball', count: 10 }
+                            ]
+                        }
+                    ]
+                },
+                52: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'taunt', count: 1 },
+                                { id: 'large_shield', count: 8 },
+                                { id: 'shield_bash', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'paralysis_trap', count: 1 },
+                                { id: 'high_voltage_gloves', count: 4 },
+                                { id: 'shield_bash', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'scorched_shield', count: 6 },
+                                { id: 'shield_bash', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                53: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'defibrillator', count: 1 },
+                                { id: 'rain', count: 1 },
+                                { id: 'cold_snap', count: 1 },
+                                { id: 'ice_breaker', count: 2 },
+                                { id: 'freezing_wind', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'push_back', count: 1 },
+                                { id: 'toxic_gas', count: 3 },
+                                { id: 'poison_mutation', count: 1 },
+                                { id: 'toxic_blast', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'ignite', count: 1 },
+                                { id: 'karura_strike', count: 1 },
+                                { id: 'nutrient_supplement', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                54: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'water_play', count: 1 },
+                                { id: 'rain', count: 1 },
+                                { id: 'moisture_absorption', count: 1 },
+                                { id: 'light_speed', count: 2 },
+                                { id: 'electric_shock', count: 1 },
+                                { id: 'liquify', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'battery_pack', count: 3 },
+                                { id: 'paralysis_trap', count: 1 },
+                                { id: 'high_voltage_gloves', count: 1 },
+                                { id: 'super_conductivity', count: 1 },
+                                { id: 'endless_effort', count: 1 },
+                                { id: 'short_circuit', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'rain', count: 1 },
+                                { id: 'healing_spring', count: 1 },
+                                { id: 'catalyst', count: 1 },
+                                { id: 'freezing_wind', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                55: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'paralysis_trap', count: 1 },
+                                { id: 'high_voltage_gloves', count: 1 },
+                                { id: 'current_wall', count: 1 },
+                                { id: 'scorched_shield', count: 1 },
+                                { id: 'indomitable_gauntlet', count: 1 },
+                                { id: 'red_pendant', count: 1 },
+                                { id: 'large_shield', count: 1 },
+                                { id: 'barricade', count: 1 },
+                                { id: 'shield_bash', count: 1 },
+                                { id: 'poison_fang', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'flame_wall', count: 1 },
+                                { id: 'barricade', count: 2 },
+                                { id: 'hot_wind', count: 1 },
+                                { id: 'fireball', count: 3 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'rain', count: 1 },
+                                { id: 'healing_spring', count: 1 },
+                                { id: 'freezing_wind', count: 1 },
+                                { id: 'cold_snap', count: 1 },
+                                { id: 'ice_breaker', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                56: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'purification', count: 1 },
+                                { id: 'moisture_absorption', count: 4 },
+                                { id: 'tsunami', count: 5 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'purification', count: 1 },
+                                { id: 'battery_pack', count: 2 },
+                                { id: 'ignite', count: 3 },
+                                { id: 'fireball', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'purification', count: 1 },
+                                { id: 'ignite', count: 1 },
+                                { id: 'endless_effort', count: 1 },
+                                { id: 'karura_strike', count: 1 },
+                                { id: 'nutrient_supplement', count: 1 }
+                            ]
+                        }
+                    ]
+                },
+                57: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'battery_pack', count: 2 },
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'fire_breath', count: 1 },
+                                { id: 'sharpen', count: 1 },
+                                { id: 'opportunity_scent', count: 1 },
+                                { id: 'ignite', count: 1 },
+                                { id: 'hot_wind', count: 1 },
+                                { id: 'fireball', count: 2 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'battery_pack', count: 2 },
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'fire_breath', count: 1 },
+                                { id: 'battery_explosion', count: 1 },
+                                { id: 'overcharge_battery', count: 3 },
+                                { id: 'flame_throw', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'battery_pack', count: 2 },
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'fire_breath', count: 1 },
+                                { id: 'hot_wind', count: 1 },
+                                { id: 'ignite', count: 1 },
+                                { id: 'fireball', count: 2 }
+                            ]
+                        }
+                    ]
+                },
+                58: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'toxic_gas', count: 1 },
+                                { id: 'poison_mutation', count: 3 },
+                                { id: 'gas_absorption', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'unbreakable_mind', count: 1 },
+                                { id: 'flame_wall', count: 1 },
+                                { id: 'current_wall', count: 1 },
+                                { id: 'toxic_barrier', count: 1 },
+                                { id: 'large_shield', count: 1 },
+                                { id: 'barricade', count: 1 },
+                                { id: 'shield_bash', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'endless_effort', count: 1 },
+                                { id: 'thorn_armor', count: 1 },
+                                { id: 'indomitable_gauntlet', count: 1 },
+                                { id: 'flame_ascension', count: 2 },
+                                { id: 'first_aid', count: 3 }
+                            ]
+                        }
+                    ]
+                },
+                59: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'endless_effort', count: 3 },
+                                { id: 'lightning_storm', count: 1 },
+                                { id: 'electric_shock', count: 1 },
+                                { id: 'overload', count: 1 },
+                                { id: 'short_circuit', count: 1 },
+                                { id: 'liquify', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'paralysis_trap', count: 1 },
+                                { id: 'static', count: 1 },
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'super_conductivity', count: 1 },
+                                { id: 'battery_pack', count: 2 },
+                                { id: 'current_wall', count: 1 },
+                                { id: 'blinding_flash', count: 1 },
+                                { id: 'overload', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'battery_pack', count: 4 },
+                                { id: 'hot_breath', count: 1 },
+                                { id: 'ignite', count: 1 },
+                                { id: 'opportunity_scent', count: 1 },
+                                { id: 'flame_throw', count: 2 }
+                            ]
+                        }
+                    ]
+                },
+                60: {
+                    deckPool: [
+                        {
+                            name: 'deck1',
+                            cards: [
+                                { id: 'water_bomb', count: 1 },
+                                { id: 'freezing_wind', count: 2 },
+                                { id: 'ice_breaker', count: 3 },
+                                { id: 'rain', count: 1 },
+                                { id: 'cold_snap', count: 1 },
+                                { id: 'tsunami', count: 1 },
+                                { id: 'liquify', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck2',
+                            cards: [
+                                { id: 'unbreakable_mind', count: 1 },
+                                { id: 'counter_attack', count: 1 }
+                            ]
+                        },
+                        {
+                            name: 'deck3',
+                            cards: [
+                                { id: 'good_raincoat', count: 1 },
+                                { id: 'shake_off', count: 1 },
+                                { id: 'flame_wall', count: 1 },
+                                { id: 'current_wall', count: 1 },
+                                { id: 'toxic_barrier', count: 1 },
+                                { id: 'large_shield', count: 1 },
+                                { id: 'barricade', count: 2 },
+                                { id: 'shield_bash', count: 1 }
                             ]
                         }
                     ]
