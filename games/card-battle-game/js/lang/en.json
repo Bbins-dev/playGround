@@ -779,6 +779,7 @@
         "status_removed": "{name} Removed!",
         "paralysis_triggered": "⚡ Paralyzed!",
         "phase_self_attack": "🌀 Self Attack!",
+        "phase_extended": "🌀 Phase+{value}T!",
         "burn_extended": "🔥 Burn+{value}T!",
         "poisoned_extended": "☠️ Poison+{value}T!",
         "wet_extended": "💧 Wet+{value}T!",
@@ -815,6 +816,8 @@
         "no_fire_defense": "Not Fire Defense!",
         "no_water_defense": "Not Water Defense!",
         "no_lithium": "No Li⁺!",
+        "no_defense": "No Defense!",
+        "no_paralysis": "No Paralysis!",
         "buff_already_active": "Cannot Duplicate!",
         "hp_sufficient": "HP Sufficient!",
         "hp_not_one": "HP Not 1!"

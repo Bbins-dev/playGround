@@ -390,6 +390,10 @@ class BattleSystem {
 
                 // 위상 발동 메시지 표시
                 await this.effectSystem.showEffectMessage('phase', userPosition, 'phase_self_attack');
+
+                // 타겟이 변경되었으므로 selfDamageProcessed 플래그 재설정
+                // (자해 데미지는 이미 처리되었지만, 공격 데미지와 상태이상은 정상 처리되어야 함)
+                selfDamageProcessed = false;
             }
         }
 
