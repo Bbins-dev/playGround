@@ -3306,7 +3306,7 @@ const CardDatabase = {
             accuracy: 80,
             activationCount: 1,
             usageLimit: 1, // 1회만 사용 가능
-            burnChance: 80, // 화상 발동률 80%
+            burnChance: 100, // 명중 시 화상 확정 (언어팩의 "조건 충족 시 화상 추가"와 일치)
             descriptionKey: 'auto_battle_card_game.ui.cards.cold_burn.description',
             effect: function(user, target, battleSystem) {
                 // 적의 젖음 또는 얼음 상태 확인
