@@ -779,6 +779,7 @@
         "status_removed": "{name}解除!",
         "paralysis_triggered": "⚡ 麻痺！",
         "phase_self_attack": "🌀 自分攻撃！",
+        "phase_extended": "🌀 位相+{value}ターン!",
         "burn_extended": "🔥 火傷+{value}ターン!",
         "poisoned_extended": "☠️ 毒+{value}ターン!",
         "wet_extended": "💧 濡れ+{value}ターン!",
@@ -815,6 +816,8 @@
         "no_fire_defense": "火防御属性ではない!",
         "no_water_defense": "水防御属性ではない!",
         "no_lithium": "Li⁺なし!",
+        "no_defense": "防御力なし!",
+        "no_paralysis": "麻痺なし!",
         "buff_already_active": "重複不可!",
         "hp_sufficient": "HP十分!",
         "hp_not_one": "HP 1じゃない!"

@@ -911,7 +911,7 @@ const CardDatabase = {
             accuracy: 80,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.paralysis_trap.description',
-            paralysisChance: 80,
+            paralysisChance: 100,  // 100% to apply if card hits (accuracy already 80%)
             effect: function(user, target, battleSystem) {
                 // 마비 적용 (통합 시스템 - 면역 메시지 지원)
                 return {
@@ -1088,6 +1088,17 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 // 동적 방어력: 상대의 현재 방어력만큼 (Player.updateRuntimeCardStats()에서 계산됨)
                 const defenseValue = this.buffedPower || 0;
+
+                // 상대 방어력이 0이면 조건 미충족 메시지
+                if (defenseValue === 0) {
+                    return {
+                        success: true,
+                        conditionNotMet: true,
+                        messageKey: 'auto_battle_card_game.ui.templates.no_defense',
+                        element: this.element
+                    };
+                }
+
                 user.addDefense(defenseValue);
 
                 return {
@@ -1112,6 +1123,17 @@ const CardDatabase = {
             effect: function(user, target, battleSystem) {
                 // 동적 방어력: 상대가 마비 상태일 때 15 (Player.updateRuntimeCardStats()에서 계산됨)
                 const defenseValue = this.buffedPower || 0;
+
+                // 상대가 마비 상태가 아니면 조건 미충족 메시지
+                if (defenseValue === 0) {
+                    return {
+                        success: true,
+                        conditionNotMet: true,
+                        messageKey: 'auto_battle_card_game.ui.templates.no_paralysis',
+                        element: this.element
+                    };
+                }
+
                 user.addDefense(defenseValue);
 
                 return {
@@ -1935,7 +1957,7 @@ const CardDatabase = {
             accuracy: 80,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.mud_bath.description',
-            sandChance: 80,
+            sandChance: 100,  // 100% to apply if card hits (accuracy already 80%)
             effect: function(user, target, battleSystem) {
                 // 모래 적용 (통합 시스템 - 면역 메시지 지원)
                 return {
@@ -1961,7 +1983,7 @@ const CardDatabase = {
             accuracy: 70,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.cold_snap.description',
-            frozenChance: 70,
+            frozenChance: 100,  // 100% to apply if card hits (accuracy already 70%)
             effect: function(user, target, battleSystem) {
                 // 젖음 상태 체크
                 const hasWet = target.hasStatusEffect('wet');
@@ -3265,7 +3287,7 @@ const CardDatabase = {
             accuracy: 80,
             activationCount: 1,
             usageLimit: 1, // 1회만 사용 가능
-            slowChance: 80, // 둔화 발동률 80%
+            slowChance: 100,  // 100% to apply if card hits (accuracy already 80%)
             descriptionKey: 'auto_battle_card_game.ui.cards.sleet.description',
             effect: function(user, target, battleSystem) {
                 // 적의 젖음 상태 확인
