@@ -51,8 +51,10 @@ export async function onRequest(context) {
         .replace(/\{\{KEYWORDS\}\}/g, escapeHtml(meta.keywords))
         .replace(/\{\{OG_TITLE\}\}/g, escapeHtml(meta.ogTitle))
         .replace(/\{\{OG_DESCRIPTION\}\}/g, escapeHtml(meta.ogDescription))
+        .replace(/\{\{OG_IMAGE\}\}/g, meta.ogImage || 'https://binboxgames.com/games/card-battle-game/images/og-default.png')
         .replace(/\{\{TWITTER_TITLE\}\}/g, escapeHtml(meta.twitterTitle))
-        .replace(/\{\{TWITTER_DESCRIPTION\}\}/g, escapeHtml(meta.twitterDescription));
+        .replace(/\{\{TWITTER_DESCRIPTION\}\}/g, escapeHtml(meta.twitterDescription))
+        .replace(/\{\{TWITTER_IMAGE\}\}/g, meta.twitterImage || 'https://binboxgames.com/games/card-battle-game/images/og-default.png');
 
     // 새로운 응답 생성
     return new Response(html, {
