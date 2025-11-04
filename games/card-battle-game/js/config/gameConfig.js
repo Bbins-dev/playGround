@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.5.5',                        // 버전 넘버
+        number: '0.5.6',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -5277,6 +5277,7 @@ const GameConfig = {
             buffGain: 'sfx/snd_buff_gain.mp3',
             statusGain: 'sfx/snd_status_gain.mp3',
             statusBlocked: 'sfx/snd_status_blocked.mp3',
+            cleansed: 'sfx/snd_cleansed.mp3',
             heal: 'sfx/snd_heal.mp3',
 
             // 카드 획득 (랜덤 재생용)
@@ -5372,7 +5373,8 @@ const GameConfig = {
                 heal: 'heal',
                 failed: 'failed',
                 statusGain: 'statusGain',
-                statusBlocked: 'statusBlocked'
+                statusBlocked: 'statusBlocked',
+                cleansed: 'cleansed'
             },
 
             // 모달 사운드
