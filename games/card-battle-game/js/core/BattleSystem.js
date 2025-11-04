@@ -892,6 +892,12 @@ class BattleSystem {
                 this.effectSystem.getPlayerPosition() :
                 this.effectSystem.getEnemyPosition();
 
+            // 정화 사운드 재생 (Configuration-Driven)
+            const cleansedSfx = GameConfig?.audio?.battleSounds?.messageEffects?.cleansed;
+            if (cleansedSfx && this.audioSystem) {
+                this.audioSystem.playSFX(cleansedSfx);
+            }
+
             // 정화 메시지 표시
             const template = I18nHelper.getText(result.messageKey);
             await this.effectSystem.showDamageNumber(0, userPosition, 'status', template, {
