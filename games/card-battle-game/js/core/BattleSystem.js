@@ -1363,10 +1363,9 @@ class BattleSystem {
                 this.gameManager.uiManager.updateStatusBorder();
             }
 
-            // 상대방의 런타임 스탯 즉시 업데이트 (동적 공격력 계산, 예: 냉동바람)
-            if (target.opponent) {
-                target.opponent.updateRuntimeCardStats();
-            }
+            // Player.addStatusEffect() 내부에서 이미 자신과 상대방의 updateRuntimeCardStats() 호출함
+            // 중복 호출 방지를 위해 제거 (Throttle 충돌로 인한 UI 업데이트 누락 문제 해결)
+            // 동적 공격력 계산(냉동바람, ice_breaker 등)은 addStatusEffect 내부에서 이미 처리됨
 
             return { success: true, statusType: statusInfo.type, extended: result.extended };
         } else if (result.duplicate) {
