@@ -157,6 +157,10 @@ class PlayerNameModal {
      * 확인 버튼 처리
      */
     handleConfirm() {
+        // Prevent double-click execution
+        if (this._confirming) return;
+        this._confirming = true;
+
         const inputName = this.nameInput.value.trim();
         const nameLength = this.calculateTextLength(inputName);
         const maxLength = 20;
@@ -174,6 +178,9 @@ class PlayerNameModal {
         if (this.onNameConfirmed) {
             this.onNameConfirmed(playerName);
         }
+
+        // Reset debounce flag after 500ms
+        setTimeout(() => { this._confirming = false; }, 500);
     }
 
     /**
