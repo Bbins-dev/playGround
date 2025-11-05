@@ -488,6 +488,9 @@ class MainMenu {
 
     // 새 게임 시작
     startNewGame() {
+        // Prevent double-click execution
+        if (this._startingGame) return;
+        this._startingGame = true;
 
         // 저장된 속도 설정 적용
         const savedSpeed = parseInt(localStorage.getItem('cardBattle_gameSpeed') || '1');
@@ -509,6 +512,9 @@ class MainMenu {
                 this.gameManager.switchScreen('battle');
             }
         }
+
+        // Reset debounce flag after 500ms
+        setTimeout(() => { this._startingGame = false; }, 500);
     }
 
     // 게임 계속하기
