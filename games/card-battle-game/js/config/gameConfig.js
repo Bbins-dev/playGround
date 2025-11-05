@@ -795,6 +795,7 @@ const GameConfig = {
             description: '공격 카드의 명중률 30% 감소',
             get defaultReduction() { return GameConfig.constants.probabilities.statusReduction; },
             duration: 1,
+            canExtend: true,                                        // 턴 중첩 가능 (억제제/촉진제 영향)
             get color() { return GameConfig.masterColors.statusEffects.sand; }
         },
         insult: {
@@ -5195,7 +5196,7 @@ const GameConfig = {
         },
         // 물장구 카드 설정
         waterPlay: {
-            wetChance: 80,    // 젖음 적용 확률 80%
+            wetChance: 100,   // 젖음 적용 확률 100% (프로젝트 규칙: xxxChance는 100%)
             duration: 1       // 지속 시간 1턴
         },
         // 상당한 질량 카드 설정
@@ -5492,7 +5493,7 @@ const GameConfig = {
         // 랜딩 페이지 설정
         landingPage: {
             enabled: true,                      // 랜딩 페이지 기능 활성화
-            imageMaxWidth: 600,                 // 랜딩 페이지 이미지 최대 너비 (px) - deprecated, dimensions 사용
+            imageMaxWidth: 800,                 // 랜딩 페이지 이미지 최대 너비 (px) - deprecated, dimensions 사용
             showGameInfo: true,                 // 게임 정보 표시 여부
 
             // 랜딩 페이지 캔버스 크기 (고해상도, 표시할 때 600px로 축소)

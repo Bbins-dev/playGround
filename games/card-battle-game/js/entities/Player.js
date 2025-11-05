@@ -277,9 +277,9 @@ class Player {
         // 새 상태이상 추가
         const statusEffect = {
             type: statusType,
-            power: power || statusConfig.defaultDamage || statusConfig.defaultChance || 0,
-            duration: duration || statusConfig.duration || -1, // -1은 영구
-            turnsLeft: duration || statusConfig.duration || -1,
+            power: power ?? (statusConfig.defaultReduction ?? statusConfig.defaultDamage ?? statusConfig.defaultChance ?? 0),
+            duration: duration ?? (statusConfig.duration ?? -1), // -1은 영구
+            turnsLeft: duration ?? (statusConfig.duration ?? -1),
             stacks: statusConfig.canStack ? 1 : undefined // 강도 기반 중첩용
         };
 
@@ -1060,7 +1060,9 @@ class Player {
             if (card.type === 'status' && this.hasStatusEffect('slow')) {
                 const slowEffect = this.statusEffects.find(e => e.type === 'slow');
                 if (slowEffect) {
+                    const originalAccuracy = modifiedAccuracy;
                     modifiedAccuracy = Math.max(0, Math.floor(modifiedAccuracy * (1 - slowEffect.power / 100)));
+                    console.log(`[DEBUG] 둔화 적용: ${card.id} | ${originalAccuracy}% → ${modifiedAccuracy}% (${slowEffect.power}% 감소)`);
                 }
             }
 

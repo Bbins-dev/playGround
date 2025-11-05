@@ -1163,7 +1163,7 @@ const CardDatabase = {
                     statusEffect: {
                         type: 'slow',
                         chance: this.slowChance,
-                        power: null,
+                        power: GameConfig?.statusEffects?.slow?.defaultReduction || 30,
                         duration: 1  // 1턴 둔화
                     }
                 };
