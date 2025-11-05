@@ -48,6 +48,9 @@ class AudioSystem {
         // 음소거로 인한 BGM 일시정지 상태 추적
         this.bgmPausedByMute = false;
 
+        // GameManager 참조 (게임 상태 검증용)
+        this.gameManager = null;
+
         // Page Visibility API 설정 (바인딩 필요 - 리스너 제거 시 사용)
         this.boundVisibilityHandler = this.handleVisibilityChange.bind(this);
         this.setupVisibilityListener();
@@ -310,6 +313,38 @@ class AudioSystem {
     }
 
     /**
+     * GameManager 참조 설정 (의존성 주입)
+     * @param {Object} gameManager - GameManager 인스턴스
+     */
+    setGameManager(gameManager) {
+        this.gameManager = gameManager;
+    }
+
+    /**
+     * BGM 스택 클리어 (전투 종료 시 등)
+     */
+    clearBGMStack() {
+        this.bgmStack = [];
+    }
+
+    /**
+     * 게임 상태에 따른 예상 BGM 목록 반환
+     * @param {string} gameState - 게임 상태 ('menu', 'battle', 'gameOver' 등)
+     * @returns {Array<string>|null} 예상 BGM 키 배열
+     */
+    getExpectedBGMForState(gameState) {
+        const mapping = GameConfig?.audio?.stateBGMMapping || {};
+        const expected = mapping[gameState];
+
+        // 배열이면 그대로 반환 (여러 가능성 허용)
+        if (Array.isArray(expected)) {
+            return expected;
+        }
+        // 단일 값이면 배열로 변환
+        return expected ? [expected] : null;
+    }
+
+    /**
      * 현재 BGM 일시정지 및 스택에 저장
      * (카드 갤러리 열 때 사용)
      * @returns {boolean} 성공 여부
@@ -360,6 +395,18 @@ class AudioSystem {
         try {
             // 스택에서 이전 상태 꺼내기
             const savedState = this.bgmStack.pop();
+
+            // ✅ 게임 상태 검증: 복원하려는 BGM이 현재 게임 상태와 맞는지 확인
+            if (this.gameManager) {
+                const gameState = this.gameManager.gameState;
+                const expectedBGMs = this.getExpectedBGMForState(gameState);
+
+                // 복원하려는 BGM이 현재 상태와 맞지 않으면 복원 중단
+                if (expectedBGMs && !expectedBGMs.includes(savedState.key)) {
+                    console.warn(`[AudioSystem] BGM 복원 중단: '${savedState.key}' → 현재 상태 '${gameState}'에 맞지 않음 (예상: ${expectedBGMs.join(', ')})`);
+                    return false;
+                }
+            }
 
             // 현재 BGM 정지 (페이드 아웃)
             if (this.currentBGM) {
