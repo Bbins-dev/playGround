@@ -1855,6 +1855,11 @@ class GameManager {
         const restoreDelay = config.restoreDelay || 100;
 
         setTimeout(() => {
+            // ✅ Phase 1.1: 캐시 선택적 무효화
+            if (config.invalidateCacheOnRestore && this.cardRenderer) {
+                this.cardRenderer.invalidateCache('foreground restore');
+            }
+
             // Canvas 크기 업데이트
             this.updateCanvasSize();
 
