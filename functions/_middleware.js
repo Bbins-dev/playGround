@@ -18,6 +18,19 @@ export async function onRequest(context) {
     const url = new URL(request.url);
     const path = url.pathname;
 
+    // 정적 파일인 경우 Cache-Control 헤더 추가
+    const staticFileExtensions = /\.(css|js|png|jpg|jpeg|svg|woff2?|ttf|mp3|ogg|wav)$/i;
+    if (staticFileExtensions.test(path)) {
+        const response = await next();
+        const headers = new Headers(response.headers);
+        headers.set('Cache-Control', 'public, max-age=31536000, immutable'); // 1 year
+        return new Response(response.body, {
+            status: response.status,
+            statusText: response.statusText,
+            headers: headers
+        });
+    }
+
     // 카드게임 경로가 아니면 그대로 통과
     if (!path.includes('/games/card-battle-game')) {
         return next();

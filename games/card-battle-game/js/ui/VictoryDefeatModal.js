@@ -1139,10 +1139,17 @@ class VictoryDefeatModal {
      * 카드 교체 처리
      */
     handleReplaceCard() {
+        // Prevent double-click execution
+        if (this._replacingCard) return;
+        this._replacingCard = true;
+
         if (this.selectedRewardCard && this.gameManager) {
             this.viewOnlyMode = false; // 교체 모드
             this.showHandReplaceSelection();
         }
+
+        // Reset debounce flag after 500ms
+        setTimeout(() => { this._replacingCard = false; }, 500);
     }
 
     /**
