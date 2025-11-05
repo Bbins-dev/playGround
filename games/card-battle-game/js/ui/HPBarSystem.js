@@ -202,6 +202,9 @@ class HPBarSystem {
         const buffElement = document.createElement('div');
         buffElement.className = 'buff-label';
 
+        // ✅ Phase 1.3: diff를 위한 data attribute 추가
+        buffElement.dataset.buffType = buffType;
+
         // 다국어 지원 - I18nHelper 사용
         const buffName = buffConfig.nameKey ?
             I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
@@ -248,7 +251,23 @@ class HPBarSystem {
         const statusContainer = isPlayer ? this.playerStatusGrid : this.enemyStatusGrid;
         const effectsContainer = isPlayer ? this.playerEffectsContainer : this.enemyEffectsContainer;
 
-        // 기존 상태이상 클리어
+        // ✅ Phase 1.3: DOM 최적화 - diff 시스템 적용
+        const domConfig = GameConfig?.constants?.performance?.domOptimization;
+
+        if (domConfig?.enabled && domConfig?.useDiffing) {
+            try {
+                this.updateStatusEffectsWithDiff(player, isPlayer, statusContainer, effectsContainer);
+                return;
+            } catch (error) {
+                console.warn('[HPBarSystem] Diff update for status effects failed, falling back to full rebuild:', error);
+                if (!domConfig?.fallbackOnError) {
+                    throw error;
+                }
+                // 폴백: 전체 재생성 (아래 기존 로직 실행)
+            }
+        }
+
+        // 기존 상태이상 클리어 (폴백 또는 diff 비활성화 시)
         statusContainer.innerHTML = '';
 
         // 플레이어 상태이상에 대한 화면 테두리 효과 (통합 노랑색 - 경고)
@@ -276,6 +295,9 @@ class HPBarSystem {
 
             const statusElement = document.createElement('div');
             statusElement.className = 'status-label';
+
+            // ✅ Phase 1.3: diff를 위한 data attribute 추가 (폴백 경로에서도 일관성 유지)
+            statusElement.dataset.statusType = effect.type;
 
             // 지속 턴수 또는 배수 표시
             let countdownHtml = '';
@@ -319,247 +341,35 @@ class HPBarSystem {
         const buffsContainer = isPlayer ? this.playerBuffsGrid : this.enemyBuffsGrid;
         const effectsContainer = isPlayer ? this.playerEffectsContainer : this.enemyEffectsContainer;
 
-        // 기존 버프 라벨 제거
+        // ✅ Phase 1.3: DOM 최적화 - diff 시스템 적용
+        const domConfig = GameConfig?.constants?.performance?.domOptimization;
+
+        if (domConfig?.enabled && domConfig?.useDiffing) {
+            try {
+                this.updateBuffsWithDiff(player, isPlayer, buffsContainer, effectsContainer);
+                return;
+            } catch (error) {
+                console.warn('[HPBarSystem] Diff update failed, falling back to full rebuild:', error);
+                if (!domConfig?.fallbackOnError) {
+                    throw error; // 폴백 비활성화 시 에러 전파
+                }
+                // 폴백: 전체 재생성 (아래 기존 로직 실행)
+            }
+        }
+
+        // 기존 버프 라벨 제거 (폴백 또는 diff 비활성화 시)
         buffsContainer.innerHTML = '';
 
-        // 힘 버프 표시 (사슬 상태이상 무시 - 버프 값 직접 체크)
-        if (player.strength > 0) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'strength',
-                player.strength,
-                isPlayer
-            );
-        }
+        // ✅ 리팩토링: 버프 수집 로직 재사용
+        const activeBuffs = this._collectActiveBuffs(player);
 
-        // 강화 버프 표시
-        if (player.hasEnhanceBuff && player.hasEnhanceBuff()) {
+        // 수집된 버프들을 DOM에 추가
+        for (const buff of activeBuffs) {
             this._createBuffElement(
                 buffsContainer,
                 effectsContainer,
-                'enhance',
-                player.enhanceTurns,
-                isPlayer
-            );
-        }
-
-        // 집중 버프 표시
-        if (player.hasFocusBuff && player.hasFocusBuff()) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'focus',
-                player.focusTurns,
-                isPlayer
-            );
-        }
-
-        // 고속 버프 표시
-        if (player.hasSpeedBuff && player.hasSpeedBuff()) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'speed',
-                player.speedBonus,
-                isPlayer
-            );
-        }
-
-        // 냄새 버프 표시
-        if (player.hasScentBuff && player.hasScentBuff()) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'scent',
-                player.scentBonus,
-                isPlayer
-            );
-        }
-
-        // 벼리기 버프 표시 (showValue: false - 턴 표시 없음)
-        if (player.hasSharpenBuff && player.hasSharpenBuff()) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'sharpen',
-                player.sharpenTurns,
-                isPlayer
-            );
-        }
-
-        // 마음 버프 표시 (showValue: false - 턴 표시 없음)
-        if (player.hasMindBuff && player.hasMindBuff()) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'mind',
-                player.mindTurns,
-                isPlayer
-            );
-        }
-
-        // 열풍 버프 표시
-        if (player.hasHotWindBuff && player.hasHotWindBuff()) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'hotWind',
-                player.hotWindTurns,
-                isPlayer
-            );
-        }
-
-        // Li⁺ 버프 표시
-        if (player.hasLithiumBuff && player.hasLithiumBuff()) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'lithium',
-                player.lithiumTurns,
-                isPlayer
-            );
-        }
-
-        // 호흡 버프 표시 (showValue: false - 턴 표시 없음)
-        if (player.hasBreathBuff && player.hasBreathBuff()) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'breath',
-                player.breathTurns,
-                isPlayer
-            );
-        }
-
-        // 질량 버프 표시
-        if (player.hasMassBuff && player.hasMassBuff()) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'mass',
-                player.massBonus,
-                isPlayer
-            );
-        }
-
-        // 급류 버프 표시
-        if (player.hasTorrentBuff && player.hasTorrentBuff()) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'torrent',
-                player.torrentBonus,
-                isPlayer
-            );
-        }
-
-        // 흡수 버프 표시
-        if (player.hasAbsorptionBuff && player.hasAbsorptionBuff()) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'absorption',
-                player.absorptionBonus,
-                isPlayer
-            );
-        }
-
-        // 광속 버프 표시
-        if (player.hasLightSpeedBuff && player.hasLightSpeedBuff()) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'lightSpeed',
-                player.lightSpeedBonus,
-                isPlayer
-            );
-        }
-
-        // 초전도 버프 표시 (showValue: false - 턴 표시 없음)
-        if (player.hasSuperConductivityBuff && player.hasSuperConductivityBuff()) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'superConductivity',
-                player.superConductivityTurns,
-                isPlayer
-            );
-        }
-
-        // 정전기 버프 표시 (showValue: true - 턴수 표시)
-        if (player.hasStaticBuff && player.hasStaticBuff()) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'static',
-                player.staticTurns,
-                isPlayer
-            );
-        }
-
-        // 팩 버프 표시
-        if (player.hasPackBuff && player.hasPackBuff()) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'pack',
-                player.packBonus,
-                isPlayer
-            );
-        }
-
-        // 연쇄 버프 표시
-        if (player.hasPropagationBuff && player.hasPropagationBuff()) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'propagation',
-                player.propagationBonus,
-                isPlayer
-            );
-        }
-
-        // 독침 버프 표시
-        if (player.hasPoisonNeedleBuff && player.hasPoisonNeedleBuff()) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'poisonNeedle',
-                player.poisonNeedleTurns,
-                isPlayer
-            );
-        }
-
-        // 유황 버프 표시
-        if (player.hasSulfurBuff && player.hasSulfurBuff()) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'sulfur',
-                player.sulfurTurns,
-                isPlayer
-            );
-        }
-
-        // 코팅 버프 표시
-        if (player.hasCoatingBuff && player.hasCoatingBuff()) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'coating',
-                player.coatingTurns,
-                isPlayer
-            );
-        }
-
-        // 우비 버프 표시 (스택 기반 - 턴이 아님!)
-        if (player.hasRaincoatProtection && player.hasRaincoatProtection()) {
-            this._createBuffElement(
-                buffsContainer,
-                effectsContainer,
-                'raincoat',
-                player.raincoatStacks,
+                buff.type,
+                buff.value,
                 isPlayer
             );
         }
@@ -568,6 +378,424 @@ class HPBarSystem {
         const statusContainer = isPlayer ? this.playerStatusGrid : this.enemyStatusGrid;
         if (!buffsContainer.children.length && !statusContainer.children.length) {
             effectsContainer.classList.remove('active');
+        }
+    }
+
+    /**
+     * ✅ Private: 현재 활성 버프 목록 수집
+     * updateBuffs()와 updateBuffsWithDiff()에서 공통 사용
+     * @param {Player} player - 플레이어 객체
+     * @returns {Array<{type: string, value: number}>} 활성 버프 배열
+     */
+    _collectActiveBuffs(player) {
+        const activeBuffs = [];
+
+        // 힘 버프
+        if (player.strength > 0) {
+            activeBuffs.push({ type: 'strength', value: player.strength });
+        }
+
+        // 강화 버프
+        if (player.hasEnhanceBuff && player.hasEnhanceBuff()) {
+            activeBuffs.push({ type: 'enhance', value: player.enhanceTurns });
+        }
+
+        // 집중 버프
+        if (player.hasFocusBuff && player.hasFocusBuff()) {
+            activeBuffs.push({ type: 'focus', value: player.focusTurns });
+        }
+
+        // 고속 버프
+        if (player.hasSpeedBuff && player.hasSpeedBuff()) {
+            activeBuffs.push({ type: 'speed', value: player.speedBonus });
+        }
+
+        // 냄새 버프
+        if (player.hasScentBuff && player.hasScentBuff()) {
+            activeBuffs.push({ type: 'scent', value: player.scentBonus });
+        }
+
+        // 벼리기 버프
+        if (player.hasSharpenBuff && player.hasSharpenBuff()) {
+            activeBuffs.push({ type: 'sharpen', value: player.sharpenTurns });
+        }
+
+        // 마음 버프
+        if (player.hasMindBuff && player.hasMindBuff()) {
+            activeBuffs.push({ type: 'mind', value: player.mindTurns });
+        }
+
+        // 열풍 버프
+        if (player.hasHotWindBuff && player.hasHotWindBuff()) {
+            activeBuffs.push({ type: 'hotWind', value: player.hotWindTurns });
+        }
+
+        // Li⁺ 버프
+        if (player.hasLithiumBuff && player.hasLithiumBuff()) {
+            activeBuffs.push({ type: 'lithium', value: player.lithiumTurns });
+        }
+
+        // 호흡 버프
+        if (player.hasBreathBuff && player.hasBreathBuff()) {
+            activeBuffs.push({ type: 'breath', value: player.breathTurns });
+        }
+
+        // 질량 버프
+        if (player.hasMassBuff && player.hasMassBuff()) {
+            activeBuffs.push({ type: 'mass', value: player.massBonus });
+        }
+
+        // 급류 버프
+        if (player.hasTorrentBuff && player.hasTorrentBuff()) {
+            activeBuffs.push({ type: 'torrent', value: player.torrentBonus });
+        }
+
+        // 흡수 버프
+        if (player.hasAbsorptionBuff && player.hasAbsorptionBuff()) {
+            activeBuffs.push({ type: 'absorption', value: player.absorptionBonus });
+        }
+
+        // 광속 버프
+        if (player.hasLightSpeedBuff && player.hasLightSpeedBuff()) {
+            activeBuffs.push({ type: 'lightSpeed', value: player.lightSpeedBonus });
+        }
+
+        // 초전도 버프
+        if (player.hasSuperConductivityBuff && player.hasSuperConductivityBuff()) {
+            activeBuffs.push({ type: 'superConductivity', value: player.superConductivityTurns });
+        }
+
+        // 정전기 버프
+        if (player.hasStaticBuff && player.hasStaticBuff()) {
+            activeBuffs.push({ type: 'static', value: player.staticTurns });
+        }
+
+        // 팩 버프
+        if (player.hasPackBuff && player.hasPackBuff()) {
+            activeBuffs.push({ type: 'pack', value: player.packBonus });
+        }
+
+        // 연쇄 버프
+        if (player.hasPropagationBuff && player.hasPropagationBuff()) {
+            activeBuffs.push({ type: 'propagation', value: player.propagationBonus });
+        }
+
+        // 독침 버프
+        if (player.hasPoisonNeedleBuff && player.hasPoisonNeedleBuff()) {
+            activeBuffs.push({ type: 'poisonNeedle', value: player.poisonNeedleTurns });
+        }
+
+        // 유황 버프
+        if (player.hasSulfurBuff && player.hasSulfurBuff()) {
+            activeBuffs.push({ type: 'sulfur', value: player.sulfurTurns });
+        }
+
+        // 코팅 버프
+        if (player.hasCoatingBuff && player.hasCoatingBuff()) {
+            activeBuffs.push({ type: 'coating', value: player.coatingTurns });
+        }
+
+        // 우비 버프
+        if (player.hasRaincoatProtection && player.hasRaincoatProtection()) {
+            activeBuffs.push({ type: 'raincoat', value: player.raincoatStacks });
+        }
+
+        return activeBuffs;
+    }
+
+    /**
+     * ✅ Phase 1.3: DOM Diff 기반 버프 업데이트
+     * 기존 DOM 요소를 재사용하여 불필요한 생성/삭제를 최소화합니다.
+     * @param {Player} player - 플레이어 객체
+     * @param {boolean} isPlayer - 플레이어 여부
+     * @param {HTMLElement} buffsContainer - 버프 컨테이너
+     * @param {HTMLElement} effectsContainer - 이펙트 컨테이너
+     */
+    updateBuffsWithDiff(player, isPlayer, buffsContainer, effectsContainer) {
+        const domConfig = GameConfig?.constants?.performance?.domOptimization;
+
+        // 1. 현재 활성 버프 목록 수집 (순서 유지)
+        const activeBuffs = this._collectActiveBuffs(player);
+
+        // 2. 기존 DOM 요소 맵 생성 (data-buff-type 기준)
+        const existingElements = new Map();
+        for (const child of buffsContainer.children) {
+            const buffType = child.dataset.buffType;
+            if (buffType) {
+                existingElements.set(buffType, child);
+            }
+        }
+
+        // 3. Diff 알고리즘: 추가/업데이트/삭제 결정
+        const toAdd = [];
+        const toUpdate = [];
+        const toRemove = new Set(existingElements.keys());
+
+        for (const buff of activeBuffs) {
+            if (existingElements.has(buff.type)) {
+                // 기존 요소 업데이트
+                toUpdate.push(buff);
+                toRemove.delete(buff.type);
+            } else {
+                // 새 요소 추가
+                toAdd.push(buff);
+            }
+        }
+
+        // 4. DocumentFragment로 배치 추가 (성능 최적화)
+        const fragment = domConfig?.useDocumentFragment ? document.createDocumentFragment() : null;
+
+        // 5. 업데이트: 기존 요소의 innerHTML만 변경 (최소 DOM 조작)
+        for (const buff of toUpdate) {
+            const element = existingElements.get(buff.type);
+            const buffConfig = GameConfig.buffs[buff.type];
+            if (!buffConfig) continue;
+
+            // 다국어 지원
+            const buffName = buffConfig.nameKey ?
+                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
+                buffConfig.name;
+
+            // 값 표시
+            let displayText = `${buffConfig.emoji} ${buffName}`;
+            if (buffConfig.display?.showValue && buff.value !== undefined) {
+                const format = buffConfig.display.format || '';
+                if (format.includes('{value}')) {
+                    displayText += format.replace('{value}', buff.value);
+                } else {
+                    displayText += ` ${buff.value}`;
+                }
+            }
+
+            // innerHTML만 업데이트 (스타일/이벤트는 유지)
+            if (element.innerHTML !== displayText) {
+                element.innerHTML = displayText;
+            }
+        }
+
+        // 6. 추가: 새 버프 요소 생성
+        for (const buff of toAdd) {
+            const buffConfig = GameConfig.buffs[buff.type];
+            if (!buffConfig) continue;
+
+            const buffElement = document.createElement('div');
+            buffElement.className = 'buff-label';
+            buffElement.dataset.buffType = buff.type;
+
+            // 다국어 지원
+            const buffName = buffConfig.nameKey ?
+                I18nHelper.getText(buffConfig.nameKey) || buffConfig.name :
+                buffConfig.name;
+
+            // 값 표시
+            let displayText = `${buffConfig.emoji} ${buffName}`;
+            if (buffConfig.display?.showValue && buff.value !== undefined) {
+                const format = buffConfig.display.format || '';
+                if (format.includes('{value}')) {
+                    displayText += format.replace('{value}', buff.value);
+                } else {
+                    displayText += ` ${buff.value}`;
+                }
+            }
+
+            buffElement.innerHTML = displayText;
+
+            // 스타일 적용
+            buffElement.style.borderColor = buffConfig.color;
+            buffElement.style.background = `linear-gradient(135deg, ${buffConfig.color}, ${buffConfig.color}CC)`;
+
+            // 클릭 이벤트
+            buffElement.style.cursor = 'pointer';
+            buffElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.BuffStatusTooltipModal) {
+                    window.BuffStatusTooltipModal.show('buff', buff.type);
+                }
+            });
+
+            // Fragment에 추가 (배치 추가)
+            if (fragment) {
+                fragment.appendChild(buffElement);
+            } else {
+                buffsContainer.appendChild(buffElement);
+            }
+        }
+
+        // Fragment를 한 번에 DOM에 추가
+        if (fragment && fragment.hasChildNodes()) {
+            buffsContainer.appendChild(fragment);
+        }
+
+        // 7. 삭제: 비활성 버프 제거
+        for (const buffType of toRemove) {
+            const element = existingElements.get(buffType);
+            if (element && element.parentNode) {
+                element.remove();
+            }
+        }
+
+        // 8. 컨테이너 활성화 상태 관리
+        if (activeBuffs.length > 0) {
+            effectsContainer.classList.add('active');
+        } else {
+            const statusContainer = isPlayer ? this.playerStatusGrid : this.enemyStatusGrid;
+            if (!statusContainer.children.length) {
+                effectsContainer.classList.remove('active');
+            }
+        }
+    }
+
+    /**
+     * ✅ Phase 1.3: DOM Diff 기반 상태이상 업데이트
+     * 기존 DOM 요소를 재사용하여 불필요한 생성/삭제를 최소화합니다.
+     * @param {Player} player - 플레이어 객체
+     * @param {boolean} isPlayer - 플레이어 여부
+     * @param {HTMLElement} statusContainer - 상태이상 컨테이너
+     * @param {HTMLElement} effectsContainer - 이펙트 컨테이너
+     */
+    updateStatusEffectsWithDiff(player, isPlayer, statusContainer, effectsContainer) {
+        const domConfig = GameConfig?.constants?.performance?.domOptimization;
+
+        // 플레이어 상태이상에 대한 화면 테두리 효과
+        if (isPlayer && player.statusEffects.length > 0) {
+            this.showScreenBorderEffect('#F39C12');
+        } else if (isPlayer) {
+            this.clearScreenBorderEffect();
+        }
+
+        // 1. 기존 DOM 요소 맵 생성 (data-status-type 기준)
+        const existingElements = new Map();
+        for (const child of statusContainer.children) {
+            const statusType = child.dataset.statusType;
+            if (statusType) {
+                existingElements.set(statusType, child);
+            }
+        }
+
+        // 2. Diff 알고리즘: 추가/업데이트/삭제 결정
+        const toAdd = [];
+        const toUpdate = [];
+        const toRemove = new Set(existingElements.keys());
+
+        for (const effect of player.statusEffects) {
+            if (existingElements.has(effect.type)) {
+                // 기존 요소 업데이트
+                toUpdate.push(effect);
+                toRemove.delete(effect.type);
+            } else {
+                // 새 요소 추가
+                toAdd.push(effect);
+            }
+        }
+
+        // 3. DocumentFragment로 배치 추가
+        const fragment = domConfig?.useDocumentFragment ? document.createDocumentFragment() : null;
+
+        // 4. 업데이트: 기존 요소의 innerHTML만 변경
+        for (const effect of toUpdate) {
+            const element = existingElements.get(effect.type);
+            const statusConfig = GameConfig.statusEffects[effect.type];
+            if (!statusConfig) continue;
+
+            // 지속 턴수 또는 배수 표시
+            let countdownHtml = '';
+            const instantReleaseStatuses = ['frozen', 'stun', 'taunt', 'oblivion'];
+
+            // 발화: 스택 기반 배수 표시
+            if (effect.type === 'ignition' && effect.stacks) {
+                const multiplier = (GameConfig?.statusEffects?.ignition?.stackMultiplier || 3) * effect.stacks;
+                countdownHtml = `×${multiplier}`;
+            }
+            // 다른 상태이상: 턴수 표시
+            else if (effect.turnsLeft && effect.turnsLeft > 0 && !instantReleaseStatuses.includes(effect.type)) {
+                countdownHtml = `(${effect.turnsLeft})`;
+            }
+
+            const statusName = statusConfig.nameKey && typeof I18nHelper !== 'undefined' ?
+                I18nHelper.getText(statusConfig.nameKey) || statusConfig.name :
+                statusConfig.name;
+
+            const displayText = `${statusConfig.emoji} ${statusName}${countdownHtml}`;
+
+            // innerHTML만 업데이트 (스타일/이벤트는 유지)
+            if (element.innerHTML !== displayText) {
+                element.innerHTML = displayText;
+            }
+        }
+
+        // 5. 추가: 새 상태이상 요소 생성
+        for (const effect of toAdd) {
+            const statusConfig = GameConfig.statusEffects[effect.type];
+            if (!statusConfig) continue;
+
+            const statusElement = document.createElement('div');
+            statusElement.className = 'status-label';
+
+            // ✅ Phase 1.3: diff를 위한 data attribute 추가
+            statusElement.dataset.statusType = effect.type;
+
+            // 지속 턴수 또는 배수 표시
+            let countdownHtml = '';
+            const instantReleaseStatuses = ['frozen', 'stun', 'taunt', 'oblivion'];
+
+            // 발화: 스택 기반 배수 표시
+            if (effect.type === 'ignition' && effect.stacks) {
+                const multiplier = (GameConfig?.statusEffects?.ignition?.stackMultiplier || 3) * effect.stacks;
+                countdownHtml = `×${multiplier}`;
+            }
+            // 다른 상태이상: 턴수 표시
+            else if (effect.turnsLeft && effect.turnsLeft > 0 && !instantReleaseStatuses.includes(effect.type)) {
+                countdownHtml = `(${effect.turnsLeft})`;
+            }
+
+            const statusName = statusConfig.nameKey && typeof I18nHelper !== 'undefined' ?
+                I18nHelper.getText(statusConfig.nameKey) || statusConfig.name :
+                statusConfig.name;
+
+            statusElement.innerHTML = `${statusConfig.emoji} ${statusName}${countdownHtml}`;
+
+            // 스타일 적용
+            statusElement.style.borderColor = statusConfig.color;
+            statusElement.style.background = `linear-gradient(135deg, ${statusConfig.color}, ${statusConfig.color}CC)`;
+
+            // 클릭 이벤트
+            statusElement.style.cursor = 'pointer';
+            statusElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.BuffStatusTooltipModal) {
+                    window.BuffStatusTooltipModal.show('status', effect.type);
+                }
+            });
+
+            // Fragment에 추가
+            if (fragment) {
+                fragment.appendChild(statusElement);
+            } else {
+                statusContainer.appendChild(statusElement);
+            }
+        }
+
+        // Fragment를 한 번에 DOM에 추가
+        if (fragment && fragment.hasChildNodes()) {
+            statusContainer.appendChild(fragment);
+        }
+
+        // 6. 삭제: 비활성 상태이상 제거
+        for (const statusType of toRemove) {
+            const element = existingElements.get(statusType);
+            if (element && element.parentNode) {
+                element.remove();
+            }
+        }
+
+        // 7. 컨테이너 활성화 상태 관리
+        if (player.statusEffects.length > 0) {
+            effectsContainer.classList.add('active');
+        } else {
+            const buffsContainer = isPlayer ? this.playerBuffsGrid : this.enemyBuffsGrid;
+            if (!buffsContainer.children.length) {
+                effectsContainer.classList.remove('active');
+            }
         }
     }
 

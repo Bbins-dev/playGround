@@ -2,7 +2,42 @@
 
 class CardRenderer {
     constructor() {
-        // 캐시하지 않고 항상 실시간으로 참조
+        // ✅ Phase 1.1: 오프스크린 캔버스 캐싱 시스템
+        this.staticCache = new Map();       // 정적 요소 캐시 (배경, 라벨 등)
+        this.cacheEnabled = true;           // 캐싱 활성화 플래그
+        this.cacheErrors = 0;               // 에러 카운터
+        this.currentLanguage = 'ko';        // 현재 언어 (캐시 키용)
+
+        // ✅ Critical Fix #2: OffscreenCanvas 브라우저 지원 체크
+        this.offscreenCanvasSupported = typeof OffscreenCanvas !== 'undefined';
+        if (!this.offscreenCanvasSupported) {
+            console.warn('[CardRenderer] OffscreenCanvas not supported, caching disabled');
+            this.cacheEnabled = false;
+        }
+
+        // 언어 전환 감지 (캐시 무효화)
+        const langSelect = document.getElementById('languageSelect');
+        if (langSelect) {
+            langSelect.addEventListener('change', () => {
+                const cacheConfig = GameConfig?.constants?.performance?.cardCache;
+                if (cacheConfig?.invalidateOnLanguageChange) {
+                    this.invalidateCache('language change');
+                    this.currentLanguage = langSelect.value;
+                }
+            });
+        }
+
+        // 윈도우 리사이즈 감지 (캐시 무효화)
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                const cacheConfig = GameConfig?.constants?.performance?.cardCache;
+                if (cacheConfig?.invalidateOnResize) {
+                    this.invalidateCache('window resize');
+                }
+            }, 200); // debounce 200ms
+        });
     }
 
     // 실시간 스타일 참조 메소드
@@ -10,8 +45,66 @@ class CardRenderer {
         return GameConfig.cardStyle;
     }
 
-    // 메인 카드 렌더링 메서드
+    // 캐시 무효화
+    invalidateCache(reason = 'manual') {
+        if (this.staticCache.size > 0) {
+            console.log(`[CardRenderer] Cache invalidated: ${reason} (${this.staticCache.size} entries cleared)`);
+            this.staticCache.clear();
+        }
+    }
+
+    // 캐싱 활성화/비활성화
+    enableCaching() {
+        this.cacheEnabled = true;
+        this.cacheErrors = 0;
+    }
+
+    disableCaching() {
+        this.cacheEnabled = false;
+        this.invalidateCache('caching disabled');
+    }
+
+    // 메인 카드 렌더링 메서드 (캐싱 지원)
     renderCard(ctx, card, x, y, width, height, options = {}) {
+        const {
+            isSelected = false,
+            isHighlighted = false,
+            isNextActive = false,
+            isFadingOut = false,
+            fadeStartTime = null,
+            context = 'default'
+        } = options;
+
+        const cacheConfig = GameConfig?.constants?.performance?.cardCache;
+
+        // 캐싱 활성화 여부 확인
+        if (cacheConfig?.enabled && this.cacheEnabled && cacheConfig?.cacheStaticElements) {
+            try {
+                this.renderCardWithCache(ctx, card, x, y, width, height, options);
+                return;
+            } catch (error) {
+                console.warn('[CardRenderer] Cache render failed, falling back to direct render:', error);
+                this.cacheErrors++;
+
+                const safetyConfig = GameConfig?.constants?.performance?.safety;
+                const maxErrors = safetyConfig?.maxCacheErrors || 5;
+
+                if (this.cacheErrors >= maxErrors) {
+                    console.error(`[CardRenderer] Too many cache errors (${this.cacheErrors}), disabling caching`);
+                    this.disableCaching();
+                }
+
+                // 폴백: 직접 렌더링
+                this.renderCardDirect(ctx, card, x, y, width, height, options);
+            }
+        } else {
+            // 캐싱 비활성화: 직접 렌더링
+            this.renderCardDirect(ctx, card, x, y, width, height, options);
+        }
+    }
+
+    // 직접 렌더링 (기존 로직)
+    renderCardDirect(ctx, card, x, y, width, height, options = {}) {
         const {
             isSelected = false,
             isHighlighted = false,
@@ -39,6 +132,112 @@ class CardRenderer {
         this.drawElementEmoji(ctx, card, x, y, width, height, context);
 
         ctx.restore();
+    }
+
+    // 캐싱을 사용한 렌더링
+    renderCardWithCache(ctx, card, x, y, width, height, options = {}) {
+        const {
+            isSelected = false,
+            isHighlighted = false,
+            isNextActive = false,
+            isFadingOut = false,
+            fadeStartTime = null,
+            context = 'default'
+        } = options;
+
+        const langSelect = document.getElementById('languageSelect');
+        const currentLang = langSelect ? langSelect.value : 'ko';
+
+        // 캐시 키 생성 (ID + 크기 + 언어 + context)
+        const cacheKey = `${card.id}_${width}x${height}_${currentLang}_${context}`;
+
+        // 캐시에서 찾기
+        let cachedStatic = this.staticCache.get(cacheKey);
+
+        // 캐시가 없거나, 캐시 크기 제한 초과 시 생성
+        const cacheConfig = GameConfig?.constants?.performance?.cardCache;
+        const maxCacheSize = cacheConfig?.maxSize || 50;
+
+        if (!cachedStatic) {
+            // LRU 캐시: 크기 초과 시 가장 오래된 항목 제거
+            if (this.staticCache.size >= maxCacheSize) {
+                const firstKey = this.staticCache.keys().next().value;
+                this.staticCache.delete(firstKey);
+            }
+
+            // 정적 요소를 오프스크린 캔버스에 렌더링
+            cachedStatic = this.createStaticCache(card, width, height, context);
+            this.staticCache.set(cacheKey, cachedStatic);
+        }
+
+        ctx.save();
+
+        // 1단계: 캐시된 정적 요소 그리기
+        ctx.drawImage(cachedStatic, x, y);
+
+        // 2단계: 동적 요소 그리기 (매번 새로 그림)
+        this.drawDynamicElements(ctx, card, x, y, width, height, options);
+
+        ctx.restore();
+    }
+
+    // 정적 요소 캐시 생성
+    createStaticCache(card, width, height, context) {
+        // 오프스크린 캔버스 생성
+        const offscreen = new OffscreenCanvas(width, height);
+        const offCtx = offscreen.getContext('2d');
+
+        // 정적 요소 렌더링
+        // 1. 배경 (highlight 효과 없는 기본 배경)
+        this.drawCardBackground(offCtx, card, 0, 0, width, height, false, context);
+
+        // 2. 카드 내용 (이름, 타입, 설명 - 스탯 제외)
+        this.drawStaticCardContent(offCtx, card, 0, 0, width, height, context);
+
+        // 3. 속성 라벨
+        this.drawElementLabel(offCtx, card, 0, 0, width, height, context);
+
+        // 4. 속성 이모지
+        this.drawElementEmoji(offCtx, card, 0, 0, width, height, context);
+
+        return offscreen;
+    }
+
+    // 동적 요소 렌더링 (캐싱하지 않음)
+    drawDynamicElements(ctx, card, x, y, width, height, options) {
+        const {
+            isSelected = false,
+            isHighlighted = false,
+            isNextActive = false,
+            isFadingOut = false,
+            fadeStartTime = null,
+            context = 'default'
+        } = options;
+
+        // 1. Highlight 효과 (배경 색상 조정)
+        if (isHighlighted || isNextActive) {
+            const elementConfig = GameConfig.elements[card.element];
+            let bgColor = elementConfig ? elementConfig.color : '#666';
+
+            if (context === 'runtime' && !this.style.cardColors.enlargedHighlight) {
+                // 확대 카드는 기본 색상 유지
+            } else {
+                bgColor = ColorUtils.lighten(bgColor, this.style.cardColors.handHighlightFactor);
+            }
+
+            // 약간 투명한 오버레이로 highlight 표현
+            ctx.fillStyle = bgColor;
+            ctx.globalAlpha = 0.2;
+            this.roundRect(ctx, x, y, width, height, this.style.borderRadius);
+            ctx.fill();
+            ctx.globalAlpha = 1.0;
+        }
+
+        // 2. 테두리 (선택/활성 효과)
+        this.drawCardBorder(ctx, card, x, y, width, height, isSelected, isNextActive, isFadingOut, fadeStartTime);
+
+        // 3. 동적 스탯 (buffedPower, modifiedAccuracy 등)
+        this.drawDynamicCardStats(ctx, card, x, y, width, height, context);
     }
 
     // 카드 배경 그리기
@@ -445,6 +644,44 @@ class CardRenderer {
                 this.drawTextWithOutline(ctx, `${emoji}${spacing}${formattedValue}`, positions[index], statsY);
             }
         });
+    }
+
+    // ✅ Phase 1.1: 정적 카드 내용 그리기 (캐싱용 - 스탯 제외)
+    drawStaticCardContent(ctx, card, x, y, width, height, context = 'default') {
+        // 폰트 크기 계산
+        const emojiSize = Math.floor(height * this.style.fontRatio.emoji);
+        const nameSize = Math.floor(height * this.style.fontRatio.name);
+        const typeSize = Math.floor(height * this.style.fontRatio.type);
+        const descSize = Math.floor(height * this.style.fontRatio.description);
+
+        // 위치 계산
+        const centerX = x + width / 2;
+        const emojiY = y + height * this.style.layout.emoji.y;
+        const nameY = y + height * this.style.layout.name.y;
+        const typeY = y + height * this.style.layout.type.y;
+        const descY = y + height * this.style.layout.description.y;
+
+        // 카드 종류 이모지
+        this.drawTypeEmoji(ctx, card, centerX, emojiY, emojiSize);
+
+        // 카드 이름
+        this.drawCardName(ctx, card, centerX, nameY, nameSize, width);
+
+        // 카드 타입
+        this.drawCardType(ctx, card, centerX, typeY, typeSize);
+
+        // 카드 설명 (손패, 선택화면, 확대화면에서 표시)
+        if (width >= 100) {
+            this.drawCardDescription(ctx, card, x, y, width, height, descSize);
+        }
+    }
+
+    // ✅ Phase 1.1: 동적 카드 스탯 그리기 (캐싱 안함)
+    drawDynamicCardStats(ctx, card, x, y, width, height, context = 'default') {
+        const statsSize = Math.floor(height * this.style.fontRatio.stats);
+
+        // 스탯 정보 (buffedPower, modifiedAccuracy 등)
+        this.drawCardStats(ctx, card, x, y, width, height, statsSize, context);
     }
 
     // 카드 설명 그리기 (인라인 라벨 지원)

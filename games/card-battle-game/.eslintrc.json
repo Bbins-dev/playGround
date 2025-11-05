@@ -29,6 +29,12 @@
     "DOMCardRenderer": "readonly",
     "DescriptionParser": "readonly",
     "CanvasUtils": "readonly",
-    "TimerManager": "readonly"
+    "TimerManager": "readonly",
+    "TouchOptimizer": "readonly",
+    "touchOptimizer": "readonly",
+    "ColorUtils": "readonly",
+    "TextRenderer": "readonly",
+    "BuffStatusTooltipModal": "readonly",
+    "OffscreenCanvas": "readonly"
   }
 }

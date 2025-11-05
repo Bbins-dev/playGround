@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.5.8',                        // 버전 넘버
+        number: '0.5.9',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -110,6 +110,46 @@ const GameConfig = {
                 singleRenderLoop: true,         // 단일 RAF 루프 사용 (이중 루프 방지)
                 stopWhenIdle: false,            // 유휴 상태 중지 비활성화 (안정성 우선)
                 idleTimeout: 100                // 유휴 판단 시간 (ms)
+            },
+
+            // 카드 캔버스 캐싱 (Phase 1.1)
+            cardCache: {
+                enabled: true,                  // 카드 캐싱 활성화
+                maxSize: 50,                    // 최대 캐시 크기 (카드 개수)
+                cacheStaticElements: true,      // 정적 요소 캐싱 (배경, 테두리, 라벨 등)
+                cacheDynamicStats: false,       // 동적 스탯은 캐싱 안함 (buffedPower 등)
+                invalidateOnLanguageChange: true,   // 언어 전환 시 캐시 무효화
+                invalidateOnResize: true,       // 윈도우 리사이즈 시 캐시 무효화
+                // Note: invalidateOnForegroundRestore는 pageLifecycle.invalidateCacheOnRestore로 이동
+                preloadCommonCards: false,      // 시작 카드 미리 캐싱 (선택적)
+                fallbackOnError: true           // 캐싱 실패 시 즉시 폴백
+            },
+
+            // 터치 이벤트 최적화 (Phase 1.2)
+            touchOptimization: {
+                enabled: true,                  // 터치 최적화 활성화
+                throttleMs: 16,                 // pointermove 스로틀 간격 (~60fps)
+                throttleClick: false,           // click/tap은 스로틀 안함 (응답성 유지)
+                usePassiveListeners: true       // passive 리스너 사용
+            },
+
+            // DOM 업데이트 최적화 (Phase 1.3)
+            domOptimization: {
+                enabled: true,                  // DOM 최적화 활성화
+                useDiffing: true,               // 변경된 요소만 업데이트
+                useDocumentFragment: true,      // DocumentFragment로 배칭
+                batchUpdates: true,             // 여러 업데이트를 한 번에 적용
+                fallbackOnError: true           // Diff 실패 시 전체 재생성
+            },
+
+            // 안전 장치 (Phase 1.4)
+            safety: {
+                maxCacheErrors: 5,              // 5회 이상 캐시 에러 시 캐싱 비활성화
+                renderStallThreshold: 500,      // 500ms 이상 렌더링 없으면 강제 렌더링
+                enableStallDetection: true,     // 렌더링 stall 감지 활성화
+                forceRerenderOnStall: true,     // Stall 감지 시 강제 재렌더링
+                disableOptimizationsOnError: true,  // 에러 발생 시 최적화 일시 비활성화
+                reEnableDelay: 100              // 최적화 재활성화 딜레이 (ms)
             }
         },
 
@@ -185,6 +225,7 @@ const GameConfig = {
         enableBattlePause: true,                // 백그라운드 시 전투 일시정지
         restoreDelay: 100,                      // 포그라운드 복귀 시 복원 딜레이 (ms)
         forceRerender: true,                    // 포그라운드 복귀 시 Canvas 강제 재렌더링
+        invalidateCacheOnRestore: false,        // 포그라운드 복귀 시 카드 캐시 무효화 (기본 꺼둠, 성능 우선)
         logVisibilityChanges: true,             // visibilitychange 이벤트 로그 (디버깅용 활성화)
         handlePageShow: true,                   // pageshow 이벤트 처리 (bfcache 대응)
         handlePageHide: true                    // pagehide 이벤트 처리
