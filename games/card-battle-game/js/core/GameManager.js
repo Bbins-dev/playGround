@@ -296,6 +296,9 @@ class GameManager {
         // 오디오 시스템 초기화 (가장 먼저)
         this.audioSystem = new AudioSystem();
 
+        // ✅ AudioSystem에 GameManager 참조 주입 (게임 상태 검증용)
+        this.audioSystem.setGameManager(this);
+
         // 볼륨 조절 시스템 초기화 (AudioSystem 다음)
         this.volumeControl = new VolumeControl(this);
 
@@ -926,6 +929,11 @@ class GameManager {
     // 플레이어 승리 처리
     handlePlayerVictory() {
         try {
+            // ✅ BGM 스택 클리어 (전투 종료로 이전 BGM 무효화)
+            if (this.audioSystem) {
+                this.audioSystem.clearBGMStack();
+            }
+
             // 승리 BGM 재생
             if (this.audioSystem) {
                 this.audioSystem.stopBGM(true);
@@ -1007,6 +1015,11 @@ class GameManager {
     handlePlayerDefeat() {
         try {
             this.changeGameState('gameOver');
+
+            // ✅ BGM 스택 클리어 (전투 종료로 이전 BGM 무효화)
+            if (this.audioSystem) {
+                this.audioSystem.clearBGMStack();
+            }
 
             // 패배 BGM 재생
             if (this.audioSystem) {
