@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.5.6',                        // 버전 넘버
+        number: '0.5.7',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -3223,6 +3223,49 @@ const GameConfig = {
                         }
                     ]
                 },
+                50: {
+                    deckPool: [
+                        {
+                            name: 'deck1',  // 기존 덱 정확히 유지
+                            cards: [
+                                { id: 'taunt', count: 1 },             // 도발
+                                { id: 'oblivion_draught', count: 1 },  // 망각제
+                                { id: 'chain_reaction', count: 1 },    // 연쇄 반응
+                                { id: 'poison_needle', count: 1 },     // 독침
+                                { id: 'toxic_gas', count: 1 },         // 유독가스
+                                { id: 'poison_mutation', count: 1 },   // 맹독변성
+                                { id: 'toxic_blast', count: 1 },       // 맹독 폭발
+                                { id: 'mirror_reaction', count: 1 },   // 거울 반응
+                                { id: 'gas_absorption', count: 1 }     // 가스 흡수
+                            ]
+                        },
+                        {
+                            name: 'deck2',  // 신규 덱 2
+                            cards: [
+                                { id: 'poison_needle', count: 1 },        // 독침
+                                { id: 'bifunctional_shield', count: 1 },  // 이관능성 방패
+                                { id: 'poison_fang', count: 5 },          // 독 이빨 x5
+                                { id: 'mirror_reaction', count: 1 },      // 거울 반응
+                                { id: 'gas_absorption', count: 1 }        // 가스 흡수
+                            ]
+                        },
+                        {
+                            name: 'deck3',  // 신규 덱 3
+                            cards: [
+                                { id: 'sticky_liquid', count: 1 },      // 끈끈한 액체
+                                { id: 'toxic_gas', count: 1 },          // 유독가스
+                                { id: 'liquid_coating', count: 1 },     // 액체 코팅
+                                { id: 'sulfur_spring', count: 1 },      // 유황 온천
+                                { id: 'inhibitor', count: 1 },          // 억제제
+                                { id: 'poison_needle', count: 1 },      // 독침
+                                { id: 'chain_reaction', count: 1 },     // 연쇄 반응
+                                { id: 'poison_throw', count: 1 },       // 독극물 투척
+                                { id: 'poison_mutation', count: 1 },    // 맹독 변성
+                                { id: 'gas_absorption', count: 1 }      // 가스 흡수
+                            ]
+                        }
+                    ]
+                },
                 51: {
                     deckPool: [
                         {
@@ -5327,6 +5370,13 @@ const GameConfig = {
             nameModal: 'nameModal',         // 이름 입력 모달
             victoryModal: 'victoryModal',   // 승리 모달
             gameOver: 'gameOver'            // 게임 오버
+        },
+
+        // 게임 상태별 예상 BGM 매핑 (BGM 복원 검증용)
+        stateBGMMapping: {
+            'menu': 'mainMenu',                          // 메인 메뉴
+            'battle': ['normalBattle', 'bossBattle'],    // 전투 중 (일반/보스)
+            'gameOver': ['gameOver', 'victoryModal']     // 게임 종료 (패배/승리)
         },
 
         // 보스 스테이지 판정 규칙
