@@ -1509,6 +1509,9 @@ class VictoryDefeatModal {
         this.updateCardSelection(-1); // 모든 선택 해제
         this.hideSelectedCardDetail(); // 선택된 카드 상세 정보 숨김
 
+        // ✅ FIX: 손패 확인 버튼들 숨기기 (상태 누수 방지)
+        this.hideHandConfirmationButtons();
+
         // 보상 카드 3개 다시 표시
         if (this.victoryCardRewards) {
             this.victoryCardRewards.classList.remove('hidden');
@@ -1550,6 +1553,9 @@ class VictoryDefeatModal {
 
         // 확대창 숨기기
         this.hideSelectedHandCardDetail();
+
+        // ✅ FIX: 손패 확인 버튼들 숨기기 (상태 누수 방지)
+        this.hideHandConfirmationButtons();
 
         // 조회 전용 모드였다면 기본 버튼으로 돌아감
         if (this.viewOnlyMode) {
