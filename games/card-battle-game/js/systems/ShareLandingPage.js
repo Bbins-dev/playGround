@@ -363,6 +363,7 @@ class ShareLandingPage {
                 const displayWidth = img.width * scale;
                 const displayHeight = img.height * scale;
 
+                // width와 height를 모두 명시 (Flexbox의 강제 크기 조정 방지)
                 this.landingCanvas.style.width = `${displayWidth}px`;
                 this.landingCanvas.style.height = `${displayHeight}px`;
 
