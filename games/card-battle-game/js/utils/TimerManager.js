@@ -7,14 +7,25 @@ class TimerManager {
         this.gameSpeed = 1; // 전역 게임 속도 배율 (1=보통, 2=2배속, 3=3배속, 4=4배속)
         // GameConfig가 로드되면 값을 가져오고, 없으면 기본값 사용
         this.minTimingThreshold = (typeof GameConfig !== 'undefined' && GameConfig?.gameSpeed?.minTimingThreshold) || 50;
+
+        // 속도 곡선 - 고속에서 더 공격적인 배율 적용
+        this.speedCurve = {
+            1: 1.0,    // 느림 (실제 2x 버튼)
+            2: 2.0,
+            3: 3.0,    // 보통 (실제 3x 버튼)
+            4: 4.0,
+            5: 5.0,    // 빠름 (실제 5x 버튼)
+            6: 7.5,    // (미사용)
+            7: 10.0    // 매우빠름 (실제 7x 버튼) - 초공격적 배율
+        };
     }
 
     /**
      * 게임 속도 설정
-     * @param {number} speed - 속도 배율 (1~5)
+     * @param {number} speed - 속도 배율 (1~7)
      */
     setGameSpeed(speed) {
-        this.gameSpeed = Math.max(1, Math.min(5, speed)); // 1~5 범위로 제한 (매우빠름 지원)
+        this.gameSpeed = Math.max(1, Math.min(7, speed)); // 1~7 범위로 제한 (초고속 지원)
     }
 
     /**
@@ -29,12 +40,14 @@ class TimerManager {
             return this.minTimingThreshold;
         }
 
-        const adjusted = Math.round(baseDelay / this.gameSpeed);
+        // speedCurve를 사용하여 효과적인 속도 계산
+        const effectiveSpeed = this.speedCurve[this.gameSpeed] || this.gameSpeed;
+        const adjusted = Math.round(baseDelay / effectiveSpeed);
         const result = Math.max(this.minTimingThreshold, adjusted);
 
         // 극단적으로 빠른 경우 경고
         if (result === this.minTimingThreshold && baseDelay > this.minTimingThreshold * 2) {
-            console.warn(`[TimerManager] 타이밍이 너무 빨라짐: ${baseDelay}ms → ${result}ms (속도: ${this.gameSpeed}x)`);
+            console.warn(`[TimerManager] 타이밍이 너무 빨라짐: ${baseDelay}ms → ${result}ms (속도: ${this.gameSpeed}x, 실제: ${effectiveSpeed}x)`);
         }
 
         return result;
