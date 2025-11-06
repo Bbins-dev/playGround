@@ -4773,6 +4773,7 @@ const GameConfig = {
 
         // 플레이어 이름 입력 모달 - 간단한 입력을 위한 적당한 크기
         playerName: {
+            topPosition: '15vh',  // 모바일 키보드 대응: 상단에서 15% 위치
             width: 550,      // 73% of canvas width
             height: 500,     // 42% of canvas height
             padding: 40
