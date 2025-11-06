@@ -186,10 +186,11 @@ class UIManager {
                 // 클릭된 버튼에 active 클래스 추가
                 e.target.classList.add('active');
 
-                // 속도 값 추출 - 버튼 ID 기반 (다국어 독립적)
+                // 속도 값 추출 - GameConfig 매핑 테이블 사용 (Configuration-Driven)
                 // ID 형식: "speed-1x", "speed-2x", "speed-3x", "speed-5x"
                 const buttonId = e.target.id;
-                const speed = parseInt(buttonId.replace('speed-', '').replace('x', ''));
+                const speed = GameConfig?.constants?.speedButtonMapping?.[buttonId]
+                    || parseInt(buttonId.replace('speed-', '').replace('x', ''));  // fallback
 
                 // GameManager를 통해 통일된 속도 설정
                 this.gameManager.setGameSpeed(speed);
@@ -1077,9 +1078,15 @@ class UIManager {
         const speedButtons = document.querySelectorAll('.speed-btn');
         speedButtons.forEach(btn => btn.classList.remove('active'));
 
-        const targetBtn = document.getElementById(`speed-${speed}x`);
-        if (targetBtn) {
-            targetBtn.classList.add('active');
+        // 역매핑: 속도값 → 버튼 ID 찾기
+        const mapping = GameConfig?.constants?.speedButtonMapping || {};
+        const buttonId = Object.keys(mapping).find(id => mapping[id] === speed);
+
+        if (buttonId) {
+            const targetBtn = document.getElementById(buttonId);
+            if (targetBtn) {
+                targetBtn.classList.add('active');
+            }
         }
     }
 
