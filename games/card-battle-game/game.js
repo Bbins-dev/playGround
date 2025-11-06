@@ -282,8 +282,6 @@ class CardBattleGame {
      * 메인 메뉴 버튼 이벤트 리스너 설정
      */
     setupMenuButtonListeners() {
-        console.log('[DEBUG setupMenuButtonListeners] 함수 진입');
-
         // "새 게임 시작" 버튼
         const startGameBtn = document.getElementById('start-game-btn');
         if (startGameBtn && this.gameManager) {
@@ -303,9 +301,7 @@ class CardBattleGame {
         }
 
         // 메뉴 버튼 상태 업데이트 (세이브 데이터 체크)
-        console.log('[DEBUG setupMenuButtonListeners] updateMenuButtonStates 호출 직전');
         this.updateMenuButtonStates();
-        console.log('[DEBUG setupMenuButtonListeners] updateMenuButtonStates 호출 직후');
 
         // 메인 메뉴가 표시될 때마다 버튼 상태 갱신하도록 MutationObserver 설정
         this.setupMenuButtonObserver();
@@ -315,8 +311,6 @@ class CardBattleGame {
      * 메인 메뉴 표시 감지 및 버튼 상태 자동 업데이트
      */
     setupMenuButtonObserver() {
-        console.log('[DEBUG setupMenuButtonObserver] Observer 설정 시작');
-
         const targetNode = document.body;
         const config = { attributes: true, attributeFilter: ['data-game-state'] };
 
@@ -324,10 +318,8 @@ class CardBattleGame {
             for (const mutation of mutationsList) {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'data-game-state') {
                     const gameState = document.body.getAttribute('data-game-state');
-                    console.log('[DEBUG Observer] data-game-state 변경됨:', gameState);
 
                     if (gameState === 'menu') {
-                        console.log('[DEBUG Observer] 메뉴 상태 감지 - updateMenuButtonStates 호출');
                         // 약간의 딜레이 후 업데이트 (DOM 렌더링 완료 대기)
                         setTimeout(() => {
                             this.updateMenuButtonStates();
@@ -339,7 +331,6 @@ class CardBattleGame {
 
         const observer = new MutationObserver(callback);
         observer.observe(targetNode, config);
-        console.log('[DEBUG setupMenuButtonObserver] Observer 설정 완료');
     }
 
     /**
@@ -363,38 +354,23 @@ class CardBattleGame {
      * 메뉴 버튼 상태 업데이트 (세이브 데이터 유무에 따라)
      */
     updateMenuButtonStates() {
-        console.log('[DEBUG updateMenuButtonStates] 함수 진입');
-
         const config = GameConfig?.constants?.saveSystem;
-        console.log('[DEBUG updateMenuButtonStates] saveSystem enabled:', config?.enabled);
-        if (!config?.enabled) {
-            console.log('[DEBUG updateMenuButtonStates] Save system 비활성화 - 종료');
-            return;
-        }
+        if (!config?.enabled) return;
 
         const continueGameBtn = document.getElementById('continue-game-btn');
-        console.log('[DEBUG updateMenuButtonStates] 버튼 요소:', !!continueGameBtn);
-        if (!continueGameBtn) {
-            console.log('[DEBUG updateMenuButtonStates] 버튼 없음 - 종료');
-            return;
-        }
+        if (!continueGameBtn) return;
 
         // GameManager의 public API를 사용하여 세이브 데이터 검증
-        console.log('[DEBUG updateMenuButtonStates] gameManager 존재:', !!this.gameManager);
-        console.log('[DEBUG updateMenuButtonStates] hasSaveData 메서드:', typeof this.gameManager?.hasSaveData);
         const hasSaveData = this.gameManager?.hasSaveData() || false;
-        console.log('[DEBUG updateMenuButtonStates] hasSaveData 결과:', hasSaveData);
 
         if (hasSaveData) {
             // 세이브 있음 & 검증 통과: 활성화
             continueGameBtn.disabled = false;
             continueGameBtn.classList.remove('disabled');
-            console.log('[DEBUG updateMenuButtonStates] 버튼 활성화됨');
         } else {
             // 세이브 없음 또는 손상됨: 비활성화
             continueGameBtn.disabled = true;
             continueGameBtn.classList.add('disabled');
-            console.log('[DEBUG updateMenuButtonStates] 버튼 비활성화됨');
         }
     }
 
