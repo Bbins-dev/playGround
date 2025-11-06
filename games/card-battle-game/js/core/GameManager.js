@@ -717,6 +717,11 @@ class GameManager {
             this.mainMenu.show();
         }
 
+        // 메인 메뉴 표시 완료 후 버튼 상태 업데이트 (이어서하기 버튼 활성화/비활성화)
+        if (window.cardBattleGame) {
+            window.cardBattleGame.updateMenuButtonStates();
+        }
+
         // 스마트 렌더링: 화면 전환 시 렌더링 요청 (여러 프레임)
         this.needsRender = true;
         for (let i = 0; i < 5; i++) {
@@ -2040,44 +2045,26 @@ class GameManager {
      * @returns {boolean} 유효한 세이브 데이터 존재 여부
      */
     hasSaveData() {
-        console.log('[DEBUG] hasSaveData() 호출됨');
-
         const config = GameConfig?.constants?.saveSystem;
-        console.log('[DEBUG] saveSystem config:', config);
-
-        if (!config?.enabled) {
-            console.log('[DEBUG] Save system 비활성화');
-            return false;
-        }
+        if (!config?.enabled) return false;
 
         try {
             // localStorage에서 세이브 데이터 가져오기
             const savedData = localStorage.getItem(config.primarySaveKey);
-            console.log('[DEBUG] localStorage에서 읽은 데이터:', savedData ? '있음' : '없음');
-
             if (!savedData) return false;
 
             // 세이브 파일 검증 (체크섬, JSON 파싱, 데이터 무결성)
-            console.log('[DEBUG] _decodeSaveData 호출 시작');
             const decoded = this._decodeSaveData(savedData);
-            console.log('[DEBUG] _decodeSaveData 결과:', decoded);
 
             // 필수 데이터 존재 여부 확인
             if (!decoded || !decoded.player || !decoded.currentStage) {
-                console.log('[DEBUG] 필수 데이터 누락:', {
-                    decoded: !!decoded,
-                    player: !!decoded?.player,
-                    currentStage: !!decoded?.currentStage
-                });
                 return false;
             }
 
             // 검증 통과
-            console.log('[DEBUG] 세이브 데이터 검증 통과!');
             return true;
 
         } catch (error) {
-            console.error('[DEBUG] hasSaveData() 예외 발생:', error);
             if (config?.logSaveErrors) {
                 console.warn('[SaveSystem] 세이브 검증 실패:', error);
             }
