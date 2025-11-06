@@ -682,6 +682,9 @@ class GameManager {
     }
 
     showMainMenu() {
+        console.log('[DEBUG] ========== showMainMenu() 진입 ==========');
+        console.log('[DEBUG] showMainMenu called at:', new Date().toISOString());
+
         // 게임 상태를 메뉴로 설정
         this.gameState = 'menu';
         this.currentScreen = this.mainMenu;
