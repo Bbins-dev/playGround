@@ -427,6 +427,26 @@ class MainMenu {
             noticeY += lineSpacing;
         }
 
+        // === 세이브 안내 렌더링 (볼륨 안내 아래, 절반 간격) ===
+        noticeY += lineSpacing * 0.5; // 15px 정도 간격 (30px의 절반)
+
+        const saveNoticeLine1 = (typeof getI18nText === 'function') ?
+            getI18nText('auto_battle_card_game.main_menu.save_notice_line1') || '' : '';
+        const saveNoticeLine2 = (typeof getI18nText === 'function') ?
+            getI18nText('auto_battle_card_game.main_menu.save_notice_line2') || '' : '';
+
+        // 세이브 안내 1줄 렌더링
+        if (saveNoticeLine1) {
+            ctx.fillText(saveNoticeLine1, centerX, noticeY);
+            noticeY += lineSpacing;
+        }
+
+        // 세이브 안내 2줄 렌더링
+        if (saveNoticeLine2) {
+            ctx.fillText(saveNoticeLine2, centerX, noticeY);
+            noticeY += lineSpacing;
+        }
+
         // === 비즈니스 정보 렌더링 (독립적인 위치 - 저작권 바로 위, 원래 위치) ===
         const businessStartY = creditsY - contactConfig.position.businessOffsetY;
 
@@ -434,9 +454,9 @@ class MainMenu {
         ctx.font = `${GameConfig.fonts?.weights?.bold || 'bold'} ${contactConfig.style.labelFontSize}px ${GameConfig.fonts?.families?.main || 'Arial'}`;
         ctx.fillText(businessLabel, centerX, businessStartY);
 
-        // 이메일 주소
+        // 이메일 주소 (레이블과 가깝게 배치)
         ctx.font = `${GameConfig.fonts?.weights?.normal || 'normal'} ${contactConfig.style.emailFontSize}px ${GameConfig.fonts?.families?.main || 'Arial'}`;
-        ctx.fillText(emailText, centerX, businessStartY + lineSpacing);
+        ctx.fillText(emailText, centerX, businessStartY + lineSpacing * 0.5);
 
         ctx.restore();
     }

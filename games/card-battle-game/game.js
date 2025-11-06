@@ -273,6 +273,93 @@ class CardBattleGame {
                 window.location.href = '../../index.html';
             });
         }
+
+        // 메인 메뉴 버튼 이벤트 리스너 설정
+        this.setupMenuButtonListeners();
+    }
+
+    /**
+     * 메인 메뉴 버튼 이벤트 리스너 설정
+     */
+    setupMenuButtonListeners() {
+        // "새 게임 시작" 버튼
+        const startGameBtn = document.getElementById('start-game-btn');
+        if (startGameBtn && this.gameManager) {
+            startGameBtn.addEventListener('click', () => {
+                if (this.gameManager.switchScreen) {
+                    this.gameManager.switchScreen('cardSelection');
+                }
+            });
+        }
+
+        // "이어서 하기" 버튼
+        const continueGameBtn = document.getElementById('continue-game-btn');
+        if (continueGameBtn && this.gameManager) {
+            continueGameBtn.addEventListener('click', () => {
+                this.handleContinueGame();
+            });
+        }
+
+        // 메뉴 버튼 상태 업데이트 (세이브 데이터 체크)
+        this.updateMenuButtonStates();
+    }
+
+    /**
+     * "이어서 하기" 버튼 클릭 핸들러
+     */
+    handleContinueGame() {
+        if (!this.gameManager) return;
+
+        const success = this.gameManager.tryLoadFromLocalStorage();
+
+        if (!success) {
+            // 로드 실패 시 알림 (언어팩 사용)
+            const message = window.getI18nText?.('auto_battle_card_game.ui.no_save_data') || '저장된 게임이 없습니다';
+            alert(message);
+            // 버튼 상태 즉시 업데이트 (비활성화)
+            this.updateMenuButtonStates();
+        }
+    }
+
+    /**
+     * 메뉴 버튼 상태 업데이트 (세이브 데이터 유무에 따라)
+     */
+    updateMenuButtonStates() {
+        const config = GameConfig?.constants?.saveSystem;
+        if (!config?.enabled) return;
+
+        const continueGameBtn = document.getElementById('continue-game-btn');
+        if (!continueGameBtn) return;
+
+        // 세이브 데이터 체크 및 검증
+        const savedData = localStorage.getItem(config.primarySaveKey);
+        let hasSaveData = false;
+
+        if (savedData) {
+            // 세이브 파일 검증 (체크섬, JSON 파싱, 데이터 무결성)
+            try {
+                const decoded = this.gameManager._decodeSaveData(savedData);
+                if (decoded && decoded.player && decoded.currentStage) {
+                    hasSaveData = true;  // 검증 통과
+                }
+            } catch (error) {
+                // 손상된 세이브 - 비활성화 유지
+                hasSaveData = false;
+                if (config.logSaveErrors) {
+                    console.warn('[SaveSystem] 손상된 세이브 파일 감지:', error);
+                }
+            }
+        }
+
+        if (hasSaveData) {
+            // 세이브 있음 & 검증 통과: 활성화
+            continueGameBtn.disabled = false;
+            continueGameBtn.classList.remove('disabled');
+        } else {
+            // 세이브 없음 또는 손상됨: 비활성화
+            continueGameBtn.disabled = true;
+            continueGameBtn.classList.add('disabled');
+        }
     }
 
     // 에러 메시지 표시
