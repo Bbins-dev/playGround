@@ -65,6 +65,10 @@
     "credits": {
       "text": "© {year} {company}"
     },
+    "main_menu": {
+      "volume_mute_notice": "다른 동영상 플레이어 혹은 음악플레이어와 함께 플레이 하시려면 위 볼륨 설정버튼을 클릭하여 음소거를 해주세요.",
+      "business_contact": "비즈니스 연락 이메일"
+    },
     "page_title": "자동전투 카드대전 - BinBox Games",
     "description": "턴 기반 자동 전투 카드 게임! 카드 순서를 전략적으로 배치하고 5가지 속성의 상성을 활용하여 승리하세요!",
     "genre": "전략",
