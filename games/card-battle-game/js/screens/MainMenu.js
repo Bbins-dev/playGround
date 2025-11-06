@@ -247,16 +247,58 @@ class MainMenu {
         });
 
 
-        // 부제목 (더 밝게)
-        ctx.fillStyle = GameConfig.colors?.ui?.text?.secondary || '#E0E0E0';
+        // 부제목 (5속성 색상 적용)
         ctx.font = `${GameConfig.fonts?.weights?.bold || 'bold'} ${subtitleConfig.size}px ${GameConfig.fonts?.families?.main || 'Arial'}`;
         const gameDescription = (typeof getI18nText === 'function') ?
             getI18nText('auto_battle_card_game.subtitle') || '5속성 자동전투 카드게임' : '5속성 자동전투 카드게임';
-        ctx.strokeStyle = GameConfig.colors?.ui?.text?.outline || '#000000';
-        ctx.lineWidth = 1;
         const subtitleY = titleY + subtitleConfig.offsetY;
-        ctx.strokeText(gameDescription, centerX, subtitleY);
-        ctx.fillText(gameDescription, centerX, subtitleY);
+
+        // 속성별 색상 배열 (순서: fire, water, electric, poison, normal)
+        const elementColors = ['fire', 'water', 'electric', 'poison', 'normal'];
+
+        // "|"로 분리하여 각 단어에 색상 적용
+        if (gameDescription.includes('|')) {
+            const words = gameDescription.split('|');
+            ctx.textAlign = 'center';
+
+            // 현재 언어 확인 (일본어는 띄어쓰기 없음)
+            const currentLang = window.i18n?.currentLanguage || 'ko';
+            const separator = (currentLang === 'ja') ? '' : ' ';
+
+            // 전체 텍스트 길이 계산
+            const fullText = words.join(separator);
+            const fullWidth = ctx.measureText(fullText).width;
+            let currentX = centerX - fullWidth / 2;
+
+            words.forEach((word, index) => {
+                const elementType = elementColors[index] || 'normal';
+                const color = GameConfig.elements?.[elementType]?.color || '#E0E0E0';
+
+                // 단어 렌더링
+                ctx.fillStyle = color;
+                ctx.strokeStyle = GameConfig.colors?.ui?.text?.outline || '#000000';
+                ctx.lineWidth = 1;
+
+                const wordWidth = ctx.measureText(word).width;
+                ctx.textAlign = 'left';
+                ctx.strokeText(word, currentX, subtitleY);
+                ctx.fillText(word, currentX, subtitleY);
+
+                // 다음 단어 위치 계산 (언어별 띄어쓰기 적용)
+                currentX += wordWidth;
+                if (separator && index < words.length - 1) {
+                    currentX += ctx.measureText(separator).width;
+                }
+            });
+        } else {
+            // 구분자가 없으면 기본 렌더링
+            ctx.textAlign = 'center';
+            ctx.fillStyle = GameConfig.colors?.ui?.text?.secondary || '#E0E0E0';
+            ctx.strokeStyle = GameConfig.colors?.ui?.text?.outline || '#000000';
+            ctx.lineWidth = 1;
+            ctx.strokeText(gameDescription, centerX, subtitleY);
+            ctx.fillText(gameDescription, centerX, subtitleY);
+        }
 
         ctx.restore();
     }
