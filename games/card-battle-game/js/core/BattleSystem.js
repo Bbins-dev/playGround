@@ -1936,6 +1936,12 @@ class BattleSystem {
 
     // HP 업데이트 애니메이션 처리 (순차 업데이트 적용)
     async updateHPWithAnimation(cardUser = null, selfDamageProcessed = false) {
+        // 안전한 코딩: player/enemy null 체크 (Configuration-Driven 원칙)
+        if (!this.player || !this.enemy) {
+            console.warn('[BattleSystem] updateHPWithAnimation: player 또는 enemy가 null입니다');
+            return;
+        }
+
         // 모든 플레이어의 UI를 항상 업데이트 (KISS 원칙)
         // updateAfterDamage 내부에서 실제 변경된 값만 업데이트하므로 성능 영향 없음
         const updatePromises = [
