@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.5.12',                        // 버전 넘버
+        number: '0.5.13',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -76,6 +76,15 @@ const GameConfig = {
             rewardCardCount: 4,                 // 보상 카드 갯수
             allowReroll: true,                  // Re-roll 기능 활성화 여부
             maxRerollsPerVictory: 1             // 승리당 최대 Re-roll 횟수
+        },
+
+        // 속도 버튼 매핑 (버튼 ID → 실제 속도값)
+        speedButtonMapping: {
+            'speed-1x': 2,                      // "느림" 버튼 → 2배속
+            'speed-2x': 3,                      // "보통" 버튼 → 3배속
+            'speed-3x': 5,                      // "빠름" 버튼 → 5배속
+            'speed-4x': 6,                      // (미사용) → 6배속
+            'speed-5x': 7                       // "매우빠름" 버튼 → 7배속
         },
 
         // 성능 최적화 설정
@@ -3691,8 +3700,8 @@ const GameConfig = {
         '3x': 3.0,
         '4x': 4.0,   // 빠름
         '5x': 5.0,   // 매우빠름 - 카드 거의 즉시 사라지는 수준
-        minTimingThreshold: 50,  // 최소 타이밍 임계값 (ms) - 브라우저 일관성 보장
-        maxSpeed: 5              // 최대 속도 배율 (매우빠름 지원)
+        minTimingThreshold: 30,  // 최소 타이밍 임계값 (ms) - 초고속 지원
+        maxSpeed: 7              // 최대 속도 배율 (초고속 지원)
     },
 
     // UI 위치 설정
