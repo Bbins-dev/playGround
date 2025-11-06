@@ -325,23 +325,39 @@ class CardBattleGame {
      * 메뉴 버튼 상태 업데이트 (세이브 데이터 유무에 따라)
      */
     updateMenuButtonStates() {
+        console.log('[DEBUG] updateMenuButtonStates 호출됨');
+        console.log('[DEBUG] GameConfig 존재:', !!window.GameConfig);
+        console.log('[DEBUG] gameManager 존재:', !!this.gameManager);
+
         const config = GameConfig?.constants?.saveSystem;
-        if (!config?.enabled) return;
+        if (!config?.enabled) {
+            console.log('[DEBUG] Save system이 비활성화되어 있음');
+            return;
+        }
 
         const continueGameBtn = document.getElementById('continue-game-btn');
-        if (!continueGameBtn) return;
+        if (!continueGameBtn) {
+            console.log('[DEBUG] continue-game-btn 요소를 찾을 수 없음');
+            return;
+        }
+
+        console.log('[DEBUG] gameManager.hasSaveData 메서드 존재:', typeof this.gameManager?.hasSaveData);
 
         // GameManager의 public API를 사용하여 세이브 데이터 검증
         const hasSaveData = this.gameManager?.hasSaveData() || false;
+
+        console.log('[DEBUG] hasSaveData 결과:', hasSaveData);
 
         if (hasSaveData) {
             // 세이브 있음 & 검증 통과: 활성화
             continueGameBtn.disabled = false;
             continueGameBtn.classList.remove('disabled');
+            console.log('[DEBUG] Continue 버튼 활성화됨');
         } else {
             // 세이브 없음 또는 손상됨: 비활성화
             continueGameBtn.disabled = true;
             continueGameBtn.classList.add('disabled');
+            console.log('[DEBUG] Continue 버튼 비활성화됨');
         }
     }
 
