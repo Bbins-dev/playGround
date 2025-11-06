@@ -151,6 +151,7 @@ class MainMenu {
         // Canvas 메뉴 렌더링 비활성화 - DOM 버튼 사용
         // this.renderMenuItems(ctx, canvas);
         // this.renderInstructions(ctx, canvas); // 조작 안내 메시지 비활성화
+        this.renderContactInfo(ctx, canvas);   // 연락처 정보 렌더링 (볼륨 안내 + 비즈니스 이메일)
         this.renderCredits(ctx, canvas);       // 제작자 정보 렌더링
 
         this.needsRedraw = false;
@@ -307,6 +308,93 @@ class MainMenu {
         ctx.globalAlpha = config.opacity;
 
         ctx.fillText(creditsText, centerX, creditsY);
+
+        ctx.restore();
+    }
+
+    // 연락처 정보 렌더링 (볼륨 안내 + 비즈니스 이메일)
+    renderContactInfo(ctx, canvas) {
+        const contactConfig = GameConfig?.mainMenu?.contactInfo;
+        if (!contactConfig?.enabled) return;
+
+        const centerX = GameConfig.canvas.width / 2;
+        const creditsConfig = GameConfig.mainMenu.creditsDisplay;
+        const creditsY = GameConfig.canvas.height + creditsConfig.offsetY;
+        const lineSpacing = contactConfig.position.lineSpacing;
+
+        // i18n 텍스트 가져오기
+        const noticeText = (typeof getI18nText === 'function') ?
+            getI18nText('auto_battle_card_game.main_menu.volume_mute_notice') || '' : '';
+        const businessLabel = (typeof getI18nText === 'function') ?
+            getI18nText('auto_battle_card_game.main_menu.business_contact') || 'Business Contact Email' : 'Business Contact Email';
+        const emailText = contactConfig.email;
+
+        ctx.save();
+        ctx.textAlign = 'center';
+        ctx.fillStyle = GameConfig.colors?.ui?.text?.primary || '#FFFFFF';
+        ctx.globalAlpha = contactConfig.style.opacity;
+
+        // === 안내 문구 렌더링 (독립적인 위치 - 훨씬 위쪽) ===
+        const noticeStartY = creditsY - contactConfig.position.noticeOffsetY;
+        ctx.font = `${GameConfig.fonts?.weights?.normal || 'normal'} ${contactConfig.style.noticeFontSize}px ${GameConfig.fonts?.families?.main || 'Arial'}`;
+
+        // 자동 줄바꿈 로직 (언어별 처리)
+        const maxWidth = contactConfig.style.noticeMaxWidth || 700;
+        const noticeLines = [];
+        const currentLang = window.i18n?.currentLanguage || 'en';
+
+        if (currentLang === 'ja') {
+            // 일본어: 글자 단위 줄바꿈 (띄어쓰기 없음)
+            let currentLine = '';
+            for (let i = 0; i < noticeText.length; i++) {
+                const char = noticeText[i];
+                const testLine = currentLine + char;
+                const metrics = ctx.measureText(testLine);
+
+                if (metrics.width > maxWidth && currentLine) {
+                    noticeLines.push(currentLine);
+                    currentLine = char;
+                } else {
+                    currentLine = testLine;
+                }
+            }
+            if (currentLine) noticeLines.push(currentLine);
+        } else {
+            // 한국어/영어: 단어 단위 줄바꿈 (공백 기준)
+            const words = noticeText.split(' ');
+            let currentLine = '';
+
+            for (const word of words) {
+                const testLine = currentLine + (currentLine ? ' ' : '') + word;
+                const metrics = ctx.measureText(testLine);
+
+                if (metrics.width > maxWidth && currentLine) {
+                    noticeLines.push(currentLine);
+                    currentLine = word;
+                } else {
+                    currentLine = testLine;
+                }
+            }
+            if (currentLine) noticeLines.push(currentLine);
+        }
+
+        // 안내 문구 여러 줄 렌더링
+        let noticeY = noticeStartY;
+        for (const line of noticeLines) {
+            ctx.fillText(line, centerX, noticeY);
+            noticeY += lineSpacing;
+        }
+
+        // === 비즈니스 정보 렌더링 (독립적인 위치 - 저작권 바로 위, 원래 위치) ===
+        const businessStartY = creditsY - contactConfig.position.businessOffsetY;
+
+        // 비즈니스 연락 레이블
+        ctx.font = `${GameConfig.fonts?.weights?.bold || 'bold'} ${contactConfig.style.labelFontSize}px ${GameConfig.fonts?.families?.main || 'Arial'}`;
+        ctx.fillText(businessLabel, centerX, businessStartY);
+
+        // 이메일 주소
+        ctx.font = `${GameConfig.fonts?.weights?.normal || 'normal'} ${contactConfig.style.emailFontSize}px ${GameConfig.fonts?.families?.main || 'Arial'}`;
+        ctx.fillText(emailText, centerX, businessStartY + lineSpacing);
 
         ctx.restore();
     }
