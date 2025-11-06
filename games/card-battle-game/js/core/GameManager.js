@@ -771,6 +771,9 @@ class GameManager {
 
     // 플레이어 이름 확정 후 처리
     onPlayerNameConfirmed(playerName) {
+        // 새 게임 시작 확정 - 이전 세이브 데이터 삭제
+        this.clearSaveData();
+
         // 플레이어 생성
         this.player = new Player(playerName, true);
 
@@ -1036,12 +1039,17 @@ class GameManager {
             this.finalizeGameStats();
             this.setDeathCause(this.determineCauseOfDeath());
 
+            // 세이브 데이터 삭제 (로그리크 - 패배 시 삭제)
+            this.clearSaveData();
+
             // 패배 모달 표시 후 메인 메뉴로 이동
             this.uiManager.showDefeatModal(() => {
                 this.showMainMenu();
             });
         } catch (error) {
             console.error('handlePlayerDefeat 에러:', error);
+            // 에러 발생 시에도 세이브 삭제 (안전 장치)
+            this.clearSaveData();
             // 에러가 있어도 모달은 표시
             this.uiManager.showDefeatModal(() => {
                 this.showMainMenu();
@@ -1755,52 +1763,275 @@ class GameManager {
     }
 
     // 게임 데이터 로드 (저장된 게임)
+    /**
+     * 게임 데이터 불러오기
+     * @param {Object|string} data - 세이브 데이터 객체 또는 인코딩된 문자열
+     * @returns {boolean} 로드 성공 여부
+     */
     loadGameData(data) {
+        const config = GameConfig?.constants?.saveSystem;
+
         try {
-            if (data && data.currentStage && data.player) {
-                this.currentStage = data.currentStage;
+            let saveData;
 
-                // 플레이어 복원
-                this.player = new Player(data.player.name, true);
-                this.player.hp = data.player.hp;
-                this.player.maxHP = data.player.maxHP;
+            // 문자열인 경우 (인코딩된 데이터)
+            if (typeof data === 'string') {
+                saveData = this._decodeSaveData(data);
+            } else {
+                // 객체인 경우 (레거시 또는 직접 전달)
+                saveData = data;
+            }
 
-                // 손패 복원
-                if (data.player.hand && this.cardManager) {
-                    this.player.hand = [];
-                    data.player.hand.forEach(cardId => {
-                        const card = this.cardManager.createCard(cardId);
-                        if (card) {
-                            this.player.hand.push(card);
-                        }
-                    });
+            if (!saveData || !saveData.currentStage || !saveData.player) {
+                throw new Error('유효하지 않은 세이브 데이터');
+            }
+
+            // 버전 체크 (선택적)
+            if (saveData.version && config?.saveVersion) {
+                if (config.logSaveErrors) {
+                    console.log(`[SaveSystem] 세이브 버전: ${saveData.version}`);
+                }
+            }
+
+            // 게임 상태 복원
+            this.currentStage = saveData.currentStage;
+
+            // 플레이어 복원
+            this.player = new Player(saveData.player.name, true);
+            this.player.hp = saveData.player.hp;
+            this.player.maxHP = saveData.player.maxHP;
+
+            // 손패 복원
+            if (saveData.player.hand && this.cardManager) {
+                this.player.hand = [];
+                saveData.player.hand.forEach(cardId => {
+                    const card = this.cardManager.createCard(cardId);
+                    if (card) {
+                        this.player.hand.push(card);
+                    }
+                });
+            }
+
+            if (config?.logSaveErrors) {
+                console.log('[SaveSystem] 게임 로드 완료 - Stage', this.currentStage);
+            }
+
+            // 다음 스테이지 시작
+            this.startStage(this.currentStage);
+            return true;
+
+        } catch (error) {
+            if (config?.logSaveErrors) {
+                console.error('[SaveSystem] 로드 실패:', error);
+            }
+            return false;
+        }
+    }
+
+    /**
+     * 인코딩된 세이브 데이터 디코딩 및 검증
+     * @param {string} encodedData - 인코딩된 세이브 문자열
+     * @returns {Object|null} 디코딩된 세이브 데이터 또는 null
+     */
+    _decodeSaveData(encodedData) {
+        const config = GameConfig?.constants?.saveSystem;
+
+        if (!encodedData) return null;
+
+        try {
+            let dataToLoad = encodedData;
+
+            // 인코딩 디코딩
+            if (config?.useEncoding) {
+                // 체크섬 검증
+                if (config.useChecksum && dataToLoad.includes('.')) {
+                    const [encoded, checksum] = dataToLoad.split('.');
+                    const calculatedChecksum = this._generateChecksum(encoded);
+
+                    if (calculatedChecksum !== checksum) {
+                        throw new Error('체크섬 불일치 - 세이브 파일이 손상되었거나 조작되었습니다');
+                    }
+
+                    dataToLoad = encoded;
                 }
 
-                // 다음 스테이지 시작
-                this.startStage(this.currentStage);
+                // Base64 디코딩
+                dataToLoad = decodeURIComponent(atob(dataToLoad));
             }
+
+            // JSON 파싱
+            return JSON.parse(dataToLoad);
+
         } catch (error) {
-            // 로드 실패시 새 게임 시작
-            this.initializeNewGame();
+            if (config?.logSaveErrors) {
+                console.error('[SaveSystem] 디코딩 실패:', error.message);
+            }
+            return null;
         }
+    }
+
+    /**
+     * localStorage에서 세이브 데이터 로드 시도
+     * @param {boolean} tryBackup - 백업 세이브 시도 여부
+     * @returns {boolean} 로드 성공 여부
+     */
+    tryLoadFromLocalStorage(tryBackup = false) {
+        const config = GameConfig?.constants?.saveSystem;
+        if (!config?.enabled) return false;
+
+        const saveKey = tryBackup ? config.backupSaveKey : config.primarySaveKey;
+        const savedData = localStorage.getItem(saveKey);
+
+        if (!savedData) {
+            if (tryBackup) {
+                if (config.logSaveErrors) {
+                    console.warn('[SaveSystem] 백업 세이브도 없음');
+                }
+                return false;
+            }
+
+            // 백업 세이브 시도
+            if (config.fallbackToBackup) {
+                if (config.logSaveErrors) {
+                    console.warn('[SaveSystem] 메인 세이브 로드 실패 - 백업 시도');
+                }
+                return this.tryLoadFromLocalStorage(true);
+            }
+
+            return false;
+        }
+
+        const success = this.loadGameData(savedData);
+
+        // 백업에서 복원 성공 시 메인 세이브도 복구
+        if (success && tryBackup) {
+            try {
+                localStorage.setItem(config.primarySaveKey, savedData);
+                if (config.logSaveErrors) {
+                    console.log('[SaveSystem] 백업에서 메인 세이브 복구 완료');
+                }
+            } catch (error) {
+                if (config.logSaveErrors) {
+                    console.error('[SaveSystem] 메인 세이브 복구 실패:', error);
+                }
+            }
+        }
+
+        return success;
     }
 
     // 게임 데이터 저장
     saveGameData() {
+        const config = GameConfig?.constants?.saveSystem;
+        if (!config?.enabled) return;
+
         try {
+            const maxStage = GameConfig?.constants?.security?.maxStageNumber || 60;  // 최대 스테이지 (단일 진실의 원천)
+
             const saveData = {
-                currentStage: this.currentStage,
+                version: config.saveVersion || '1.0.0',
+                currentStage: Math.min(this.currentStage + 1, maxStage),  // 다음 진행할 스테이지 저장 (최대값 검증)
                 player: this.player ? {
                     name: this.player.name,
-                    hp: this.player.hp,
+                    hp: Math.max(1, Math.min(this.player.hp, this.player.maxHP)),  // HP 검증 (1~maxHP)
                     maxHP: this.player.maxHP,
                     hand: this.player.hand.map(card => card.id)
                 } : null,
                 timestamp: Date.now()
             };
 
-            localStorage.setItem('cardBattleGame_save', JSON.stringify(saveData));
+            // 손패 검증
+            if (!saveData.player || !saveData.player.hand || saveData.player.hand.length === 0) {
+                throw new Error('유효하지 않은 플레이어 데이터 (손패 없음)');
+            }
+
+            let dataToSave = JSON.stringify(saveData);
+
+            // 인코딩 + 체크섬 적용
+            if (config.useEncoding) {
+                dataToSave = btoa(encodeURIComponent(dataToSave));
+
+                if (config.useChecksum) {
+                    const checksum = this._generateChecksum(dataToSave);
+                    dataToSave = dataToSave + '.' + checksum;
+                }
+            }
+
+            // 백업 세이브 생성
+            if (config.enableBackupSave) {
+                try {
+                    const oldSave = localStorage.getItem(config.primarySaveKey);
+                    if (oldSave) {
+                        localStorage.setItem(config.backupSaveKey, oldSave);
+                    }
+                } catch (backupError) {
+                    if (config.logSaveErrors) {
+                        console.warn('[SaveSystem] 백업 생성 실패:', backupError);
+                    }
+                }
+            }
+
+            // 저장
+            localStorage.setItem(config.primarySaveKey, dataToSave);
+
+            if (config.logSaveErrors) {
+                console.log('[SaveSystem] 게임 저장 완료 - Stage', this.currentStage);
+            }
         } catch (error) {
+            if (config?.logSaveErrors) {
+                console.error('[SaveSystem] 저장 실패:', error);
+            }
+            // 사용자에게 알림
+            alert('세이브 저장 실패! 브라우저 저장소 공간을 확인하세요.');
+        }
+    }
+
+    /**
+     * 간단한 체크섬 생성 (해시 함수)
+     * @param {string} str - 체크섬을 생성할 문자열
+     * @returns {string} 체크섬 값
+     */
+    _generateChecksum(str) {
+        const config = GameConfig?.constants?.saveSystem;
+        const salt = config?.salt || '';
+        const input = str + salt;
+
+        let hash = 0;
+        for (let i = 0; i < input.length; i++) {
+            hash = ((hash << 5) - hash) + input.charCodeAt(i);
+            hash = hash & hash; // 32bit 정수로 변환
+        }
+        return Math.abs(hash).toString(36);
+    }
+
+    /**
+     * 세이브 데이터 삭제 (패배 시 로그리크 시스템)
+     */
+    clearSaveData() {
+        const config = GameConfig?.constants?.saveSystem;
+        if (!config?.enabled) return;
+
+        try {
+            // 메인 세이브 삭제
+            localStorage.removeItem(config.primarySaveKey);
+
+            // 백업 세이브도 삭제
+            if (config.enableBackupSave) {
+                localStorage.removeItem(config.backupSaveKey);
+            }
+
+            if (config.logSaveErrors) {
+                console.log('[SaveSystem] 세이브 데이터 삭제 완료 (패배)');
+            }
+
+            // 메뉴 버튼 상태 즉시 업데이트 ("이어서 하기" 비활성화)
+            if (window.cardBattleGame) {
+                window.cardBattleGame.updateMenuButtonStates();
+            }
+        } catch (error) {
+            if (config?.logSaveErrors) {
+                console.error('[SaveSystem] 세이브 삭제 실패:', error);
+            }
         }
     }
 

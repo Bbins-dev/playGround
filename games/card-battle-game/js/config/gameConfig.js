@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.5.15',                        // 버전 넘버
+        number: '0.6.0',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -76,6 +76,29 @@ const GameConfig = {
             rewardCardCount: 4,                 // 보상 카드 갯수
             allowReroll: true,                  // Re-roll 기능 활성화 여부
             maxRerollsPerVictory: 1             // 승리당 최대 Re-roll 횟수
+        },
+
+        // 저장/불러오기 시스템 설정
+        saveSystem: {
+            enabled: true,                      // 저장 기능 활성화
+            saveOnRewardSelection: true,        // 카드 선택 완료 시 저장
+            saveOnStageComplete: false,         // 스테이지 클리어 즉시 저장 안함
+            saveOnReroll: false,                // 리롤 시 저장 안함 (악용 방지)
+
+            // 보안 설정
+            useEncoding: true,                  // Base64 인코딩 사용
+            useChecksum: true,                  // 체크섬 검증 사용
+            salt: 'CardBattle_v1_2025',         // 체크섬용 솔트값
+
+            // 저장 키 관리
+            primarySaveKey: 'cardBattleGame_save',
+            backupSaveKey: 'cardBattleGame_save_backup',
+            saveVersion: '1.0.0',               // 세이브 호환성 버전
+
+            // 에러 처리
+            enableBackupSave: true,             // 백업 세이브 활성화
+            fallbackToBackup: true,             // 로드 실패 시 백업 시도
+            logSaveErrors: true                 // 에러 로그 출력
         },
 
         // 속도 버튼 매핑 (버튼 ID → 실제 속도값)
@@ -169,7 +192,7 @@ const GameConfig = {
             maxHPTolerance: 50,                 // HP 초과 허용치 (힐링 오버플로우 대응)
             maxHandSizeTolerance: 5,            // 손패 크기 초과 허용치
             maxBuffValue: 100,                  // 최대 버프 수치
-            maxStageNumber: 100,                // 최대 스테이지 번호
+            maxStageNumber: 60,                 // 최대 스테이지 번호
             enableIntegrityCheck: false,        // 무결성 검사 반복 실행 비활성화 (배터리 절약)
             checkOnPageFocus: true              // 페이지 복귀 시에만 무결성 검사 (영향 미비)
         },
@@ -3865,15 +3888,15 @@ const GameConfig = {
         },
         creditsDisplay: {
             get size() { return GameConfig.masterFonts.baseSizes.xlarge; },                                    // 폰트 크기 (24px)
-            offsetY: -30,                        // 화면 하단으로부터의 오프셋
+            offsetY: -60,                        // 화면 하단으로부터의 오프셋 (-30 → -60, 위로 30px 이동)
             get opacity() { return GameConfig.constants.opacity.mediumHigh; }                                   // 투명도 0.85 (더 진하게)
         },
         contactInfo: {
             enabled: true,                       // 연락처 정보 표시 여부
             email: 'contact.binboxgames@gmail.com', // 비즈니스 이메일
             position: {
-                noticeOffsetY: 250,              // 안내 문구: 저작권 위 250px (훨씬 위로)
-                businessOffsetY: 100,            // 비즈니스 정보: 저작권 위 100px (원래 위치 유지)
+                noticeOffsetY: 210,              // 안내 문구: 저작권 위 210px
+                businessOffsetY: 45,             // 비즈니스 정보: 저작권 위 45px (레이블 위치 조정)
                 lineSpacing: 30                  // 줄 간격
             },
             style: {
