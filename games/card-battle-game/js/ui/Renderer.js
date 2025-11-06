@@ -484,8 +484,10 @@ class Renderer {
 
     // 카드 그리드 렌더링
     renderCardGrid(cards, selectedCards = []) {
+        // 안전한 코딩: cardSizes.preview 사용 (active는 존재하지 않음)
+        const cardSize = this.cardSizes?.preview || this.cardSizes?.hand || { width: 120, height: 168 };
+
         const cols = 5;
-        const cardSize = this.cardSizes.active;
         const spacing = 20;
         const startX = (this.width - (cols * cardSize.width + (cols - 1) * spacing)) / 2;
         const startY = 100;
