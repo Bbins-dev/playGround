@@ -1464,6 +1464,11 @@ class GameManager {
                 root.style.setProperty(`${prefix}-height`, `${modalConfig.height}px`);
                 root.style.setProperty(`${prefix}-padding`, `${modalConfig.padding}px`);
 
+                // topPosition이 있으면 동기화 (모바일 키보드 대응)
+                if (modalConfig.topPosition) {
+                    root.style.setProperty(`${prefix}-top`, modalConfig.topPosition);
+                }
+
                 // cardSelection 모달 그리드 설정
                 if (modalType === 'cardSelection' && modalConfig.grid) {
                     const gridConfig = modalConfig.grid;

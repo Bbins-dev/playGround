@@ -42,6 +42,7 @@
     --card-grid-columns: 2;
     --card-grid-padding: 20px 15px;
 
+    --modal-player-name-top: 15vh;
     --modal-player-name-width: 550px;
     --modal-player-name-height: 500px;
     --modal-player-name-padding: 40px;
@@ -512,7 +513,13 @@ body {
 }
 
 /* 플레이어 이름 모달 전용 스타일 - Configuration-Driven */
+/* 모바일 키보드 대응: 상단 정렬 */
+#player-name-modal {
+    align-items: flex-start;
+}
+
 #player-name-modal .modal-content {
+    margin-top: var(--modal-player-name-top);
     width: var(--modal-player-name-width);
     height: auto;
     min-height: var(--modal-player-name-height);
