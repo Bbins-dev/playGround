@@ -3842,22 +3842,38 @@ const GameConfig = {
     mainMenu: {
         title: {
             get size() { return GameConfig.masterFonts.uiSizes.mainMenuTitle; },                            // 제목 폰트 크기 (56 → 64)
-            y: 280,                              // 제목 Y 위치 (150 → 280, 중앙으로)
+            y: 180,                              // 제목 Y 위치 (280 → 180, 상단으로 이동)
             get shadowOffset() { return GameConfig.constants.pixels.shadowMedium; }                      // 그림자 오프셋
         },
         subtitle: {
             get size() { return GameConfig.masterFonts.uiSizes.mainMenuSubtitle; },                            // 부제목 폰트 크기 (20 → 24)
-            offsetY: 70                          // 제목으로부터의 Y 오프셋 (60 → 70)
+            offsetY: 120                         // 제목으로부터의 Y 오프셋 (70 → 120, 두 줄 타이틀 간격 증가)
         },
         versionDisplay: {
             get size() { return GameConfig.masterFonts.baseSizes.large; },                                     // 폰트 크기 (20px)
-            offsetY: 100,                        // 제목으로부터의 Y 오프셋
+            offsetY: 200,                        // 제목으로부터의 Y 오프셋 (100 → 200, 원래 절대 위치 380 유지)
             get opacity() { return GameConfig.constants.opacity.mediumHigh; }                                   // 투명도 0.85 (더 진하게)
         },
         creditsDisplay: {
             get size() { return GameConfig.masterFonts.baseSizes.xlarge; },                                    // 폰트 크기 (24px)
             offsetY: -30,                        // 화면 하단으로부터의 오프셋
             get opacity() { return GameConfig.constants.opacity.mediumHigh; }                                   // 투명도 0.85 (더 진하게)
+        },
+        contactInfo: {
+            enabled: true,                       // 연락처 정보 표시 여부
+            email: 'contact.binboxgames@gmail.com', // 비즈니스 이메일
+            position: {
+                noticeOffsetY: 250,              // 안내 문구: 저작권 위 250px (훨씬 위로)
+                businessOffsetY: 100,            // 비즈니스 정보: 저작권 위 100px (원래 위치 유지)
+                lineSpacing: 30                  // 줄 간격
+            },
+            style: {
+                noticeFontSize: 22,              // 안내 문구 폰트 크기 (16 → 22, 훨씬 크게)
+                noticeMaxWidth: 500,             // 안내 문구 최대 너비 (자동 줄바꿈 기준, 700 → 500, 황금 비율)
+                get labelFontSize() { return GameConfig.masterFonts.baseSizes.medium; },      // 레이블 폰트 크기 (18px)
+                get emailFontSize() { return GameConfig.masterFonts.baseSizes.medium; },      // 이메일 폰트 크기 (18px)
+                get opacity() { return GameConfig.constants.opacity.high; }                   // 투명도 0.9
+            }
         },
         menuItems: {
             startY: 420,                         // 메뉴 시작 Y 위치 (280 → 420, 중앙으로)

@@ -7,6 +7,7 @@ class PlayerNameModal {
         this.modal = document.getElementById('player-name-modal');
         this.nameInput = document.getElementById('player-name-input');
         this.confirmBtn = document.getElementById('confirm-name');
+        this.cancelBtn = document.getElementById('cancel-name');
 
         this.onNameConfirmed = null; // 콜백 함수
 
@@ -21,6 +22,15 @@ class PlayerNameModal {
                 this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
             }
             this.handleConfirm();
+        });
+
+        // 취소 버튼 클릭
+        this.cancelBtn.addEventListener('click', () => {
+            // 버튼 클릭 사운드 재생
+            if (this.gameManager?.audioSystem) {
+                this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+            }
+            this.handleCancel();
         });
 
         // Enter 키로 확인
@@ -181,6 +191,25 @@ class PlayerNameModal {
 
         // Reset debounce flag after 500ms
         setTimeout(() => { this._confirming = false; }, 500);
+    }
+
+    /**
+     * 취소 버튼 처리 - 메인 메뉴로 복귀
+     */
+    handleCancel() {
+        // Prevent double-click execution
+        if (this._cancelling) return;
+        this._cancelling = true;
+
+        this.hide();
+
+        // 메인 메뉴로 복귀
+        if (this.gameManager) {
+            this.gameManager.switchScreen('menu');
+        }
+
+        // Reset debounce flag after 500ms
+        setTimeout(() => { this._cancelling = false; }, 500);
     }
 
     /**
