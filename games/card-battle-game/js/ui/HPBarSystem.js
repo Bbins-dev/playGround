@@ -82,6 +82,12 @@ class HPBarSystem {
 
     // HP 바 업데이트 (Promise 반환으로 수정)
     async updateHP(player, isPlayer = true) {
+        // 안전한 코딩: player null 체크 (Configuration-Driven 원칙)
+        if (!player) {
+            console.warn('[HPBarSystem] updateHP: player가 null입니다');
+            return;
+        }
+
         const targetElements = isPlayer ? {
             fill: this.playerFill,
             number: this.playerNumber,
@@ -248,6 +254,12 @@ class HPBarSystem {
 
     // 상태이상 표시 업데이트 (새로운 그리드 시스템)
     updateStatusEffects(player, isPlayer = true) {
+        // 안전한 코딩: player null 체크 (Configuration-Driven 원칙)
+        if (!player) {
+            console.warn('[HPBarSystem] updateStatusEffects: player가 null입니다');
+            return;
+        }
+
         const statusContainer = isPlayer ? this.playerStatusGrid : this.enemyStatusGrid;
         const effectsContainer = isPlayer ? this.playerEffectsContainer : this.enemyEffectsContainer;
 
@@ -338,6 +350,12 @@ class HPBarSystem {
 
     // 버프 표시 업데이트 (새로운 그리드 시스템)
     updateBuffs(player, isPlayer = true) {
+        // 안전한 코딩: player null 체크 (Configuration-Driven 원칙)
+        if (!player) {
+            console.warn('[HPBarSystem] updateBuffs: player가 null입니다');
+            return;
+        }
+
         const buffsContainer = isPlayer ? this.playerBuffsGrid : this.enemyBuffsGrid;
         const effectsContainer = isPlayer ? this.playerEffectsContainer : this.enemyEffectsContainer;
 
@@ -801,6 +819,12 @@ class HPBarSystem {
 
     // 방어력 오버레이 업데이트 (Promise 반환으로 수정)
     async updateDefense(player, isPlayer = true) {
+        // 안전한 코딩: player null 체크 (Configuration-Driven 원칙)
+        if (!player) {
+            console.warn('[HPBarSystem] updateDefense: player가 null입니다');
+            return;
+        }
+
         const targetElements = isPlayer ? {
             overlay: this.playerDefenseOverlay,
             number: this.playerDefenseNumber,
@@ -847,6 +871,12 @@ class HPBarSystem {
 
     // 방어속성 배지 업데이트
     updateDefenseElementBadge(player, isPlayer = true) {
+        // 안전한 코딩: player null 체크 (Configuration-Driven 원칙)
+        if (!player) {
+            console.warn('[HPBarSystem] updateDefenseElementBadge: player가 null입니다');
+            return;
+        }
+
         const defenseElementBadge = isPlayer ? this.playerDefenseElement : this.enemyDefenseElement;
 
         if (!defenseElementBadge) return;
@@ -1058,6 +1088,12 @@ class HPBarSystem {
 
     // 데미지 적용 후 순차 업데이트 (방어력 → HP 순서 보장)
     async updateAfterDamage(player, isPlayer = true) {
+        // 안전한 코딩: player null 체크 (Configuration-Driven 원칙)
+        if (!player) {
+            console.warn('[HPBarSystem] updateAfterDamage: player가 null입니다');
+            return;
+        }
+
         // Configuration-Driven: 타이밍 설정 사용
         const timing = GameConfig?.timing?.ui?.damageSequence || {
             defenseFirst: true,
@@ -1093,6 +1129,12 @@ class HPBarSystem {
 
     // 이름 업데이트
     updateNames(player, enemy) {
+        // 안전한 코딩: player/enemy null 체크 (Configuration-Driven 원칙)
+        if (!player || !enemy) {
+            console.warn('[HPBarSystem] updateNames: player 또는 enemy가 null입니다');
+            return;
+        }
+
         if (this.playerName && player.name) {
             this.playerName.textContent = player.name;
         }
