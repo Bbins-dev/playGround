@@ -718,8 +718,14 @@ class GameManager {
         }
 
         // 메인 메뉴 표시 완료 후 버튼 상태 업데이트 (이어서하기 버튼 활성화/비활성화)
+        console.log('[DEBUG showMainMenu] window.cardBattleGame 존재:', !!window.cardBattleGame);
+        console.log('[DEBUG showMainMenu] updateMenuButtonStates 메서드:', typeof window.cardBattleGame?.updateMenuButtonStates);
         if (window.cardBattleGame) {
+            console.log('[DEBUG showMainMenu] updateMenuButtonStates() 호출 시도...');
             window.cardBattleGame.updateMenuButtonStates();
+            console.log('[DEBUG showMainMenu] updateMenuButtonStates() 호출 완료');
+        } else {
+            console.warn('[DEBUG showMainMenu] window.cardBattleGame이 없음!');
         }
 
         // 스마트 렌더링: 화면 전환 시 렌더링 요청 (여러 프레임)
