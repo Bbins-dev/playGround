@@ -265,7 +265,8 @@ class BattleSystem {
 
         // ===== 7. 마비 상태 체크 (확률적 턴 스킵) =====
         if (currentPlayer.hasStatusEffect('paralysis')) {
-            const paralysisChance = currentPlayer.statusEffects.find(e => e.type === 'paralysis').power;
+            const paralysisEffect = currentPlayer.statusEffects.find(e => e.type === 'paralysis');
+            const paralysisChance = paralysisEffect?.power || 0;
             if (Math.random() * 100 < paralysisChance) {
                 const position = isPlayerTurn ?
                     this.effectSystem.getPlayerPosition() :
