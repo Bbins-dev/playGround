@@ -67,6 +67,8 @@
     },
     "main_menu": {
       "volume_mute_notice": "To play with other video or music players, click the volume button above to mute.",
+      "save_notice_line1": "💾 Save: Browser Local Storage",
+      "save_notice_line2": "⚠️ Note: Deleted in Incognito Mode or Clearing Cookies/Site Data",
       "business_contact": "Business Contact Email"
     },
     "page_title": "Auto Battle Card Dual - BinBox Games",
@@ -75,7 +77,9 @@
     "ui": {
       "loading_title": "⚔️ Auto Battle Card Dual",
       "loading_message": "Loading Assets...",
-      "start_game": "Start Game",
+      "new_game": "New Game",
+      "continue_game": "Continue",
+      "no_save_data": "No saved game",
       "click_to_start": "Click to Start",
       "game_tutorial": "Game Guide",
       "card_gallery": "Card Gallery",

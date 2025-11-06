@@ -67,6 +67,8 @@
     },
     "main_menu": {
       "volume_mute_notice": "他の動画プレイヤーや音楽プレイヤーと一緒にプレイする場合は、上の音量設定ボタンをクリックしてミュートにしてください。",
+      "save_notice_line1": "💾 セーブ: ブラウザローカル保存",
+      "save_notice_line2": "⚠️ 注意: シークレット·クッキー/サイトデータ削除時に消失",
       "business_contact": "ビジネス連絡先メール"
     },
     "page_title": "オートバトルカード対戦 - BinBox Games",
@@ -75,7 +77,9 @@
     "ui": {
       "loading_title": "⚔️ オートバトルカード対戦",
       "loading_message": "読み込み中...",
-      "start_game": "ゲーム開始",
+      "new_game": "新しいゲーム",
+      "continue_game": "続きから",
+      "no_save_data": "セーブデータがありません",
       "click_to_start": "クリックしてスタート",
       "game_tutorial": "ゲーム説明",
       "card_gallery": "カードギャラリー",
