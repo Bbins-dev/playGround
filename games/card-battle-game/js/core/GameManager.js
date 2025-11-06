@@ -347,35 +347,40 @@ class GameManager {
                 if (this.audioSystem) {
                     this.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
                 }
-                this.setGameSpeed(1);
+                const speed = GameConfig?.constants?.speedButtonMapping?.['speed-1x'] || 2;
+                this.setGameSpeed(speed);
             }],
             ['speed-2x', 'click', () => {
                 // 버튼 클릭 사운드 재생
                 if (this.audioSystem) {
                     this.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
                 }
-                this.setGameSpeed(2);
+                const speed = GameConfig?.constants?.speedButtonMapping?.['speed-2x'] || 3;
+                this.setGameSpeed(speed);
             }],
             ['speed-3x', 'click', () => {
                 // 버튼 클릭 사운드 재생
                 if (this.audioSystem) {
                     this.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
                 }
-                this.setGameSpeed(3);
+                const speed = GameConfig?.constants?.speedButtonMapping?.['speed-3x'] || 5;
+                this.setGameSpeed(speed);
             }],
             ['speed-4x', 'click', () => {
                 // 버튼 클릭 사운드 재생
                 if (this.audioSystem) {
                     this.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
                 }
-                this.setGameSpeed(4);
+                const speed = GameConfig?.constants?.speedButtonMapping?.['speed-4x'] || 6;
+                this.setGameSpeed(speed);
             }],
             ['speed-5x', 'click', () => {
                 // 버튼 클릭 사운드 재생
                 if (this.audioSystem) {
                     this.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
                 }
-                this.setGameSpeed(5);
+                const speed = GameConfig?.constants?.speedButtonMapping?.['speed-5x'] || 7;
+                this.setGameSpeed(speed);
             }],
             ['card-gallery-btn', 'click', async () => await this.showCardGallery()],
             ['close-gallery', 'click', async () => await this.hideCardGallery()]
