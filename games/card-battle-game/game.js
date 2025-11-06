@@ -282,6 +282,8 @@ class CardBattleGame {
      * 메인 메뉴 버튼 이벤트 리스너 설정
      */
     setupMenuButtonListeners() {
+        console.log('[DEBUG setupMenuButtonListeners] 함수 진입');
+
         // "새 게임 시작" 버튼
         const startGameBtn = document.getElementById('start-game-btn');
         if (startGameBtn && this.gameManager) {
@@ -301,7 +303,43 @@ class CardBattleGame {
         }
 
         // 메뉴 버튼 상태 업데이트 (세이브 데이터 체크)
+        console.log('[DEBUG setupMenuButtonListeners] updateMenuButtonStates 호출 직전');
         this.updateMenuButtonStates();
+        console.log('[DEBUG setupMenuButtonListeners] updateMenuButtonStates 호출 직후');
+
+        // 메인 메뉴가 표시될 때마다 버튼 상태 갱신하도록 MutationObserver 설정
+        this.setupMenuButtonObserver();
+    }
+
+    /**
+     * 메인 메뉴 표시 감지 및 버튼 상태 자동 업데이트
+     */
+    setupMenuButtonObserver() {
+        console.log('[DEBUG setupMenuButtonObserver] Observer 설정 시작');
+
+        const targetNode = document.body;
+        const config = { attributes: true, attributeFilter: ['data-game-state'] };
+
+        const callback = (mutationsList) => {
+            for (const mutation of mutationsList) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'data-game-state') {
+                    const gameState = document.body.getAttribute('data-game-state');
+                    console.log('[DEBUG Observer] data-game-state 변경됨:', gameState);
+
+                    if (gameState === 'menu') {
+                        console.log('[DEBUG Observer] 메뉴 상태 감지 - updateMenuButtonStates 호출');
+                        // 약간의 딜레이 후 업데이트 (DOM 렌더링 완료 대기)
+                        setTimeout(() => {
+                            this.updateMenuButtonStates();
+                        }, 100);
+                    }
+                }
+            }
+        };
+
+        const observer = new MutationObserver(callback);
+        observer.observe(targetNode, config);
+        console.log('[DEBUG setupMenuButtonObserver] Observer 설정 완료');
     }
 
     /**
