@@ -77,8 +77,9 @@ function updateIndexHtml(indexPath, version) {
         let updateCount = 0;
 
         // 1. 프로젝트 JS 파일에 캐시 버스팅 추가/업데이트
-        // 패턴: <script src="js/.../*.js"> 또는 <script src="js/.../*.js?v=기존버전">
-        const jsRegex = /(<script src=")(js\/[^"]+\.js)(\?v=[^"]+)?(")/g;
+        // 패턴: <script src="*.js"> 또는 <script src="js/.../*.js"> 또는 <script src="*.js?v=기존버전">
+        // game.js와 js/ 디렉토리 안의 모든 JS 파일 포함
+        const jsRegex = /(<script src=")([^"]+\.js)(\?v=[^"]+)?(")/g;
         const newContent1 = content.replace(jsRegex, (match, p1, p2, p3, p4) => {
             // 외부 URL 제외 (https://, http://)
             if (p2.startsWith('http://') || p2.startsWith('https://')) {
