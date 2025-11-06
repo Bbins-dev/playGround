@@ -876,14 +876,14 @@ class GameManager {
             console.warn('[GameManager] mainMenu가 null!');
         }
 
-        // 전투 화면으로 전환
-        this.switchScreen('battle');
-
-        // 적 생성
+        // 적 생성 (전투 화면 전환 전에 먼저 생성)
         const enemyNameTemplate = this.i18n?.t('auto_battle_card_game.ui.enemy_name_template') || 'Stage {stage} Enemy';
         const enemyName = enemyNameTemplate.replace('{stage}', stageNumber);
         this.enemy = new Enemy(enemyName, stageNumber);
         this.enemy.buildDeck();
+
+        // 적 생성 완료 후 전투 화면으로 전환
+        this.switchScreen('battle');
 
         // 스테이지 인디케이터 업데이트 (실제 스테이지 번호 표시)
         if (this.uiManager) {
