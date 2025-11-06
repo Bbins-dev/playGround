@@ -461,6 +461,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             try {
                 console.log('[Game] CardBattleGame 초기화 시작...');
                 cardBattleGame = new CardBattleGame();
+                // 초기화 전에 전역 참조 설정 (showMainMenu에서 사용)
+                window.cardBattleGame = cardBattleGame;
                 await cardBattleGame.init();
                 console.log('[Game] CardBattleGame 초기화 완료');
             } catch (error) {
@@ -538,8 +540,7 @@ window.addEventListener('unhandledrejection', (event) => {
     event.preventDefault();
 });
 
-// 개발자 도구용 전역 접근
-window.cardBattleGame = cardBattleGame;
+// 개발자 도구용 전역 접근 (초기화 후에 설정됨 - 위 DOMContentLoaded 핸들러 참조)
 
 // i18n 헬퍼 함수들
 async function initializeI18n() {
