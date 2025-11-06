@@ -1817,6 +1817,19 @@ class GameManager {
                 });
             }
 
+            // 게임 통계 복원 (패배 모달용)
+            if (saveData.gameStats) {
+                // 기존 통계 구조 유지하면서 저장된 값 복원
+                this.gameStats.finalStage = saveData.gameStats.finalStage || this.currentStage;
+                this.gameStats.totalTurns = saveData.gameStats.totalTurns || 0;
+                this.gameStats.totalDamageDealt = saveData.gameStats.totalDamageDealt || 0;
+                this.gameStats.totalDamageReceived = saveData.gameStats.totalDamageReceived || 0;
+                this.gameStats.totalDefenseBuilt = saveData.gameStats.totalDefenseBuilt || 0;
+                this.gameStats.statusDamage = saveData.gameStats.statusDamage || 0;
+                this.gameStats.playStyle = saveData.gameStats.playStyle || 'balanced';
+                this.gameStats.isGameComplete = saveData.gameStats.isGameComplete || false;
+            }
+
             if (config?.logSaveErrors) {
                 console.log('[SaveSystem] 게임 로드 완료 - Stage', this.currentStage);
             }
@@ -1941,6 +1954,17 @@ class GameManager {
                     hp: Math.max(1, Math.min(this.player.hp, this.player.maxHP)),  // HP 검증 (1~maxHP)
                     maxHP: this.player.maxHP,
                     hand: this.player.hand.map(card => card.id)
+                } : null,
+                // 패배 모달용 게임 통계 저장 (YAGNI: 실제 사용되는 통계만)
+                gameStats: this.gameStats ? {
+                    finalStage: this.gameStats.finalStage || this.currentStage,
+                    totalTurns: this.gameStats.totalTurns || 0,
+                    totalDamageDealt: this.gameStats.totalDamageDealt || 0,
+                    totalDamageReceived: this.gameStats.totalDamageReceived || 0,
+                    totalDefenseBuilt: this.gameStats.totalDefenseBuilt || 0,
+                    statusDamage: this.gameStats.statusDamage || 0,
+                    playStyle: this.gameStats.playStyle || 'balanced',
+                    isGameComplete: this.gameStats.isGameComplete || false
                 } : null,
                 timestamp: Date.now()
             };
