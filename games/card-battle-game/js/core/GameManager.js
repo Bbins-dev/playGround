@@ -2035,6 +2035,38 @@ class GameManager {
         }
     }
 
+    /**
+     * 유효한 세이브 데이터가 존재하는지 확인 (Public API)
+     * @returns {boolean} 유효한 세이브 데이터 존재 여부
+     */
+    hasSaveData() {
+        const config = GameConfig?.constants?.saveSystem;
+        if (!config?.enabled) return false;
+
+        try {
+            // localStorage에서 세이브 데이터 가져오기
+            const savedData = localStorage.getItem(config.primarySaveKey);
+            if (!savedData) return false;
+
+            // 세이브 파일 검증 (체크섬, JSON 파싱, 데이터 무결성)
+            const decoded = this._decodeSaveData(savedData);
+
+            // 필수 데이터 존재 여부 확인
+            if (!decoded || !decoded.player || !decoded.currentStage) {
+                return false;
+            }
+
+            // 검증 통과
+            return true;
+
+        } catch (error) {
+            if (config?.logSaveErrors) {
+                console.warn('[SaveSystem] 세이브 검증 실패:', error);
+            }
+            return false;
+        }
+    }
+
     // ===== 페이지 라이프사이클 이벤트 핸들러 (모바일 백그라운드 복원 대응) =====
 
     /**

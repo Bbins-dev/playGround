@@ -331,25 +331,8 @@ class CardBattleGame {
         const continueGameBtn = document.getElementById('continue-game-btn');
         if (!continueGameBtn) return;
 
-        // 세이브 데이터 체크 및 검증
-        const savedData = localStorage.getItem(config.primarySaveKey);
-        let hasSaveData = false;
-
-        if (savedData) {
-            // 세이브 파일 검증 (체크섬, JSON 파싱, 데이터 무결성)
-            try {
-                const decoded = this.gameManager._decodeSaveData(savedData);
-                if (decoded && decoded.player && decoded.currentStage) {
-                    hasSaveData = true;  // 검증 통과
-                }
-            } catch (error) {
-                // 손상된 세이브 - 비활성화 유지
-                hasSaveData = false;
-                if (config.logSaveErrors) {
-                    console.warn('[SaveSystem] 손상된 세이브 파일 감지:', error);
-                }
-            }
-        }
+        // GameManager의 public API를 사용하여 세이브 데이터 검증
+        const hasSaveData = this.gameManager?.hasSaveData() || false;
 
         if (hasSaveData) {
             // 세이브 있음 & 검증 통과: 활성화
