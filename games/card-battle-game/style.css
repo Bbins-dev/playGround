@@ -978,6 +978,26 @@ body {
     outline-offset: 2px;
 }
 
+/* 비활성 버튼 스타일 (세이브 데이터 없을 때) */
+.menu-button:disabled,
+.menu-button.disabled {
+    background: linear-gradient(135deg, rgba(50, 50, 50, 0.5), rgba(30, 30, 30, 0.5));
+    border-color: #555;
+    color: #888;
+    cursor: not-allowed;
+    opacity: 0.5;
+    transform: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.menu-button:disabled:hover,
+.menu-button.disabled:hover {
+    background: linear-gradient(135deg, rgba(50, 50, 50, 0.5), rgba(30, 30, 30, 0.5));
+    transform: none;
+    border-color: #555;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
 .menu-icon {
     font-size: var(--menu-icon-size);
     display: flex;

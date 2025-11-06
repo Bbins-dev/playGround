@@ -67,6 +67,8 @@
     },
     "main_menu": {
       "volume_mute_notice": "다른 동영상 플레이어 혹은 음악플레이어와 함께 플레이 하시려면 위 볼륨 설정버튼을 클릭하여 음소거를 해주세요.",
+      "save_notice_line1": "💾 세이브: 브라우저 로컬 저장",
+      "save_notice_line2": "⚠️ 주의: 시크릿모드·쿠키/사이트 데이터 삭제 시 사라짐",
       "business_contact": "비즈니스 연락 이메일"
     },
     "page_title": "자동전투 카드대전 - BinBox Games",
@@ -75,7 +77,9 @@
     "ui": {
       "loading_title": "⚔️ 자동전투 카드대전",
       "loading_message": "게임 로딩 중...",
-      "start_game": "게임 시작",
+      "new_game": "새 게임 시작",
+      "continue_game": "이어서 하기",
+      "no_save_data": "저장된 게임이 없습니다",
       "click_to_start": "클릭하여 시작",
       "game_tutorial": "게임 설명",
       "card_gallery": "카드 갤러리",

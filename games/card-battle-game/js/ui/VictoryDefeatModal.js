@@ -1054,6 +1054,12 @@ class VictoryDefeatModal {
      * 보상 건너뛰기 처리
      */
     handleSkipReward() {
+        // ★ 저장 시점: 카드 선택 완료 (건너뛰기도 "선택 완료"로 간주)
+        const config = GameConfig?.constants?.saveSystem;
+        if (config?.enabled && config.saveOnRewardSelection && this.gameManager) {
+            this.gameManager.saveGameData();
+        }
+
         this.resetCardRewards();
         this.handleVictoryContinue();
     }
@@ -1128,6 +1134,12 @@ class VictoryDefeatModal {
             if (this.gameManager.cardManager && this.gameManager.player) {
                 this.gameManager.cardManager.addCardToPlayer(this.gameManager.player, this.selectedRewardCard.id);
                 // 카드 획득 사운드는 addCardToPlayer() 내부에서 자동 재생됨
+            }
+
+            // ★ 저장 시점: 카드 선택 완료 (덱에 추가)
+            const config = GameConfig?.constants?.saveSystem;
+            if (config?.enabled && config.saveOnRewardSelection) {
+                this.gameManager.saveGameData();
             }
 
             this.resetCardRewards();
@@ -1502,6 +1514,12 @@ class VictoryDefeatModal {
                 this.selectedHandCardIndex,
                 this.selectedRewardCard.id
             );
+
+            // ★ 저장 시점: 카드 선택 완료 (카드 교체)
+            const config = GameConfig?.constants?.saveSystem;
+            if (config?.enabled && config.saveOnRewardSelection) {
+                this.gameManager.saveGameData();
+            }
 
             this.resetCardRewards();
             this.handleVictoryContinue();
