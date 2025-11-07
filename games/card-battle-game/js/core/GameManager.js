@@ -1815,6 +1815,9 @@ class GameManager {
                         this.player.hand.push(card);
                     }
                 });
+
+                // 손패 복원 후 방어속성 자동 재계산 (손패 기반 동적 계산)
+                this.player.updateDefenseElement();
             }
 
             // 게임 통계 복원 (패배 모달용)
