@@ -794,6 +794,11 @@ class Player {
         this.packBonus = 0;
         this.packTurns = 0;
         this.poisonNeedleTurns = 0;
+        this.sharpenTurns = 0;
+        this.mindTurns = 0;
+        this.sulfurTurns = 0;
+        this.coatingTurns = 0;
+        this.raincoatStacks = 0;
     }
 
     // 런타임 카드 스탯 업데이트 (버프/상태이상 반영)

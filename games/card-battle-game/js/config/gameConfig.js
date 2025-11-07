@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.6.9',                        // 버전 넘버
+        number: '0.6.10',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -3691,7 +3691,7 @@ const GameConfig = {
     handLayout: {
         rows: 2,                        // 두 줄 배치
         cardsPerRow: 5,                 // 줄당 최대 5장
-        rowSpacing: 0.1,                // 줄 간격 (카드 높이의 10%)
+        rowSpacing: 0.033,              // 줄 간격 (카드 높이의 3.3%)
         activationOrder: 'leftToRightTopToBottom', // 발동 순서: 왼쪽 위 → 오른쪽 → 아래줄
         cardSpacing: 5                  // 카드 간 간격
     },

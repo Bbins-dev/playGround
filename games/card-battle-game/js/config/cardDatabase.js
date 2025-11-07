@@ -3550,7 +3550,17 @@ const CardDatabase = {
                                   target.breathTurns > 0 ||
                                   target.massTurns > 0 ||
                                   target.torrentTurns > 0 ||
-                                  target.absorptionBonus > 0;
+                                  target.absorptionBonus > 0 ||
+                                  target.lightSpeedTurns > 0 ||
+                                  target.superConductivityTurns > 0 ||
+                                  target.staticTurns > 0 ||
+                                  target.packBonus > 0 ||
+                                  target.propagationTurns > 0 ||
+                                  target.poisonNeedleTurns > 0 ||
+                                  target.mindTurns > 0 ||
+                                  target.sulfurTurns > 0 ||
+                                  target.coatingTurns > 0 ||
+                                  target.raincoatStacks > 0;
 
                 // 버프가 없는 경우 실패
                 if (!hasAnyBuff) {
@@ -3558,7 +3568,7 @@ const CardDatabase = {
                         success: true,
                         noBuffs: true,
                         messageKey: GameConfig?.cardEffects?.highVoltageCurrent?.noBuffsKey ||
-                                   'auto_battle_card_game.ui.condition_failed'
+                                   'auto_battle_card_game.ui.templates.no_buffs'
                     };
                 }
 
