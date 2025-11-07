@@ -240,7 +240,7 @@
         },
         "shield_bash": {
           "name": "Shield Bash",
-          "description": "Deal damage equal to your current {defense} to the opponent."
+          "description": "Deal damage equal to your current {defense} to the opponent. Not affected by attack buffs."
         },
         "concussion": {
           "name": "Concussion",
@@ -248,7 +248,7 @@
         },
         "counter_attack": {
           "name": "Counter Attack",
-          "description": "Deal double the last damage you took to the opponent."
+          "description": "Deal double the last damage you took to the opponent. Not affected by attack buffs."
         },
         "raise_shield": {
           "name": "Raise Shield",
