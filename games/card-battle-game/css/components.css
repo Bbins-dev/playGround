@@ -892,6 +892,8 @@
     overflow-y: auto;
     padding: var(--modal-game-tutorial-padding, 30px);
     padding-bottom: 40px;
+    display: flex;
+    flex-direction: column;
 }
 
 /* 튜토리얼 모달 닫기 버튼 - 하단 고정 & 강조 */

@@ -126,12 +126,8 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.shield_bash.description',
             effect: function(user, target, battleSystem) {
-                let baseDamage = user.defense + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0); // 방어력 + 힘 버프
-
-                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
-                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
-                    baseDamage = Math.floor(baseDamage * 1.5);
-                }
+                // 방어력만 사용 (힘, 강화, 리튬 버프 무시)
+                const baseDamage = user.defense;
 
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
@@ -197,12 +193,8 @@ const CardDatabase = {
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.counter_attack.description',
             effect: function(user, target, battleSystem) {
-                let baseDamage = (user.lastDamageTaken * 2) + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0); // 받은 대미지의 2배 + 힘 버프
-
-                // 강화 버프 적용 (덧셈 계산 후, 속성 상성 계산 전)
-                if (user.hasEnhanceBuff && user.hasEnhanceBuff()) {
-                    baseDamage = Math.floor(baseDamage * 1.5);
-                }
+                // 마지막 받은 대미지의 2배만 사용 (힘, 강화, 리튬 버프 무시)
+                const baseDamage = user.lastDamageTaken * 2;
 
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);

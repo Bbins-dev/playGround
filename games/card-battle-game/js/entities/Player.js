@@ -915,16 +915,18 @@ class Player {
                     return; // 고정 피해이므로 버프 계산 건너뛰기
                 }
 
-                // shield_bash 카드: 자신의 현재 방어력만큼 피해 (동적 계산)
+                // shield_bash 카드: 자신의 현재 방어력만큼 피해 (동적 계산, 버프 무시)
                 if (card.id === 'shield_bash') {
-                    buffedPower = this.defense || 0;  // 현재 방어력
-                    // 이후 일반 버프 계산 계속 진행 (속성 → 강화 → Li⁺)
+                    buffedPower = this.defense || 0;  // 현재 방어력만 사용
+                    card.buffedPower = buffedPower;
+                    return;  // 버프 계산 건너뛰기 (힘, 강화, 리튬 등 모두 무시)
                 }
 
-                // counter_attack 카드: 마지막 받은 대미지의 2배 (동적 계산)
+                // counter_attack 카드: 마지막 받은 대미지의 2배 (동적 계산, 버프 무시)
                 if (card.id === 'counter_attack') {
-                    buffedPower = (this.lastDamageTaken || 0) * 2;
-                    // 이후 일반 버프 계산 계속 진행 (힘 → 강화)
+                    buffedPower = (this.lastDamageTaken || 0) * 2;  // 받은 대미지 × 2만 사용
+                    card.buffedPower = buffedPower;
+                    return;  // 버프 계산 건너뛰기 (힘, 강화, 리튬 등 모두 무시)
                 }
 
                 // ★ 4단계: 속성 보너스 덧셈

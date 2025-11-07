@@ -240,7 +240,7 @@
         },
         "shield_bash": {
           "name": "シールドバッシュ",
-          "description": "現在の{defense}と同じダメージを相手に与えます。"
+          "description": "現在の{defense}と同じダメージを相手に与えます。攻撃力バフの影響を受けません。"
         },
         "concussion": {
           "name": "脳震盪",
@@ -248,7 +248,7 @@
         },
         "counter_attack": {
           "name": "カウンターアタック",
-          "description": "最後に受けたダメージの2倍のダメージを相手に与えます。"
+          "description": "最後に受けたダメージの2倍のダメージを相手に与えます。攻撃力バフの影響を受けません。"
         },
         "raise_shield": {
           "name": "シールド構え",

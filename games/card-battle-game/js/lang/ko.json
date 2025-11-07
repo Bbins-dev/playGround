@@ -240,7 +240,7 @@
         },
         "shield_bash": {
           "name": "방패치기",
-          "description": "상대에게 현재 {defense}만큼 피해를 가합니다."
+          "description": "상대에게 현재 {defense}만큼 피해를 가합니다. 공격력 버프의 영향을 받지 않습니다."
         },
         "concussion": {
           "name": "뇌진탕",
@@ -248,7 +248,7 @@
         },
         "counter_attack": {
           "name": "카운터어택",
-          "description": "마지막으로 받은 대미지를 상대에게 두 배로 돌려줍니다."
+          "description": "마지막으로 받은 피해를 상대에게 두 배로 돌려줍니다. 공격력 버프의 영향을 받지 않습니다."
         },
         "raise_shield": {
           "name": "방패들기",
