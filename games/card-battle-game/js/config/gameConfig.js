@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.6.7',                        // 버전 넘버
+        number: '0.6.8',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -3888,7 +3888,7 @@ const GameConfig = {
         },
         creditsDisplay: {
             get size() { return GameConfig.masterFonts.baseSizes.xlarge; },                                    // 폰트 크기 (24px)
-            offsetY: -60,                        // 화면 하단으로부터의 오프셋 (-30 → -60, 위로 30px 이동)
+            offsetY: -35,                        // 화면 하단으로부터의 오프셋 (적당한 여백 유지)
             get opacity() { return GameConfig.constants.opacity.mediumHigh; }                                   // 투명도 0.85 (더 진하게)
         },
         contactInfo: {
