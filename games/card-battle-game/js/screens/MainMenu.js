@@ -30,6 +30,12 @@ class MainMenu {
                 id: 'card-gallery-menu-btn'
             },
             {
+                text: 'leaderboard',
+                action: () => this.openLeaderboard(),
+                icon: '🏆',
+                id: 'leaderboard-menu-btn'
+            },
+            {
                 text: 'back-to-homepage',
                 action: () => { window.location.href = '../../'; },
                 icon: '🏠',
@@ -723,6 +729,23 @@ class MainMenu {
             // };
             // document.addEventListener('keydown', handleEsc);
         }
+    }
+
+    // 리더보드 열기
+    openLeaderboard() {
+        // LeaderboardModal 인스턴스가 있는지 확인
+        if (!window.leaderboardModal) {
+            // 인스턴스 생성
+            if (window.LeaderboardModal) {
+                window.leaderboardModal = new LeaderboardModal();
+            } else {
+                console.error('[MainMenu] LeaderboardModal class not loaded');
+                return;
+            }
+        }
+
+        // 리더보드 표시
+        window.leaderboardModal.show();
     }
 
     // 게임 설명 텍스트 가져오기
