@@ -180,6 +180,10 @@
                     <span class="menu-icon">🃏</span>
                     <span class="menu-text" data-i18n="auto_battle_card_game.ui.card_gallery">카드 갤러리</span>
                 </button>
+                <button class="menu-button" id="leaderboard-menu-btn">
+                    <span class="menu-icon">🏆</span>
+                    <span class="menu-text" data-i18n="leaderboard.title">리더보드</span>
+                </button>
                 <button class="menu-button" id="settings-menu-btn">
                     <span class="menu-icon">🔊</span>
                     <span class="menu-text" data-i18n="auto_battle_card_game.ui.settings">볼륨</span>
@@ -605,8 +609,8 @@
                                 <span class="stat-value" id="defeat-critical-count">0</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label" data-i18n="auto_battle_card_game.ui.play_style">플레이 스타일:</span>
-                                <span class="stat-value" id="defeat-play-style">균형잡힌</span>
+                                <span class="stat-label" data-i18n="leaderboard.global_rank_label">글로벌 순위:</span>
+                                <span class="stat-value" id="defeat-play-style">-</span>
                             </div>
                         </div>
                         <div class="mvp-card" id="defeat-mvp-section">
@@ -683,7 +687,48 @@
             </div>
         </div>
 
+        <!-- 글로벌 리더보드 모달 -->
+        <div id="leaderboard-modal" class="modal hidden">
+            <div class="modal-content glass-morphism leaderboard-modal-content">
+                <h2>🏆 <span data-i18n="leaderboard.title">글로벌 리더보드</span></h2>
+
+                <!-- 리더보드 테이블 -->
+                <div class="leaderboard-table-container">
+                    <table class="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th data-i18n="leaderboard.rank">순위</th>
+                                <th data-i18n="leaderboard.player_name">플레이어</th>
+                                <th data-i18n="leaderboard.final_stage">스테이지</th>
+                                <th data-i18n="leaderboard.total_turns">턴수</th>
+                                <th data-i18n="leaderboard.total_damage_dealt">딜량</th>
+                                <th data-i18n="leaderboard.total_damage_received">받은피해</th>
+                                <th data-i18n="leaderboard.version">버전</th>
+                                <th data-i18n="leaderboard.date">날짜</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 데이터가 동적으로 로드됨 -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 페이징 컨트롤 -->
+                <div class="leaderboard-pagination">
+                    <button class="leaderboard-prev-btn ui-button secondary" data-i18n="leaderboard.prev_page">이전</button>
+                    <span class="leaderboard-page-info">1 / 1</span>
+                    <button class="leaderboard-next-btn ui-button secondary" data-i18n="leaderboard.next_page">다음</button>
+                </div>
+
+                <!-- 닫기 버튼 -->
+                <button class="close-btn ui-button primary" data-i18n="auto_battle_card_game.ui.close">닫기</button>
+            </div>
+        </div>
+
     </div>
+
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <!-- 스크립트 로드 -->
     <!-- 설정 파일들 먼저 로드 -->
@@ -708,6 +753,8 @@
     <script src="js/systems/ShareImageGenerator.js?v=0.6.10"></script>
     <script src="js/systems/ShareSystem.js?v=0.6.10"></script>
     <script src="js/systems/ShareLandingPage.js?v=0.6.10"></script>
+    <!-- 리더보드 시스템 -->
+    <script src="js/systems/LeaderboardClient.js?v=0.6.10"></script>
     <script src="js/ui/HPBarSystem.js?v=0.6.10"></script>
     <script src="js/ui/BuffStatusTooltipModal.js?v=0.6.10"></script>
     <script src="js/ui/EffectSystem.js?v=0.6.10"></script>
@@ -724,6 +771,7 @@
     <script src="js/ui/PlayerNameModal.js?v=0.6.10"></script>
     <script src="js/ui/CardSelectionModal.js?v=0.6.10"></script>
     <script src="js/ui/VictoryDefeatModal.js?v=0.6.10"></script>
+    <script src="js/ui/LeaderboardModal.js?v=0.6.10"></script>
 
     <!-- 화면 클래스들 -->
     <script src="js/screens/MainMenu.js?v=0.6.10"></script>
