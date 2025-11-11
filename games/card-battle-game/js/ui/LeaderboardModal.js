@@ -186,6 +186,20 @@ class LeaderboardModal {
             row.classList.add('my-record');
         }
 
+        // Configuration-Driven: 방어 속성별 배경색 적용
+        const defenseElement = record.defense_element || 'normal';
+        const elementColor = GameConfig?.masterColors?.elements?.[defenseElement] || GameConfig?.masterColors?.elements?.normal || '#F0E6D8';
+
+        // Hex to RGBA 변환 (opacity: 0.30로 명확하게 구분 가능)
+        const hexToRgba = (hex, alpha) => {
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        };
+
+        row.style.backgroundColor = hexToRgba(elementColor, 0.30);
+
         // 순위
         const rankCell = document.createElement('td');
         rankCell.textContent = `#${rank}`;
@@ -206,7 +220,8 @@ class LeaderboardModal {
         const stageCell = document.createElement('td');
         stageCell.textContent = record.final_stage;
         if (record.is_game_complete) {
-            stageCell.textContent += ' 🏆';
+            const clearedText = this.i18n.getMessage('leaderboard.stage_cleared') || '(Clr)';
+            stageCell.textContent += clearedText;
         }
         row.appendChild(stageCell);
 
