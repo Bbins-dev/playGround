@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.6.10',                        // 버전 넘버
+        number: '0.7.0',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -3879,11 +3879,11 @@ const GameConfig = {
         },
         subtitle: {
             get size() { return GameConfig.masterFonts.uiSizes.mainMenuSubtitle; },                            // 부제목 폰트 크기 (20 → 24)
-            offsetY: 120                         // 제목으로부터의 Y 오프셋 (70 → 120, 두 줄 타이틀 간격 증가)
+            offsetY: 90                          // 제목으로부터의 Y 오프셋 (120 → 90, 여백 축소)
         },
         versionDisplay: {
             get size() { return GameConfig.masterFonts.baseSizes.large; },                                     // 폰트 크기 (20px)
-            offsetY: 200,                        // 제목으로부터의 Y 오프셋 (100 → 200, 원래 절대 위치 380 유지)
+            offsetY: 150,                        // 제목으로부터의 Y 오프셋 (200 → 150, 여백 축소)
             get opacity() { return GameConfig.constants.opacity.mediumHigh; }                                   // 투명도 0.85 (더 진하게)
         },
         creditsDisplay: {
@@ -3908,7 +3908,7 @@ const GameConfig = {
             }
         },
         menuItems: {
-            startY: 420,                         // 메뉴 시작 Y 위치 (280 → 420, 중앙으로)
+            startY: 370,                         // 메뉴 시작 Y 위치 (420 → 370, 상향 이동)
             itemHeight: 80,                      // 메뉴 아이템 간격 (60 → 80)
             width: 380,                          // 메뉴 아이템 너비 (320 → 380)
             height: 65,                          // 메뉴 아이템 높이 (50 → 65)
@@ -5867,6 +5867,24 @@ const GameConfig = {
         isValidLanguage(lang) {
             return this.supportedLanguages.includes(lang);
         }
+    },
+
+    // 글로벌 리더보드 설정
+    leaderboard: {
+        enabled: true,
+        supabaseUrl: 'https://yexxudclxvqmwbjjpxsx.supabase.co',
+        supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlleHh1ZGNseHZxbXdiampweHN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4MjY3MjMsImV4cCI6MjA3ODQwMjcyM30.BLkbIxPiLG-86Smh14FAkxGYtFTzsl2cfqIXV97cFqM',
+        tableName: 'leaderboard',
+        pageSize: 50,                       // 한 페이지당 표시할 기록 수
+        submitCooldown: 3000,               // 제출 쿨다운 (3초)
+        autoCleanupDays: 30,                // 자동 정리 기간 (30일)
+        topRecordsToKeep: 100,              // 영구 보존할 상위 기록 수
+
+        // 손패 보기 기능
+        enableHandView: true,               // 리더보드에서 손패 보기 기능 활성화
+
+        // 로컬 스토리지 키
+        lastSubmitKey: 'leaderboard_last_submit_time'
     }
 };
 
