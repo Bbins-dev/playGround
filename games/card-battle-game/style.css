@@ -15,7 +15,7 @@
     /* 메뉴 크기 - GameConfig 기반 */
     --menu-button-width: 320px;     /* GameConfig.mainMenu.menuItems.width */
     --menu-button-height: 50px;     /* GameConfig.mainMenu.menuItems.height */
-    --menu-start-y: 280px;          /* GameConfig.mainMenu.menuItems.startY */
+    --menu-start-y: 370px;          /* GameConfig.mainMenu.menuItems.startY (420 → 370) */
 
     /* 입력 요소 크기 */
     --input-width: 300px;           /* 표준 입력 너비 */

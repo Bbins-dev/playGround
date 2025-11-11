@@ -385,7 +385,7 @@ class VictoryDefeatModal {
      * @param {Function} restartCallback - 다시 도전하기 버튼 클릭 시 호출할 콜백
      * @param {Function} mainMenuCallback - 메인 메뉴로 버튼 클릭 시 호출할 콜백
      */
-    showDefeat(gameStats, restartCallback, mainMenuCallback) {
+    async showDefeat(gameStats, restartCallback, mainMenuCallback) {
         // 상태이상 효과 제거
         this.clearStatusEffects();
 
@@ -400,6 +400,9 @@ class VictoryDefeatModal {
 
         // 통계 정보 설정
         this.populateGameStats(gameStats);
+
+        // 🏆 리더보드 자동 등록 및 순위 조회
+        await this.submitToLeaderboard(gameStats);
 
         // 게임 완료 여부에 따라 제목 동적 변경
         const titleElement = this.defeatModal?.querySelector('h2[data-i18n]');
@@ -482,11 +485,11 @@ class VictoryDefeatModal {
             this.defeatCriticalCount.textContent = gameStats.statusDamage || 0;
         }
 
-        // 플레이 스타일 번역
+        // 전세계 순위 표시 (플레이 스타일 대신)
         if (this.defeatPlayStyle) {
-            const playStyleKey = `auto_battle_card_game.ui.play_style_${gameStats.playStyle || 'balanced'}`;
-            const translatedStyle = I18nHelper.getText(playStyleKey) || this.getDefaultPlayStyleText(gameStats.playStyle);
-            this.defeatPlayStyle.textContent = translatedStyle;
+            // 초기 로딩 상태 표시
+            this.defeatPlayStyle.textContent = I18nHelper.getText('leaderboard.calculating') || 'Calculating...';
+            // 실제 순위는 submitToLeaderboard()에서 업데이트됨
         }
 
         // 최종 손패 (MVP 카드 대신)
@@ -1734,6 +1737,90 @@ class VictoryDefeatModal {
         if (this.integrityTimer) {
             clearInterval(this.integrityTimer);
             this.integrityTimer = null;
+        }
+    }
+
+    /**
+     * 리더보드 자동 등록 및 순위 조회
+     * @param {Object} gameStats - 게임 통계 데이터
+     */
+    async submitToLeaderboard(gameStats) {
+        // LeaderboardClient 확인
+        if (!window.LeaderboardClient || !GameConfig?.leaderboard?.enabled) {
+            console.log('[VictoryDefeatModal] Leaderboard disabled or not available');
+            if (this.defeatPlayStyle) {
+                this.defeatPlayStyle.textContent = '-';
+            }
+            return;
+        }
+
+        // LeaderboardClient 인스턴스 생성
+        if (!this.leaderboardClient) {
+            this.leaderboardClient = new LeaderboardClient();
+        }
+
+        try {
+            // 제출 데이터 구성
+            const submitData = {
+                playerName: this.gameManager?.player?.name || 'Unknown',
+                finalStage: gameStats?.finalStage || 1,
+                totalTurns: gameStats?.totalTurns || 0,
+                totalDamageDealt: gameStats?.totalDamageDealt || 0,
+                totalDamageReceived: gameStats?.totalDamageReceived || 0,
+                totalDefenseBuilt: gameStats?.totalDefenseBuilt || 0,
+                playStyle: gameStats?.playStyle || 'balanced',
+                isGameComplete: gameStats?.isGameComplete || false
+            };
+
+            // 리더보드에 제출
+            const submitResult = await this.leaderboardClient.submitScore(submitData);
+
+            if (submitResult.success) {
+                console.log('[VictoryDefeatModal] Score submitted successfully');
+
+                // 내 순위 조회
+                console.log('[VictoryDefeatModal] Fetching rank...');
+                const rankResult = await this.leaderboardClient.getMyRank({
+                    finalStage: submitData.finalStage,
+                    totalTurns: submitData.totalTurns,
+                    totalDamageDealt: submitData.totalDamageDealt,
+                    totalDamageReceived: submitData.totalDamageReceived
+                });
+                console.log('[VictoryDefeatModal] Rank result:', rankResult);
+
+                if (rankResult.success && this.defeatPlayStyle) {
+                    // 순위 표시 (직접 포맷팅)
+                    console.log('[VictoryDefeatModal] Displaying rank:', rankResult.rank);
+                    const rankTemplate = I18nHelper.getText('leaderboard.your_rank') || '#{rank}';
+                    const rankText = rankTemplate.replace('{rank}', rankResult.rank);
+                    console.log('[VictoryDefeatModal] Rank text:', rankText);
+                    this.defeatPlayStyle.textContent = rankText;
+                } else if (this.defeatPlayStyle) {
+                    console.warn('[VictoryDefeatModal] Rank fetch failed or element missing');
+                    this.defeatPlayStyle.textContent = I18nHelper.getText('leaderboard.rank_unknown') || '-';
+                }
+
+            } else {
+                console.warn('[VictoryDefeatModal] Score submission failed:', submitResult.error);
+
+                // 에러 처리
+                if (this.defeatPlayStyle) {
+                    if (submitResult.error === 'cooldown') {
+                        const cooldownText = I18nHelper.getText('leaderboard.cooldown', {
+                            seconds: submitResult.remainingSeconds
+                        }) || `Wait ${submitResult.remainingSeconds}s`;
+                        this.defeatPlayStyle.textContent = cooldownText;
+                    } else {
+                        this.defeatPlayStyle.textContent = I18nHelper.getText('leaderboard.submit_failed') || 'Submit failed';
+                    }
+                }
+            }
+
+        } catch (error) {
+            console.error('[VictoryDefeatModal] Leaderboard error:', error);
+            if (this.defeatPlayStyle) {
+                this.defeatPlayStyle.textContent = '-';
+            }
         }
     }
 
