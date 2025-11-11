@@ -1003,7 +1003,7 @@
     "tbd": "TBD"
   },
   "leaderboard": {
-    "title": "Global Leaderboard",
+    "title": "Global Rankings",
     "rank": "Rank",
     "player_name": "Player",
     "final_stage": "Stage",
@@ -1033,6 +1033,12 @@
     "today": "Today",
     "yesterday": "Yesterday",
     "days_ago": "{days}d ago",
-    "error": "Error"
+    "error": "Error",
+    "click_to_view_hand": "Click to view hand",
+    "hand_title": "{name}'s Final Hand (Rank #{rank})",
+    "stage": "Stage",
+    "turns": "Turns",
+    "no_hand_data": "No hand data",
+    "stage_cleared": "(Clr)"
   }
 }
