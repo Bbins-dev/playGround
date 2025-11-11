@@ -3,6 +3,9 @@
  * Supabase를 사용하여 리더보드 데이터 관리
  */
 
+// Supabase 인스턴스 싱글톤 (중복 생성 방지)
+let _supabaseInstance = null;
+
 class LeaderboardClient {
     constructor() {
         this.supabase = null;
@@ -11,6 +14,14 @@ class LeaderboardClient {
 
         if (!this.config?.enabled) {
             console.warn('[LeaderboardClient] Leaderboard is disabled in GameConfig');
+            return;
+        }
+
+        // 기존 Supabase 인스턴스가 있으면 재사용
+        if (_supabaseInstance) {
+            this.supabase = _supabaseInstance;
+            this.initialized = true;
+            console.log('[LeaderboardClient] Reusing existing Supabase instance');
             return;
         }
 
@@ -37,8 +48,9 @@ class LeaderboardClient {
             }
 
             this.supabase = window.supabase.createClient(url, key);
+            _supabaseInstance = this.supabase;  // 전역 저장 (싱글톤)
             this.initialized = true;
-            console.log('[LeaderboardClient] Initialized successfully');
+            console.log('[LeaderboardClient] Initialized successfully (new instance)');
         } catch (error) {
             console.error('[LeaderboardClient] Initialization error:', error);
         }
@@ -79,9 +91,10 @@ class LeaderboardClient {
                 total_damage_dealt: gameData.totalDamageDealt || 0,
                 total_damage_received: gameData.totalDamageReceived || 0,
                 total_defense_built: gameData.totalDefenseBuilt || 0,
-                play_style: gameData.playStyle || 'balanced',
                 is_game_complete: gameData.isGameComplete || false,
-                game_version: GameConfig?.versionInfo?.number || '0.0.0'
+                defense_element: gameData.defenseElement || 'normal',
+                game_version: GameConfig?.versionInfo?.number || '0.0.0',
+                final_hand: this.serializeFinalHand(gameData.finalHand)
             };
 
             // Supabase에 삽입
@@ -122,14 +135,15 @@ class LeaderboardClient {
             const from = (page - 1) * pageSize;
             const to = from + pageSize - 1;
 
-            // 4단계 정렬로 리더보드 조회
+            // 5단계 정렬로 리더보드 조회
             const { data, error, count } = await this.supabase
                 .from(this.config.tableName)
                 .select('*', { count: 'exact' })
-                .order('final_stage', { ascending: false })      // 1순위: 높은 스테이지
-                .order('total_turns', { ascending: true })        // 2순위: 적은 턴수
-                .order('total_damage_dealt', { ascending: true }) // 3순위: 적은 딜량
-                .order('total_damage_received', { ascending: false }) // 4순위: 많은 피해
+                .order('is_game_complete', { ascending: false })  // 1순위: 게임 완료 여부
+                .order('final_stage', { ascending: false })      // 2순위: 높은 스테이지
+                .order('total_turns', { ascending: true })        // 3순위: 적은 턴수
+                .order('total_damage_dealt', { ascending: true }) // 4순위: 적은 딜량
+                .order('total_damage_received', { ascending: false }) // 5순위: 많은 피해
                 .range(from, to);
 
             if (error) {
@@ -223,6 +237,16 @@ class LeaderboardClient {
     }
 
     /**
+     * 최종 손패 직렬화 (용량 절약을 위해 null 반환)
+     * @param {Array} finalHand - 카드 배열
+     * @returns {null} - 데이터베이스 용량 절약을 위해 항상 null 반환
+     */
+    serializeFinalHand(finalHand) {
+        // 무료 Supabase 용량 절약을 위해 손패 데이터를 저장하지 않음
+        return null;
+    }
+
+    /**
      * 게임 데이터 검증
      * @param {Object} gameData - 검증할 게임 데이터
      * @returns {{valid: boolean, error?: string}}
@@ -261,6 +285,13 @@ class LeaderboardClient {
 
         if (totalDamageReceived < 0 || totalDamageReceived > 1000000) {
             return { valid: false, error: 'Invalid damage received' };
+        }
+
+        // 방어 속성 검증 (fire, water, electric, poison, normal만 허용)
+        const validElements = ['fire', 'water', 'electric', 'poison', 'normal'];
+        const defenseElement = gameData.defenseElement || 'normal';
+        if (!validElements.includes(defenseElement)) {
+            return { valid: false, error: 'Invalid defense element' };
         }
 
         return { valid: true };

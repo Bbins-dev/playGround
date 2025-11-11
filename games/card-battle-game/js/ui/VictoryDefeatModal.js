@@ -401,9 +401,6 @@ class VictoryDefeatModal {
         // 통계 정보 설정
         this.populateGameStats(gameStats);
 
-        // 🏆 리더보드 자동 등록 및 순위 조회
-        await this.submitToLeaderboard(gameStats);
-
         // 게임 완료 여부에 따라 제목 동적 변경
         const titleElement = this.defeatModal?.querySelector('h2[data-i18n]');
         if (titleElement) {
@@ -432,10 +429,17 @@ class VictoryDefeatModal {
             }
         }
 
-        // 모달 표시
+        // ✅ 모달을 먼저 표시 (UX 개선: 빈 화면 제거)
         if (this.defeatModal) {
             this.defeatModal.classList.remove('hidden');
         }
+
+        // 🏆 리더보드 자동 등록 및 순위 조회 (백그라운드에서 non-blocking 실행)
+        // "계산 중..." 초기 상태는 populateGameStats()에서 이미 설정됨 (line 491)
+        this.submitToLeaderboard(gameStats).catch(error => {
+            console.error('[VictoryDefeatModal] Background leaderboard submit failed:', error);
+            // 에러 시 순위 표시를 "-"로 설정 (submitToLeaderboard 내부에서 처리됨)
+        });
     }
 
     /**
@@ -1754,13 +1758,15 @@ class VictoryDefeatModal {
             return;
         }
 
-        // LeaderboardClient 인스턴스 생성
-        if (!this.leaderboardClient) {
-            this.leaderboardClient = new LeaderboardClient();
+        // LeaderboardClient 인스턴스 (전역 인스턴스 재사용)
+        if (!window.leaderboardClient) {
+            window.leaderboardClient = new LeaderboardClient();
         }
+        this.leaderboardClient = window.leaderboardClient;
 
         try {
             // 제출 데이터 구성
+            const finalHand = this.gameManager?.player?.hand || [];
             const submitData = {
                 playerName: this.gameManager?.player?.name || 'Unknown',
                 finalStage: gameStats?.finalStage || 1,
@@ -1768,8 +1774,9 @@ class VictoryDefeatModal {
                 totalDamageDealt: gameStats?.totalDamageDealt || 0,
                 totalDamageReceived: gameStats?.totalDamageReceived || 0,
                 totalDefenseBuilt: gameStats?.totalDefenseBuilt || 0,
-                playStyle: gameStats?.playStyle || 'balanced',
-                isGameComplete: gameStats?.isGameComplete || false
+                isGameComplete: gameStats?.isGameComplete || false,
+                defenseElement: GameConfig?.utils?.calculateDefenseElement(finalHand) || 'normal',
+                finalHand: finalHand
             };
 
             // 리더보드에 제출
@@ -1806,10 +1813,9 @@ class VictoryDefeatModal {
                 // 에러 처리
                 if (this.defeatPlayStyle) {
                     if (submitResult.error === 'cooldown') {
-                        const cooldownText = I18nHelper.getText('leaderboard.cooldown', {
-                            seconds: submitResult.remainingSeconds
-                        }) || `Wait ${submitResult.remainingSeconds}s`;
-                        this.defeatPlayStyle.textContent = cooldownText;
+                        // Cooldown 중에는 제출하지 않음 - 조용히 "-" 표시
+                        console.log('[VictoryDefeatModal] Cooldown active, skipping rank display');
+                        this.defeatPlayStyle.textContent = '-';
                     } else {
                         this.defeatPlayStyle.textContent = I18nHelper.getText('leaderboard.submit_failed') || 'Submit failed';
                     }

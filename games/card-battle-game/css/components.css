@@ -640,6 +640,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
+
 /* 반응형 유틸리티 클래스 */
 .mobile-only {
     display: none;
@@ -2792,5 +2793,60 @@
     .leaderboard-table th,
     .leaderboard-table td {
         padding: 8px 5px;
+    }
+}
+
+/* =================================
+   Enlarged Card Overlay (손패 확대 표시)
+   ================================= */
+.enlarged-card-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    cursor: pointer;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.enlarged-card-overlay .dom-card {
+    transform: scale(1.5);
+    pointer-events: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Hand Card Wrapper (손패 그리드 카드) */
+.hand-card-wrapper {
+    position: relative;
+    transition: transform 0.2s ease-out;
+}
+
+.hand-card-wrapper:hover {
+    transform: translateY(-5px);
+}
+
+.hand-card-wrapper canvas {
+    display: block;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    transition: border-color 0.2s ease-out;
+}
+
+.hand-card-wrapper:hover canvas {
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
     }
 }
