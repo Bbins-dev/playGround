@@ -69,6 +69,10 @@
     --modal-defeat-width: 720px;
     --modal-defeat-height: 1230px;
     --modal-defeat-padding: 25px;
+
+    --modal-leaderboard-width: 800px;
+    --modal-leaderboard-height: 1200px;
+    --modal-leaderboard-padding: 30px;
 }
 
 * {
