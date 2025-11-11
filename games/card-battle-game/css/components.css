@@ -2640,31 +2640,30 @@
    글로벌 리더보드 모달 스타일
    ============================================ */
 
-/* 리더보드 모달 컨텐츠 (기존 glass-morphism 스타일 재사용) */
+/* 리더보드 모달 컨텐츠 - Configuration-Driven (반응형 제거) */
 .leaderboard-modal-content {
-    width: 800px;
-    max-width: 95vw;
-    max-height: 90vh;
-    overflow-y: auto;
-    padding: 30px;
+    width: var(--modal-leaderboard-width);
+    height: var(--modal-leaderboard-height);
+    padding: var(--modal-leaderboard-padding);
+    overflow: hidden;
 }
 
 /* 제목 스타일 (기존 패턴 따름) */
 .leaderboard-modal-content h2 {
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 19px;
     font-size: 28px;
     color: var(--glass-text-primary, #ffffff);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* 리더보드 테이블 컨테이너 */
+/* 리더보드 테이블 컨테이너 - 22행 정확히 표시 (967px = 헤더 43px + 22행×42px) */
 .leaderboard-table-container {
     width: 100%;
-    max-height: 550px;
+    max-height: 967px;
     overflow-y: auto;
     overflow-x: auto;
-    margin-bottom: 20px;
+    margin-bottom: 14px;
     border-radius: 10px;
     background: rgba(0, 0, 0, 0.2);
 }
@@ -2777,23 +2776,6 @@
     display: block;
     margin: 0 auto;
     min-width: 150px;
-}
-
-/* 반응형: 모바일 */
-@media (max-width: 768px) {
-    .leaderboard-modal-content {
-        width: 95vw;
-        padding: 20px;
-    }
-    
-    .leaderboard-table {
-        font-size: 12px;
-    }
-    
-    .leaderboard-table th,
-    .leaderboard-table td {
-        padding: 8px 5px;
-    }
 }
 
 /* =================================
