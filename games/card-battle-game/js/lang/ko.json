@@ -1002,7 +1002,7 @@
     "tbd": "미정"
   },
   "leaderboard": {
-    "title": "글로벌 리더보드",
+    "title": "전세계 순위",
     "rank": "순위",
     "player_name": "플레이어",
     "final_stage": "스테이지",
@@ -1032,6 +1032,12 @@
     "today": "오늘",
     "yesterday": "어제",
     "days_ago": "{days}일 전",
-    "error": "오류"
+    "error": "오류",
+    "click_to_view_hand": "클릭하여 손패 보기",
+    "hand_title": "{name}님의 최종 손패 (#{rank}위)",
+    "stage": "스테이지",
+    "turns": "턴수",
+    "no_hand_data": "손패 데이터 없음",
+    "stage_cleared": "(완)"
   }
 }

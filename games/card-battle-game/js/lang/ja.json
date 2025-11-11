@@ -1003,7 +1003,7 @@
     "tbd": "未定"
   },
   "leaderboard": {
-    "title": "グローバルリーダーボード",
+    "title": "世界ランキング",
     "rank": "順位",
     "player_name": "プレイヤー",
     "final_stage": "ステージ",
@@ -1033,6 +1033,12 @@
     "today": "今日",
     "yesterday": "昨日",
     "days_ago": "{days}日前",
-    "error": "エラー"
+    "error": "エラー",
+    "click_to_view_hand": "クリックして手札を表示",
+    "hand_title": "{name}さんの最終手札 (#{rank}位)",
+    "stage": "ステージ",
+    "turns": "ターン数",
+    "no_hand_data": "手札データなし",
+    "stage_cleared": "(完)"
   }
 }
