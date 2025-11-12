@@ -138,7 +138,7 @@
         "burn": "火傷",
         "burn_description": "ターン開始時に5の火傷ダメージを受けます。防御力を無視します。",
         "ignition": "発火",
-        "ignition_description": "炎攻撃カードからスタック毎に3倍のダメージを受けます。",
+        "ignition_description": "炎攻撃カードからスタック毎に10倍のダメージを受けます。",
         "poisoned": "毒",
         "poisoned_description": "ターン終了時に残りターン数分のダメージを受けます。",
         "sand": "砂",
@@ -488,7 +488,7 @@
         },
         "ignite": {
           "name": "発火",
-          "description": "自分の防御属性が{fire}の場合、発動時に1ターンの間相手を{status:ignition}状態にします。{fire}{cardType:attack}カードに{status:ignition}のスタック毎に3倍ずつ追加のダメージを与えます。"
+          "description": "自分の防御属性が{fire}の場合、発動時に1ターンの間相手を{status:ignition}状態にします。{fire}{cardType:attack}カードに{status:ignition}のスタック毎に10倍ずつ追加のダメージを与えます。"
         },
         "insult": {
           "name": "侮辱",
@@ -793,7 +793,7 @@
         "wet_extended": "💧 濡れ+{value}ターン!",
         "paralysis_extended": "⚡ 麻痺+{value}ターン!",
         "sand_extended": "💨 砂+{value}ターン!",
-        "ignition_stacked": "🔆 {statusName}×{multiplier}!",
+        "ignition_stacked": "🔆 {statusName} +1!",
         "burn_damage": "🔥 火傷で{value}ダメージ！",
         "buff_gained": "{name} +{value}",
         "buff_gained_turns": "{name} +{value}ターン!",
@@ -1027,6 +1027,10 @@
     "your_rank": "#{rank}",
     "rank_unknown": "-",
     "my_rank": "自分の順位: #{rank}位",
+    "first_page": "最初",
+    "last_page": "最後",
+    "prev_10": "←10",
+    "next_10": "10→",
     "prev_page": "前へ",
     "next_page": "次へ",
     "page_info": "{current} / {total}",

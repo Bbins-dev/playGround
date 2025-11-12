@@ -138,7 +138,7 @@
         "burn": "Burn",
         "burn_description": "Takes 5 burn damage at turn start. Ignores defense.",
         "ignition": "Ignition",
-        "ignition_description": "Takes 3x damage per stack from fire attack cards.",
+        "ignition_description": "Takes 10x damage per stack from fire attack cards.",
         "poisoned": "Poison",
         "poisoned_description": "Take damage equal to remaining turns at turn end.",
         "sand": "Sand",
@@ -488,7 +488,7 @@
         },
         "ignite": {
           "name": "Ignite",
-          "description": "If your defense element is {fire}, inflicts {status:ignition} on the target for 1 turn. {fire} {cardType:attack} cards deal +3x damage per {status:ignition} stack."
+          "description": "If your defense element is {fire}, inflicts {status:ignition} on the target for 1 turn. {fire} {cardType:attack} cards deal +10x damage per {status:ignition} stack."
         },
         "insult": {
           "name": "Insult",
@@ -793,7 +793,7 @@
         "wet_extended": "💧 Wet+{value}T!",
         "paralysis_extended": "⚡ Paralysis+{value}T!",
         "sand_extended": "💨 Sand+{value}T!",
-        "ignition_stacked": "🔆 {statusName}×{multiplier}!",
+        "ignition_stacked": "🔆 {statusName} +1!",
         "burn_damage": "🔥 {value} burn damage!",
         "buff_gained": "{name} +{value}",
         "buff_gained_turns": "{name} +{value}T!",
@@ -1027,6 +1027,10 @@
     "your_rank": "#{rank}",
     "rank_unknown": "-",
     "my_rank": "My Rank: #{rank}",
+    "first_page": "First",
+    "last_page": "Last",
+    "prev_10": "←10",
+    "next_10": "10→",
     "prev_page": "Previous",
     "next_page": "Next",
     "page_info": "{current} / {total}",
