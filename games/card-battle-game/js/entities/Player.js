@@ -903,15 +903,6 @@ class Player {
                     // 마비 아닐 때는 그대로 유지 (정전기 + 힘만 반영됨)
                 }
 
-                // 발화 상태 추가 데미지 (불 공격 카드만, 적이 발화 상태일 때 3*stacks 배)
-                if (card.element === 'fire' && card.type === 'attack' && target) {
-                    const multiplier = target.getIgnitionMultiplier();
-                    if (multiplier > 1) {
-                        buffedPower = Math.floor(buffedPower * multiplier);
-                    }
-                    // 발화 없을 때는 그대로 유지 (multiplier === 1)
-                }
-
                 // ice_breaker 카드: 적이 frozen 상태일 때 적 최대 HP의 20% (고정 피해)
                 if (card.id === 'ice_breaker' && target) {
                     const hasFrozen = target.hasStatusEffect('frozen');
@@ -941,6 +932,15 @@ class Player {
 
                 // 질량 버프 적용 (물 속성만, 현재 HP의 15% × 스택)
                 buffedPower += this.getMassBonus(card.element);
+
+                // 발화 상태 추가 데미지 (불 공격 카드만, 적이 발화 상태일 때 3*stacks 배)
+                if (card.element === 'fire' && card.type === 'attack' && target) {
+                    const multiplier = target.getIgnitionMultiplier();
+                    if (multiplier > 1) {
+                        buffedPower = Math.floor(buffedPower * multiplier);
+                    }
+                    // 발화 없을 때는 그대로 유지 (multiplier === 1)
+                }
 
                 // ★ 5단계: 열풍 버프 적용 (불 속성만, 곱셈)
                 if (card.element === 'fire' && this.hasHotWindBuff()) {
