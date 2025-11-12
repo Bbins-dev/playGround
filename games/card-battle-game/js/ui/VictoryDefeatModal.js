@@ -60,6 +60,9 @@ class VictoryDefeatModal {
 
         this.viewOnlyMode = false; // 손패 확인 전용 모드 플래그
 
+        // ★ 중복 제출 방지 플래그 (치트 방지)
+        this._hasSubmittedToLeaderboard = false;
+
         // Canvas 요소들
         this.rewardCanvases = [];
         this.selectedCardCanvas = null;
@@ -386,6 +389,13 @@ class VictoryDefeatModal {
      * @param {Function} mainMenuCallback - 메인 메뉴로 버튼 클릭 시 호출할 콜백
      */
     async showDefeat(gameStats, restartCallback, mainMenuCallback) {
+        // ★ 중복 제출 방지 가드 (같은 게임에서 여러 번 호출 방지)
+        if (this._hasSubmittedToLeaderboard) {
+            console.warn('[VictoryDefeatModal] 중복 제출 방지: showDefeat()이 이미 호출되었습니다.');
+            return;
+        }
+        this._hasSubmittedToLeaderboard = true;
+
         // 상태이상 효과 제거
         this.clearStatusEffects();
 
@@ -764,6 +774,9 @@ class VictoryDefeatModal {
         }
         this.onDefeatRestart = null;
         this.onDefeatMainMenu = null;
+
+        // ★ 중복 제출 방지 플래그 리셋 (다음 게임을 위해)
+        this._hasSubmittedToLeaderboard = false;
 
         // ★ DOM 무결성 검사 타이머 정리 (메모리 누수 방지)
         this.cleanupDOMIntegrityCheck();
