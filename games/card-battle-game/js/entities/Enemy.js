@@ -81,7 +81,7 @@ class Enemy extends Player {
     }
 
     // 적 덱 구성 (스테이지별)
-    buildDeck() {
+    buildDeck(forcedDeckIndex = null) {
         this.hand = [];
 
         // 1. 랜덤 인카운터 시스템 체크 (최우선)
@@ -90,9 +90,16 @@ class Enemy extends Player {
             const stageEncounter = randomEncounters.stages[this.stage];
             const deckPool = stageEncounter.deckPool || [];
 
-            // 덱 풀이 비어있지 않으면 랜덤 선택
+            // 덱 풀이 비어있지 않으면 랜덤 선택 (또는 강제 인덱스 사용)
             if (deckPool.length > 0) {
-                const randomIndex = Math.floor(Math.random() * deckPool.length);
+                // 강제 인덱스가 있으면 사용, 없으면 랜덤 선택
+                const randomIndex = forcedDeckIndex !== null && forcedDeckIndex >= 0 && forcedDeckIndex < deckPool.length
+                    ? forcedDeckIndex
+                    : Math.floor(Math.random() * deckPool.length);
+
+                // 선택된 인덱스 저장 (세이브 시스템용)
+                this.selectedDeckIndex = randomIndex;
+
                 const selectedDeck = deckPool[randomIndex];
 
                 // 선택된 덱의 카드 구성 적용
