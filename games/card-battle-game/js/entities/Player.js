@@ -835,6 +835,7 @@ class Player {
             // 공격력 계산 (공격 카드만)
             if (card.type === 'attack') {
                 let buffedPower = card.power;
+                let skipGeneralBuffs = false;  // 일반 버프 계산 스킵 플래그
 
                 // ★ 1단계: 정전기 버프 적용 (전기 속성만, 가장 먼저!)
                 if (card.element === 'electric' && this.hasStaticBuff()) {
@@ -852,14 +853,17 @@ class Player {
                 if (card.id === 'freezing_wind' && target) {
                     const wetEffect = target.statusEffects?.find(e => e.type === 'wet');
                     const wetTurns = wetEffect ? wetEffect.turnsLeft : 0;
-                    buffedPower = wetTurns * 10;
 
-                    // 조건 미충족 시 버프 계산 건너뛰기 (질량 버프 등 미적용)
                     if (wetTurns === 0) {
+                        // 조건 미충족: 0 데미지, 모든 버프 스킵
+                        buffedPower = 0;
                         card.buffedPower = 0;
-                        return;
+                        skipGeneralBuffs = true;
+                    } else {
+                        // 조건 충족: 젖음 턴수 × 10 + 힘 버프, 이후 질량/강화 버프 계속 적용
+                        buffedPower = wetTurns * 10 + this.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1);
+                        skipGeneralBuffs = false;
                     }
-                    // 조건 충족 시 계속 진행하여 버프 적용
                 }
 
                 // toxic_blast 카드: 적의 중독 잔여 턴 × 1 (동적 계산)
@@ -903,68 +907,70 @@ class Player {
                     // 마비 아닐 때는 그대로 유지 (정전기 + 힘만 반영됨)
                 }
 
-                // ice_breaker 카드: 적이 frozen 상태일 때 적 최대 HP의 20% (고정 피해)
+                // ice_breaker 카드: 적이 frozen 상태일 때 적 최대 HP의 25% (고정 피해)
                 if (card.id === 'ice_breaker' && target) {
                     const hasFrozen = target.hasStatusEffect('frozen');
-                    buffedPower = hasFrozen ? Math.floor(target.maxHP * 0.2) : 0;
+                    const damagePercent = GameConfig?.cardEffects?.iceBreaker?.damagePercent || 25;
+                    buffedPower = hasFrozen ? Math.floor(target.maxHP * (damagePercent / 100)) : 0;
                     card.buffedPower = buffedPower;
-                    return; // 고정 피해이므로 버프 계산 건너뛰기
+                    skipGeneralBuffs = true; // 고정 피해이므로 일반 버프 계산 건너뛰기
                 }
 
                 // shield_bash 카드: 자신의 현재 방어력만큼 피해 (동적 계산, 버프 무시)
                 if (card.id === 'shield_bash') {
                     buffedPower = this.defense || 0;  // 현재 방어력만 사용
                     card.buffedPower = buffedPower;
-                    return;  // 버프 계산 건너뛰기 (힘, 강화, 리튬 등 모두 무시)
+                    skipGeneralBuffs = true;  // 일반 버프 계산 건너뛰기 (힘, 강화, 리튬 등 모두 무시)
                 }
 
                 // counter_attack 카드: 마지막 받은 대미지의 2배 (동적 계산, 버프 무시)
                 if (card.id === 'counter_attack') {
                     buffedPower = (this.lastDamageTaken || 0) * 2;  // 받은 대미지 × 2만 사용
                     card.buffedPower = buffedPower;
-                    return;  // 버프 계산 건너뛰기 (힘, 강화, 리튬 등 모두 무시)
+                    skipGeneralBuffs = true;  // 일반 버프 계산 건너뛰기 (힘, 강화, 리튬 등 모두 무시)
                 }
 
-                // ★ 4단계: 속성 보너스 덧셈
+                // ★ 4단계: 속성 보너스 덧셈 (특수 카드가 아닐 때만)
+                if (!skipGeneralBuffs) {
+                    // 냄새 버프 적용 (불 속성만)
+                    buffedPower += this.getScentBonus(card.element);
 
-                // 냄새 버프 적용 (불 속성만)
-                buffedPower += this.getScentBonus(card.element);
+                    // 질량 버프 적용 (물 속성만, 현재 HP의 15% × 스택)
+                    buffedPower += this.getMassBonus(card.element);
 
-                // 질량 버프 적용 (물 속성만, 현재 HP의 15% × 스택)
-                buffedPower += this.getMassBonus(card.element);
-
-                // 발화 상태 추가 데미지 (불 공격 카드만, 적이 발화 상태일 때 3*stacks 배)
-                if (card.element === 'fire' && card.type === 'attack' && target) {
-                    const multiplier = target.getIgnitionMultiplier();
-                    if (multiplier > 1) {
-                        buffedPower = Math.floor(buffedPower * multiplier);
+                    // 발화 상태 추가 데미지 (불 공격 카드만, 적이 발화 상태일 때 3*stacks 배)
+                    if (card.element === 'fire' && card.type === 'attack' && target) {
+                        const multiplier = target.getIgnitionMultiplier();
+                        if (multiplier > 1) {
+                            buffedPower = Math.floor(buffedPower * multiplier);
+                        }
+                        // 발화 없을 때는 그대로 유지 (multiplier === 1)
                     }
-                    // 발화 없을 때는 그대로 유지 (multiplier === 1)
-                }
 
-                // ★ 5단계: 열풍 버프 적용 (불 속성만, 곱셈)
-                if (card.element === 'fire' && this.hasHotWindBuff()) {
-                    const fireAttackCount = this.hand.filter(c =>
-                        c.type === 'attack' && c.element === 'fire'
-                    ).length;
-                    if (fireAttackCount > 0) {
-                        buffedPower = Math.floor(buffedPower * fireAttackCount);
+                    // ★ 5단계: 열풍 버프 적용 (불 속성만, 곱셈)
+                    if (card.element === 'fire' && this.hasHotWindBuff()) {
+                        const fireAttackCount = this.hand.filter(c =>
+                            c.type === 'attack' && c.element === 'fire'
+                        ).length;
+                        if (fireAttackCount > 0) {
+                            buffedPower = Math.floor(buffedPower * fireAttackCount);
+                        }
                     }
-                }
 
-                // ★ 6단계: 최종 곱셈 버프들
-                // 강화 버프 적용 (1.5배)
-                if (this.hasEnhanceBuff()) {
-                    buffedPower = Math.floor(buffedPower * (GameConfig?.constants?.multipliers?.buffMultiplier || 1.5));
-                }
+                    // ★ 6단계: 최종 곱셈 버프들
+                    // 강화 버프 적용 (1.5배)
+                    if (this.hasEnhanceBuff()) {
+                        buffedPower = Math.floor(buffedPower * (GameConfig?.constants?.multipliers?.buffMultiplier || 1.5));
+                    }
 
-                // Li⁺ 버프 적용 (불, 전기 속성 공격 카드, 턴수만큼 곱셈)
-                if ((card.element === 'fire' || card.element === 'electric') && this.hasLithiumBuff && this.hasLithiumBuff()) {
-                    const lithiumMultiplier = this.getLithiumTurns();
-                    buffedPower = Math.floor(buffedPower * lithiumMultiplier);
-                }
+                    // Li⁺ 버프 적용 (불, 전기 속성 공격 카드, 턴수만큼 곱셈)
+                    if ((card.element === 'fire' || card.element === 'electric') && this.hasLithiumBuff && this.hasLithiumBuff()) {
+                        const lithiumMultiplier = this.getLithiumTurns();
+                        buffedPower = Math.floor(buffedPower * lithiumMultiplier);
+                    }
 
-                card.buffedPower = buffedPower;
+                    card.buffedPower = buffedPower;
+                }
             } else if (card.type === 'heal') {
                 // 회복 카드 처리
                 let buffedHealAmount = card.healAmount || card.power || 0;
@@ -1045,43 +1051,34 @@ class Player {
             }
 
             // 명중률 계산 (Card.checkAccuracy 로직과 동일)
+            // 계산 순서: 1) 디버프(상태이상) 먼저 → 2) 버프 나중 (곱셈 순서 중요!)
             let modifiedAccuracy = card.accuracy;
 
-            // 모래 상태이상 체크 (공격 카드만) - 곱셈 방식으로 감소 (소수점 버림)
-            if (card.type === 'attack' && this.hasStatusEffect('sand')) {
-                const sandEffect = this.statusEffects.find(e => e.type === 'sand');
-                if (sandEffect) {
-                    modifiedAccuracy = Math.max(0, Math.floor(modifiedAccuracy * (1 - sandEffect.power / 100)));
-                }
-            }
+            // 상태이상 디버프 적용 (GameConfig 기반) - 곱셈 방식으로 감소 (소수점 버림)
+            // 중요: 각 상태이상은 1번씩만 적용 (find()로 첫 번째만 찾음)
+            // 복합 적용: sand(-30%) + frozen(-50%) = 80% → 56% → 28% (순차 곱셈)
+            const statusEffectTypes = ['sand', 'insult', 'slow', 'frozen'];
+            statusEffectTypes.forEach(effectType => {
+                if (!this.hasStatusEffect(effectType)) return;
 
-            // 모욕 상태이상 체크 (방어 카드만) - 곱셈 방식으로 감소 (소수점 버림)
-            if (card.type === 'defense' && this.hasStatusEffect('insult')) {
-                const insultEffect = this.statusEffects.find(e => e.type === 'insult');
-                if (insultEffect) {
-                    modifiedAccuracy = Math.max(0, Math.floor(modifiedAccuracy * (1 - insultEffect.power / 100)));
-                }
-            }
+                const statusConfig = GameConfig?.statusEffects?.[effectType];
+                if (!statusConfig?.affectedCardTypes) return;
 
-            // 둔화 상태이상 체크 (상태이상 카드만) - 곱셈 방식으로 감소 (소수점 버림)
-            if (card.type === 'status' && this.hasStatusEffect('slow')) {
-                const slowEffect = this.statusEffects.find(e => e.type === 'slow');
-                if (slowEffect) {
-                    const originalAccuracy = modifiedAccuracy;
-                    modifiedAccuracy = Math.max(0, Math.floor(modifiedAccuracy * (1 - slowEffect.power / 100)));
-                    if (GameConfig?.debugMode?.showStatusEffects) {
-                        console.log(`[둔화] ${card.id}: ${originalAccuracy}% → ${modifiedAccuracy}%`);
+                // 설정에 정의된 카드 타입에만 적용
+                if (statusConfig.affectedCardTypes.includes(card.type)) {
+                    const effect = this.statusEffects.find(e => e.type === effectType);  // 첫 번째만 (중복 방지)
+                    if (effect) {
+                        const reduction = effect.power || statusConfig.defaultReduction || 0;
+                        const originalAccuracy = modifiedAccuracy;
+                        modifiedAccuracy = Math.max(0, Math.floor(modifiedAccuracy * (1 - reduction / 100)));
+
+                        // 디버그 모드 (선택적)
+                        if (GameConfig?.debugMode?.showStatusEffects) {
+                            console.log(`[${statusConfig.name}] ${card.id}: ${originalAccuracy}% → ${modifiedAccuracy}%`);
+                        }
                     }
                 }
-            }
-
-            // 얼음 상태이상 체크 (공격 카드만) - 곱셈 방식으로 감소 (소수점 버림)
-            if (card.type === 'attack' && this.hasStatusEffect('frozen')) {
-                const frozenEffect = this.statusEffects.find(e => e.type === 'frozen');
-                if (frozenEffect) {
-                    modifiedAccuracy = Math.max(0, Math.floor(modifiedAccuracy * (1 - frozenEffect.power / 100)));
-                }
-            }
+            });
 
             // 집중 버프 체크 (노멀 공격 카드만) - 상태이상 적용 후 곱셈 방식으로 증가 (소수점 버림)
             if (card.type === 'attack' && card.element === 'normal' && this.hasFocusBuff()) {

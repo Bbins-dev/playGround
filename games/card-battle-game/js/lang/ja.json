@@ -324,7 +324,7 @@
         },
         "ice_breaker": {
           "name": "氷砕き",
-          "description": "{status:frozen}状態の敵に最大{hp}の20%の固定ダメージを与え、命中時に{status:frozen}状態を解除します。"
+          "description": "{status:frozen}状態の敵に最大{hp}の25%の固定ダメージを与え、命中時に{status:frozen}状態を解除します。"
         },
         "thunder_strike": {
           "name": "サンダーストライク",

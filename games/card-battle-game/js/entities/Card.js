@@ -62,40 +62,28 @@ class Card {
 
     // 명중률 체크 (올바른 구현 확인)
     checkAccuracy(user) {
+        // 계산 순서: 1) 디버프(상태이상) 먼저 → 2) 버프 나중 (곱셈 순서 중요!)
         let actualAccuracy = this.accuracy;
 
+        // 상태이상 디버프 적용 (GameConfig 기반) - 곱셈 방식으로 감소 (소수점 버림)
+        // 중요: 각 상태이상은 1번씩만 적용 (find()로 첫 번째만 찾음)
+        // 복합 적용: sand(-30%) + frozen(-50%) = 80% → 56% → 28% (순차 곱셈)
+        const statusEffectTypes = ['sand', 'insult', 'slow', 'frozen'];
+        statusEffectTypes.forEach(effectType => {
+            if (!user || !user.hasStatusEffect(effectType)) return;
 
-        // 모래 상태이상 체크 (공격 카드만) - 곱셈 방식으로 감소 (소수점 버림)
-        if (this.type === 'attack' && user && user.hasStatusEffect('sand')) {
-            const sandEffect = user.statusEffects.find(e => e.type === 'sand');
-            if (sandEffect) {
-                actualAccuracy = Math.max(0, Math.floor(actualAccuracy * (1 - sandEffect.power / 100)));
-            }
-        }
+            const statusConfig = GameConfig?.statusEffects?.[effectType];
+            if (!statusConfig?.affectedCardTypes) return;
 
-        // 모욕 상태이상 체크 (방어 카드만) - 곱셈 방식으로 감소 (소수점 버림)
-        if (this.type === 'defense' && user && user.hasStatusEffect('insult')) {
-            const insultEffect = user.statusEffects.find(e => e.type === 'insult');
-            if (insultEffect) {
-                actualAccuracy = Math.max(0, Math.floor(actualAccuracy * (1 - insultEffect.power / 100)));
+            // 설정에 정의된 카드 타입에만 적용
+            if (statusConfig.affectedCardTypes.includes(this.type)) {
+                const effect = user.statusEffects.find(e => e.type === effectType);  // 첫 번째만 (중복 방지)
+                if (effect) {
+                    const reduction = effect.power || statusConfig.defaultReduction || 0;
+                    actualAccuracy = Math.max(0, Math.floor(actualAccuracy * (1 - reduction / 100)));
+                }
             }
-        }
-
-        // 둔화 상태이상 체크 (상태이상 카드만) - 곱셈 방식으로 감소 (소수점 버림)
-        if (this.type === 'status' && user && user.hasStatusEffect('slow')) {
-            const slowEffect = user.statusEffects.find(e => e.type === 'slow');
-            if (slowEffect) {
-                actualAccuracy = Math.max(0, Math.floor(actualAccuracy * (1 - slowEffect.power / 100)));
-            }
-        }
-
-        // 얼음 상태이상 체크 (공격 카드만) - 곱셈 방식으로 감소 (소수점 버림)
-        if (this.type === 'attack' && user && user.hasStatusEffect('frozen')) {
-            const frozenEffect = user.statusEffects.find(e => e.type === 'frozen');
-            if (frozenEffect) {
-                actualAccuracy = Math.max(0, Math.floor(actualAccuracy * (1 - frozenEffect.power / 100)));
-            }
-        }
+        });
 
         // 집중 버프 체크 (노멀 공격 카드만) - 상태이상 적용 후 곱셈 방식으로 증가 (소수점 버림)
         if (this.type === 'attack' && this.element === 'normal' && user && user.hasFocusBuff && user.hasFocusBuff()) {

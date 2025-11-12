@@ -719,8 +719,8 @@ const CardDatabase = {
             nameKey: 'auto_battle_card_game.ui.cards.ice_breaker.name',
             type: 'attack',
             element: 'water',
-            power: 0,  // 동적 계산: 적이 frozen 상태일 때 적 최대 HP의 20%
-            accuracy: 80,
+            power: 0,  // 동적 계산: 적이 frozen 상태일 때 적 최대 HP의 25%
+            accuracy: 100,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.ice_breaker.description',
             isFixedDamage: true,  // 고정 피해 (버프 무시)

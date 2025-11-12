@@ -698,6 +698,8 @@ class UIManager {
                     this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
                 }
                 this.toggleElementFilter(element, button);
+                // 모바일에서 포커스 제거 (sticky hover 방지)
+                button.blur();
             });
 
             filterContainer.appendChild(button);

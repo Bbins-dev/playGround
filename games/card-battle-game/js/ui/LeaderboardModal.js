@@ -4,7 +4,8 @@
  */
 
 class LeaderboardModal {
-    constructor() {
+    constructor(gameManager) {
+        this.gameManager = gameManager;
         this.modal = null;
         this.leaderboardClient = null;
         this.currentPage = 1;
@@ -43,7 +44,13 @@ class LeaderboardModal {
         // 닫기 버튼
         const closeBtn = this.modal?.querySelector('.close-btn');
         if (closeBtn) {
-            closeBtn.addEventListener('click', () => this.hide());
+            closeBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.hide();
+            });
         }
 
         // 배경 클릭으로 닫기
@@ -62,27 +69,63 @@ class LeaderboardModal {
         const nextBtn = this.modal?.querySelector('.leaderboard-next-btn');
 
         if (firstBtn) {
-            firstBtn.addEventListener('click', () => this.firstPage());
+            firstBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.firstPage();
+            });
         }
 
         if (lastBtn) {
-            lastBtn.addEventListener('click', () => this.lastPage());
+            lastBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.lastPage();
+            });
         }
 
         if (prev10Btn) {
-            prev10Btn.addEventListener('click', () => this.prev10Pages());
+            prev10Btn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.prev10Pages();
+            });
         }
 
         if (next10Btn) {
-            next10Btn.addEventListener('click', () => this.next10Pages());
+            next10Btn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.next10Pages();
+            });
         }
 
         if (prevBtn) {
-            prevBtn.addEventListener('click', () => this.prevPage());
+            prevBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.prevPage();
+            });
         }
 
         if (nextBtn) {
-            nextBtn.addEventListener('click', () => this.nextPage());
+            nextBtn.addEventListener('click', () => {
+                // 버튼 클릭 사운드 재생
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.nextPage();
+            });
         }
 
         // ESC 키로 닫기
