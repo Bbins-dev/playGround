@@ -880,7 +880,18 @@ class GameManager {
         const enemyNameTemplate = this.i18n?.t('auto_battle_card_game.ui.enemy_name_template') || 'Stage {stage} Enemy';
         const enemyName = enemyNameTemplate.replace('{stage}', stageNumber);
         this.enemy = new Enemy(enemyName, stageNumber);
-        this.enemy.buildDeck();
+
+        // 저장된 덱 인덱스가 있으면 사용, 없으면 랜덤 (세이브-스컴 방지)
+        const savedDeckIndex = this._savedEnemyDeckIndex !== undefined ? this._savedEnemyDeckIndex : null;
+        this.enemy.buildDeck(savedDeckIndex);
+
+        // 새로 랜덤 선택된 경우에만 자동 저장 (로드한 경우는 이미 저장됨)
+        if (savedDeckIndex === null && this.enemy.selectedDeckIndex !== undefined) {
+            this.saveGameData();
+        }
+
+        // 사용 후 초기화 (다음 스테이지는 랜덤)
+        this._savedEnemyDeckIndex = null;
 
         // 적 생성 완료 후 전투 화면으로 전환
         this.switchScreen('battle');
@@ -1167,8 +1178,13 @@ class GameManager {
         const enemyName = enemyNameTemplate.replace('{stage}', this.currentStage);
         this.enemy = new Enemy(enemyName, this.currentStage);
 
-        // 적 덱 구성
-        this.enemy.buildDeck();
+        // 적 덱 구성 (정상 진행은 항상 랜덤)
+        this.enemy.buildDeck(null);
+
+        // 적 덱 결정 후 즉시 자동 저장 (세이브-스컴 방지)
+        if (this.enemy.selectedDeckIndex !== undefined) {
+            this.saveGameData();
+        }
 
         // 스테이지 인디케이터 업데이트
         if (this.uiManager) {
@@ -1833,8 +1849,18 @@ class GameManager {
                 this.gameStats.isGameComplete = saveData.gameStats.isGameComplete || false;
             }
 
+            // 적 덱 인덱스 복원 (세이브-스컴 방지)
+            if (saveData.enemyDeck?.selectedDeckIndex !== null && saveData.enemyDeck?.selectedDeckIndex !== undefined) {
+                this._savedEnemyDeckIndex = saveData.enemyDeck.selectedDeckIndex;
+            } else {
+                this._savedEnemyDeckIndex = null;
+            }
+
             if (config?.logSaveErrors) {
                 console.log('[SaveSystem] 게임 로드 완료 - Stage', this.currentStage);
+                if (this._savedEnemyDeckIndex !== null) {
+                    console.log('[SaveSystem] 적 덱 인덱스 복원:', this._savedEnemyDeckIndex);
+                }
             }
 
             // 다음 스테이지 시작
@@ -1968,6 +1994,11 @@ class GameManager {
                     statusDamage: this.gameStats.statusDamage || 0,
                     playStyle: this.gameStats.playStyle || 'balanced',
                     isGameComplete: this.gameStats.isGameComplete || false
+                } : null,
+                // 적 덱 정보 저장 (세이브-스컴 방지)
+                enemyDeck: this.enemy ? {
+                    selectedDeckIndex: this.enemy.selectedDeckIndex ?? null,
+                    stage: this.enemy.stage
                 } : null,
                 timestamp: Date.now()
             };
