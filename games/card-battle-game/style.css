@@ -2771,13 +2771,15 @@ body[data-game-state="menu"] .game-wrapper.status-border-oblivion {
     opacity: var(--filter-default-opacity, 0.7);
 }
 
-/* 필터 버튼 호버 상태 */
-.element-filter-btn:hover {
-    background: var(--filter-hover-bg, rgba(255, 255, 255, 0.25));
-    border: var(--filter-hover-border, 2px solid rgba(255, 255, 255, 0.5));
-    box-shadow: var(--filter-hover-shadow, 0 4px 12px rgba(0, 0, 0, 0.4));
-    opacity: var(--filter-hover-opacity, 1);
-    transform: var(--filter-hover-transform, scale(1.05));
+/* 필터 버튼 호버 상태 (마우스가 있는 기기에만 적용) */
+@media (hover: hover) {
+    .element-filter-btn:hover {
+        background: var(--filter-hover-bg, rgba(255, 255, 255, 0.25));
+        border: var(--filter-hover-border, 2px solid rgba(255, 255, 255, 0.5));
+        box-shadow: var(--filter-hover-shadow, 0 4px 12px rgba(0, 0, 0, 0.4));
+        opacity: var(--filter-hover-opacity, 1);
+        transform: var(--filter-hover-transform, scale(1.05));
+    }
 }
 
 /* 필터 버튼 활성화 상태 */

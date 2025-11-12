@@ -324,7 +324,7 @@
         },
         "ice_breaker": {
           "name": "얼음깨기",
-          "description": "{status:frozen} 상태의 적에게 적 최대 {hp}의 20%에 해당하는 고정 피해를 입히고 명중 시 {status:frozen} 상태를 없앱니다."
+          "description": "{status:frozen} 상태의 적에게 적 최대 {hp}의 25%에 해당하는 고정 피해를 입히고 명중 시 {status:frozen} 상태를 없앱니다."
         },
         "thunder_strike": {
           "name": "번개일격",

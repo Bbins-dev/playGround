@@ -825,6 +825,7 @@ const GameConfig = {
             name: '모래',
             emoji: '💨',
             description: '공격 카드의 명중률 30% 감소',
+            affectedCardTypes: ['attack'],  // 영향받는 카드 타입 (Configuration-Driven)
             get defaultReduction() { return GameConfig.constants.probabilities.statusReduction; },
             duration: 1,
             canExtend: true,                                        // 턴 중첩 가능 (억제제/촉진제 영향)
@@ -836,6 +837,7 @@ const GameConfig = {
             name: '모욕',
             emoji: '😤',
             description: '방어 카드의 발동률 30% 감소',
+            affectedCardTypes: ['defense'],  // 영향받는 카드 타입 (Configuration-Driven)
             get defaultReduction() { return GameConfig.constants.probabilities.statusReduction; },
             duration: 2,
             get color() { return GameConfig.masterColors.statusEffects.insult; }
@@ -846,6 +848,7 @@ const GameConfig = {
             name: '둔화',
             emoji: '🐢',
             description: '상태이상 카드의 발동률 30% 감소',
+            affectedCardTypes: ['status'],  // 영향받는 카드 타입 (Configuration-Driven)
             get defaultReduction() { return GameConfig.constants.probabilities.statusReduction; },
             duration: 2,
             get color() { return GameConfig.masterColors.statusEffects.slow; }
@@ -875,6 +878,7 @@ const GameConfig = {
             name: '얼음',
             emoji: '❄️',
             description: '공격 카드의 명중률이 50% 감소합니다.',
+            affectedCardTypes: ['attack'],  // 영향받는 카드 타입 (Configuration-Driven)
             defaultReduction: 50,
             duration: 1,
             get color() { return GameConfig.masterColors.statusEffects.frozen; }
@@ -5246,6 +5250,10 @@ const GameConfig = {
         // 회복의 샘 카드 설정
         healingSpring: {
             healAmount: 10    // 젖음 상태일 때 회복량
+        },
+        // 얼음깨기 카드 설정
+        iceBreaker: {
+            damagePercent: 25  // 적 최대 HP의 25% (고정 피해, 버프 무시)
         },
         // 물장구 카드 설정
         waterPlay: {

@@ -324,7 +324,7 @@
         },
         "ice_breaker": {
           "name": "Ice Breaker",
-          "description": "Deal fixed damage equal to 20% of enemy's max {hp} to {status:frozen} enemies and remove {status:frozen} on hit."
+          "description": "Deal fixed damage equal to 25% of enemy's max {hp} to {status:frozen} enemies and remove {status:frozen} on hit."
         },
         "thunder_strike": {
           "name": "Thunder Strike",

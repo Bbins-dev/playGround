@@ -737,7 +737,7 @@ class MainMenu {
         if (!window.leaderboardModal) {
             // 인스턴스 생성
             if (window.LeaderboardModal) {
-                window.leaderboardModal = new LeaderboardModal();
+                window.leaderboardModal = new LeaderboardModal(this.gameManager);
             } else {
                 console.error('[MainMenu] LeaderboardModal class not loaded');
                 return;
