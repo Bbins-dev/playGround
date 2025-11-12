@@ -138,7 +138,7 @@
         "burn": "화상",
         "burn_description": "턴 시작 시 5의 화상 대미지를 받습니다. 방어력을 무시합니다.",
         "ignition": "발화",
-        "ignition_description": "불 공격카드의 공격에 중첩당 3배씩 피해를 입습니다.",
+        "ignition_description": "불 공격카드의 공격에 중첩당 10배씩 피해를 입습니다.",
         "poisoned": "중독",
         "poisoned_description": "턴 종료 시 남은 턴수만큼 피해를 받습니다.",
         "sand": "모래",
@@ -488,7 +488,7 @@
         },
         "ignite": {
           "name": "발화",
-          "description": "자신의 방어속성이 {fire}일 경우 발동 시 한 턴 간 적을 {status:ignition}시킵니다. {fire}{cardType:attack}카드에 {status:ignition} 중첩당 3배씩 피해 증가를 입게 합니다."
+          "description": "자신의 방어속성이 {fire}일 경우 발동 시 한 턴 간 적을 {status:ignition}시킵니다. {fire}{cardType:attack}카드에 {status:ignition} 중첩당 10배씩 피해 증가를 입게 합니다."
         },
         "insult": {
           "name": "모욕",
@@ -793,7 +793,7 @@
         "wet_extended": "💧 젖음+{value}턴!",
         "paralysis_extended": "⚡ 마비+{value}턴!",
         "sand_extended": "💨 모래+{value}턴!",
-        "ignition_stacked": "🔆 {statusName}×{multiplier}!",
+        "ignition_stacked": "🔆 {statusName} +1!",
         "burn_damage": "🔥 화상으로 {value} 피해!",
         "buff_gained": "{name} +{value}",
         "buff_gained_turns": "{name} +{value}턴!",
@@ -1026,6 +1026,10 @@
     "your_rank": "#{rank}",
     "rank_unknown": "-",
     "my_rank": "내 순위: #{rank}",
+    "first_page": "맨처음",
+    "last_page": "맨끝",
+    "prev_10": "←10",
+    "next_10": "10→",
     "prev_page": "이전",
     "next_page": "다음",
     "page_info": "{current} / {total}",

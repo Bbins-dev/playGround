@@ -1343,8 +1343,7 @@ class BattleSystem {
         if (result.success) {
             // 성공 - 상태이상 적용됨
             if (result.stacked) {
-                // 강도 기반 중첩 (발화) - 배수 표시
-                const multiplier = target.getIgnitionMultiplier();
+                // 강도 기반 중첩 (발화) - 스택 증가 (+1)
                 const statusConfig = GameConfig.statusEffects[statusInfo.type];
                 const statusName = statusConfig?.nameKey && typeof I18nHelper !== 'undefined' ?
                     I18nHelper.getText(statusConfig.nameKey) || statusConfig.name :
@@ -1354,7 +1353,7 @@ class BattleSystem {
                     targetPosition,
                     'ignition_stacked',
                     null,
-                    { statusName, multiplier }
+                    { statusName }
                 );
             } else if (result.extended) {
                 // 연장 가능한 상태이상(화상, 중독) - xxx_extended 템플릿 사용
