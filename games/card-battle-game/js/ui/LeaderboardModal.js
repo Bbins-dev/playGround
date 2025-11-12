@@ -53,9 +53,29 @@ class LeaderboardModal {
             }
         });
 
-        // 이전/다음 페이지 버튼
+        // 페이지네이션 버튼
+        const firstBtn = this.modal?.querySelector('.leaderboard-first-btn');
+        const lastBtn = this.modal?.querySelector('.leaderboard-last-btn');
+        const prev10Btn = this.modal?.querySelector('.leaderboard-prev10-btn');
+        const next10Btn = this.modal?.querySelector('.leaderboard-next10-btn');
         const prevBtn = this.modal?.querySelector('.leaderboard-prev-btn');
         const nextBtn = this.modal?.querySelector('.leaderboard-next-btn');
+
+        if (firstBtn) {
+            firstBtn.addEventListener('click', () => this.firstPage());
+        }
+
+        if (lastBtn) {
+            lastBtn.addEventListener('click', () => this.lastPage());
+        }
+
+        if (prev10Btn) {
+            prev10Btn.addEventListener('click', () => this.prev10Pages());
+        }
+
+        if (next10Btn) {
+            next10Btn.addEventListener('click', () => this.next10Pages());
+        }
 
         if (prevBtn) {
             prevBtn.addEventListener('click', () => this.prevPage());
@@ -209,7 +229,7 @@ class LeaderboardModal {
         const stageCell = document.createElement('td');
         stageCell.textContent = record.final_stage;
         if (record.is_game_complete) {
-            const clearedText = this.i18n.getMessage('leaderboard.stage_cleared') || '(Clr)';
+            const clearedText = I18nHelper.getText('leaderboard.stage_cleared') || ' (Clr)';
             stageCell.textContent += clearedText;
         }
         row.appendChild(stageCell);
@@ -263,6 +283,10 @@ class LeaderboardModal {
      */
     updatePagination() {
         const pageInfo = this.modal?.querySelector('.leaderboard-page-info');
+        const firstBtn = this.modal?.querySelector('.leaderboard-first-btn');
+        const lastBtn = this.modal?.querySelector('.leaderboard-last-btn');
+        const prev10Btn = this.modal?.querySelector('.leaderboard-prev10-btn');
+        const next10Btn = this.modal?.querySelector('.leaderboard-next10-btn');
         const prevBtn = this.modal?.querySelector('.leaderboard-prev-btn');
         const nextBtn = this.modal?.querySelector('.leaderboard-next-btn');
 
@@ -275,13 +299,17 @@ class LeaderboardModal {
             pageInfo.textContent = pageText;
         }
 
-        if (prevBtn) {
-            prevBtn.disabled = this.currentPage <= 1;
-        }
+        // 모든 후진 버튼 비활성화 (1페이지일 때)
+        const isFirstPage = this.currentPage <= 1;
+        if (firstBtn) firstBtn.disabled = isFirstPage;
+        if (prev10Btn) prev10Btn.disabled = isFirstPage;
+        if (prevBtn) prevBtn.disabled = isFirstPage;
 
-        if (nextBtn) {
-            nextBtn.disabled = this.currentPage >= this.totalPages;
-        }
+        // 모든 전진 버튼 비활성화 (마지막 페이지일 때)
+        const isLastPage = this.currentPage >= this.totalPages;
+        if (nextBtn) nextBtn.disabled = isLastPage;
+        if (next10Btn) next10Btn.disabled = isLastPage;
+        if (lastBtn) lastBtn.disabled = isLastPage;
     }
 
     /**
@@ -302,6 +330,44 @@ class LeaderboardModal {
             this.currentPage++;
             await this.loadLeaderboard();
         }
+    }
+
+    /**
+     * 맨 처음 페이지로 이동
+     */
+    async firstPage() {
+        if (this.currentPage !== 1) {
+            this.currentPage = 1;
+            await this.loadLeaderboard();
+        }
+    }
+
+    /**
+     * 맨 끝 페이지로 이동
+     */
+    async lastPage() {
+        if (this.currentPage !== this.totalPages) {
+            this.currentPage = this.totalPages;
+            await this.loadLeaderboard();
+        }
+    }
+
+    /**
+     * 10페이지 뒤로 이동
+     */
+    async prev10Pages() {
+        const jumpSize = GameConfig?.leaderboard?.pagination?.jumpSize || 10;
+        this.currentPage = Math.max(1, this.currentPage - jumpSize);
+        await this.loadLeaderboard();
+    }
+
+    /**
+     * 10페이지 앞으로 이동
+     */
+    async next10Pages() {
+        const jumpSize = GameConfig?.leaderboard?.pagination?.jumpSize || 10;
+        this.currentPage = Math.min(this.totalPages, this.currentPage + jumpSize);
+        await this.loadLeaderboard();
     }
 
     /**
