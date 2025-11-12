@@ -291,9 +291,11 @@ class VolumeControl {
      */
     toggleMute() {
         if (this.isMuted) {
-            // 음소거 해제 - 현재 슬라이더 값으로 볼륨 적용
+            // 음소거 해제 - master 볼륨 복원
             this.isMuted = false;
-            this.applyVolumesToAudioSystem();
+            if (this.audioSystem) {
+                this.audioSystem.setVolume('master', 1.0);
+            }
 
             // BGM 재개
             if (this.audioSystem && this.audioSystem.resumeBGM) {
@@ -308,11 +310,10 @@ class VolumeControl {
                 this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
             }
         } else {
-            // 음소거 - AudioSystem만 0으로 (슬라이더는 유지)
+            // 음소거 - master 볼륨을 0으로 설정
             this.isMuted = true;
             if (this.audioSystem) {
-                this.audioSystem.setVolume('bgm', 0);
-                this.audioSystem.setVolume('sfx', 0);
+                this.audioSystem.setVolume('master', 0);
 
                 // BGM 일시정지
                 if (this.audioSystem.pauseBGM) {
