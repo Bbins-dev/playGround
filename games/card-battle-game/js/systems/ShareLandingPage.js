@@ -26,12 +26,9 @@ class ShareLandingPage {
         const shareParam = urlParams.get('share');
         const langParam = urlParams.get('lang');
 
-        console.log('[ShareLandingPage] initialize() 호출, shareParam:', shareParam ? 'exists' : 'none');
-
         // 언어 감지 및 설정 (최초 1회만 적용)
         const hasAppliedUrlLang = sessionStorage.getItem('urlLangApplied');
         if (langParam && !hasAppliedUrlLang && ['ko', 'en', 'ja'].includes(langParam)) {
-            console.log('[ShareLandingPage] URL 언어 파라미터 적용:', langParam);
             localStorage.setItem('selectedLanguage', langParam);
             sessionStorage.setItem('urlLangApplied', 'true');
             if (window.i18n) {
@@ -40,8 +37,6 @@ class ShareLandingPage {
         }
 
         if (shareParam) {
-            console.log('[ShareLandingPage] 공유 링크 감지:', shareParam.substring(0, 20) + '...');
-
             // 즉시 랜딩 페이지 표시 (의존성 없이)
             this.showLandingPageImmediate();
 
@@ -50,8 +45,6 @@ class ShareLandingPage {
 
             // 비동기로 이미지 렌더링 (의존성 대기)
             this.waitForDependencies(shareParam);
-        } else {
-            console.log('[ShareLandingPage] 공유 파라미터 없음 - 초기화 중단');
         }
     }
 
@@ -59,11 +52,8 @@ class ShareLandingPage {
      * 게임 시작 화면 숨김
      */
     hideGameStartScreen() {
-        console.log('[ShareLandingPage] hideGameStartScreen() 호출');
-
         // 로딩 화면 완전히 숨김 (z-index가 10000으로 매우 높음)
         const loadingScreen = document.getElementById('loading-screen');
-        console.log('[ShareLandingPage] loading-screen 요소:', loadingScreen ? 'found' : 'NOT FOUND');
 
         if (loadingScreen) {
             loadingScreen.style.display = 'none';
@@ -71,16 +61,13 @@ class ShareLandingPage {
             loadingScreen.style.opacity = '0';
             loadingScreen.style.pointerEvents = 'none';
             loadingScreen.style.zIndex = '-1';
-            console.log('[ShareLandingPage] 로딩 화면 완전히 숨김 - 스타일 적용 완료');
         }
 
         // 시작 버튼도 숨김
         const startButton = document.getElementById('start-button');
-        console.log('[ShareLandingPage] start-button 요소:', startButton ? 'found' : 'NOT FOUND');
 
         if (startButton) {
             startButton.style.display = 'none';
-            console.log('[ShareLandingPage] 게임 시작 버튼 숨김');
         }
     }
 
@@ -107,8 +94,6 @@ class ShareLandingPage {
 
         // Canvas에 로딩 메시지 표시
         this.showLoadingMessage();
-
-        console.log('[ShareLandingPage] 랜딩 페이지 즉시 표시 완료 (z-index: 10001)');
     }
 
     /**
@@ -157,12 +142,9 @@ class ShareLandingPage {
         const interval = 100;
         let waited = 0;
 
-        console.log('[ShareLandingPage] 의존성 대기 시작...');
-
         const checkDependencies = () => {
             // ShareSystem이 없으면 직접 생성
             if (!this.shareSystem && window.ShareSystem) {
-                console.log('[ShareLandingPage] ShareSystem 직접 생성...');
                 this.shareSystem = new ShareSystem(this.gameManager);
             }
 
@@ -172,26 +154,13 @@ class ShareLandingPage {
                 const i18nSystem = window.i18nSystem;
 
                 if (cardRenderer && i18nSystem) {
-                    console.log('[ShareLandingPage] ImageGenerator 초기화...');
                     this.shareSystem.setImageGenerator(cardRenderer, i18nSystem);
                     this.imageGenerator = this.shareSystem.imageGenerator;
                 }
             }
 
-            // 디버그 로그
-            if (waited % 500 === 0) {
-                console.log(`[ShareLandingPage] 의존성 체크 (${waited}ms):`, {
-                    gameManager: !!this.gameManager,
-                    cardRenderer: !!this.gameManager?.cardRenderer,
-                    i18nSystem: !!window.i18nSystem,
-                    shareSystem: !!this.shareSystem,
-                    imageGenerator: !!this.imageGenerator
-                });
-            }
-
             if (this.shareSystem && this.imageGenerator) {
                 // 의존성 준비 완료 - 이미지 렌더링
-                console.log('[ShareLandingPage] 의존성 준비 완료! 이미지 렌더링 시작');
                 this.handleShareLink(shareParam);
                 return true;
             }
@@ -268,8 +237,6 @@ class ShareLandingPage {
             return;
         }
 
-        console.log('[ShareLandingPage] 디코딩된 데이터:', shareData);
-
         // 카드 ID → 카드 객체 변환
         const cards = this.reconstructCards(shareData.cardIds);
 
@@ -278,8 +245,6 @@ class ShareLandingPage {
 
         // 타이틀 업데이트
         this.updateTitle(shareData.type);
-
-        console.log('[ShareLandingPage] 이미지 렌더링 완료');
     }
 
     /**
@@ -303,7 +268,6 @@ class ShareLandingPage {
             return { ...cardData, id: cardId };
         }).filter(card => card !== null);
 
-        console.log(`[ShareLandingPage] ${cards.length}개 카드 복원 완료`);
         return cards;
     }
 
@@ -373,8 +337,6 @@ class ShareLandingPage {
 
                 // 메모리 해제
                 URL.revokeObjectURL(url);
-
-                console.log('[ShareLandingPage] 이미지 렌더링 완료:', img.width, 'x', img.height, '→ 표시:', displayWidth, 'x', displayHeight);
             };
 
             img.onerror = () => {

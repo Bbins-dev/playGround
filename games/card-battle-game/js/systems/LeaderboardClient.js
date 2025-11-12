@@ -21,7 +21,9 @@ class LeaderboardClient {
         if (_supabaseInstance) {
             this.supabase = _supabaseInstance;
             this.initialized = true;
-            console.log('[LeaderboardClient] Reusing existing Supabase instance');
+            if (GameConfig?.debugMode?.showSystemInitialization) {
+                console.log('[LeaderboardClient] Reusing existing Supabase instance');
+            }
             return;
         }
 
@@ -50,7 +52,9 @@ class LeaderboardClient {
             this.supabase = window.supabase.createClient(url, key);
             _supabaseInstance = this.supabase;  // 전역 저장 (싱글톤)
             this.initialized = true;
-            console.log('[LeaderboardClient] Initialized successfully (new instance)');
+            if (GameConfig?.debugMode?.showSystemInitialization) {
+                console.log('[LeaderboardClient] Initialized successfully (new instance)');
+            }
         } catch (error) {
             console.error('[LeaderboardClient] Initialization error:', error);
         }

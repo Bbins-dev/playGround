@@ -34,7 +34,6 @@ class LeaderboardModal {
         }
 
         this.setupEventListeners();
-        console.log('[LeaderboardModal] Initialized');
     }
 
     /**
@@ -79,8 +78,6 @@ class LeaderboardModal {
      * @param {Object} myRankData - 내 순위 하이라이트용 데이터 (선택)
      */
     async show(myRankData = null) {
-        console.log('[LeaderboardModal] show() called');
-
         if (!this.modal) {
             console.error('[LeaderboardModal] Cannot show - modal not initialized');
             return;
@@ -90,11 +87,9 @@ class LeaderboardModal {
         this.currentPage = 1;
 
         this.modal.classList.remove('hidden');
-        console.log('[LeaderboardModal] Modal visible (removed hidden class)');
 
         // 리더보드 로드
         await this.loadLeaderboard();
-        console.log('[LeaderboardModal] Leaderboard loaded');
     }
 
     /**
@@ -110,10 +105,7 @@ class LeaderboardModal {
      * 리더보드 데이터 로드
      */
     async loadLeaderboard() {
-        console.log('[LeaderboardModal] loadLeaderboard() started, page:', this.currentPage);
-
         if (this.isLoading) {
-            console.log('[LeaderboardModal] Already loading, skipping');
             return;
         }
 
@@ -121,9 +113,7 @@ class LeaderboardModal {
         this.showLoading();
 
         try {
-            console.log('[LeaderboardModal] Fetching leaderboard data...');
             const result = await this.leaderboardClient.fetchLeaderboard(this.currentPage);
-            console.log('[LeaderboardModal] Fetch result:', result);
 
             if (!result.success) {
                 console.warn('[LeaderboardModal] Fetch failed:', result.error);
@@ -132,7 +122,6 @@ class LeaderboardModal {
             }
 
             this.totalPages = result.totalPages || 1;
-            console.log('[LeaderboardModal] Total pages:', this.totalPages, 'Data count:', result.data?.length || 0);
             this.renderLeaderboard(result.data || []);
             this.updatePagination();
 
@@ -414,4 +403,3 @@ class LeaderboardModal {
 
 // 전역 객체로 등록
 window.LeaderboardModal = LeaderboardModal;
-console.log('[LeaderboardModal] Class loaded');
