@@ -1,0 +1,35 @@
+# 민감한 설정 및 개발 가이드 파일
+SUPABASE_SETUP.md
+CHEAT_TEST_GUIDE.md
+DEPLOYMENT-SEO.md
+VERSION_MANAGEMENT.md
+VERSION-SYNC-README.md
+
+# 마케팅 전략 (비공개)
+docs/marketing-strategy.md
+
+# 환경 변수 및 시크릿
+.env
+.env.*
+*.secret
+*.secrets
+config.local.*
+
+# 로그 파일
+*.log
+logs/
+npm-debug.log*
+
+# OS 파일
+.DS_Store
+Thumbs.db
+
+# 임시 파일
+*.tmp
+*.temp
+*.swp
+*~
+
+# 백업 파일
+*.backup
+*.bak
