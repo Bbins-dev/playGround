@@ -2359,8 +2359,8 @@ const GameConfig = {
                             cards: [
                                 { id: 'red_pendant', count: 2 },
                                 { id: 'chains_of_fire', count: 1 },
-                                { id: 'ignite', count: 1 },
-                                { id: 'flame_throw', count: 1 }
+                                { id: 'flame_throw', count: 1 },
+                                { id: 'fireball', count: 1 }
                             ]
                         }
                     ]
@@ -2371,8 +2371,7 @@ const GameConfig = {
                             name: 'deck1',
                             cards: [
                                 { id: 'scorched_shield', count: 1 },
-                                { id: 'ignite', count: 1 },
-                                { id: 'flame_throw', count: 1 }
+                                { id: 'flame_throw', count: 3 }
                             ]
                         },
                         {
@@ -2487,10 +2486,9 @@ const GameConfig = {
                             name: 'deck1',
                             cards: [
                                 { id: 'hot_breath', count: 1 },
-                                { id: 'ignite', count: 1 },
                                 { id: 'chains_of_fire', count: 1 },
                                 { id: 'indomitable_gauntlet', count: 1 },
-                                { id: 'flame_burst', count: 1 }
+                                { id: 'fireball', count: 2 }
                             ]
                         },
                         {
@@ -3413,7 +3411,9 @@ const GameConfig = {
                         {
                             name: 'deck3',
                             cards: [
-                                { id: 'ignite', count: 1 },
+                                { id: 'sword_dance', count: 1 },
+                                { id: 'battery_explosion', count: 1 },
+                                { id: 'overcharge_battery', count: 1 },
                                 { id: 'karura_strike', count: 1 },
                                 { id: 'nutrient_supplement', count: 1 }
                             ]
@@ -3507,19 +3507,19 @@ const GameConfig = {
                             name: 'deck2',
                             cards: [
                                 { id: 'purification', count: 1 },
-                                { id: 'battery_pack', count: 2 },
-                                { id: 'ignite', count: 3 },
-                                { id: 'fireball', count: 1 }
+                                { id: 'battery_pack', count: 5 },
+                                { id: 'high_voltage_gloves', count: 1 },
+                                { id: 'karura_strike', count: 3 }
                             ]
                         },
                         {
                             name: 'deck3',
                             cards: [
                                 { id: 'purification', count: 1 },
-                                { id: 'ignite', count: 1 },
-                                { id: 'endless_effort', count: 1 },
-                                { id: 'karura_strike', count: 1 },
-                                { id: 'nutrient_supplement', count: 1 }
+                                { id: 'battery_explosion', count: 1 },
+                                { id: 'overcharge_battery', count: 4 },
+                                { id: 'super_conductivity', count: 1 },
+                                { id: 'thunder_strike', count: 1 }
                             ]
                         }
                     ]
@@ -3529,14 +3529,12 @@ const GameConfig = {
                         {
                             name: 'deck1',
                             cards: [
-                                { id: 'battery_pack', count: 2 },
+                                { id: 'battery_pack', count: 5 },
                                 { id: 'hot_breath', count: 1 },
                                 { id: 'fire_breath', count: 1 },
                                 { id: 'sharpen', count: 1 },
-                                { id: 'opportunity_scent', count: 1 },
                                 { id: 'ignite', count: 1 },
-                                { id: 'hot_wind', count: 1 },
-                                { id: 'fireball', count: 2 }
+                                { id: 'fireball', count: 1 }
                             ]
                         },
                         {
@@ -3553,12 +3551,11 @@ const GameConfig = {
                         {
                             name: 'deck3',
                             cards: [
-                                { id: 'battery_pack', count: 2 },
-                                { id: 'hot_breath', count: 1 },
-                                { id: 'fire_breath', count: 1 },
-                                { id: 'hot_wind', count: 1 },
-                                { id: 'ignite', count: 1 },
-                                { id: 'fireball', count: 2 }
+                                { id: 'slash_water', count: 1 },
+                                { id: 'large_shield', count: 2 },
+                                { id: 'barricade', count: 2 },
+                                { id: 'shield_bash', count: 1 },
+                                { id: 'crouch', count: 1 }
                             ]
                         }
                     ]
@@ -3626,11 +3623,14 @@ const GameConfig = {
                         {
                             name: 'deck3',
                             cards: [
-                                { id: 'battery_pack', count: 4 },
-                                { id: 'hot_breath', count: 1 },
-                                { id: 'ignite', count: 1 },
-                                { id: 'opportunity_scent', count: 1 },
-                                { id: 'flame_throw', count: 2 }
+                                { id: 'rain', count: 2 },
+                                { id: 'healing_spring', count: 1 },
+                                { id: 'skin_breathing', count: 1 },
+                                { id: 'water_healing', count: 1 },
+                                { id: 'freezing_wind', count: 1 },
+                                { id: 'cold_snap', count: 1 },
+                                { id: 'ice_breaker', count: 1 },
+                                { id: 'liquify', count: 1 }
                             ]
                         }
                     ]
@@ -3652,8 +3652,12 @@ const GameConfig = {
                         {
                             name: 'deck2',
                             cards: [
-                                { id: 'unbreakable_mind', count: 1 },
-                                { id: 'counter_attack', count: 1 }
+                                { id: 'shake_off', count: 2 },
+                                { id: 'counter_attack', count: 1 },
+                                { id: 'ignite', count: 1 },
+                                { id: 'karura_strike', count: 1 },
+                                { id: 'nutrient_supplement', count: 1 },
+                                { id: 'battery_pack', count: 4 }
                             ]
                         },
                         {

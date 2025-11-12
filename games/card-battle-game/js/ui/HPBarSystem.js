@@ -315,10 +315,9 @@ class HPBarSystem {
             let countdownHtml = '';
             const instantReleaseStatuses = ['frozen', 'stun', 'taunt', 'oblivion'];
 
-            // 발화: 스택 기반 배수 표시 (×3, ×6, ×9...)
+            // 발화: 스택 수 표시 (1, 2, 3...)
             if (effect.type === 'ignition' && effect.stacks) {
-                const multiplier = (GameConfig?.statusEffects?.ignition?.stackMultiplier || 3) * effect.stacks;
-                countdownHtml = `×${multiplier}`;
+                countdownHtml = effect.stacks;
             }
             // 다른 상태이상: 기존 턴수 표시
             else if (effect.turnsLeft && effect.turnsLeft > 0 && !instantReleaseStatuses.includes(effect.type)) {
@@ -719,10 +718,9 @@ class HPBarSystem {
             let countdownHtml = '';
             const instantReleaseStatuses = ['frozen', 'stun', 'taunt', 'oblivion'];
 
-            // 발화: 스택 기반 배수 표시
+            // 발화: 스택 수 표시
             if (effect.type === 'ignition' && effect.stacks) {
-                const multiplier = (GameConfig?.statusEffects?.ignition?.stackMultiplier || 3) * effect.stacks;
-                countdownHtml = `×${multiplier}`;
+                countdownHtml = effect.stacks;
             }
             // 다른 상태이상: 턴수 표시
             else if (effect.turnsLeft && effect.turnsLeft > 0 && !instantReleaseStatuses.includes(effect.type)) {
@@ -756,10 +754,9 @@ class HPBarSystem {
             let countdownHtml = '';
             const instantReleaseStatuses = ['frozen', 'stun', 'taunt', 'oblivion'];
 
-            // 발화: 스택 기반 배수 표시
+            // 발화: 스택 수 표시
             if (effect.type === 'ignition' && effect.stacks) {
-                const multiplier = (GameConfig?.statusEffects?.ignition?.stackMultiplier || 3) * effect.stacks;
-                countdownHtml = `×${multiplier}`;
+                countdownHtml = effect.stacks;
             }
             // 다른 상태이상: 턴수 표시
             else if (effect.turnsLeft && effect.turnsLeft > 0 && !instantReleaseStatuses.includes(effect.type)) {

@@ -1010,29 +1010,8 @@ class GameManager {
             }
         } catch (error) {
             console.error('handlePlayerVictory 에러:', error);
-            // 에러가 있어도 모달은 표시
-            const rewardCards = this.generateRewardCards();
-
-            // 마지막 스테이지 체크 (확장 가능)
-            const maxStage = GameConfig.gameRules.getMaxStage();
-            const isLastStage = this.currentStage >= maxStage;
-
-            if (isLastStage) {
-                // 게임 완료
-                this.changeGameState('gameOver');
-                this.finalizeGameStats();
-                this.gameStats.isGameComplete = true;
-                this.uiManager.showDefeatModal(
-                    this.gameStats,
-                    () => this.restartGame(),
-                    () => this.returnToMainMenu()
-                );
-            } else {
-                // 일반 스테이지 클리어
-                this.uiManager.showVictoryModal(this.currentStage, async () => {
-                    await this.proceedToNextStage();
-                }, rewardCards);
-            }
+            // Try 블록에서 이미 모달 표시를 처리했으므로, 에러 로깅만 수행
+            // 중복 제출 방지를 위해 여기서는 모달을 다시 표시하지 않음
         }
     }
 
