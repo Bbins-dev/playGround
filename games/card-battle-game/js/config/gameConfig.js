@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.7.1',                        // 버전 넘버
+        number: '0.7.2',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -5875,7 +5875,7 @@ const GameConfig = {
         supabaseUrl: 'https://yexxudclxvqmwbjjpxsx.supabase.co',
         supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlleHh1ZGNseHZxbXdiampweHN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4MjY3MjMsImV4cCI6MjA3ODQwMjcyM30.BLkbIxPiLG-86Smh14FAkxGYtFTzsl2cfqIXV97cFqM',
         tableName: 'leaderboard',
-        pageSize: 22,                       // 한 페이지당 표시할 기록 수 (스크롤 없이 정확히 22행 표시)
+        pageSize: 20,                       // 한 페이지당 표시할 기록 수
         submitCooldown: 3000,               // 제출 쿨다운 (3초)
         autoCleanupDays: 30,                // 자동 정리 기간 (30일)
         topRecordsToKeep: 100,              // 영구 보존할 상위 기록 수
