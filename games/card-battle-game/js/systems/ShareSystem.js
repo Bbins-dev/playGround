@@ -34,7 +34,6 @@ class ShareSystem {
     setImageGenerator(cardRenderer, i18n) {
         if (!this.imageGenerator && window.ShareImageGenerator) {
             this.imageGenerator = new ShareImageGenerator(cardRenderer, GameConfig, i18n);
-            console.log('[ShareSystem] ShareImageGenerator initialized');
         }
     }
 
@@ -403,7 +402,6 @@ class ShareSystem {
         // 새 창으로 열기
         window.open(twitterUrl, '_blank', 'width=550,height=420');
 
-        console.log('[ShareSystem] Twitter 공유 시도');
         this.hideShareModal();
     }
 
@@ -429,7 +427,6 @@ class ShareSystem {
         // 새 창으로 열기
         window.open(facebookUrl, '_blank', 'width=550,height=420');
 
-        console.log('[ShareSystem] Facebook 공유 시도');
         this.hideShareModal();
     }
 
@@ -464,7 +461,6 @@ class ShareSystem {
 
         try {
             await navigator.clipboard.writeText(this.currentShareData.url);
-            console.log('[ShareSystem] URL 복사 성공');
 
             // 토스트 메시지
             if (this.config.platforms?.clipboard?.showToast) {
