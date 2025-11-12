@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.7.9',                        // 버전 넘버
+        number: '0.8.0',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -800,12 +800,12 @@ const GameConfig = {
             descriptionKey: 'auto_battle_card_game.ui.status_effects.ignition_description',
             name: '발화',
             emoji: '🔆',
-            description: '불 공격카드의 공격에 스택당 세 배의 피해를 입습니다.',
+            description: '불 공격카드의 공격에 스택당 열 배의 피해를 입습니다.',
             duration: 1,
             canExtend: false,  // 턴 연장 비활성화
             canStack: true,    // 강도 기반 중첩 활성화
             maxStacks: 10,     // 최대 중첩 (밸런스용)
-            stackMultiplier: 3, // 기본 배수
+            stackMultiplier: 10, // 기본 배수
             damageFormula: 'linear', // 계산식: 3 × stacks (선형)
             get color() { return GameConfig.masterColors.statusEffects.ignition; }
         },
@@ -5877,8 +5877,14 @@ const GameConfig = {
         tableName: 'leaderboard',
         pageSize: 20,                       // 한 페이지당 표시할 기록 수
         submitCooldown: 3000,               // 제출 쿨다운 (3초)
+        maxRank: 3000000,                   // 최대 순위 (300만 위까지 유지)
         autoCleanupDays: 30,                // 자동 정리 기간 (30일)
         topRecordsToKeep: 100,              // 영구 보존할 상위 기록 수
+
+        // 페이지네이션 설정
+        pagination: {
+            jumpSize: 10                    // 10페이지 단위 이동
+        },
 
         // 손패 보기 기능
         enableHandView: true,               // 리더보드에서 손패 보기 기능 활성화
