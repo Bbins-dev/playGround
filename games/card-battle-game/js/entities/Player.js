@@ -1069,7 +1069,9 @@ class Player {
                 if (slowEffect) {
                     const originalAccuracy = modifiedAccuracy;
                     modifiedAccuracy = Math.max(0, Math.floor(modifiedAccuracy * (1 - slowEffect.power / 100)));
-                    console.log(`[DEBUG] 둔화 적용: ${card.id} | ${originalAccuracy}% → ${modifiedAccuracy}% (${slowEffect.power}% 감소)`);
+                    if (GameConfig?.debugMode?.showStatusEffects) {
+                        console.log(`[둔화] ${card.id}: ${originalAccuracy}% → ${modifiedAccuracy}%`);
+                    }
                 }
             }
 

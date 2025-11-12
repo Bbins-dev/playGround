@@ -45,11 +45,6 @@ class TimerManager {
         const adjusted = Math.round(baseDelay / effectiveSpeed);
         const result = Math.max(this.minTimingThreshold, adjusted);
 
-        // 극단적으로 빠른 경우 경고
-        if (result === this.minTimingThreshold && baseDelay > this.minTimingThreshold * 2) {
-            console.warn(`[TimerManager] 타이밍이 너무 빨라짐: ${baseDelay}ms → ${result}ms (속도: ${this.gameSpeed}x, 실제: ${effectiveSpeed}x)`);
-        }
-
         return result;
     }
 
