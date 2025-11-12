@@ -885,11 +885,6 @@ class GameManager {
         const savedDeckIndex = this._savedEnemyDeckIndex !== undefined ? this._savedEnemyDeckIndex : null;
         this.enemy.buildDeck(savedDeckIndex);
 
-        // 새로 랜덤 선택된 경우에만 자동 저장 (로드한 경우는 이미 저장됨)
-        if (savedDeckIndex === null && this.enemy.selectedDeckIndex !== undefined) {
-            this.saveGameData();
-        }
-
         // 사용 후 초기화 (다음 스테이지는 랜덤)
         this._savedEnemyDeckIndex = null;
 
@@ -934,6 +929,12 @@ class GameManager {
 
         if (this.battleSystem) {
             await this.battleSystem.startBattle(this.player, this.enemy);
+
+            // Stage 1 전투 시작 후 자동 저장 (플레이어 손패 완전 초기화 후)
+            // Stage 2+는 setupNextBattle()에서 이미 저장됨
+            if (this.currentStage === 1 && this.enemy?.selectedDeckIndex !== undefined) {
+                this.saveGameData(false);  // false = 현재 스테이지 저장 (전투 중)
+            }
         } else {
             console.error('[GameManager] battleSystem이 null!');
         }
@@ -1183,7 +1184,7 @@ class GameManager {
 
         // 적 덱 결정 후 즉시 자동 저장 (세이브-스컴 방지)
         if (this.enemy.selectedDeckIndex !== undefined) {
-            this.saveGameData();
+            this.saveGameData(false);  // false = 현재 스테이지 저장 (전투 중)
         }
 
         // 스테이지 인디케이터 업데이트
@@ -1968,7 +1969,7 @@ class GameManager {
     }
 
     // 게임 데이터 저장
-    saveGameData() {
+    saveGameData(saveNextStage = true) {
         const config = GameConfig?.constants?.saveSystem;
         if (!config?.enabled) return;
 
@@ -1977,7 +1978,10 @@ class GameManager {
 
             const saveData = {
                 version: config.saveVersion || '1.0.0',
-                currentStage: Math.min(this.currentStage + 1, maxStage),  // 다음 진행할 스테이지 저장 (최대값 검증)
+                // 승리 후 저장: +1 (다음 스테이지), 전투 중 저장: 현재 스테이지
+                currentStage: saveNextStage
+                    ? Math.min(this.currentStage + 1, maxStage)  // 다음 진행할 스테이지 저장 (최대값 검증)
+                    : this.currentStage,  // 현재 스테이지 저장 (전투 중 세이브-스컴 방지용)
                 player: this.player ? {
                     name: this.player.name,
                     hp: Math.max(1, Math.min(this.player.hp, this.player.maxHP)),  // HP 검증 (1~maxHP)
