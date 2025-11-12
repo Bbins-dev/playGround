@@ -2657,10 +2657,10 @@
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* 리더보드 테이블 컨테이너 - 22행 정확히 표시 (967px = 헤더 43px + 22행×42px) */
+/* 리더보드 테이블 컨테이너 - 22행 정확히 표시 (970px = 헤더 43px + 22행×42px + 3px 여유) */
 .leaderboard-table-container {
     width: 100%;
-    max-height: 967px;
+    max-height: 970px;
     overflow-y: auto;
     overflow-x: auto;
     margin-bottom: 14px;
