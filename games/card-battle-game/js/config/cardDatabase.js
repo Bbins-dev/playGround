@@ -3222,7 +3222,7 @@ const CardDatabase = {
             element: 'water',
             power: 0, // 파워 스탯에 회복량 표시 (실시간 동적 계산: 마지막 받은 피해)
             healAmount: 0, // 사용하지 않음, buffedPower만 사용
-            accuracy: 80,
+            accuracy: 70,
             activationCount: 1,
             usageLimit: 1, // 1회만 사용 가능
             descriptionKey: 'auto_battle_card_game.ui.cards.slash_water.description',
