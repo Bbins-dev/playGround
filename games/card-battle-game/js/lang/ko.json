@@ -476,7 +476,7 @@
         },
         "karura_strike": {
           "name": "카루라 일격",
-          "description": "카루라 일족에게 배운 기술입니다. 자신에게 피해 7을 입힌 후 상대에게 피해 20을 주고 {status:burn}을 입힙니다."
+          "description": "카루라 일족에게 배운 기술입니다. 자신에게 피해 9을 입힌 후 상대에게 피해 20을 주고 {status:burn}을 입힙니다."
         },
         "fireball": {
           "name": "화염구",

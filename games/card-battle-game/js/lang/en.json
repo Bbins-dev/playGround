@@ -476,7 +476,7 @@
         },
         "karura_strike": {
           "name": "Karura Strike",
-          "description": "A technique learned from the Karura clan. Deal 7 damage to yourself, then deal 20 damage to opponent and inflict {status:burn}."
+          "description": "A technique learned from the Karura clan. Deal 9 damage to yourself, then deal 20 damage to opponent and inflict {status:burn}."
         },
         "fireball": {
           "name": "Fireball",
