@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.7.6',                        // 버전 넘버
+        number: '0.7.7',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -5891,12 +5891,14 @@ const GameConfig = {
 // 전역 객체로 등록
 window.GameConfig = GameConfig;
 
-// GameConfig 로드 검증 로그
-console.log('[GameConfig] Loaded successfully');
-console.log('[GameConfig] Audio section:', GameConfig.audio ? '✅ Exists' : '❌ Missing');
-if (GameConfig.audio) {
-    const bgmCount = Object.keys(GameConfig.audio.bgm || {}).length;
-    const sfxCount = Object.keys(GameConfig.audio.sfx || {}).length;
-    console.log(`[GameConfig] Audio files configured: ${bgmCount} BGM + ${sfxCount} SFX = ${bgmCount + sfxCount} total`);
-    console.log('[GameConfig] BGM keys:', Object.keys(GameConfig.audio.bgm || {}));
+// GameConfig 로드 검증 로그 (조건부)
+if (GameConfig?.debugMode?.showSystemInitialization) {
+    console.log('[GameConfig] Loaded successfully');
+    console.log('[GameConfig] Audio section:', GameConfig.audio ? '✅ Exists' : '❌ Missing');
+    if (GameConfig.audio) {
+        const bgmCount = Object.keys(GameConfig.audio.bgm || {}).length;
+        const sfxCount = Object.keys(GameConfig.audio.sfx || {}).length;
+        console.log(`[GameConfig] Audio files configured: ${bgmCount} BGM + ${sfxCount} SFX = ${bgmCount + sfxCount} total`);
+        console.log('[GameConfig] BGM keys:', Object.keys(GameConfig.audio.bgm || {}));
+    }
 }
