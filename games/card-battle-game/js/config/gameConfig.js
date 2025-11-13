@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.8.15',                        // 버전 넘버
+        number: '0.8.16',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -3656,7 +3656,7 @@ const GameConfig = {
                         {
                             name: 'deck2',
                             cards: [
-                                { id: 'shake_off', count: 2 },
+                                { id: 'good_raincoat', count: 1 },
                                 { id: 'counter_attack', count: 1 },
                                 { id: 'ignite', count: 1 },
                                 { id: 'karura_strike', count: 1 },
@@ -3668,7 +3668,6 @@ const GameConfig = {
                             name: 'deck3',
                             cards: [
                                 { id: 'good_raincoat', count: 1 },
-                                { id: 'shake_off', count: 1 },
                                 { id: 'flame_wall', count: 1 },
                                 { id: 'current_wall', count: 1 },
                                 { id: 'toxic_barrier', count: 1 },
