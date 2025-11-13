@@ -376,6 +376,13 @@ class VictoryDefeatModal {
             this.gameManager.audioSystem.playSFX(victorySfxKey);
         }
 
+        // Pull-to-refresh 완벽 차단 (iOS/Android 공통)
+        const scrollY = window.scrollY;
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
+        document.body.style.top = `-${scrollY}px`;
+
         // 모달 표시
         if (this.victoryModal) {
             this.victoryModal.classList.remove('hidden');
@@ -438,6 +445,13 @@ class VictoryDefeatModal {
                 this.gameManager.audioSystem.playSFX(victorySfxKey);
             }
         }
+
+        // Pull-to-refresh 완벽 차단 (iOS/Android 공통)
+        const scrollY = window.scrollY;
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
+        document.body.style.top = `-${scrollY}px`;
 
         // ✅ 모달을 먼저 표시 (UX 개선: 빈 화면 제거)
         if (this.defeatModal) {
@@ -761,6 +775,14 @@ class VictoryDefeatModal {
         }
         this.onVictoryContinue = null;
 
+        // Body 스크롤 복원 + 스크롤 위치 복구
+        const scrollY = document.body.style.top;
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
+        document.body.style.top = '';
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+
         // ★ DOM 무결성 검사 타이머 정리 (메모리 누수 방지)
         this.cleanupDOMIntegrityCheck();
     }
@@ -774,6 +796,14 @@ class VictoryDefeatModal {
         }
         this.onDefeatRestart = null;
         this.onDefeatMainMenu = null;
+
+        // Body 스크롤 복원 + 스크롤 위치 복구
+        const scrollY = document.body.style.top;
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
+        document.body.style.top = '';
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
 
         // ★ 중복 제출 방지 플래그 리셋 (다음 게임을 위해)
         this._hasSubmittedToLeaderboard = false;

@@ -151,6 +151,13 @@ class LeaderboardModal {
 
         this.modal.classList.remove('hidden');
 
+        // Pull-to-refresh 완벽 차단 (iOS/Android 공통)
+        const scrollY = window.scrollY;
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
+        document.body.style.top = `-${scrollY}px`;
+
         // 리더보드 로드
         await this.loadLeaderboard();
     }
@@ -161,6 +168,14 @@ class LeaderboardModal {
     hide() {
         if (this.modal) {
             this.modal.classList.add('hidden');
+
+            // Body 스크롤 복원 + 스크롤 위치 복구
+            const scrollY = document.body.style.top;
+            document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.width = '';
+            document.body.style.top = '';
+            window.scrollTo(0, parseInt(scrollY || '0') * -1);
         }
     }
 

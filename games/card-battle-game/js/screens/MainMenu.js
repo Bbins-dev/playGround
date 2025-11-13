@@ -698,6 +698,13 @@ class MainMenu {
         if (modal) {
             modal.classList.remove('hidden');
 
+            // Pull-to-refresh 완벽 차단 (iOS/Android 공통)
+            const scrollY = window.scrollY;
+            document.body.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            document.body.style.width = '100%';
+            document.body.style.top = `-${scrollY}px`;
+
             // 모달이 열릴 때 i18n 적용 (새로 추가된 요소들을 위해)
             if (typeof applyTutorialTranslations === 'function') {
                 // 짧은 지연 후 번역 적용 (DOM 렌더링 완료 후)
@@ -716,6 +723,14 @@ class MainMenu {
                         this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
                     }
                     modal.classList.add('hidden');
+
+                    // Body 스크롤 복원 + 스크롤 위치 복구
+                    const scrollY = document.body.style.top;
+                    document.body.style.overflow = '';
+                    document.body.style.position = '';
+                    document.body.style.width = '';
+                    document.body.style.top = '';
+                    window.scrollTo(0, parseInt(scrollY || '0') * -1);
                 };
                 closeBtn.addEventListener('click', closeBtn._tutorialHandler);
             }
