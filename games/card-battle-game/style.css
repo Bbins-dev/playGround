@@ -11,7 +11,8 @@ input,
 [role="button"],
 [type="button"],
 [type="submit"],
-[type="reset"] {
+[type="reset"],
+.gallery-card {
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
     touch-action: manipulation;
@@ -799,6 +800,17 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     position: relative;
     overflow: hidden;
+}
+
+/* 터치 후 포커스 상태 제거 (파란색 직사각형 방지) */
+.gallery-card:focus,
+.gallery-card:focus-visible {
+    outline: none;
+}
+
+/* 터치 중 파란색 테두리 투명도 감소 */
+.gallery-card:active {
+    border-color: rgba(52, 152, 219, 0.5);
 }
 
 @media (hover: hover) and (pointer: fine) {

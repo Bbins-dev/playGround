@@ -636,12 +636,21 @@ class UIManager {
         cardElement.className += ' gallery-card';
 
         // 클릭 이벤트 추가 (카드 상세 모달 표시)
-        cardElement.addEventListener('click', () => {
+        cardElement.addEventListener('click', (event) => {
             // 카드 클릭 사운드 재생
             if (this.gameManager?.audioSystem) {
                 this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.cardGalleryClick || 'cardClick');
             }
             this.showGalleryCardDetail(card);
+
+            // 터치 후 포커스 제거 (파란색 직사각형 방지)
+            event.preventDefault();
+            cardElement.blur();
+
+            // 추가 안전장치
+            setTimeout(() => {
+                cardElement.blur();
+            }, 50);
         });
 
         return cardElement;
