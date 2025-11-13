@@ -549,6 +549,11 @@ body {
     padding: var(--modal-card-gallery-padding);
 }
 
+/* 플레이어 이름 모달 - 스크롤 완전 차단 */
+#player-name-modal .modal-content {
+    overflow: hidden;  /* 모달 자체 스크롤 방지 */
+}
+
 /* 카드 갤러리 닫기 버튼 - 크고 명확하게 */
 #card-gallery-modal #close-gallery {
     padding: 14px 28px;
