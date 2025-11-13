@@ -709,21 +709,8 @@ class UIManager {
                 }, 50);
             });
 
-            // 터치 종료 이벤트 핸들러 (Android Chrome sticky hover 방지)
-            button.addEventListener('touchend', (event) => {
-                // 터치 종료 시 즉시 포커스 제거
-                button.blur();
-
-                // 다른 요소로 포커스 이동하여 강제 해제
-                if (document.body) {
-                    document.body.focus();
-                }
-
-                // 추가 안전장치
-                setTimeout(() => {
-                    button.blur();
-                }, 10);
-            }, { passive: true });
+            // CSS 기반 hover 제한으로 touchend 핸들러 불필요 (제거됨)
+            // @media (hover: hover) and (pointer: fine) 사용으로 터치 기기 hover 차단
 
             filterContainer.appendChild(button);
         });

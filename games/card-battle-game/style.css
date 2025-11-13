@@ -1,4 +1,39 @@
 /* 카드 배틀 게임 - Configuration-Driven 치수 시스템 */
+
+/* ========================================
+   전역 모바일 터치 피드백 최적화
+   ======================================== */
+
+/* 모든 인터랙티브 요소의 기본 터치 피드백 제거 */
+button,
+select,
+input,
+[role="button"],
+[type="button"],
+[type="submit"],
+[type="reset"] {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
+}
+
+/* 포커스 접근성: focus-visible로 키보드 네비게이션만 표시 */
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible {
+    outline: 2px solid rgba(52, 152, 219, 0.6);
+    outline-offset: 2px;
+}
+
+/* 기본 focus 시 outline 제거 (focus-visible이 대체) */
+button:focus:not(:focus-visible),
+select:focus:not(:focus-visible),
+input:focus:not(:focus-visible) {
+    outline: none;
+}
+
 :root {
     /* Canvas 크기 */
     --canvas-width: 750px;
@@ -154,8 +189,11 @@ body {
     cursor: pointer;
 }
 
-#languageSelect:hover {
-    background: rgba(0, 0, 0, 0.9);
+/* 마우스 전용 hover (터치 기기 제외) */
+@media (hover: hover) and (pointer: fine) {
+    #languageSelect:hover {
+        background: rgba(0, 0, 0, 0.9);
+    }
 }
 
 /* UI 오버레이 - Canvas와 정확히 동일한 크기 */
@@ -235,22 +273,25 @@ body {
     transition: left 0.5s;
 }
 
-.speed-btn:hover {
-    background: linear-gradient(135deg,
-        rgba(22, 78, 99, 0.95),
-        rgba(30, 58, 138, 0.95));
-    color: #f3f4f6;
-    border-color: rgba(147, 197, 253, 0.15);
-    transform: translateX(-1px);
-    box-shadow:
-        0 2px 8px rgba(59, 130, 246, 0.1),
-        0 1px 4px rgba(0, 0, 0, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    opacity: 1; /* 호버 시 완전 불투명 */
-}
+/* 마우스 전용 hover (터치 기기 제외) */
+@media (hover: hover) and (pointer: fine) {
+    .speed-btn:hover {
+        background: linear-gradient(135deg,
+            rgba(22, 78, 99, 0.95),
+            rgba(30, 58, 138, 0.95));
+        color: #f3f4f6;
+        border-color: rgba(147, 197, 253, 0.15);
+        transform: translateX(-1px);
+        box-shadow:
+            0 2px 8px rgba(59, 130, 246, 0.1),
+            0 1px 4px rgba(0, 0, 0, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        opacity: 1; /* 호버 시 완전 불투명 */
+    }
 
-.speed-btn:hover::before {
-    left: 100%;
+    .speed-btn:hover::before {
+        left: 100%;
+    }
 }
 
 .speed-btn.active {
@@ -321,21 +362,24 @@ body {
     transition: left 0.6s;
 }
 
-.ui-button:hover {
-    background: linear-gradient(135deg,
-        rgba(22, 78, 99, 0.95),
-        rgba(30, 58, 138, 0.95));
-    color: #f9fafb;
-    transform: translateY(-2px);
-    box-shadow:
-        0 4px 16px rgba(59, 130, 246, 0.15),
-        0 2px 8px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    border-color: rgba(147, 197, 253, 0.2);
-}
+/* 마우스 전용 hover (터치 기기 제외) */
+@media (hover: hover) and (pointer: fine) {
+    .ui-button:hover {
+        background: linear-gradient(135deg,
+            rgba(22, 78, 99, 0.95),
+            rgba(30, 58, 138, 0.95));
+        color: #f9fafb;
+        transform: translateY(-2px);
+        box-shadow:
+            0 4px 16px rgba(59, 130, 246, 0.15),
+            0 2px 8px rgba(0, 0, 0, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        border-color: rgba(147, 197, 253, 0.2);
+    }
 
-.ui-button:hover::before {
-    left: 100%;
+    .ui-button:hover::before {
+        left: 100%;
+    }
 }
 
 .ui-button:active {
@@ -441,8 +485,10 @@ body {
     z-index: 1000; /* UI 오버레이 위에 표시 */
 }
 
-.back-btn:hover {
+@media (hover: hover) and (pointer: fine) {
+    .back-btn:hover {
     background: rgba(231, 76, 60, 1);
+}
 }
 
 /* 모달 스타일 */
@@ -755,10 +801,12 @@ body {
     overflow: hidden;
 }
 
-.gallery-card:hover {
+@media (hover: hover) and (pointer: fine) {
+    .gallery-card:hover {
     transform: scale(1.05) translateY(-2px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
     border-color: #f39c12;
+}
 }
 
 .gallery-card .card-emoji {
@@ -877,10 +925,12 @@ body {
     overflow: hidden;
 }
 
-.card-selection-item:hover {
+@media (hover: hover) and (pointer: fine) {
+    .card-selection-item:hover {
     transform: scale(1.05) translateY(-2px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
     border-color: #f39c12;
+}
 }
 
 .card-selection-item.selected {
@@ -970,11 +1020,13 @@ body {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-.menu-button:hover {
+@media (hover: hover) and (pointer: fine) {
+    .menu-button:hover {
     background: linear-gradient(135deg, rgba(52, 152, 219, 0.4), rgba(52, 152, 219, 0.2));
     transform: translateX(10px);
     border-color: #f39c12;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
 }
 
 .menu-button:focus {
@@ -2550,16 +2602,19 @@ body[data-game-state="menu"] .game-wrapper.status-border-oblivion {
     transition: background 0.3s ease;
 }
 
-.volume-slider:hover {
-    background: rgba(255, 255, 255, 0.3);
+/* 마우스 전용 hover (터치 기기 제외) */
+@media (hover: hover) and (pointer: fine) {
+    .volume-slider:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
 }
 
 /* 슬라이더 썸 (크롬, 사파리) */
 .volume-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 24px;
-    height: 24px;
+    width: 44px;  /* 24px → 44px (터치 최소 크기) */
+    height: 44px; /* 24px → 44px (터치 최소 크기) */
     background: linear-gradient(135deg, #4CAF50, #2196F3);
     border-radius: 50%;
     cursor: pointer;
@@ -2567,15 +2622,24 @@ body[data-game-state="menu"] .game-wrapper.status-border-oblivion {
     transition: all 0.2s ease;
 }
 
-.volume-slider::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.5);
+/* 마우스 전용 hover (터치 기기 제외) */
+@media (hover: hover) and (pointer: fine) {
+    .volume-slider::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.5);
+    }
+}
+
+/* Active 상태 (터치 피드백) */
+.volume-slider::-webkit-slider-thumb:active {
+    transform: scale(0.9);
+    box-shadow: 0 2px 6px rgba(76, 175, 80, 0.8);
 }
 
 /* 슬라이더 썸 (파이어폭스) */
 .volume-slider::-moz-range-thumb {
-    width: 24px;
-    height: 24px;
+    width: 44px;  /* 24px → 44px (터치 최소 크기) */
+    height: 44px; /* 24px → 44px (터치 최소 크기) */
     background: linear-gradient(135deg, #4CAF50, #2196F3);
     border: none;
     border-radius: 50%;
@@ -2584,9 +2648,18 @@ body[data-game-state="menu"] .game-wrapper.status-border-oblivion {
     transition: all 0.2s ease;
 }
 
-.volume-slider::-moz-range-thumb:hover {
-    transform: scale(1.2);
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.5);
+/* 마우스 전용 hover (터치 기기 제외) */
+@media (hover: hover) and (pointer: fine) {
+    .volume-slider::-moz-range-thumb:hover {
+        transform: scale(1.2);
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.5);
+    }
+}
+
+/* Active 상태 (터치 피드백) */
+.volume-slider::-moz-range-thumb:active {
+    transform: scale(0.9);
+    box-shadow: 0 2px 6px rgba(76, 175, 80, 0.8);
 }
 
 /* 설정 모달 전용 스타일 */

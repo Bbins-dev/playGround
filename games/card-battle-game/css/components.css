@@ -1397,11 +1397,14 @@
     min-width: 120px;
 }
 
-.reward-card:hover {
-    border-color: var(--color-primary);
-    background: rgba(255, 255, 255, 0.12);
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+/* 마우스 전용 hover (터치 기기 제외) */
+@media (hover: hover) and (pointer: fine) {
+    .reward-card:hover {
+        border-color: var(--color-primary);
+        background: rgba(255, 255, 255, 0.12);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+    }
 }
 
 .reward-card.selected {
@@ -1440,8 +1443,11 @@
     transition: transform 0.6s ease;
 }
 
-.reward-card:hover .card-visual::before {
-    transform: rotate(45deg) translateX(100%);
+/* 마우스 전용 hover (터치 기기 제외) */
+@media (hover: hover) and (pointer: fine) {
+    .reward-card:hover .card-visual::before {
+        transform: rotate(45deg) translateX(100%);
+    }
 }
 
 .card-select-btn {
@@ -1516,10 +1522,13 @@
     min-width: 100px;
 }
 
-.hand-card:hover {
+/* 마우스 전용 hover (터치 기기 제외) */
+@media (hover: hover) and (pointer: fine) {
+    .hand-card:hover {
     border-color: var(--color-warning);
     background: rgba(255, 255, 255, 0.12);
     transform: translateY(-2px);
+}
 }
 
 .hand-card.selected {
@@ -1875,9 +1884,12 @@
     border-radius: 8px;
 }
 
-.card-selection-item:hover {
+/* 마우스 전용 hover (터치 기기 제외) */
+@media (hover: hover) and (pointer: fine) {
+    .card-selection-item:hover {
     transform: translateY(-5px) scale(1.05);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
 }
 
 .selection-instruction {
