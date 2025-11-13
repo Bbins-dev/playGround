@@ -2769,6 +2769,12 @@ body[data-game-state="menu"] .game-wrapper.status-border-oblivion {
     border: var(--filter-default-border, 2px solid rgba(255, 255, 255, 0.3));
     box-shadow: var(--filter-default-shadow, 0 2px 6px rgba(0, 0, 0, 0.3));
     opacity: var(--filter-default-opacity, 0.7);
+
+    /* 모바일 터치 피드백 완전 제거 */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    outline: none;
+    touch-action: manipulation;
 }
 
 /* 필터 버튼 호버 상태 (마우스가 있는 기기에만 적용) */
@@ -2780,6 +2786,15 @@ body[data-game-state="menu"] .game-wrapper.status-border-oblivion {
         opacity: var(--filter-hover-opacity, 1);
         transform: var(--filter-hover-transform, scale(1.05));
     }
+}
+
+/* 필터 버튼 포커스 상태 (터치 후 기본 상태 유지) */
+.element-filter-btn:focus:not(.active) {
+    background: var(--filter-default-bg, rgba(255, 255, 255, 0.15));
+    border: var(--filter-default-border, 2px solid rgba(255, 255, 255, 0.3));
+    box-shadow: var(--filter-default-shadow, 0 2px 6px rgba(0, 0, 0, 0.3));
+    opacity: var(--filter-default-opacity, 0.7);
+    outline: none;
 }
 
 /* 필터 버튼 활성화 상태 */

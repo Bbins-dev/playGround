@@ -692,14 +692,21 @@ class UIManager {
             button.setAttribute('title', element); // 툴팁으로 속성 이름 표시
 
             // 클릭 이벤트 핸들러
-            button.addEventListener('click', () => {
+            button.addEventListener('click', (event) => {
                 // 버튼 클릭 사운드 재생
                 if (this.gameManager?.audioSystem) {
                     this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
                 }
                 this.toggleElementFilter(element, button);
-                // 모바일에서 포커스 제거 (sticky hover 방지)
+
+                // 모바일 터치 후 포커스 제거 (확실한 처리)
+                event.preventDefault();
                 button.blur();
+
+                // 추가 안전장치: 약간의 지연 후 다시 blur 호출
+                setTimeout(() => {
+                    button.blur();
+                }, 50);
             });
 
             filterContainer.appendChild(button);
