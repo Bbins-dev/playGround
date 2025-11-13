@@ -336,15 +336,14 @@ class CardBattleGame {
     /**
      * "이어서 하기" 버튼 클릭 핸들러
      */
-    handleContinueGame() {
+    async handleContinueGame() {
         if (!this.gameManager) return;
 
-        const success = this.gameManager.tryLoadFromLocalStorage();
+        const success = await this.gameManager.tryLoadFromLocalStorage();
 
         if (!success) {
-            // 로드 실패 시 알림 (언어팩 사용)
-            const message = window.getI18nText?.('auto_battle_card_game.ui.no_save_data') || '저장된 게임이 없습니다';
-            alert(message);
+            // 로드 실패 시 조용한 UX: console만 출력, 모달 없음
+            console.warn('[Game] 세이브 로드 실패');
             // 버튼 상태 즉시 업데이트 (비활성화)
             this.updateMenuButtonStates();
         }
@@ -353,7 +352,7 @@ class CardBattleGame {
     /**
      * 메뉴 버튼 상태 업데이트 (세이브 데이터 유무에 따라)
      */
-    updateMenuButtonStates() {
+    async updateMenuButtonStates() {
         const config = GameConfig?.constants?.saveSystem;
         if (!config?.enabled) return;
 
@@ -361,7 +360,7 @@ class CardBattleGame {
         if (!continueGameBtn) return;
 
         // GameManager의 public API를 사용하여 세이브 데이터 검증
-        const hasSaveData = this.gameManager?.hasSaveData() || false;
+        const hasSaveData = this.gameManager ? await this.gameManager.hasSaveData() : false;
 
         if (hasSaveData) {
             // 세이브 있음 & 검증 통과: 활성화
