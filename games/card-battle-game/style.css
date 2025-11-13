@@ -2777,8 +2777,8 @@ body[data-game-state="menu"] .game-wrapper.status-border-oblivion {
     touch-action: manipulation;
 }
 
-/* 필터 버튼 호버 상태 (마우스가 있는 기기에만 적용) */
-@media (hover: hover) {
+/* 필터 버튼 호버 상태 (정밀한 포인팅 기기만 적용 - 터치 기기 제외) */
+@media (hover: hover) and (pointer: fine) {
     .element-filter-btn:hover {
         background: var(--filter-hover-bg, rgba(255, 255, 255, 0.25));
         border: var(--filter-hover-border, 2px solid rgba(255, 255, 255, 0.5));
