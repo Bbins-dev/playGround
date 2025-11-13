@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.8.16',                        // 버전 넘버
+        number: '0.8.17',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -3644,36 +3644,38 @@ const GameConfig = {
                         {
                             name: 'deck1',
                             cards: [
-                                { id: 'water_bomb', count: 1 },
-                                { id: 'freezing_wind', count: 2 },
-                                { id: 'ice_breaker', count: 3 },
+                                { id: 'shake_off', count: 1 },
                                 { id: 'rain', count: 1 },
                                 { id: 'cold_snap', count: 1 },
-                                { id: 'tsunami', count: 1 },
+                                { id: 'ice_breaker', count: 1 },
+                                { id: 'cold_snap', count: 1 },
+                                { id: 'ice_breaker', count: 1 },
+                                { id: 'cold_snap', count: 1 },
+                                { id: 'ice_breaker', count: 1 },
+                                { id: 'skin_breathing', count: 1 },
                                 { id: 'liquify', count: 1 }
                             ]
                         },
                         {
                             name: 'deck2',
                             cards: [
-                                { id: 'good_raincoat', count: 1 },
-                                { id: 'counter_attack', count: 1 },
+                                { id: 'shake_off', count: 1 },
                                 { id: 'ignite', count: 1 },
                                 { id: 'karura_strike', count: 1 },
-                                { id: 'nutrient_supplement', count: 1 },
-                                { id: 'battery_pack', count: 4 }
+                                { id: 'powder_keg', count: 2 },
+                                { id: 'liquify', count: 1 }
                             ]
                         },
                         {
                             name: 'deck3',
                             cards: [
-                                { id: 'good_raincoat', count: 1 },
+                                { id: 'shake_off', count: 1 },
                                 { id: 'flame_wall', count: 1 },
                                 { id: 'current_wall', count: 1 },
                                 { id: 'toxic_barrier', count: 1 },
-                                { id: 'large_shield', count: 1 },
-                                { id: 'barricade', count: 2 },
-                                { id: 'shield_bash', count: 1 }
+                                { id: 'barricade', count: 3 },
+                                { id: 'shield_bash', count: 1 },
+                                { id: 'liquify', count: 1 }
                             ]
                         }
                     ]
