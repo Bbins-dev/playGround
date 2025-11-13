@@ -1891,10 +1891,6 @@ class GameManager {
                         encodedData,
                         config.useChecksum ? this._generateChecksum.bind(this) : null
                     );
-
-                    if (config.logSaveErrors) {
-                        console.log('[SaveSystem] 암호화된 세이브 복호화 성공');
-                    }
                 } catch (decryptError) {
                     if (config.logSaveErrors) {
                         console.error('[SaveSystem] 복호화 실패:', decryptError);
@@ -1974,10 +1970,6 @@ class GameManager {
             const format = CryptoUtils.detectSaveFormat(savedData);
 
             if (format === 'base64') {
-                if (config.logSaveErrors) {
-                    console.log('[SaveSystem] 구 Base64 세이브 감지 - 마이그레이션 시작');
-                }
-
                 try {
                     // 마이그레이션 실행
                     const migrated = await this._migrateToEncryption(savedData, saveKey);
@@ -2157,10 +2149,6 @@ class GameManager {
                         dataToSave,
                         config.useChecksum ? this._generateChecksum.bind(this) : null
                     );
-
-                    if (config.logSaveErrors) {
-                        console.log('[SaveSystem] 암호화 사용');
-                    }
                 } catch (encryptError) {
                     // 암호화 실패 시 Base64 폴백
                     if (config.logSaveErrors) {
