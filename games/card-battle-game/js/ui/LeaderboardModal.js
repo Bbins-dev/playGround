@@ -176,6 +176,15 @@ class LeaderboardModal {
             document.body.style.width = '';
             document.body.style.top = '';
             window.scrollTo(0, parseInt(scrollY || '0') * -1);
+
+            // 메인 메뉴가 표시 중이면 body fixed 재적용 (pull-to-refresh 방지)
+            if (this.gameManager?.gameState === 'menu') {
+                const newScrollY = window.scrollY;
+                document.body.style.overflow = 'hidden';
+                document.body.style.position = 'fixed';
+                document.body.style.width = '100%';
+                document.body.style.top = `-${newScrollY}px`;
+            }
         }
     }
 
