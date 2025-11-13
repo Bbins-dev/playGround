@@ -86,19 +86,35 @@ const GameConfig = {
             saveOnReroll: false,                // 리롤 시 저장 안함 (악용 방지)
 
             // 보안 설정
-            useEncoding: true,                  // Base64 인코딩 사용
+            useEncoding: true,                  // Base64 인코딩 사용 (폴백용)
             useChecksum: true,                  // 체크섬 검증 사용
-            salt: 'CardBattle_v1_2025',         // 체크섬용 솔트값
+            salt: 'CardBattle_v1_2025',         // 체크섬용 솔트값 (절대 변경 금지!)
+
+            // 암호화 설정
+            useEncryption: true,                // AES-256-GCM 암호화 사용
+            encryptionAlgorithm: 'AES-GCM',     // 암호화 알고리즘
+            keyLength: 256,                     // 키 길이 (비트)
+            ivLength: 12,                       // IV 길이 (바이트, GCM 권장값)
+            pbkdf2Iterations: 100000,           // PBKDF2 반복 횟수
+            pbkdf2Hash: 'SHA-256',              // PBKDF2 해시 알고리즘
+
+            // 폴백 전략
+            fallbackToBase64OnError: true,      // 암호화 실패 시 Base64 사용
+            requireSecureContext: false,        // HTTP 환경에서도 작동 (폴백 사용)
+            autoMigration: true,                // 구 Base64 세이브 자동 변환
 
             // 저장 키 관리
             primarySaveKey: 'cardBattleGame_save',
             backupSaveKey: 'cardBattleGame_save_backup',
+            migrationBackupKey: 'cardBattleGame_save_migration_backup',  // 마이그레이션 임시 백업
+            deviceIdKey: '_cbg_did',            // 기기 ID 저장 키 (난독화)
             saveVersion: '1.0.0',               // 세이브 호환성 버전
 
             // 에러 처리
             enableBackupSave: true,             // 백업 세이브 활성화
             fallbackToBackup: true,             // 로드 실패 시 백업 시도
-            logSaveErrors: true                 // 에러 로그 출력
+            logSaveErrors: true,                // 에러 로그 출력
+            warnOnUnsavedChanges: true          // 저장 중 창 닫기 경고
         },
 
         // 속도 버튼 매핑 (버튼 ID → 실제 속도값)

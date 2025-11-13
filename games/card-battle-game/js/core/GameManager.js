@@ -400,6 +400,19 @@ class GameManager {
             [window, 'pagehide', (e) => this.handlePageHide(e)]
         ]);
 
+        // 저장 중 창 닫기 경고 (조용한 UX)
+        const config = GameConfig?.constants?.saveSystem;
+        if (config?.warnOnUnsavedChanges) {
+            window.addEventListener('beforeunload', (e) => {
+                if (this.isSaving) {
+                    // 저장 중일 때만 경고
+                    e.preventDefault();
+                    e.returnValue = '';  // Chrome에서 필요
+                    return '';  // 레거시 브라우저 지원
+                }
+            });
+        }
+
         // Canvas 이벤트는 메뉴가 DOM으로 전환되어 더 이상 필요하지 않음
         // 게임 플레이 중에만 필요한 Canvas 이벤트는 별도로 처리
     }
@@ -933,7 +946,7 @@ class GameManager {
             // Stage 1 전투 시작 후 자동 저장 (플레이어 손패 완전 초기화 후)
             // Stage 2+는 setupNextBattle()에서 이미 저장됨
             if (this.currentStage === 1 && this.enemy?.selectedDeckIndex !== undefined) {
-                this.saveGameData(false);  // false = 현재 스테이지 저장 (전투 중)
+                await this.saveGameData(false);  // false = 현재 스테이지 저장 (전투 중)
             }
         } else {
             console.error('[GameManager] battleSystem이 null!');
@@ -1111,7 +1124,7 @@ class GameManager {
             this.applyStageHealing();
 
             // 다음 적 생성
-            this.setupNextBattle();
+            await this.setupNextBattle();
 
             // startBattle이 모든 초기화를 처리 (DRY)
             await this.startBattle();
@@ -1152,7 +1165,7 @@ class GameManager {
     /**
      * 다음 전투 설정
      */
-    setupNextBattle() {
+    async setupNextBattle() {
         // 새로운 적 생성
         const enemyNameTemplate = this.i18n?.t('auto_battle_card_game.ui.enemy_name_template') || 'Stage {stage} Enemy';
         const enemyName = enemyNameTemplate.replace('{stage}', this.currentStage);
@@ -1163,7 +1176,7 @@ class GameManager {
 
         // 적 덱 결정 후 즉시 자동 저장 (세이브-스컴 방지)
         if (this.enemy.selectedDeckIndex !== undefined) {
-            this.saveGameData(false);  // false = 현재 스테이지 저장 (전투 중)
+            await this.saveGameData(false);  // false = 현재 스테이지 저장 (전투 중)
         }
 
         // 스테이지 인디케이터 업데이트
@@ -1767,9 +1780,9 @@ class GameManager {
     /**
      * 게임 데이터 불러오기
      * @param {Object|string} data - 세이브 데이터 객체 또는 인코딩된 문자열
-     * @returns {boolean} 로드 성공 여부
+     * @returns {Promise<boolean>} 로드 성공 여부
      */
-    loadGameData(data) {
+    async loadGameData(data) {
         const config = GameConfig?.constants?.saveSystem;
 
         try {
@@ -1777,7 +1790,7 @@ class GameManager {
 
             // 문자열인 경우 (인코딩된 데이터)
             if (typeof data === 'string') {
-                saveData = this._decodeSaveData(data);
+                saveData = await this._decodeSaveData(data);
             } else {
                 // 객체인 경우 (레거시 또는 직접 전달)
                 saveData = data;
@@ -1858,32 +1871,60 @@ class GameManager {
     /**
      * 인코딩된 세이브 데이터 디코딩 및 검증
      * @param {string} encodedData - 인코딩된 세이브 문자열
-     * @returns {Object|null} 디코딩된 세이브 데이터 또는 null
+     * @returns {Promise<Object|null>} 디코딩된 세이브 데이터 또는 null
      */
-    _decodeSaveData(encodedData) {
+    async _decodeSaveData(encodedData) {
         const config = GameConfig?.constants?.saveSystem;
 
         if (!encodedData) return null;
 
         try {
-            let dataToLoad = encodedData;
+            // 세이브 형식 감지
+            const format = CryptoUtils ? CryptoUtils.detectSaveFormat(encodedData) : 'base64';
 
-            // 인코딩 디코딩
-            if (config?.useEncoding) {
-                // 체크섬 검증
-                if (config.useChecksum && dataToLoad.includes('.')) {
-                    const [encoded, checksum] = dataToLoad.split('.');
-                    const calculatedChecksum = this._generateChecksum(encoded);
+            let dataToLoad;
 
-                    if (calculatedChecksum !== checksum) {
-                        throw new Error('체크섬 불일치 - 세이브 파일이 손상되었거나 조작되었습니다');
+            if (format === 'encrypted' && config?.useEncryption && CryptoUtils) {
+                // 암호화된 세이브 복호화
+                try {
+                    dataToLoad = await CryptoUtils.decryptSaveData(
+                        encodedData,
+                        config.useChecksum ? this._generateChecksum.bind(this) : null
+                    );
+
+                    if (config.logSaveErrors) {
+                        console.log('[SaveSystem] 암호화된 세이브 복호화 성공');
+                    }
+                } catch (decryptError) {
+                    if (config.logSaveErrors) {
+                        console.error('[SaveSystem] 복호화 실패:', decryptError);
+                    }
+                    throw decryptError;
+                }
+            } else {
+                // Base64 세이브 디코딩
+                dataToLoad = encodedData;
+
+                // 인코딩 디코딩
+                if (config?.useEncoding) {
+                    // 체크섬 검증
+                    if (config.useChecksum && dataToLoad.includes('.')) {
+                        const parts = dataToLoad.split('.');
+                        const checksum = parts[parts.length - 1];
+                        const encoded = parts.slice(0, -1).join('.');
+
+                        const calculatedChecksum = this._generateChecksum(encoded);
+
+                        if (calculatedChecksum !== checksum) {
+                            throw new Error('체크섬 불일치 - 세이브 파일이 손상되었거나 조작되었습니다');
+                        }
+
+                        dataToLoad = encoded;
                     }
 
-                    dataToLoad = encoded;
+                    // Base64 디코딩
+                    dataToLoad = decodeURIComponent(atob(dataToLoad));
                 }
-
-                // Base64 디코딩
-                dataToLoad = decodeURIComponent(atob(dataToLoad));
             }
 
             // JSON 파싱
@@ -1898,11 +1939,11 @@ class GameManager {
     }
 
     /**
-     * localStorage에서 세이브 데이터 로드 시도
+     * localStorage에서 세이브 데이터 로드 시도 (마이그레이션 지원)
      * @param {boolean} tryBackup - 백업 세이브 시도 여부
-     * @returns {boolean} 로드 성공 여부
+     * @returns {Promise<boolean>} 로드 성공 여부
      */
-    tryLoadFromLocalStorage(tryBackup = false) {
+    async tryLoadFromLocalStorage(tryBackup = false) {
         const config = GameConfig?.constants?.saveSystem;
         if (!config?.enabled) return false;
 
@@ -1922,13 +1963,42 @@ class GameManager {
                 if (config.logSaveErrors) {
                     console.warn('[SaveSystem] 메인 세이브 로드 실패 - 백업 시도');
                 }
-                return this.tryLoadFromLocalStorage(true);
+                return await this.tryLoadFromLocalStorage(true);
             }
 
             return false;
         }
 
-        const success = this.loadGameData(savedData);
+        // 마이그레이션: 구 Base64 세이브를 암호화 형식으로 변환
+        if (config.autoMigration && config.useEncryption && CryptoUtils) {
+            const format = CryptoUtils.detectSaveFormat(savedData);
+
+            if (format === 'base64') {
+                if (config.logSaveErrors) {
+                    console.log('[SaveSystem] 구 Base64 세이브 감지 - 마이그레이션 시작');
+                }
+
+                try {
+                    // 마이그레이션 실행
+                    const migrated = await this._migrateToEncryption(savedData, saveKey);
+
+                    if (migrated) {
+                        // 마이그레이션 성공 시 암호화된 데이터로 재시도
+                        const newSavedData = localStorage.getItem(saveKey);
+                        const success = await this.loadGameData(newSavedData);
+
+                        return success;
+                    }
+                } catch (migrateError) {
+                    if (config.logSaveErrors) {
+                        console.warn('[SaveSystem] 마이그레이션 실패 - Base64 그대로 로드:', migrateError);
+                    }
+                    // 마이그레이션 실패 시 원본 Base64 로드 시도
+                }
+            }
+        }
+
+        const success = await this.loadGameData(savedData);
 
         // 백업에서 복원 성공 시 메인 세이브도 복구
         if (success && tryBackup) {
@@ -1947,10 +2017,96 @@ class GameManager {
         return success;
     }
 
+    /**
+     * Base64 세이브를 암호화 형식으로 마이그레이션 (트랜잭션)
+     * @param {string} oldSaveData - 기존 Base64 세이브 데이터
+     * @param {string} saveKey - 저장 키 (primary 또는 backup)
+     * @returns {Promise<boolean>} 마이그레이션 성공 여부
+     * @private
+     */
+    async _migrateToEncryption(oldSaveData, saveKey) {
+        const config = GameConfig?.constants?.saveSystem;
+
+        try {
+            // 1. 임시 백업 생성 (마이그레이션 실패 시 롤백용)
+            const tempBackupKey = config.migrationBackupKey;
+            localStorage.setItem(tempBackupKey, oldSaveData);
+
+            // 2. 기존 데이터 디코딩 (Base64 → JSON)
+            let jsonData;
+            try {
+                let decoded = oldSaveData;
+
+                // 체크섬 제거
+                if (config.useChecksum && decoded.includes('.')) {
+                    const parts = decoded.split('.');
+                    decoded = parts.slice(0, -1).join('.');
+                }
+
+                // Base64 디코딩
+                decoded = decodeURIComponent(atob(decoded));
+                jsonData = decoded;
+
+            } catch (decodeError) {
+                throw new Error('Base64 디코딩 실패: ' + decodeError.message);
+            }
+
+            // 3. 암호화 수행
+            const encryptedData = await CryptoUtils.encryptSaveData(
+                jsonData,
+                config.useChecksum ? this._generateChecksum.bind(this) : null
+            );
+
+            // 4. 저장 (Primary/Backup)
+            localStorage.setItem(saveKey, encryptedData);
+
+            // 5. Primary 마이그레이션 시 Backup도 업데이트
+            if (saveKey === config.primarySaveKey && config.enableBackupSave) {
+                localStorage.setItem(config.backupSaveKey, encryptedData);
+            }
+
+            // 6. 임시 백업 삭제 (성공 시에만)
+            localStorage.removeItem(tempBackupKey);
+
+            if (config.logSaveErrors) {
+                console.log('[SaveSystem] 마이그레이션 완료 -', saveKey);
+            }
+
+            return true;
+
+        } catch (error) {
+            if (config.logSaveErrors) {
+                console.error('[SaveSystem] 마이그레이션 실패:', error);
+            }
+
+            // 롤백: 임시 백업 복원
+            try {
+                const tempBackup = localStorage.getItem(config.migrationBackupKey);
+                if (tempBackup) {
+                    localStorage.setItem(saveKey, tempBackup);
+                    localStorage.removeItem(config.migrationBackupKey);
+
+                    if (config.logSaveErrors) {
+                        console.log('[SaveSystem] 마이그레이션 롤백 완료');
+                    }
+                }
+            } catch (rollbackError) {
+                if (config.logSaveErrors) {
+                    console.error('[SaveSystem] 롤백 실패:', rollbackError);
+                }
+            }
+
+            return false;
+        }
+    }
+
     // 게임 데이터 저장
-    saveGameData(saveNextStage = true) {
+    async saveGameData(saveNextStage = true) {
         const config = GameConfig?.constants?.saveSystem;
         if (!config?.enabled) return;
+
+        // 저장 중 플래그 설정 (beforeunload 경고용)
+        this.isSaving = true;
 
         try {
             const maxStage = GameConfig?.constants?.security?.maxStageNumber || 60;  // 최대 스테이지 (단일 진실의 원천)
@@ -1993,17 +2149,48 @@ class GameManager {
 
             let dataToSave = JSON.stringify(saveData);
 
-            // 인코딩 + 체크섬 적용
-            if (config.useEncoding) {
-                dataToSave = btoa(encodeURIComponent(dataToSave));
+            // 암호화 또는 Base64 인코딩
+            if (config.useEncryption && CryptoUtils && await CryptoUtils.testCryptoSupport()) {
+                try {
+                    // AES-256-GCM 암호화
+                    dataToSave = await CryptoUtils.encryptSaveData(
+                        dataToSave,
+                        config.useChecksum ? this._generateChecksum.bind(this) : null
+                    );
 
-                if (config.useChecksum) {
-                    const checksum = this._generateChecksum(dataToSave);
-                    dataToSave = dataToSave + '.' + checksum;
+                    if (config.logSaveErrors) {
+                        console.log('[SaveSystem] 암호화 사용');
+                    }
+                } catch (encryptError) {
+                    // 암호화 실패 시 Base64 폴백
+                    if (config.logSaveErrors) {
+                        console.warn('[SaveSystem] 암호화 실패 - Base64 폴백:', encryptError);
+                    }
+
+                    if (config.fallbackToBase64OnError) {
+                        dataToSave = btoa(encodeURIComponent(dataToSave));
+
+                        if (config.useChecksum) {
+                            const checksum = this._generateChecksum(dataToSave);
+                            dataToSave = dataToSave + '.' + checksum;
+                        }
+                    } else {
+                        throw encryptError;
+                    }
+                }
+            } else {
+                // 암호화 미사용 또는 미지원 시 Base64 인코딩
+                if (config.useEncoding) {
+                    dataToSave = btoa(encodeURIComponent(dataToSave));
+
+                    if (config.useChecksum) {
+                        const checksum = this._generateChecksum(dataToSave);
+                        dataToSave = dataToSave + '.' + checksum;
+                    }
                 }
             }
 
-            // 백업 세이브 생성
+            // 백업 세이브 생성 (저장 성공 후에만)
             if (config.enableBackupSave) {
                 try {
                     const oldSave = localStorage.getItem(config.primarySaveKey);
@@ -2027,8 +2214,10 @@ class GameManager {
             if (config?.logSaveErrors) {
                 console.error('[SaveSystem] 저장 실패:', error);
             }
-            // 사용자에게 알림
-            alert('세이브 저장 실패! 브라우저 저장소 공간을 확인하세요.');
+            // 조용한 UX: 모달 없이 console만 출력
+        } finally {
+            // 저장 완료 (성공/실패 무관)
+            this.isSaving = false;
         }
     }
 
@@ -2083,9 +2272,9 @@ class GameManager {
 
     /**
      * 유효한 세이브 데이터가 존재하는지 확인 (Public API)
-     * @returns {boolean} 유효한 세이브 데이터 존재 여부
+     * @returns {Promise<boolean>} 유효한 세이브 데이터 존재 여부
      */
-    hasSaveData() {
+    async hasSaveData() {
         const config = GameConfig?.constants?.saveSystem;
         if (!config?.enabled) return false;
 
@@ -2095,7 +2284,7 @@ class GameManager {
             if (!savedData) return false;
 
             // 세이브 파일 검증 (체크섬, JSON 파싱, 데이터 무결성)
-            const decoded = this._decodeSaveData(savedData);
+            const decoded = await this._decodeSaveData(savedData);
 
             // 필수 데이터 존재 여부 확인
             if (!decoded || !decoded.player || !decoded.currentStage) {
