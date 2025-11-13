@@ -117,6 +117,12 @@ input:focus:not(:focus-visible) {
     box-sizing: border-box;
 }
 
+/* html 요소에도 배경 적용 (모달 오픈 시 body fixed로 인한 흰색 배경 방지) */
+html {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
 body {
     font-family: 'Arial', sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
