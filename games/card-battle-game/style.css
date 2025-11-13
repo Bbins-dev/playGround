@@ -124,6 +124,7 @@ body {
     padding: 20px 0;
     overflow-x: hidden;
     overflow-y: auto;
+    overscroll-behavior-y: contain;  /* Pull-to-refresh 방지, 스크롤 기능 유지 */
 }
 
 /* 일반 숨김 클래스 - UI 요소 가시성 제어 */
@@ -506,6 +507,7 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 2000;
+    overscroll-behavior: contain;  /* Pull-to-refresh 방지 */
 }
 
 .modal.hidden {
@@ -520,6 +522,7 @@ body {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    overscroll-behavior: contain;  /* Pull-to-refresh 방지 */
 
     /* 기본 크기 (구체적인 모달에서 재정의) */
     width: 90vw;
@@ -757,6 +760,7 @@ body {
     padding: 20px 15px;
     margin-bottom: 0;
     justify-content: center;
+    overscroll-behavior: contain;  /* Pull-to-refresh 방지 */
     /* 스크롤바 스타일 */
     scrollbar-width: thin;
     scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-bg);
