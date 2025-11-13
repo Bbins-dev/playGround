@@ -1883,6 +1883,11 @@
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     border-radius: 8px;
+    /* 모바일 터치 하이라이트 제거 */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 /* 마우스 전용 hover (터치 기기 제외) */
