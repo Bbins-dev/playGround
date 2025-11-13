@@ -126,9 +126,39 @@ class I18n {
             // Update all language selectors
             this.updateLanguageSelectors(lang);
 
+            // Invalidate CardRenderer cache for hand cards real-time update
+            if (window.gameManager?.uiManager?.renderer?.cardRenderer) {
+                const cardRenderer = window.gameManager.uiManager.renderer.cardRenderer;
+                if (typeof cardRenderer.invalidateCache === 'function') {
+                    cardRenderer.invalidateCache('language change');
+                    cardRenderer.currentLanguage = lang;
+                }
+            }
+
             // Update UIManager language (스테이지 인디케이터 등)
             if (window.gameManager && window.gameManager.uiManager) {
                 window.gameManager.uiManager.updateLanguage();
+            }
+
+            // Update enemy name in real-time
+            if (window.gameManager?.battleSystem?.enemy) {
+                const enemy = window.gameManager.battleSystem.enemy;
+                if (typeof enemy.generateEnemyName === 'function') {
+                    enemy.name = enemy.generateEnemyName();
+
+                    // Update HP bar display
+                    if (window.gameManager.battleSystem.player && window.gameManager.hpBarSystem) {
+                        window.gameManager.hpBarSystem.updateNames(
+                            window.gameManager.battleSystem.player,
+                            enemy
+                        );
+                    }
+                }
+            }
+
+            // Trigger canvas re-rendering for hand cards
+            if (window.gameManager && typeof window.gameManager.requestRender === 'function') {
+                window.gameManager.requestRender();
             }
 
             // 추가 번역 적용 (모달이 열려있다면)
