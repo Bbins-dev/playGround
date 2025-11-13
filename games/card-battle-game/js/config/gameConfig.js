@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.8.17',                        // 버전 넘버
+        number: '0.8.18',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -1845,7 +1845,7 @@ const GameConfig = {
             43: {
                 hp: 1300,
                 cards: [
-                    { id: 'shake_off', count: 1 },         // 몸 털기
+                    { id: 'inhibitor', count: 1 },         // 억제제
                     { id: 'sticky_liquid', count: 1 },     // 끈끈한 액체
                     { id: 'oblivion_draught', count: 1 },  // 망각제
                     { id: 'toxic_gas', count: 1 },         // 유독가스
@@ -3301,8 +3301,9 @@ const GameConfig = {
                 50: {
                     deckPool: [
                         {
-                            name: 'deck1',  // 기존 덱 정확히 유지
+                            name: 'deck1',
                             cards: [
+                                { id: 'shake_off', count: 1 },         // 몸 털기
                                 { id: 'taunt', count: 1 },             // 도발
                                 { id: 'oblivion_draught', count: 1 },  // 망각제
                                 { id: 'chain_reaction', count: 1 },    // 연쇄 반응
@@ -3315,8 +3316,9 @@ const GameConfig = {
                             ]
                         },
                         {
-                            name: 'deck2',  // 신규 덱 2
+                            name: 'deck2',
                             cards: [
+                                { id: 'shake_off', count: 1 },            // 몸 털기
                                 { id: 'poison_needle', count: 1 },        // 독침
                                 { id: 'bifunctional_shield', count: 1 },  // 이관능성 방패
                                 { id: 'poison_fang', count: 5 },          // 독 이빨 x5
@@ -3325,13 +3327,13 @@ const GameConfig = {
                             ]
                         },
                         {
-                            name: 'deck3',  // 신규 덱 3
+                            name: 'deck3',
                             cards: [
+                                { id: 'shake_off', count: 1 },          // 몸 털기
                                 { id: 'sticky_liquid', count: 1 },      // 끈끈한 액체
                                 { id: 'toxic_gas', count: 1 },          // 유독가스
                                 { id: 'liquid_coating', count: 1 },     // 액체 코팅
                                 { id: 'sulfur_spring', count: 1 },      // 유황 온천
-                                { id: 'inhibitor', count: 1 },          // 억제제
                                 { id: 'poison_needle', count: 1 },      // 독침
                                 { id: 'chain_reaction', count: 1 },     // 연쇄 반응
                                 { id: 'poison_throw', count: 1 },       // 독극물 투척
