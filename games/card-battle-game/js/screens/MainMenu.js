@@ -103,6 +103,14 @@ class MainMenu {
             this.menuContainer.style.display = 'flex'; // 명시적으로 표시
             this.updateButtonSelection();
         }
+
+        // Pull-to-refresh 완벽 차단 (iOS/Android 공통)
+        const scrollY = window.scrollY;
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
+        document.body.style.top = `-${scrollY}px`;
+
         // 렌더링 강제 요청
         this.needsRedraw = true;
     }
@@ -112,6 +120,14 @@ class MainMenu {
         if (this.menuContainer) {
             this.menuContainer.classList.add('hidden');
         }
+
+        // Body 스크롤 복원 + 스크롤 위치 복구
+        const scrollY = document.body.style.top;
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
+        document.body.style.top = '';
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
     }
 
     // 버튼 선택 상태 업데이트
