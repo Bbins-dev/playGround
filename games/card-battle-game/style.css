@@ -508,6 +508,8 @@ body {
     align-items: center;
     z-index: 2000;
     overscroll-behavior: contain;  /* Pull-to-refresh 방지 */
+    touch-action: none;  /* 모달 배경 터치 제스처 차단 (iOS/Android) */
+    -webkit-overflow-scrolling: auto;  /* iOS 관성 스크롤 제거 */
 }
 
 .modal.hidden {
