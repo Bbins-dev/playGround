@@ -340,6 +340,14 @@ class GameManager {
         // 플레이어 이름 모달 초기화
         this.playerNameModal = new PlayerNameModal(this);
 
+        // Leaderboard 클라이언트 초기화 (버전 체크를 위해 필요)
+        if (typeof LeaderboardClient !== 'undefined') {
+            this.leaderboardClient = new LeaderboardClient();
+            if (GameConfig?.debugMode?.showSystemInitialization) {
+                console.log('[GameManager] LeaderboardClient initialized');
+            }
+        }
+
         // 현재 화면 설정
         this.currentScreen = this.mainMenu;
 
