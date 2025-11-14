@@ -2675,6 +2675,67 @@
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+/* 헤더 컨테이너: 제목 + 검색 바 */
+.leaderboard-header {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.leaderboard-header h2 {
+    margin-bottom: 0;
+}
+
+/* 검색 바 컨테이너 - 제목 오른쪽에 절대 위치 */
+.leaderboard-search-container {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* 검색 입력 필드 */
+.leaderboard-search-input {
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: var(--glass-text-primary, #ffffff);
+    font-size: 14px;
+    width: 160px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.leaderboard-search-input:focus {
+    border-color: rgba(59, 130, 246, 0.8);
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+}
+
+.leaderboard-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* 검색/초기화 버튼 크기 조정 */
+.leaderboard-search-container .ui-button {
+    padding: 8px 12px;
+    min-width: auto;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+/* 초기화 버튼 (× 기호) - 아주 컴팩트하게 */
+.leaderboard-clear-btn {
+    padding: 8px 10px !important;
+    min-width: auto !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+    font-weight: bold;
+}
+
 /* 리더보드 테이블 컨테이너 - 22행 정확히 표시 (970px = 헤더 43px + 22행×42px + 3px 여유) */
 .leaderboard-table-container {
     width: 100%;

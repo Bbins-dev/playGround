@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.8.22',                        // 버전 넘버
+        number: '0.9.1',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -49,6 +49,7 @@ const GameConfig = {
             buffMultiplier: 1.5,                // 강화 버프 배율 (50% 증가)
             criticalHit: 2.0,                   // 치명타 배율
             barricadeDefense: 2.0,              // 바리케이트 방어력 배수
+            barrierDefense: 5.0,                // 장벽 방어력 배수
             attackPerStrength: 1                // 힘 버프 1당 공격력 증가량
         },
 
@@ -306,7 +307,8 @@ const GameConfig = {
             chains: '#FF4500',        // 사슬 - 오렌지-레드
             wet: '#5DADE2',           // 젖음 - 밝은 파란색
             frozen: '#B0E0E6',        // 얼음 - 파우더 블루
-            oblivion: '#8B008B'       // 망각 - 다크 마젠타 (혼란/기억상실 느낌)
+            oblivion: '#8B008B',      // 망각 - 다크 마젠타 (혼란/기억상실 느낌)
+            stench: '#8B7355'         // 악취 - 더스티 브라운 (악취/독 느낌)
         },
 
         // 카드 타입 색상
@@ -907,6 +909,18 @@ const GameConfig = {
             description: '1턴 간 발동횟수 버프가 적용되지 않음',
             duration: 1,
             get color() { return GameConfig.masterColors.statusEffects.oblivion; }
+        },
+        stench: {
+            nameKey: 'auto_battle_card_game.ui.status_effects.stench',
+            descriptionKey: 'auto_battle_card_game.ui.status_effects.stench_description',
+            name: '악취',
+            emoji: '🦨',
+            description: '버프 카드의 명중률이 50% 감소합니다.',
+            affectedCardTypes: ['buff'],  // 영향받는 카드 타입 (버프카드만)
+            defaultReduction: 50,  // 명중률 감소율 (50%)
+            duration: 1,
+            canExtend: true,  // 턴 연장 가능 (억제제/촉진제 영향)
+            get color() { return GameConfig.masterColors.statusEffects.stench; }
         }
     },
 
@@ -961,6 +975,11 @@ const GameConfig = {
             className: 'status-border-oblivion',
             get color() { return GameConfig.masterColors.statusEffects.oblivion; },
             priority: 9
+        },
+        stench: {
+            className: 'status-border-stench',
+            get color() { return GameConfig.masterColors.statusEffects.stench; },
+            priority: 10
         }
     },
 
@@ -3639,7 +3658,8 @@ const GameConfig = {
                                 { id: 'battery_pack', count: 2 },
                                 { id: 'current_wall', count: 1 },
                                 { id: 'blinding_flash', count: 1 },
-                                { id: 'overload', count: 1 }
+                                { id: 'overload', count: 1 },
+                                { id: 'liquify', count: 1 }         // 액체화
                             ]
                         },
                         {
@@ -5919,6 +5939,14 @@ const GameConfig = {
 
         // 손패 보기 기능
         enableHandView: true,               // 리더보드에서 손패 보기 기능 활성화
+
+        // 순위 축약 표시 설정
+        rankAbbreviation: {
+            thousands: 1000,                // k 단위 (1,000+)
+            millions: 1000000,              // m 단위 (1,000,000+)
+            billions: 1000000000,           // b 단위 (1,000,000,000+)
+            decimalPlaces: 2                // 소수점 자리수
+        },
 
         // 로컬 스토리지 키
         lastSubmitKey: 'leaderboard_last_submit_time'

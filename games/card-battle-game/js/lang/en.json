@@ -154,7 +154,9 @@
         "frozen": "Frozen",
         "frozen_description": "Reduces attack card accuracy by 50%.",
         "oblivion": "Oblivion",
-        "oblivion_description": "Activation count buffs are not applied. Cards activate at their base activation count."
+        "oblivion_description": "Activation count buffs are not applied. Cards activate at their base activation count.",
+        "stench": "Stench",
+        "stench_description": "Reduces buff card activation rate by 50%."
       },
       "buffs": {
       },
@@ -167,7 +169,7 @@
         "2": "Wooden Puppet",
         "3": "Straw Monster",
         "4": "Practice Golem",
-        "5": "Beginner's Nightmare",
+        "5": "Beginner Nightmare",
         "6": "Hungry Wolf",
         "7": "Enraged Boar",
         "8": "Taunting Turtle",
@@ -181,7 +183,7 @@
         "16": "Burning Specter",
         "17": "Flame Archer",
         "18": "Flame Knight",
-        "19": "Immortal Flame Priest",
+        "19": "Eternal Fire Priest",
         "20": "Lava Lord",
         "21": "Dragon Hatchling",
         "22": "Frost Drake",
@@ -189,13 +191,13 @@
         "24": "Tsunami Dragon",
         "25": "Ancient Dragon King",
         "26": "Frozen Corruptor",
-        "27": "Water Knight Commander",
+        "27": "Aqua Commander",
         "28": "Water Blade Dancer",
         "29": "Glacier Breaker",
         "30": "Water Sage",
         "31": "Thunder Eagle",
         "32": "Electric Fox",
-        "33": "Discharge Jellyfish",
+        "33": "Shock Jellyfish",
         "34": "Current Titan",
         "35": "Lightning Queen",
         "36": "Void Watcher",
@@ -204,25 +206,25 @@
         "39": "Light Runner",
         "40": "Battery Fairy",
         "41": "Mad Toxicologist",
-        "42": "Toxic Gas Terrorist",
-        "43": "Venomous Alchemist",
-        "44": "Poison-Hurling Maniac",
-        "45": "Toxic Fortress Guardian",
-        "46": "Elemental Fusion Experiment",
+        "42": "Poison Terrorist",
+        "43": "Venom Alchemist",
+        "44": "Poison Thrower",
+        "45": "Toxic Guardian",
+        "46": "Fusion Experiment",
         "47": "Smog Dragon",
         "48": "Lava Viper",
         "49": "Toxic Gas Golem",
-        "50": "Emperor of Toxic Blasts",
+        "50": "Toxic Blast King",
         "51": "Omnistrike Machine",
-        "52": "Invincible Shield King",
+        "52": "Shield Sovereign",
         "53": "Extreme Cryomancer",
-        "54": "Lightning Jellyfish Queen",
+        "54": "Thunder Jelly Queen",
         "55": "Corrupted Guardian",
         "56": "Avatar of Tsunami",
         "57": "Flame Opportunist",
-        "58": "Perfected Toxin Entity",
-        "59": "God of Endless Effort",
-        "60": "Alarm Clock Ringtone"
+        "58": "Perfect Toxin",
+        "59": "God of Effort",
+        "60": "Alarm Ringtone"
       },
       "battle_speed": "Battle Speed",
       "speed_slow": "Slow",
@@ -272,7 +274,7 @@
         },
         "unbreakable_mind": {
           "name": "Unbreakable Mind",
-          "description": "If your defense element is {normal}, blocks {cardType:status} applications for one turn. {buff:mind} does not stack."
+          "description": "If defense is {normal}, blocks {cardType:status} for 1 turn. {buff:mind} no stack."
         },
         "indomitable_gauntlet": {
           "name": "Indomitable Gauntlet",
@@ -488,7 +490,7 @@
         },
         "ignite": {
           "name": "Ignite",
-          "description": "If your defense element is {fire}, inflicts {status:ignition} on the target for 1 turn. {fire} {cardType:attack} cards deal +10x damage per {status:ignition} stack."
+          "description": "If defense is {fire}, inflicts {status:ignition} for 1 turn. {fire} {cardType:attack} cards deal +10x damage per stack."
         },
         "insult": {
           "name": "Insult",
@@ -544,11 +546,11 @@
         },
         "hot_wind": {
           "name": "Hot Wind",
-          "description": "Deal 3 damage to yourself, then multiply the power of {fire} {cardType:attack} cards by the number of {fire} {cardType:attack} cards in hand. {buff:hotWind} does not stack."
+          "description": "Deal 3 damage to yourself. {fire} {cardType:attack} card power is multiplied by {fire} {cardType:attack} count in hand. {buff:hotWind} no stack."
         },
         "battery_explosion": {
           "name": "Battery Blast",
-          "description": "Gain {buff:lithium} for 1 turn. {fire} and {electric} {cardType:attack} cards' current damage is multiplied by {buff:lithium} remaining turns."
+          "description": "Gain {buff:lithium} for 1 turn. {fire}/{electric} {cardType:attack} card damage × remaining turns."
         },
         "overcharge_battery": {
           "name": "Overcharge",
@@ -644,7 +646,7 @@
         },
         "static": {
           "name": "Static",
-          "description": "For one turn, each {electric} card in hand adds 5 to the base power of {electric}{cardType:attack} cards. {buff:static} does not stack."
+          "description": "For 1 turn, each {electric} card in hand adds +5 to {electric}{cardType:attack} base power. {buff:static} no stack."
         },
         "battery_pack": {
           "name": "Battery Pack",
@@ -661,6 +663,14 @@
         "super_conductivity": {
           "name": "Superconductivity",
           "description": "Increases {electric}{cardType:attack} card {accuracy} by 40% for one turn. {buff:superConductivity} does not stack."
+        },
+        "stench": {
+          "name": "Stench",
+          "description": "If your defense element is {poison}, inflicts {status:stench} on the target, reducing {cardType:buff} card activation rate by 50% for 1 turn."
+        },
+        "barrier": {
+          "name": "Barrier",
+          "description": "If your defense element is {normal}, multiplies current {defense} by 5x."
         }
       },
       "buffs": {
@@ -824,6 +834,7 @@
         "no_status_effect": "No Status Effect!",
         "no_fire_defense": "Not Fire Defense!",
         "no_water_defense": "Not Water Defense!",
+        "no_poison_defense": "Not Poison Defense!",
         "no_lithium": "No Li⁺!",
         "no_defense": "No Defense!",
         "no_paralysis": "No Paralysis!",
@@ -1043,6 +1054,11 @@
     "stage": "Stage",
     "turns": "Turns",
     "no_hand_data": "No hand data",
-    "stage_cleared": "(Clr)"
+    "stage_cleared": "(Clr)",
+    "search_placeholder": "Search player name",
+    "search_button": "Search",
+    "clear_search": "Clear",
+    "search_results": "Search results: {count}",
+    "no_search_results": "No results found"
   }
 }

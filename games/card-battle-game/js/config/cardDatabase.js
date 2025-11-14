@@ -2329,7 +2329,7 @@ const CardDatabase = {
             catalystChance: 100,
             effect: function(user, target, battleSystem) {
                 // 턴 중첩형 상태이상 목록 (즉시 해제 상태이상 제외)
-                const turnBasedStatuses = ['burn', 'poisoned', 'wet', 'paralysis', 'sand', 'insult', 'slow', 'chains', 'phase'];
+                const turnBasedStatuses = ['burn', 'poisoned', 'wet', 'paralysis', 'sand', 'insult', 'slow', 'chains', 'phase', 'stench'];
 
                 // 상대의 턴 중첩형 상태이상 찾기
                 const statusesToExtend = target.statusEffects?.filter(e =>
@@ -2375,7 +2375,7 @@ const CardDatabase = {
             inhibitorChance: 100,
             effect: function(user, target, battleSystem) {
                 // 턴 중첩형 상태이상 목록 (즉시 해제 상태이상 제외)
-                const turnBasedStatuses = ['burn', 'poisoned', 'wet', 'paralysis', 'sand', 'insult', 'slow', 'chains', 'phase'];
+                const turnBasedStatuses = ['burn', 'poisoned', 'wet', 'paralysis', 'sand', 'insult', 'slow', 'chains', 'phase', 'stench'];
 
                 // 자신(user)의 턴 중첩형 상태이상 찾기
                 const statusesToReduce = user.statusEffects?.filter(e =>
@@ -3655,6 +3655,83 @@ const CardDatabase = {
                         name: GameConfig?.buffs?.superConductivity?.name || '초전도',
                         value: 1  // 획득할 값
                     }
+                };
+            }
+        });
+
+        // 악취 카드 (독 속성 상태이상 카드, 버프카드 명중률 50% 감소, 방어속성 조건)
+        this.addCard({
+            id: 'stench',
+            nameKey: 'auto_battle_card_game.ui.cards.stench.name',
+            type: 'status',
+            element: 'poison',
+            power: 0,
+            accuracy: 75,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.stench.description',
+            stenchChance: 100,  // 조건 충족 시 100% 적용
+            effect: function(user, target, battleSystem) {
+                // 조건 체크: 사용자의 방어속성이 독인가?
+                if (user.defenseElement !== 'poison') {
+                    // 명중했지만 조건 실패 (방어속성이 독이 아님)
+                    return {
+                        success: true,
+                        conditionNotMet: true,
+                        messageKey: 'auto_battle_card_game.ui.templates.no_poison_defense',
+                        element: this.element
+                    };
+                }
+
+                // 조건 충족: 악취 상태 적용 (통합 시스템 - 우비 차단, 억제제/촉진제 영향)
+                return {
+                    success: true,
+                    statusEffect: {
+                        type: 'stench',
+                        chance: this.stenchChance,
+                        power: GameConfig?.statusEffects?.stench?.defaultReduction || 50,
+                        duration: 1
+                    },
+                    element: this.element
+                };
+            }
+        });
+
+        // 장벽 카드 (노멀 속성 버프 카드, 현재 방어력 5배 증가, 방어속성 조건)
+        this.addCard({
+            id: 'barrier',
+            nameKey: 'auto_battle_card_game.ui.cards.barrier.name',
+            type: 'buff',
+            element: 'normal',
+            power: 0,
+            accuracy: 75,
+            activationCount: 1,
+            descriptionKey: 'auto_battle_card_game.ui.cards.barrier.description',
+            effect: function(user, target, battleSystem) {
+                // 조건 체크: 사용자의 방어속성이 노멀인가?
+                if (user.defenseElement !== 'normal') {
+                    // 명중했지만 조건 실패 (방어속성이 노멀이 아님)
+                    return {
+                        success: true,
+                        conditionNotMet: true,
+                        messageKey: 'auto_battle_card_game.ui.no_normal_defense',  // 기존 메시지 재사용
+                        element: this.element
+                    };
+                }
+
+                // 조건 충족: 현재 방어력 × 5
+                const currentDefense = user.defense;
+                const multiplier = GameConfig?.constants?.multipliers?.barrierDefense || 5;
+                const newDefense = currentDefense * multiplier;
+                const defenseGain = newDefense - currentDefense;
+
+                // 방어력 설정 (바리케이드 패턴)
+                user.defense = newDefense;
+
+                return {
+                    success: true,
+                    messageKey: 'auto_battle_card_game.ui.defense_gained',  // 기존 메시지 재사용
+                    defenseGain: defenseGain,
+                    element: this.element
                 };
             }
         });

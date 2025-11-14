@@ -170,6 +170,111 @@ class LeaderboardClient {
     }
 
     /**
+     * 플레이어 이름으로 검색 (부분 일치)
+     * @param {string} playerName - 검색할 플레이어 이름
+     * @param {number} page - 페이지 번호
+     * @returns {Promise<{success: boolean, data?: Array, totalCount?: number, currentPage?: number, totalPages?: number, error?: string}>}
+     */
+    async searchPlayers(playerName, page = 1) {
+        if (!this.initialized) {
+            return { success: false, error: 'Client not initialized' };
+        }
+
+        try {
+            const pageSize = this.config?.pageSize || 50;
+            const from = (page - 1) * pageSize;
+            const to = from + pageSize - 1;
+
+            // ILIKE로 부분 일치 검색 + 5단계 정렬
+            const { data, error, count } = await this.supabase
+                .from(this.config.tableName)
+                .select('*', { count: 'exact' })
+                .ilike('player_name', `%${playerName}%`)  // 부분 일치 검색
+                .order('is_game_complete', { ascending: false })
+                .order('final_stage', { ascending: false })
+                .order('total_turns', { ascending: true })
+                .order('total_damage_dealt', { ascending: true })
+                .order('total_damage_received', { ascending: false })
+                .range(from, to);
+
+            if (error) {
+                console.error('[LeaderboardClient] Search error:', error);
+                return { success: false, error: error.message };
+            }
+
+            // 각 검색 결과에 실제 글로벌 순위 추가
+            const dataWithRanks = await Promise.all(
+                (data || []).map(async (record) => {
+                    const globalRank = await this.calculateGlobalRank(record);
+                    return {
+                        ...record,
+                        globalRank
+                    };
+                })
+            );
+
+            return {
+                success: true,
+                data: dataWithRanks,
+                totalCount: count || 0,
+                currentPage: page,
+                totalPages: Math.ceil((count || 0) / pageSize)
+            };
+
+        } catch (error) {
+            console.error('[LeaderboardClient] Search exception:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * 특정 레코드의 글로벌 순위 계산
+     * @param {Object} record - 리더보드 레코드
+     * @returns {Promise<number|null>}
+     */
+    async calculateGlobalRank(record) {
+        try {
+            // 5단계 정렬 기준으로 이 레코드보다 상위인 레코드 수 계산
+            let query = this.supabase
+                .from(this.config.tableName)
+                .select('*', { count: 'exact', head: true });
+
+            // is_game_complete 기준으로 분기
+            if (record.is_game_complete) {
+                // 완료한 경우: 완료한 레코드 중에서만 비교
+                query = query.or(
+                    `and(is_game_complete.eq.true,final_stage.gt.${record.final_stage}),` +
+                    `and(is_game_complete.eq.true,final_stage.eq.${record.final_stage},total_turns.lt.${record.total_turns}),` +
+                    `and(is_game_complete.eq.true,final_stage.eq.${record.final_stage},total_turns.eq.${record.total_turns},total_damage_dealt.lt.${record.total_damage_dealt}),` +
+                    `and(is_game_complete.eq.true,final_stage.eq.${record.final_stage},total_turns.eq.${record.total_turns},total_damage_dealt.eq.${record.total_damage_dealt},total_damage_received.gt.${record.total_damage_received})`
+                );
+            } else {
+                // 미완료한 경우: 완료한 레코드는 모두 상위 + 미완료 중 비교
+                query = query.or(
+                    `is_game_complete.eq.true,` +
+                    `and(is_game_complete.eq.false,final_stage.gt.${record.final_stage}),` +
+                    `and(is_game_complete.eq.false,final_stage.eq.${record.final_stage},total_turns.lt.${record.total_turns}),` +
+                    `and(is_game_complete.eq.false,final_stage.eq.${record.final_stage},total_turns.eq.${record.total_turns},total_damage_dealt.lt.${record.total_damage_dealt}),` +
+                    `and(is_game_complete.eq.false,final_stage.eq.${record.final_stage},total_turns.eq.${record.total_turns},total_damage_dealt.eq.${record.total_damage_dealt},total_damage_received.gt.${record.total_damage_received})`
+                );
+            }
+
+            const { count, error } = await query;
+
+            if (error) {
+                console.error('[LeaderboardClient] Rank calculation error:', error);
+                return null;
+            }
+
+            return (count || 0) + 1;
+
+        } catch (error) {
+            console.error('[LeaderboardClient] Rank calculation exception:', error);
+            return null;
+        }
+    }
+
+    /**
      * 특정 플레이어 데이터로 순위 확인
      * @param {Object} playerData - 플레이어 데이터
      * @returns {Promise<{success: boolean, rank?: number, error?: string}>}
