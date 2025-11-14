@@ -347,9 +347,9 @@ class LeaderboardModal {
         damageReceivedCell.textContent = this.formatNumber(record.total_damage_received);
         row.appendChild(damageReceivedCell);
 
-        // 버전
+        // 버전 (zero-padded 형식을 일반 형식으로 변환)
         const versionCell = document.createElement('td');
-        versionCell.textContent = record.game_version;
+        versionCell.textContent = this.paddedToVersion(record.game_version);
         row.appendChild(versionCell);
 
         // 날짜
@@ -563,6 +563,24 @@ class LeaderboardModal {
         const month = date.getMonth() + 1;
         const day = date.getDate();
         return `${month}/${day}`;
+    }
+
+    /**
+     * zero-padded 버전을 일반 형식으로 변환
+     * @param {string} padded - zero-padded 버전 (예: '000.009.003')
+     * @returns {string} - 일반 버전 (예: '0.9.3')
+     */
+    paddedToVersion(padded) {
+        if (!padded || typeof padded !== 'string') {
+            return '0.0.0';
+        }
+
+        const parts = padded.split('.');
+        if (parts.length !== 3) {
+            return padded; // 이미 일반 형식이면 그대로 반환
+        }
+
+        return parts.map(part => parseInt(part, 10).toString()).join('.');
     }
 
     /**

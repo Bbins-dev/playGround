@@ -986,6 +986,31 @@
     font-size: 20px;
 }
 
+/* 리더보드 정렬 기준 표시 영역 */
+.ranking-criteria p {
+    font-size: 24px !important;
+    font-weight: 600;
+    line-height: 1.8;
+    margin: 10px 0;
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 3px solid rgba(255, 215, 0, 0.5);
+    border-radius: 6px;
+}
+
+/* 언어별 리더보드 정렬 기준 폰트 크기 조정 */
+.lang-ko .ranking-criteria p {
+    font-size: 24px !important;
+}
+
+.lang-ja .ranking-criteria p {
+    font-size: 26px !important;
+}
+
+.lang-en .ranking-criteria p {
+    font-size: 22px !important;
+}
+
 /* 속성 효과 표시 영역 */
 .element-effectiveness {
     display: flex;

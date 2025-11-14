@@ -991,7 +991,14 @@
       "defense_line3": "• 同じ枚数のカード属性同士は相殺されてノーマル属性になります",
       "defense_line6": "• ノーマル防御はすべての属性攻撃に1.0倍ダメージ（得意・苦手なし）",
       "neutral": "バランス 1.0倍",
-      "all_elements": "すべての属性"
+      "all_elements": "すべての属性",
+      "leaderboard_ranking": "🏆 世界ランキング基準",
+      "rank_priority_1": "1位: ゲームクリア状況（クリア > 未クリア）",
+      "rank_priority_2": "2位: 高いステージ",
+      "rank_priority_3": "3位: 最新ゲームバージョン",
+      "rank_priority_4": "4位: 少ないターン数",
+      "rank_priority_5": "5位: 低いダメージ量",
+      "rank_priority_6": "6位: 高い被ダメージ"
     }
   },
   "upcoming_games": {
