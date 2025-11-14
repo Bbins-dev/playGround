@@ -930,12 +930,20 @@ class GameManager {
 
     // 전투 시작
     async startBattle() {
-        // 첫 번째 스테이지인 경우 통계 초기화
-        if (this.currentStage === 1) {
-            this.resetGameStats();
+        // 디바운스 가드 (중복 실행 방지)
+        if (this._startingBattle) {
+            console.warn('[GameManager] startBattle가 이미 진행 중입니다. 중복 실행을 방지합니다.');
+            return;
         }
+        this._startingBattle = true;
 
-        this.changeGameState('battle');
+        try {
+            // 첫 번째 스테이지인 경우 통계 초기화
+            if (this.currentStage === 1) {
+                this.resetGameStats();
+            }
+
+            this.changeGameState('battle');
 
         // HTML body에 게임 상태 표시 (CSS 선택자용)
         document.body.setAttribute('data-game-state', 'battle');
@@ -965,6 +973,10 @@ class GameManager {
             }
         } else {
             console.error('[GameManager] battleSystem이 null!');
+        }
+        } finally {
+            // 디바운스 플래그 리셋
+            this._startingBattle = false;
         }
     }
 

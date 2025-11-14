@@ -146,14 +146,12 @@ class I18n {
                 if (typeof enemy.generateEnemyName === 'function') {
                     enemy.name = enemy.generateEnemyName();
 
-                    // Update HP bar display (null 체크 강화)
-                    if (window.gameManager?.battleSystem?.player &&
-                        window.gameManager?.battleSystem?.enemy &&
-                        window.gameManager?.hpBarSystem) {
-                        window.gameManager.hpBarSystem.updateNames(
-                            window.gameManager.battleSystem.player,
-                            enemy
-                        );
+                    // Update HP bar display (null 체크 강화 - 일관성 있게 local 변수 사용)
+                    const player = window.gameManager.battleSystem.player;
+                    const hpBarSystem = window.gameManager.hpBarSystem;
+
+                    if (player && enemy && hpBarSystem) {
+                        hpBarSystem.updateNames(player, enemy);
                     }
                 }
             }
