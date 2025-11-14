@@ -117,9 +117,89 @@ function updateIndexHtml(indexPath, version) {
 }
 
 /**
+ * .env 파일 로드 (dotenv 없이 직접 파싱)
+ */
+function loadEnv() {
+    try {
+        const envPath = path.join(__dirname, '.env');
+        if (!fs.existsSync(envPath)) {
+            return {};
+        }
+
+        const envContent = fs.readFileSync(envPath, 'utf8');
+        const env = {};
+
+        envContent.split('\n').forEach(line => {
+            // 주석 제거 및 빈 줄 건너뛰기
+            const trimmedLine = line.trim();
+            if (!trimmedLine || trimmedLine.startsWith('#')) {
+                return;
+            }
+
+            const [key, ...valueParts] = line.split('=');
+            if (key && valueParts.length) {
+                env[key.trim()] = valueParts.join('=').trim();
+            }
+        });
+
+        return env;
+    } catch (error) {
+        return {};
+    }
+}
+
+/**
+ * Supabase app_version 테이블 자동 업데이트
+ */
+async function updateSupabaseVersion(version) {
+    const env = loadEnv();
+    const serviceKey = env.SUPABASE_SERVICE_KEY;
+    const supabaseUrl = env.SUPABASE_URL;
+
+    if (!serviceKey || !supabaseUrl) {
+        console.log('\n⚠️  Supabase 자동 업데이트 스킵 (.env 파일 설정 필요)');
+        console.log('   .env.example 파일을 참고하여 .env 파일을 생성하세요.');
+        console.log(`   수동 업데이트: UPDATE app_version SET version = '${version}';`);
+        return false;
+    }
+
+    try {
+        const url = `${supabaseUrl}/rest/v1/app_version?id=eq.1`;
+
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'apikey': serviceKey,
+                'Authorization': `Bearer ${serviceKey}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=minimal'
+            },
+            body: JSON.stringify({
+                version: version,
+                updated_at: new Date().toISOString()
+            })
+        });
+
+        if (response.ok) {
+            console.log(`\n✅ Supabase app_version 자동 업데이트 완료: ${version}`);
+            return true;
+        } else {
+            const errorText = await response.text();
+            console.error(`\n❌ Supabase 업데이트 실패 (HTTP ${response.status}): ${errorText}`);
+            console.log(`   수동으로 Supabase에서 업데이트하세요: UPDATE app_version SET version = '${version}';`);
+            return false;
+        }
+    } catch (error) {
+        console.error(`\n❌ Supabase 업데이트 중 오류 발생: ${error.message}`);
+        console.log(`   수동으로 Supabase에서 업데이트하세요: UPDATE app_version SET version = '${version}';`);
+        return false;
+    }
+}
+
+/**
  * 메인 실행 함수
  */
-function main() {
+async function main() {
     console.log('🔧 버전 동기화 시작...\n');
 
     // 1. package.json에서 버전 추출 (단일 진실의 원천)
@@ -131,6 +211,9 @@ function main() {
 
     // 3. index.html 업데이트
     const indexUpdated = updateIndexHtml(CONFIG.indexHtmlPath, version);
+
+    // 4. Supabase app_version 테이블 자동 업데이트
+    const supabaseUpdated = await updateSupabaseVersion(version);
 
     console.log('\n✨ 버전 동기화 완료!');
 

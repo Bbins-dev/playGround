@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.9.8',                        // 버전 넘버
+        number: '0.9.10',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -5952,7 +5952,16 @@ const GameConfig = {
         },
 
         // 로컬 스토리지 키
-        lastSubmitKey: 'leaderboard_last_submit_time'
+        lastSubmitKey: 'leaderboard_last_submit_time',
+
+        // 자동 버전 업데이트 체크 (Configuration-Driven)
+        versionCheck: {
+            enabled: true,                      // 버전 체크 활성화 여부
+            tableName: 'app_version',           // Supabase 테이블명
+            checkOnLoad: true,                  // 페이지 로드 시 체크
+            checkOnNewGame: true,               // 새 게임 시작 시 체크
+            checkOnContinue: true               // 이어서하기 시 체크
+        }
     },
 
     // ========== 헬퍼 메서드 (Configuration-Driven 중앙화) ==========
