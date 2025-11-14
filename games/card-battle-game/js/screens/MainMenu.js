@@ -18,13 +18,6 @@ class MainMenu {
                 id: 'game-tutorial-btn'
             },
             {
-                text: 'continue-game',
-                action: () => this.continueGame(),
-                icon: '▶️',
-                id: 'continue-game-btn',
-                disabled: true
-            },
-            {
                 text: 'start-game',
                 action: () => this.startNewGame(),
                 icon: '⚔️',
@@ -142,11 +135,20 @@ class MainMenu {
     // 저장된 게임 확인
     checkSavedGame() {
         const savedGame = localStorage.getItem('cardBattleGame_save');
-        if (savedGame) {
-            const continueItem = this.menuItems.find(item => item.text === 'continue-game');
-            if (continueItem) {
-                continueItem.disabled = false;
-            }
+        const continueBtn = document.getElementById('continue-game-btn');
+
+        if (savedGame && continueBtn) {
+            continueBtn.disabled = false;
+
+            // 이어서하기 버튼에 async 이벤트 리스너 추가
+            continueBtn.removeEventListener('click', continueBtn._continueGameHandler);
+            continueBtn._continueGameHandler = async () => {
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                await this.continueGame();
+            };
+            continueBtn.addEventListener('click', continueBtn._continueGameHandler);
         }
     }
 
