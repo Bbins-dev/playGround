@@ -64,7 +64,8 @@ class BattleSystem {
     // 전투 시작
     async startBattle(player, enemy) {
         // 배틀 중복 실행 방지 (race condition 가드)
-        if (this.battlePhase !== 'ended' && this.battlePhase !== 'waiting' && this.player && this.enemy) {
+        // player/enemy가 이미 설정되어 있고 ended 상태가 아니면 이미 진행 중
+        if (this.player && this.enemy && this.battlePhase !== 'ended') {
             console.warn('[BattleSystem] 배틀이 이미 진행 중입니다. 중복 실행을 방지합니다.');
             return;
         }
@@ -1653,8 +1654,7 @@ class BattleSystem {
             this.effectSystem.clearAllEffects();
         }
 
-        // 전투 상태 초기화
-        this.battlePhase = 'waiting';
+        // 전투 상태 초기화 (battlePhase는 'ended' 상태 유지)
         this.player = null;
         this.enemy = null;
     }

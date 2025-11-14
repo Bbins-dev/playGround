@@ -87,8 +87,10 @@ class VersionChecker {
      * 간단한 알림 표시 후 즉시 reload
      */
     forceUpdate() {
-        // 간단한 메시지 표시
-        alert('최신 버전 발견! 새로고침 중...');
+        // 간단한 메시지 표시 (다국어 지원)
+        const message = window.i18n?.getMessage('card-battle-game.ui.version_update_detected') ||
+                       'New version detected! Refreshing...';
+        alert(message);
 
         // 캐시 무시하고 강제 새로고침
         window.location.reload(true);

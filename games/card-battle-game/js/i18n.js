@@ -146,8 +146,10 @@ class I18n {
                 if (typeof enemy.generateEnemyName === 'function') {
                     enemy.name = enemy.generateEnemyName();
 
-                    // Update HP bar display
-                    if (window.gameManager.battleSystem.player && window.gameManager.hpBarSystem) {
+                    // Update HP bar display (null 체크 강화)
+                    if (window.gameManager?.battleSystem?.player &&
+                        window.gameManager?.battleSystem?.enemy &&
+                        window.gameManager?.hpBarSystem) {
                         window.gameManager.hpBarSystem.updateNames(
                             window.gameManager.battleSystem.player,
                             enemy
