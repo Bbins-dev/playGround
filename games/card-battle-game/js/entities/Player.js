@@ -1057,7 +1057,7 @@ class Player {
             // 상태이상 디버프 적용 (GameConfig 기반) - 곱셈 방식으로 감소 (소수점 버림)
             // 중요: 각 상태이상은 1번씩만 적용 (find()로 첫 번째만 찾음)
             // 복합 적용: sand(-30%) + frozen(-50%) = 80% → 56% → 28% (순차 곱셈)
-            const statusEffectTypes = ['sand', 'insult', 'slow', 'frozen'];
+            const statusEffectTypes = ['sand', 'insult', 'slow', 'frozen', 'stench'];
             statusEffectTypes.forEach(effectType => {
                 if (!this.hasStatusEffect(effectType)) return;
 

@@ -154,7 +154,9 @@
         "frozen": "氷",
         "frozen_description": "攻撃カードの命中率が50%減少します。",
         "oblivion": "忘却",
-        "oblivion_description": "発動回数バフが適用されません。カードは基本発動回数でのみ発動されます。"
+        "oblivion_description": "発動回数バフが適用されません。カードは基本発動回数でのみ発動されます。",
+        "stench": "悪臭",
+        "stench_description": "バフカードの発動率が50%減少します。"
       },
       "buffs": {
       },
@@ -222,7 +224,7 @@
         "57": "炎の機会主義者",
         "58": "猛毒の完成体",
         "59": "終わりなき努力の神",
-        "60": "目覚まし時計のアラーム音"
+        "60": "目覚まし音"
       },
       "battle_speed": "戦闘速度",
       "speed_slow": "遅い",
@@ -272,7 +274,7 @@
         },
         "unbreakable_mind": {
           "name": "折れない心",
-          "description": "防御属性が{normal}の場合、発動時１ターンの間{cardType:status}適用を防ぎます。{buff:mind}は重複しません。"
+          "description": "防御属性が{normal}の時、1ターン間{cardType:status}適用を防ぎます。{buff:mind}は重複しません。"
         },
         "indomitable_gauntlet": {
           "name": "不屈の篭手",
@@ -488,7 +490,7 @@
         },
         "ignite": {
           "name": "発火",
-          "description": "自分の防御属性が{fire}の場合、発動時に1ターンの間相手を{status:ignition}状態にします。{fire}{cardType:attack}カードに{status:ignition}のスタック毎に10倍ずつ追加のダメージを与えます。"
+          "description": "防御属性が{fire}の時、1ターン間{status:ignition}を付与します。{fire}{cardType:attack}カードはスタック毎に10倍の追加ダメージを与えます。"
         },
         "insult": {
           "name": "侮辱",
@@ -544,11 +546,11 @@
         },
         "hot_wind": {
           "name": "熱風",
-          "description": "自分に3ダメージを与えた後、手札の{fire}{cardType:attack}カードの数を{fire}{cardType:attack}カードの攻撃力に乗算します。{buff:hotWind}は重複しません。"
+          "description": "自分に3ダメージ後、手札の{fire}{cardType:attack}カード枚数分攻撃力を乗算します。{buff:hotWind}は重複しません。"
         },
         "battery_explosion": {
           "name": "バッテリー爆発",
-          "description": "{buff:lithium}を1ターン獲得。{fire}、{electric}{cardType:attack}カードの現在の攻撃力に{buff:lithium}残りターン数が乗算されます。"
+          "description": "{buff:lithium}を1ターン獲得。{fire}/{electric}{cardType:attack}カード攻撃力に残りターン数が乗算されます。"
         },
         "overcharge_battery": {
           "name": "過充電",
@@ -644,7 +646,7 @@
         },
         "static": {
           "name": "静電気",
-          "description": "1ターンの間、手札の{electric}属性カード1枚につき5ずつ{electric}{cardType:attack}カードの基本攻撃力に加算されます。{buff:static}は重複しません。"
+          "description": "1ターン間、手札の{electric}カード1枚につき{electric}{cardType:attack}カード基本攻撃力に+5ずつ加算されます。{buff:static}は重複しません。"
         },
         "battery_pack": {
           "name": "バッテリーパック",
@@ -661,6 +663,14 @@
         "super_conductivity": {
           "name": "超電導",
           "description": "1ターンの間、{electric}{cardType:attack}カードの{accuracy}が40%増加します。{buff:superConductivity}は重複しません。"
+        },
+        "stench": {
+          "name": "悪臭",
+          "description": "自分の防御属性が{poison}の場合、相手を{status:stench}状態にして1ターンの間{cardType:buff}カードの発動率を50%減少させます。"
+        },
+        "barrier": {
+          "name": "障壁",
+          "description": "自分の防御属性が{normal}の場合、現在の{defense}を5倍に高めます。"
         }
       },
       "buffs": {
@@ -824,6 +834,7 @@
         "no_status_effect": "状態異常なし!",
         "no_fire_defense": "火防御属性ではない!",
         "no_water_defense": "水防御属性ではない!",
+        "no_poison_defense": "毒防御属性ではない!",
         "no_lithium": "Li⁺なし!",
         "no_defense": "防御力なし!",
         "no_paralysis": "麻痺なし!",
@@ -1043,6 +1054,11 @@
     "stage": "ステージ",
     "turns": "ターン数",
     "no_hand_data": "手札データなし",
-    "stage_cleared": "(完)"
+    "stage_cleared": "(完)",
+    "search_placeholder": "プレイヤー名を検索",
+    "search_button": "検索",
+    "clear_search": "クリア",
+    "search_results": "検索結果: {count}件",
+    "no_search_results": "検索結果がありません"
   }
 }

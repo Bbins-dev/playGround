@@ -154,7 +154,9 @@
         "frozen": "얼음",
         "frozen_description": "공격 카드의 명중률이 50% 감소합니다.",
         "oblivion": "망각",
-        "oblivion_description": "발동횟수 버프가 적용되지 않습니다. 카드들은 기본 발동횟수대로만 작동합니다."
+        "oblivion_description": "발동횟수 버프가 적용되지 않습니다. 카드들은 기본 발동횟수대로만 작동합니다.",
+        "stench": "악취",
+        "stench_description": "버프 카드의 발동률이 50% 감소합니다."
       },
       "buffs": {
       },
@@ -272,7 +274,7 @@
         },
         "unbreakable_mind": {
           "name": "꺾이지 않는 마음",
-          "description": "자신의 방어속성이 {normal}일 경우 발동 시 한 턴 간 {cardType:status}적용을 막습니다. {buff:mind}은 중첩되지 않습니다."
+          "description": "방어속성이 {normal}일 때 1턴간 {cardType:status} 적용을 막습니다. {buff:mind}은 중첩되지 않습니다."
         },
         "indomitable_gauntlet": {
           "name": "불굴의 장갑",
@@ -488,7 +490,7 @@
         },
         "ignite": {
           "name": "발화",
-          "description": "자신의 방어속성이 {fire}일 경우 발동 시 한 턴 간 적을 {status:ignition}시킵니다. {fire}{cardType:attack}카드에 {status:ignition} 중첩당 10배씩 피해 증가를 입게 합니다."
+          "description": "방어속성이 {fire}일 때 1턴간 {status:ignition} 부여합니다. {fire}{cardType:attack}카드는 중첩당 10배 추가 피해를 입힙니다."
         },
         "insult": {
           "name": "모욕",
@@ -544,11 +546,11 @@
         },
         "hot_wind": {
           "name": "열풍",
-          "description": "자신에게 피해를 3 입힌 후 손패의 {fire}{cardType:attack}카드 수를 {fire}{cardType:attack}카드의 공격력에 곱합니다. {buff:hotWind}은 중첩되지 않습니다."
+          "description": "자신에게 피해 3을 입힌 후 손패의 {fire}{cardType:attack}카드 수만큼 해당 카드의 공격력을 곱합니다. {buff:hotWind}은 중첩되지 않습니다."
         },
         "battery_explosion": {
           "name": "배터리폭발",
-          "description": "{buff:lithium} 1턴 획득. {fire}, {electric} {cardType:attack}카드의 현재 공격력에 {buff:lithium} 잔여 턴 수가 곱해집니다."
+          "description": "{buff:lithium} 1턴 획득. {fire}/{electric} {cardType:attack}카드 공격력에 잔여 턴수가 곱해집니다."
         },
         "overcharge_battery": {
           "name": "과충전",
@@ -644,7 +646,7 @@
         },
         "static": {
           "name": "정전기",
-          "description": "한 턴 간 손패의 {electric}속성 카드 1장당 5씩 {electric}{cardType:attack}카드의 기본 공격력에 더해집니다. {buff:static}는 중첩되지 않습니다."
+          "description": "1턴간 손패의 {electric}카드 1장당 {electric}{cardType:attack}카드 기본공격력에 +5씩 더해집니다. {buff:static}는 중첩되지 않습니다."
         },
         "battery_pack": {
           "name": "건전지 팩",
@@ -661,6 +663,14 @@
         "super_conductivity": {
           "name": "초전도",
           "description": "한 턴 간 {electric}{cardType:attack} 카드의 {accuracy}이 40% 증가합니다. {buff:superConductivity}는 중첩되지 않습니다."
+        },
+        "stench": {
+          "name": "악취",
+          "description": "자신이 {poison} 방어속성일 경우 상대를 {status:stench}상태로 만들어 한 턴 간 {cardType:buff}카드의 발동률을 50% 감소시킵니다."
+        },
+        "barrier": {
+          "name": "장벽",
+          "description": "자신의 방어속성이 {normal}일 경우 현재 {defense}을 5배로 높입니다."
         }
       },
       "buffs": {
@@ -824,6 +834,7 @@
         "no_status_effect": "상태이상 없음!",
         "no_fire_defense": "불 방어속성 아님!",
         "no_water_defense": "물 방어속성 아님!",
+        "no_poison_defense": "독 방어속성 아님!",
         "no_lithium": "Li⁺ 없음!",
         "no_defense": "방어력 없음!",
         "no_paralysis": "마비 없음!",
@@ -1042,6 +1053,11 @@
     "stage": "스테이지",
     "turns": "턴수",
     "no_hand_data": "손패 데이터 없음",
-    "stage_cleared": "(완)"
+    "stage_cleared": "(완)",
+    "search_placeholder": "플레이어 이름 검색",
+    "search_button": "검색",
+    "clear_search": "초기화",
+    "search_results": "검색 결과: {count}건",
+    "no_search_results": "검색 결과가 없습니다"
   }
 }

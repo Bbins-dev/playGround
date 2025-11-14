@@ -12,6 +12,8 @@ class LeaderboardModal {
         this.totalPages = 1;
         this.isLoading = false;
         this.myRankData = null; // 내 순위 데이터 (선택적)
+        this.searchQuery = null; // 검색 쿼리
+        this.isSearchMode = false; // 검색 모드 플래그
 
         this.init();
     }
@@ -128,6 +130,43 @@ class LeaderboardModal {
             });
         }
 
+        // 검색 버튼
+        const searchBtn = this.modal?.querySelector('#leaderboard-search-btn');
+        if (searchBtn) {
+            searchBtn.addEventListener('click', () => {
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.handleSearch();
+            });
+        }
+
+        // 검색 입력 필드 (Enter 키 + 실시간 길이 검증)
+        const searchInput = this.modal?.querySelector('#leaderboard-search-input');
+        if (searchInput) {
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.handleSearch();
+                }
+            });
+
+            // 실시간 입력 길이 체크 (전각/반각 문자 구분)
+            searchInput.addEventListener('input', () => {
+                this.validateSearchInput();
+            });
+        }
+
+        // 초기화 버튼
+        const clearSearchBtn = this.modal?.querySelector('#leaderboard-clear-search-btn');
+        if (clearSearchBtn) {
+            clearSearchBtn.addEventListener('click', () => {
+                if (this.gameManager?.audioSystem) {
+                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
+                }
+                this.handleClearSearch();
+            });
+        }
+
         // ESC 키로 닫기
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && this.modal?.style.display === 'flex') {
@@ -191,7 +230,15 @@ class LeaderboardModal {
         this.showLoading();
 
         try {
-            const result = await this.leaderboardClient.fetchLeaderboard(this.currentPage);
+            let result;
+
+            // 검색 모드: searchPlayers() 사용
+            if (this.isSearchMode && this.searchQuery) {
+                result = await this.leaderboardClient.searchPlayers(this.searchQuery, this.currentPage);
+            } else {
+                // 일반 모드: fetchLeaderboard() 사용
+                result = await this.leaderboardClient.fetchLeaderboard(this.currentPage);
+            }
 
             if (!result.success) {
                 console.warn('[LeaderboardModal] Fetch failed:', result.error);
@@ -202,6 +249,7 @@ class LeaderboardModal {
             this.totalPages = result.totalPages || 1;
             this.renderLeaderboard(result.data || []);
             this.updatePagination();
+            this.updateSearchIndicator(result.totalCount || 0);
 
         } catch (error) {
             console.error('[LeaderboardModal] Load error:', error);
@@ -232,7 +280,10 @@ class LeaderboardModal {
         const startRank = (this.currentPage - 1) * pageSize + 1;
 
         data.forEach((record, index) => {
-            const rank = startRank + index;
+            // 검색 모드: globalRank 사용, 일반 모드: 페이지 기반 계산
+            const rank = (this.isSearchMode && record.globalRank)
+                ? record.globalRank
+                : (startRank + index);
             const row = this.createLeaderboardRow(record, rank);
             tbody.appendChild(row);
         });
@@ -269,7 +320,7 @@ class LeaderboardModal {
 
         // 순위
         const rankCell = document.createElement('td');
-        rankCell.textContent = `#${rank}`;
+        rankCell.textContent = `#${this.formatRank(rank)}`;
         if (rank <= 3) {
             rankCell.classList.add(`rank-${rank}`);
         }
@@ -522,6 +573,163 @@ class LeaderboardModal {
         const month = date.getMonth() + 1;
         const day = date.getDate();
         return `${month}/${day}`;
+    }
+
+    /**
+     * 검색 실행
+     */
+    async handleSearch() {
+        const searchInput = this.modal?.querySelector('#leaderboard-search-input');
+        if (!searchInput) return;
+
+        const query = searchInput.value.trim();
+
+        // 빈 문자열이면 초기화와 동일한 동작
+        if (!query) {
+            await this.handleClearSearch();
+            return;
+        }
+
+        this.searchQuery = query;
+        this.isSearchMode = true;
+        this.currentPage = 1;
+
+        // 초기화 버튼 표시
+        const clearBtn = this.modal?.querySelector('#leaderboard-clear-search-btn');
+        if (clearBtn) {
+            clearBtn.classList.remove('hidden');
+        }
+
+        await this.loadLeaderboard();
+    }
+
+    /**
+     * 검색 초기화
+     */
+    async handleClearSearch() {
+        this.searchQuery = null;
+        this.isSearchMode = false;
+        this.currentPage = 1;
+
+        // 입력 필드 초기화
+        const searchInput = this.modal?.querySelector('#leaderboard-search-input');
+        if (searchInput) {
+            searchInput.value = '';
+        }
+
+        // 초기화 버튼 숨김
+        const clearBtn = this.modal?.querySelector('#leaderboard-clear-search-btn');
+        if (clearBtn) {
+            clearBtn.classList.add('hidden');
+        }
+
+        await this.loadLeaderboard();
+    }
+
+    /**
+     * 순위 포맷팅 (1000+ → k, m, b 단위)
+     * @param {number} rank - 순위
+     * @returns {string} 포맷된 순위
+     */
+    formatRank(rank) {
+        const config = GameConfig?.leaderboard?.rankAbbreviation;
+        const billions = config?.billions || 1000000000;
+        const millions = config?.millions || 1000000;
+        const thousands = config?.thousands || 1000;
+        const decimals = config?.decimalPlaces || 2;
+
+        if (rank >= billions) {
+            return (rank / billions).toFixed(decimals).replace(/\.00$/, '').replace(/0$/, '') + 'b';
+        } else if (rank >= millions) {
+            return (rank / millions).toFixed(decimals).replace(/\.00$/, '').replace(/0$/, '') + 'm';
+        } else if (rank >= thousands) {
+            return (rank / thousands).toFixed(decimals).replace(/\.00$/, '').replace(/0$/, '') + 'k';
+        }
+        return rank.toString();
+    }
+
+    /**
+     * 문자 길이 계산 (전각 문자는 2, 반각 문자는 1로 카운트)
+     * @param {string} text - 계산할 텍스트
+     * @returns {number} 계산된 길이
+     */
+    calculateTextLength(text) {
+        let length = 0;
+        // 전각 문자 범위 정규식
+        // 한글 완성형(AC00-D7A3), 한글 자모(3130-318F, FFA0-FFDC),
+        // 히라가나/카타카나(3040-30FF, 31F0-31FF),
+        // 한자(4E00-9FFF), 전각 영문/숫자/기호(FF00-FFEF)
+        const fullWidthRegex = /[\uAC00-\uD7A3\u3130-\u318F\uFFA0-\uFFDC\u3040-\u30FF\u31F0-\u31FF\u4E00-\u9FFF\uFF00-\uFFEF]/;
+
+        for (let i = 0; i < text.length; i++) {
+            const char = text[i];
+            if (fullWidthRegex.test(char)) {
+                length += 2;  // 전각 문자는 2로 카운트
+            } else {
+                length += 1;  // 반각 문자는 1로 카운트
+            }
+        }
+        return length;
+    }
+
+    /**
+     * 검색 입력 유효성 검사 (실시간)
+     */
+    validateSearchInput() {
+        const searchInput = this.modal?.querySelector('#leaderboard-search-input');
+        if (!searchInput) return;
+
+        const currentLength = this.calculateTextLength(searchInput.value);
+        const maxLength = 20; // 플레이어 이름과 동일한 20 (영어 기준 20자)
+
+        // 길이 초과 시 마지막 문자 제거
+        if (currentLength > maxLength) {
+            let text = searchInput.value;
+            const fullWidthRegex = /[\uAC00-\uD7A3\u3130-\u318F\uFFA0-\uFFDC\u3040-\u30FF\u31F0-\u31FF\u4E00-\u9FFF\uFF00-\uFFEF]/;
+            let calcLength = 0;
+            let validText = '';
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const charLength = fullWidthRegex.test(char) ? 2 : 1;
+
+                if (calcLength + charLength <= maxLength) {
+                    validText += char;
+                    calcLength += charLength;
+                } else {
+                    break;
+                }
+            }
+
+            searchInput.value = validText;
+        }
+    }
+
+    /**
+     * 검색 결과 표시 업데이트
+     * @param {number} totalCount - 총 검색 결과 수
+     */
+    updateSearchIndicator(totalCount) {
+        if (!this.isSearchMode) return;
+
+        const pageInfo = this.modal?.querySelector('.leaderboard-page-info');
+        if (!pageInfo) return;
+
+        // 검색 결과 수 표시 (템플릿 변수 치환)
+        let searchText = I18nHelper.getText('leaderboard.search_results') || '검색 결과: {count}건';
+        searchText = searchText.replace('{count}', totalCount);
+
+        // 원래 페이지 정보에 검색 결과 추가
+        const originalText = `${this.currentPage} / ${this.totalPages}`;
+        pageInfo.textContent = `${originalText} (${searchText})`;
+
+        // 검색 결과 없음 처리
+        if (totalCount === 0) {
+            const tbody = this.modal?.querySelector('.leaderboard-table tbody');
+            if (tbody) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 40px;">${I18nHelper.getText('leaderboard.no_search_results') || '검색 결과가 없습니다'}</td></tr>`;
+            }
+        }
     }
 }
 
