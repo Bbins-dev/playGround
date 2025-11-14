@@ -2727,13 +2727,12 @@
     white-space: nowrap;
 }
 
-/* 초기화 버튼 (× 기호) - 아주 컴팩트하게 */
-.leaderboard-clear-btn {
+/* 검색 버튼 (🔍 이모티콘) - 컴팩트하게 */
+#leaderboard-search-btn {
     padding: 8px 10px !important;
     min-width: auto !important;
-    font-size: 18px !important;
+    font-size: 16px !important;
     line-height: 1 !important;
-    font-weight: bold;
 }
 
 /* 리더보드 테이블 컨테이너 - 22행 정확히 표시 (970px = 헤더 43px + 22행×42px + 3px 여유) */
