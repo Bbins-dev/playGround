@@ -2282,7 +2282,7 @@ const CardDatabase = {
             type: 'status',
             element: 'poison',
             power: 0,
-            accuracy: 60,
+            accuracy: 75,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.poison_mutation.description',
             poisonChance: 100,
