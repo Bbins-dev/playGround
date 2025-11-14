@@ -703,12 +703,13 @@ class MainMenu {
             const savedData = localStorage.getItem('cardBattleGame_save');
             if (savedData) {
                 const gameData = JSON.parse(savedData);
-                this.gameManager.loadGameData(gameData);
-                this.gameManager.switchScreen('battle');
+                await this.gameManager.loadGameData(gameData);
+                // switchScreen('battle')은 loadGameData() 내부의 startStage()에서 이미 호출됨
             } else {
                 this.startNewGame();
             }
         } catch (error) {
+            console.error('[MainMenu] 게임 로드 실패:', error);
             this.startNewGame();
         }
     }

@@ -1855,6 +1855,20 @@ class GameManager {
                 this.gameStats.statusDamage = saveData.gameStats.statusDamage || 0;
                 this.gameStats.playStyle = saveData.gameStats.playStyle || 'balanced';
                 this.gameStats.isGameComplete = saveData.gameStats.isGameComplete || false;
+
+                // Map 객체 복원 (JSON 직렬화 시 Object로 변환되므로 재생성 필요)
+                if (saveData.gameStats.cardUsageStats) {
+                    // Object를 Map으로 변환 (Map은 JSON 직렬화 시 일반 객체가 됨)
+                    this.gameStats.cardUsageStats = new Map(Object.entries(saveData.gameStats.cardUsageStats));
+                } else {
+                    this.gameStats.cardUsageStats = new Map();
+                }
+
+                if (saveData.gameStats.elementUsageStats) {
+                    this.gameStats.elementUsageStats = new Map(Object.entries(saveData.gameStats.elementUsageStats));
+                } else {
+                    this.gameStats.elementUsageStats = new Map();
+                }
             }
 
             // 적 덱 인덱스 복원 (세이브-스컴 방지)
@@ -2532,6 +2546,9 @@ class GameManager {
     }
 
     updateStatsOnCardUse(card) {
+        // 안전 체크: gameStats가 초기화되지 않은 경우 대비
+        if (!this.gameStats) return;
+
         // 카드별 사용 횟수
         const cardId = card.id || card.name;
         this.gameStats.cardUsageStats.set(cardId, (this.gameStats.cardUsageStats.get(cardId) || 0) + 1);

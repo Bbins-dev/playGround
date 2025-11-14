@@ -1957,8 +1957,9 @@ class BattleSystem {
         await Promise.all(updatePromises);
 
         // HP 변경 후 런타임 스탯 재계산 (질량 버프 등 HP 기반 계산 즉시 반영)
-        this.player.updateRuntimeCardStats();
-        this.enemy.updateRuntimeCardStats();
+        // 안전 체크: player/enemy가 초기화되지 않은 경우 대비
+        this.player?.updateRuntimeCardStats();
+        this.enemy?.updateRuntimeCardStats();
 
         // 이름 업데이트 (시각적 우선순위 낮음)
         this.hpBarSystem.updateNames(this.player, this.enemy);
