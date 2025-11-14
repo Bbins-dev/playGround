@@ -137,6 +137,12 @@ class GameManager {
             // 사용자 클릭 후 로딩 화면 숨김
             await this.loadingScreen.hide();
 
+            // 버전 체크 (페이지 로드 시)
+            if (GameConfig?.leaderboard?.versionCheck?.checkOnLoad) {
+                const versionChecker = new VersionChecker(window._supabaseInstance);
+                await versionChecker.checkVersion();
+            }
+
             // 로딩 화면 완전히 숨긴 후 메인 메뉴 표시 (BGM은 showMainMenu에서 재생)
             this.showMainMenu();
 

@@ -646,10 +646,16 @@ class MainMenu {
     }
 
     // 새 게임 시작
-    startNewGame() {
+    async startNewGame() {
         // Prevent double-click execution
         if (this._startingGame) return;
         this._startingGame = true;
+
+        // 버전 체크 (새 게임 시작 시)
+        if (GameConfig?.leaderboard?.versionCheck?.checkOnNewGame) {
+            const versionChecker = new VersionChecker(window._supabaseInstance);
+            await versionChecker.checkVersion();
+        }
 
         // 저장된 속도 설정 적용
         const savedSpeed = parseInt(localStorage.getItem('cardBattle_gameSpeed') || '1');
@@ -677,7 +683,12 @@ class MainMenu {
     }
 
     // 게임 계속하기
-    continueGame() {
+    async continueGame() {
+        // 버전 체크 (이어서하기 시작 시)
+        if (GameConfig?.leaderboard?.versionCheck?.checkOnContinue) {
+            const versionChecker = new VersionChecker(window._supabaseInstance);
+            await versionChecker.checkVersion();
+        }
 
         try {
             const savedData = localStorage.getItem('cardBattleGame_save');
