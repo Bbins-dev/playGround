@@ -45,8 +45,8 @@ class I18n {
         const urlParams = new URLSearchParams(window.location.search);
         const langParam = urlParams.get('lang');
 
-        // Validate language parameter against supported languages
-        const supportedLanguages = ['ko', 'en', 'ja'];
+        // Configuration-Driven: GameConfig에서 지원 언어 목록 가져오기
+        const supportedLanguages = GameConfig?.seo?.supportedLanguages || ['ko', 'en', 'ja'];
         if (langParam && supportedLanguages.includes(langParam)) {
             return langParam;
         }

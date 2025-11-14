@@ -118,6 +118,9 @@ const GameConfig = {
             warnOnUnsavedChanges: true          // 저장 중 창 닫기 경고
         },
 
+        // 기본 게임 속도 (느림 = 2배속)
+        defaultGameSpeed: 2,
+
         // 속도 버튼 매핑 (버튼 ID → 실제 속도값)
         speedButtonMapping: {
             'speed-1x': 2,                      // "느림" 버튼 → 2배속
@@ -5950,6 +5953,74 @@ const GameConfig = {
 
         // 로컬 스토리지 키
         lastSubmitKey: 'leaderboard_last_submit_time'
+    },
+
+    // ========== 헬퍼 메서드 (Configuration-Driven 중앙화) ==========
+    // 하드코딩 배열 중복 제거: 단일 진실의 원천(Single Source of Truth)
+
+    /**
+     * 카드 명중률에 영향을 주는 상태이상 타입 목록 반환
+     * 복합 적용 시 순서 중요: sand(-30%) + frozen(-50%) = 80% → 56% → 28% (순차 곱셈)
+     * @returns {string[]} 상태이상 타입 배열 (적용 순서 유지)
+     */
+    getAccuracyAffectingStatusEffects() {
+        // 순서 유지 필수: 곱셈 순서가 최종 결과에 영향
+        // 동적 생성 대신 정적 배열 사용 (성능 + 순서 보장)
+        return ['sand', 'insult', 'slow', 'frozen', 'stench'];
+    },
+
+    /**
+     * 턴 기반 상태이상 타입 목록 반환 (즉시 해제 제외)
+     * 사용처: 지속감염(prolonged_infection), 호흡조절(breath_control) 카드
+     * @returns {string[]} 턴 기반 상태이상 배열
+     */
+    getTurnBasedStatusEffects() {
+        // 즉시 해제 상태이상(taunt, stun, frozen, oblivion) 제외
+        return ['burn', 'poisoned', 'wet', 'paralysis', 'sand', 'insult', 'slow', 'chains', 'phase', 'stench'];
+    },
+
+    /**
+     * 즉시 해제 상태이상 타입 목록 반환
+     * 사용처: HPBarSystem - 턴수 표시 숨김 처리
+     * @returns {string[]} 즉시 해제 상태이상 배열
+     */
+    getInstantReleaseStatusEffects() {
+        // 턴수를 화면에 표시하지 않는 상태이상
+        return ['frozen', 'stun', 'taunt', 'oblivion'];
+    },
+
+    /**
+     * 모든 버프 관련 Player 변수명 목록 반환
+     * 사용처: Player.clearBuffs() - 동적 초기화
+     * @returns {string[]} 버프 변수명 배열
+     */
+    getAllBuffVariableNames() {
+        // Player 클래스에 정의된 모든 버프 관련 변수명
+        // 새 버프 추가 시 이 배열에만 추가하면 clearBuffs() 자동 반영
+        return [
+            'strength',
+            'enhanceTurns',
+            'focusTurns',
+            'speedBonus', 'speedTurns',
+            'scentBonus', 'scentTurns',
+            'hotWindTurns',
+            'lithiumTurns',
+            'breathTurns',
+            'massBonus', 'massTurns',
+            'torrentBonus', 'torrentTurns',
+            'propagationBonus', 'propagationTurns',
+            'absorptionBonus', 'absorptionTurns',
+            'lightSpeedBonus', 'lightSpeedTurns',
+            'superConductivityTurns',
+            'staticTurns',
+            'packBonus', 'packTurns',
+            'poisonNeedleTurns',
+            'sharpenTurns',
+            'mindTurns',
+            'sulfurTurns',
+            'coatingTurns',
+            'raincoatStacks'
+        ];
     }
 };
 

@@ -313,7 +313,8 @@ class HPBarSystem {
 
             // 지속 턴수 또는 배수 표시
             let countdownHtml = '';
-            const instantReleaseStatuses = ['frozen', 'stun', 'taunt', 'oblivion'];
+            // Configuration-Driven: GameConfig에서 즉시 해제 상태이상 목록 가져오기
+            const instantReleaseStatuses = GameConfig?.getInstantReleaseStatusEffects() || [];
 
             // 발화: 스택 수 표시 (1, 2, 3...)
             if (effect.type === 'ignition' && effect.stacks) {
@@ -716,7 +717,8 @@ class HPBarSystem {
 
             // 지속 턴수 또는 배수 표시
             let countdownHtml = '';
-            const instantReleaseStatuses = ['frozen', 'stun', 'taunt', 'oblivion'];
+            // Configuration-Driven: GameConfig에서 즉시 해제 상태이상 목록 가져오기
+            const instantReleaseStatuses = GameConfig?.getInstantReleaseStatusEffects() || [];
 
             // 발화: 스택 수 표시
             if (effect.type === 'ignition' && effect.stacks) {
@@ -752,7 +754,8 @@ class HPBarSystem {
 
             // 지속 턴수 또는 배수 표시
             let countdownHtml = '';
-            const instantReleaseStatuses = ['frozen', 'stun', 'taunt', 'oblivion'];
+            // Configuration-Driven: GameConfig에서 즉시 해제 상태이상 목록 가져오기
+            const instantReleaseStatuses = GameConfig?.getInstantReleaseStatusEffects() || [];
 
             // 발화: 스택 수 표시
             if (effect.type === 'ignition' && effect.stacks) {
