@@ -566,7 +566,8 @@ class LeaderboardModal {
         } else if (diffDays === 1) {
             return I18nHelper.getText('leaderboard.yesterday') || 'Yesterday';
         } else if (diffDays < 7) {
-            return I18nHelper.getText('leaderboard.days_ago', { days: diffDays }) || `${diffDays}d ago`;
+            let daysText = I18nHelper.getText('leaderboard.days_ago') || '{days}d ago';
+            return daysText.replace('{days}', diffDays);
         }
 
         // 7일 이후는 날짜 표시
