@@ -77,6 +77,7 @@
     "ui": {
       "loading_title": "⚔️ 자동전투 카드대전",
       "loading_message": "게임 로딩 중...",
+      "version_update_detected": "최신 버전 감지됨! 새로고침 합니다.",
       "new_game": "새 게임 시작",
       "continue_game": "이어서 하기",
       "no_save_data": "저장된 게임이 없습니다",
