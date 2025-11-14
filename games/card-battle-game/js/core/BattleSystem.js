@@ -1512,6 +1512,11 @@ class BattleSystem {
 
     // 전투 종료 체크
     async checkBattleEnd() {
+        // 전투가 이미 종료되었거나 player/enemy가 null인 경우 체크하지 않음 (cleanup 후 호출 방지)
+        if (this.battlePhase === 'ended' || !this.player || !this.enemy) {
+            return false;
+        }
+
         if (this.player.isDead()) {
             // HP 애니메이션 완료까지 대기 (체력바가 0이 되는 것을 보고 난 후 게임오버)
             await this.wait(GameConfig.timing?.battle?.deathAnimationDelay || 520);

@@ -303,7 +303,9 @@ class UIManager {
             cardGalleryBtn: document.getElementById('card-gallery-btn'),
             backToMenuBtn: document.getElementById('back-to-menu'),
             mainMenuButtons: document.getElementById('main-menu-buttons'),
-            hpBars: document.querySelectorAll('.hp-bar-container')
+            hpBars: document.querySelectorAll('.hp-bar-container'),
+            volumeBtn: document.getElementById('volume-control-btn'),
+            shareBtn: document.getElementById('battle-share-btn')
         };
 
         switch (this.currentScreen) {
@@ -312,6 +314,8 @@ class UIManager {
                 this.hide(elements.speedControls);
                 this.hide(elements.cardGalleryBtn);
                 this.hide(elements.backToMenuBtn);
+                this.hide(elements.volumeBtn);
+                this.hide(elements.shareBtn);
                 this.show(elements.mainMenuButtons);
                 // HP 바 숨기기
                 elements.hpBars.forEach(bar => this.hide(bar));
@@ -325,6 +329,8 @@ class UIManager {
                 this.show(elements.speedControls);
                 this.show(elements.cardGalleryBtn);
                 this.show(elements.backToMenuBtn);
+                this.show(elements.volumeBtn);
+                this.show(elements.shareBtn);
                 this.hide(elements.mainMenuButtons);
                 // HP 바 표시
                 elements.hpBars.forEach(bar => this.show(bar));
