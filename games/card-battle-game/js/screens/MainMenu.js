@@ -12,16 +12,23 @@ class MainMenu {
         this.currentSelection = 0;
         this.menuItems = [
             {
-                text: 'start-game',
-                action: () => this.startNewGame(),
-                icon: '⚔️',
-                id: 'start-game-btn'
-            },
-            {
                 text: 'game-tutorial',
                 action: () => this.showGameTutorial(),
                 icon: '📚',
                 id: 'game-tutorial-btn'
+            },
+            {
+                text: 'continue-game',
+                action: () => this.continueGame(),
+                icon: '▶️',
+                id: 'continue-game-btn',
+                disabled: true
+            },
+            {
+                text: 'start-game',
+                action: () => this.startNewGame(),
+                icon: '⚔️',
+                id: 'start-game-btn'
             },
             {
                 text: 'card-gallery',
@@ -76,13 +83,13 @@ class MainMenu {
                 button.removeEventListener('focus', button._mainMenuFocusHandler);
 
                 // 클릭 이벤트 리스너 추가
-                button._mainMenuClickHandler = () => {
+                button._mainMenuClickHandler = async () => {
                     // 버튼 클릭 사운드 재생
                     if (this.gameManager?.audioSystem) {
                         this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
                     }
                     this.currentSelection = index;
-                    this.selectCurrent();
+                    await this.selectCurrent();
                 };
                 button.addEventListener('click', button._mainMenuClickHandler);
 
@@ -637,11 +644,11 @@ class MainMenu {
     }
 
     // 현재 메뉴 선택
-    selectCurrent() {
+    async selectCurrent() {
         const item = this.menuItems[this.currentSelection];
         if (!item.disabled && item.action) {
             this.playSelectSound();
-            item.action();
+            await item.action();
         }
     }
 
@@ -856,12 +863,12 @@ class MainMenu {
     }
 
     // 마우스/터치 입력 처리
-    handlePointerInput(x, y, canvas) {
+    async handlePointerInput(x, y, canvas) {
         const config = GameConfig.mainMenu.menuItems;
         const centerX = GameConfig.canvas.width / 2;
 
         // 메뉴 아이템 클릭 체크
-        this.menuItems.forEach((item, index) => {
+        for (const [index, item] of this.menuItems.entries()) {
             const itemY = config.startY + index * config.itemHeight;
 
             if (x >= centerX - config.width/2 && x <= centerX + config.width/2 &&
@@ -869,10 +876,10 @@ class MainMenu {
 
                 if (!item.disabled) {
                     this.currentSelection = index;
-                    this.selectCurrent();
+                    await this.selectCurrent();
                 }
             }
-        });
+        }
     }
 
     // 속성 이름들을 강제로 업데이트하는 메서드
