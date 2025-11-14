@@ -1858,7 +1858,6 @@ class GameManager {
 
                 // Map 객체 복원 (JSON 직렬화 시 Object로 변환되므로 재생성 필요)
                 if (saveData.gameStats.cardUsageStats) {
-                    // Object를 Map으로 변환 (Map은 JSON 직렬화 시 일반 객체가 됨)
                     this.gameStats.cardUsageStats = new Map(Object.entries(saveData.gameStats.cardUsageStats));
                 } else {
                     this.gameStats.cardUsageStats = new Map();

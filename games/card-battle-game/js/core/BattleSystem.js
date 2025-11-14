@@ -136,6 +136,11 @@ class BattleSystem {
 
     // 턴 시작
     async startTurn() {
+        // 안전 체크: cleanup 후 타이머가 실행되는 경우 방지
+        if (!this.player || !this.enemy || this.battlePhase === 'ended') {
+            return;
+        }
+
         // 화면 표시용 턴을 실제 턴과 동기화 (배경색 변경 시점)
         this.displayTurn = this.currentTurn;
 
