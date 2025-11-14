@@ -702,8 +702,8 @@ class MainMenu {
         try {
             const savedData = localStorage.getItem('cardBattleGame_save');
             if (savedData) {
-                const gameData = JSON.parse(savedData);
-                await this.gameManager.loadGameData(gameData);
+                // loadGameData는 인코딩된 문자열을 받아서 내부에서 디코딩함
+                await this.gameManager.loadGameData(savedData);
                 // switchScreen('battle')은 loadGameData() 내부의 startStage()에서 이미 호출됨
             } else {
                 this.startNewGame();
