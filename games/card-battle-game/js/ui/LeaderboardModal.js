@@ -156,17 +156,6 @@ class LeaderboardModal {
             });
         }
 
-        // 초기화 버튼
-        const clearSearchBtn = this.modal?.querySelector('#leaderboard-clear-search-btn');
-        if (clearSearchBtn) {
-            clearSearchBtn.addEventListener('click', () => {
-                if (this.gameManager?.audioSystem) {
-                    this.gameManager.audioSystem.playSFX(GameConfig?.audio?.uiSounds?.buttonClick || 'click');
-                }
-                this.handleClearSearch();
-            });
-        }
-
         // ESC 키로 닫기
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && this.modal?.style.display === 'flex') {
@@ -595,12 +584,6 @@ class LeaderboardModal {
         this.isSearchMode = true;
         this.currentPage = 1;
 
-        // 초기화 버튼 표시
-        const clearBtn = this.modal?.querySelector('#leaderboard-clear-search-btn');
-        if (clearBtn) {
-            clearBtn.classList.remove('hidden');
-        }
-
         await this.loadLeaderboard();
     }
 
@@ -616,12 +599,6 @@ class LeaderboardModal {
         const searchInput = this.modal?.querySelector('#leaderboard-search-input');
         if (searchInput) {
             searchInput.value = '';
-        }
-
-        // 초기화 버튼 숨김
-        const clearBtn = this.modal?.querySelector('#leaderboard-clear-search-btn');
-        if (clearBtn) {
-            clearBtn.classList.add('hidden');
         }
 
         await this.loadLeaderboard();
