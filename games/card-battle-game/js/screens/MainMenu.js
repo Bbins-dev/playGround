@@ -663,7 +663,11 @@ class MainMenu {
         // 버전 체크 (새 게임 시작 시)
         if (GameConfig?.leaderboard?.versionCheck?.checkOnNewGame) {
             const versionChecker = new VersionChecker(window._supabaseInstance);
-            await versionChecker.checkVersion();
+            const hasUpdate = await versionChecker.checkVersion();
+            // 업데이트 발견 시 새로고침으로 이어지므로 더 이상 진행하지 않음
+            if (hasUpdate) {
+                return;
+            }
         }
 
         // 저장된 속도 설정 적용
@@ -693,13 +697,24 @@ class MainMenu {
 
     // 게임 계속하기
     async continueGame() {
-        // 버전 체크 (이어서하기 시작 시)
-        if (GameConfig?.leaderboard?.versionCheck?.checkOnContinue) {
-            const versionChecker = new VersionChecker(window._supabaseInstance);
-            await versionChecker.checkVersion();
+        // 디바운스 가드 (중복 클릭 방지)
+        if (this._continuingGame) {
+            console.log('[MainMenu] 게임 로드가 이미 진행 중입니다.');
+            return;
         }
+        this._continuingGame = true;
 
         try {
+            // 버전 체크 (이어서하기 시작 시)
+            if (GameConfig?.leaderboard?.versionCheck?.checkOnContinue) {
+                const versionChecker = new VersionChecker(window._supabaseInstance);
+                const hasUpdate = await versionChecker.checkVersion();
+                // 업데이트 발견 시 새로고침으로 이어지므로 더 이상 진행하지 않음
+                if (hasUpdate) {
+                    return;
+                }
+            }
+
             const savedData = localStorage.getItem('cardBattleGame_save');
             if (savedData) {
                 // loadGameData는 인코딩된 문자열을 받아서 내부에서 디코딩함
@@ -711,6 +726,9 @@ class MainMenu {
         } catch (error) {
             console.error('[MainMenu] 게임 로드 실패:', error);
             this.startNewGame();
+        } finally {
+            // 디바운스 플래그 리셋 (500ms 후)
+            setTimeout(() => { this._continuingGame = false; }, 500);
         }
     }
 

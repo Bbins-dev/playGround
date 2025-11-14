@@ -63,6 +63,16 @@ class BattleSystem {
 
     // 전투 시작
     async startBattle(player, enemy) {
+        // 배틀 중복 실행 방지 (race condition 가드)
+        if (this.battlePhase !== 'ended' && this.battlePhase !== 'waiting' && this.player && this.enemy) {
+            console.warn('[BattleSystem] 배틀이 이미 진행 중입니다. 중복 실행을 방지합니다.');
+            return;
+        }
+
+        // 이전 타이머 정리 (race condition 방지)
+        if (this.timerManager) {
+            this.timerManager.clearAll();
+        }
 
         this.player = player;
         this.enemy = enemy;

@@ -1885,7 +1885,7 @@ class GameManager {
             }
 
             // 다음 스테이지 시작
-            this.startStage(this.currentStage);
+            await this.startStage(this.currentStage);
             return true;
 
         } catch (error) {
