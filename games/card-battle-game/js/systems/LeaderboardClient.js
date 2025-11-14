@@ -56,6 +56,7 @@ class LeaderboardClient {
         // 기존 Supabase 인스턴스가 있으면 재사용
         if (_supabaseInstance) {
             this.supabase = _supabaseInstance;
+            window._supabaseInstance = _supabaseInstance;  // window 객체에도 노출
             this.initialized = true;
             if (GameConfig?.debugMode?.showSystemInitialization) {
                 console.log('[LeaderboardClient] Reusing existing Supabase instance');
@@ -87,6 +88,7 @@ class LeaderboardClient {
 
             this.supabase = window.supabase.createClient(url, key);
             _supabaseInstance = this.supabase;  // 전역 저장 (싱글톤)
+            window._supabaseInstance = this.supabase;  // window 객체에도 노출 (VersionChecker 접근용)
             this.initialized = true;
             if (GameConfig?.debugMode?.showSystemInitialization) {
                 console.log('[LeaderboardClient] Initialized successfully (new instance)');
