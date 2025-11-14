@@ -278,8 +278,9 @@ class GameManager {
 
     // 시스템들 초기화
     initSystems() {
-        // 저장된 게임 속도 설정 불러오기
-        const savedSpeed = parseInt(localStorage.getItem('cardBattle_gameSpeed') || '1');
+        // 저장된 게임 속도 설정 불러오기 (Configuration-Driven)
+        const defaultSpeed = GameConfig?.constants?.defaultGameSpeed || 2;
+        const savedSpeed = parseInt(localStorage.getItem('cardBattle_gameSpeed') || defaultSpeed.toString());
         this.gameSpeed = savedSpeed;
 
         // TimerManager에 저장된 속도 즉시 적용

@@ -28,7 +28,9 @@ class ShareLandingPage {
 
         // 언어 감지 및 설정 (최초 1회만 적용)
         const hasAppliedUrlLang = sessionStorage.getItem('urlLangApplied');
-        if (langParam && !hasAppliedUrlLang && ['ko', 'en', 'ja'].includes(langParam)) {
+        // Configuration-Driven: GameConfig에서 지원 언어 목록 가져오기
+        const supportedLanguages = GameConfig?.seo?.supportedLanguages || ['ko', 'en', 'ja'];
+        if (langParam && !hasAppliedUrlLang && supportedLanguages.includes(langParam)) {
             localStorage.setItem('selectedLanguage', langParam);
             sessionStorage.setItem('urlLangApplied', 'true');
             if (window.i18n) {

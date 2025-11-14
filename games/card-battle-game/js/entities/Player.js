@@ -769,36 +769,14 @@ class Player {
     }
 
     clearBuffs() {
-        this.strength = 0;
-        this.enhanceTurns = 0;
-        this.focusTurns = 0;
-        this.speedBonus = 0;
-        this.speedTurns = 0;
-        this.scentBonus = 0;
-        this.scentTurns = 0;
-        this.hotWindTurns = 0;
-        this.lithiumTurns = 0;
-        this.breathTurns = 0;
-        this.massBonus = 0;
-        this.massTurns = 0;
-        this.torrentBonus = 0;
-        this.torrentTurns = 0;
-        this.propagationBonus = 0;
-        this.propagationTurns = 0;
-        this.absorptionBonus = 0;
-        this.absorptionTurns = 0;
-        this.lightSpeedBonus = 0;
-        this.lightSpeedTurns = 0;
-        this.superConductivityTurns = 0;
-        this.staticTurns = 0;
-        this.packBonus = 0;
-        this.packTurns = 0;
-        this.poisonNeedleTurns = 0;
-        this.sharpenTurns = 0;
-        this.mindTurns = 0;
-        this.sulfurTurns = 0;
-        this.coatingTurns = 0;
-        this.raincoatStacks = 0;
+        // Configuration-Driven 동적 초기화: GameConfig에서 모든 버프 변수명 가져오기
+        // 새 버프 추가 시 GameConfig.getAllBuffVariableNames()만 수정하면 자동 반영
+        const buffVariables = GameConfig?.getAllBuffVariableNames() || [];
+        buffVariables.forEach(varName => {
+            if (this.hasOwnProperty(varName)) {
+                this[varName] = 0;
+            }
+        });
     }
 
     // 런타임 카드 스탯 업데이트 (버프/상태이상 반영)
@@ -1057,7 +1035,8 @@ class Player {
             // 상태이상 디버프 적용 (GameConfig 기반) - 곱셈 방식으로 감소 (소수점 버림)
             // 중요: 각 상태이상은 1번씩만 적용 (find()로 첫 번째만 찾음)
             // 복합 적용: sand(-30%) + frozen(-50%) = 80% → 56% → 28% (순차 곱셈)
-            const statusEffectTypes = ['sand', 'insult', 'slow', 'frozen', 'stench'];
+            // Configuration-Driven: 단일 진실의 원천(GameConfig) 사용
+            const statusEffectTypes = GameConfig?.getAccuracyAffectingStatusEffects() || [];
             statusEffectTypes.forEach(effectType => {
                 if (!this.hasStatusEffect(effectType)) return;
 

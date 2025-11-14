@@ -175,8 +175,9 @@ class UIManager {
     setupSpeedControls() {
         const speedButtons = document.querySelectorAll('.speed-btn');
 
-        // localStorage에서 저장된 속도 설정 불러오기
-        const savedSpeed = parseInt(localStorage.getItem('cardBattle_gameSpeed') || '1');
+        // localStorage에서 저장된 속도 설정 불러오기 (Configuration-Driven)
+        const defaultSpeed = GameConfig?.constants?.defaultGameSpeed || 2;
+        const savedSpeed = parseInt(localStorage.getItem('cardBattle_gameSpeed') || defaultSpeed.toString());
 
         speedButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
