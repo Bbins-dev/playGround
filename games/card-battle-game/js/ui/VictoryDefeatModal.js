@@ -1830,8 +1830,15 @@ class VictoryDefeatModal {
 
                 // 내 순위 조회
                 console.log('[VictoryDefeatModal] Fetching rank...');
+                // 버전을 zero-padded 형식으로 변환 (versionToPadded 함수 사용 또는 inline 변환)
+                const gameVersion = typeof versionToPadded === 'function'
+                    ? versionToPadded(GameConfig?.versionInfo?.number || '0.0.0')
+                    : (GameConfig?.versionInfo?.number || '0.0.0').split('.').map(part => part.padStart(3, '0')).join('.');
+
                 const rankResult = await this.leaderboardClient.getMyRank({
+                    isGameComplete: submitData.isGameComplete,
                     finalStage: submitData.finalStage,
+                    gameVersion: gameVersion,
                     totalTurns: submitData.totalTurns,
                     totalDamageDealt: submitData.totalDamageDealt,
                     totalDamageReceived: submitData.totalDamageReceived
