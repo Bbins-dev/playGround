@@ -338,17 +338,47 @@ class LeaderboardClient {
         }
 
         try {
-            const { finalStage, totalTurns, totalDamageDealt, totalDamageReceived } = playerData;
+            const { isGameComplete, finalStage, gameVersion, totalTurns, totalDamageDealt, totalDamageReceived } = playerData;
 
-            // 4단계 정렬 조건으로 상위 기록 카운트
-            const { count, error } = await this.supabase
+            // 6단계 정렬 기준으로 상위 레코드 카운트
+            let query = this.supabase
                 .from(this.config.tableName)
-                .select('*', { count: 'exact', head: true })
-                .or(`final_stage.gt.${finalStage},` +
-                    `and(final_stage.eq.${finalStage},total_turns.lt.${totalTurns}),` +
-                    `and(final_stage.eq.${finalStage},total_turns.eq.${totalTurns},total_damage_dealt.lt.${totalDamageDealt}),` +
-                    `and(final_stage.eq.${finalStage},total_turns.eq.${totalTurns},total_damage_dealt.eq.${totalDamageDealt},total_damage_received.gt.${totalDamageReceived})`
+                .select('*', { count: 'exact', head: true });
+
+            // is_game_complete 기준으로 분기
+            if (isGameComplete) {
+                // 완료한 경우: 완료한 레코드 중에서만 비교
+                query = query.or(
+                    // 1순위: 스테이지가 더 높음
+                    `and(is_game_complete.eq.true,final_stage.gt.${finalStage}),` +
+                    // 2순위: 스테이지 같고, 버전이 더 높음 (zero-padded 문자열 비교)
+                    `and(is_game_complete.eq.true,final_stage.eq.${finalStage},game_version.gt.${gameVersion}),` +
+                    // 3순위: 스테이지, 버전 같고, 턴수가 더 적음
+                    `and(is_game_complete.eq.true,final_stage.eq.${finalStage},game_version.eq.${gameVersion},total_turns.lt.${totalTurns}),` +
+                    // 4순위: 스테이지, 버전, 턴수 같고, 딜량이 더 적음
+                    `and(is_game_complete.eq.true,final_stage.eq.${finalStage},game_version.eq.${gameVersion},total_turns.eq.${totalTurns},total_damage_dealt.lt.${totalDamageDealt}),` +
+                    // 5순위: 스테이지, 버전, 턴수, 딜량 같고, 받은피해가 더 많음
+                    `and(is_game_complete.eq.true,final_stage.eq.${finalStage},game_version.eq.${gameVersion},total_turns.eq.${totalTurns},total_damage_dealt.eq.${totalDamageDealt},total_damage_received.gt.${totalDamageReceived})`
                 );
+            } else {
+                // 미완료한 경우: 완료한 레코드는 모두 상위 + 미완료 중 비교
+                query = query.or(
+                    // 0순위: 게임 완료한 레코드는 모두 상위
+                    `is_game_complete.eq.true,` +
+                    // 1순위: 스테이지가 더 높음
+                    `and(is_game_complete.eq.false,final_stage.gt.${finalStage}),` +
+                    // 2순위: 스테이지 같고, 버전이 더 높음 (zero-padded 문자열 비교)
+                    `and(is_game_complete.eq.false,final_stage.eq.${finalStage},game_version.gt.${gameVersion}),` +
+                    // 3순위: 스테이지, 버전 같고, 턴수가 더 적음
+                    `and(is_game_complete.eq.false,final_stage.eq.${finalStage},game_version.eq.${gameVersion},total_turns.lt.${totalTurns}),` +
+                    // 4순위: 스테이지, 버전, 턴수 같고, 딜량이 더 적음
+                    `and(is_game_complete.eq.false,final_stage.eq.${finalStage},game_version.eq.${gameVersion},total_turns.eq.${totalTurns},total_damage_dealt.lt.${totalDamageDealt}),` +
+                    // 5순위: 스테이지, 버전, 턴수, 딜량 같고, 받은피해가 더 많음
+                    `and(is_game_complete.eq.false,final_stage.eq.${finalStage},game_version.eq.${gameVersion},total_turns.eq.${totalTurns},total_damage_dealt.eq.${totalDamageDealt},total_damage_received.gt.${totalDamageReceived})`
+                );
+            }
+
+            const { count, error } = await query;
 
             if (error) {
                 console.error('[LeaderboardClient] Rank check error:', error);

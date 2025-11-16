@@ -757,6 +757,14 @@ class BattleSystem {
             await this.effectSystem.showDefenseGainMessage(userPosition, result.defenseGain, {
                 isPlayerTarget: (user === this.player)
             });
+
+            // 방어력 통계 업데이트 (defenseGain > 0인 경우만)
+            if (result.defenseGain > 0) {
+                this.battleStats.defenseBuilt += result.defenseGain;
+                if (user === this.player) {
+                    this.gameManager.updateStatsOnDefense(result.defenseGain);
+                }
+            }
         }
 
         // 힘 버프 획득 처리 (끝없는 노력 카드 등) - 새로운 통합 메서드 사용
