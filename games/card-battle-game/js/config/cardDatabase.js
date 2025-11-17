@@ -589,7 +589,7 @@ const CardDatabase = {
             power: 3,
             accuracy: 80,
             activationCount: 1,
-            wetChance: 80,
+            wetChance: 100,
             descriptionKey: 'auto_battle_card_game.ui.cards.water_bomb.description',
             effect: function(user, target, battleSystem) {
                 let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
@@ -636,7 +636,7 @@ const CardDatabase = {
                 type: 'wet',
                 chance: 100,
                 power: null,
-                duration: 1
+                duration: 5
             },
             wetChance: GameConfig?.cardEffects?.tsunami?.wetChance || 100,
             effect: function(user, target, battleSystem) {
@@ -665,7 +665,7 @@ const CardDatabase = {
                         type: 'wet',
                         chance: this.wetChance,
                         power: null,
-                        duration: 1
+                        duration: 5
                     },
                     element: this.element,
                     effectiveness: effectiveness
@@ -733,21 +733,10 @@ const CardDatabase = {
                 const effectiveness = GameConfig.utils.getTypeEffectiveness(this.element, target.defenseElement);
                 const finalDamage = Math.floor(baseDamage * effectiveness);
 
-                // 얼음 상태 확인 (명중 시에만 제거)
-                const hasFrozen = target.hasStatusEffect('frozen');
-
-                // 명중 시 얼음 제거
-                if (hasFrozen) {
-                    target.removeStatusEffect('frozen');
-                    // 상태이상 UI 업데이트는 BattleSystem에서 자동 처리
-                    // 상대방의 런타임 스탯 즉시 업데이트 (Player.removeStatusEffect에서 자동 호출됨)
-                }
-
                 return {
                     success: true,
                     messageKey: 'auto_battle_card_game.ui.damage',
                     damage: finalDamage,
-                    frozenRemoved: hasFrozen,  // 얼음 제거 여부 (UI 업데이트용)
                     element: this.element,
                     effectiveness: effectiveness
                 };

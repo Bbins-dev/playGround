@@ -315,11 +315,11 @@
         },
         "water_bomb": {
           "name": "水爆弾",
-          "description": "相手に水爆弾を投げて3ダメージを与え、高確率で{status:wet}にします。"
+          "description": "相手に水爆弾を投げて3ダメージを与え、{status:wet}にします。"
         },
         "tsunami": {
           "name": "津波",
-          "description": "自分に15ダメージを与えた後、相手に15ダメージを与えます。両方とも{status:wet}状態にします。"
+          "description": "自分に15ダメージを与えた後、相手に15ダメージを与えます。両方とも5ターンの間{status:wet}状態にします。"
         },
         "freezing_wind": {
           "name": "冷凍風",
@@ -327,7 +327,7 @@
         },
         "ice_breaker": {
           "name": "氷砕き",
-          "description": "{status:frozen}状態の敵に最大{hp}の25%の固定ダメージを与え、命中時に{status:frozen}状態を解除します。"
+          "description": "{status:frozen}状態の敵に最大{hp}の25%の固定ダメージを与えます。"
         },
         "thunder_strike": {
           "name": "サンダーストライク",
