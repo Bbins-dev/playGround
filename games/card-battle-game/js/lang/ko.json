@@ -315,11 +315,11 @@
         },
         "water_bomb": {
           "name": "물폭탄",
-          "description": "상대에게 물폭탄을 던져 3의 피해를 입히고 높은 확률로 {status:wet}상태로 만듭니다."
+          "description": "상대에게 물폭탄을 던져 3의 피해를 입히고 {status:wet}상태로 만듭니다."
         },
         "tsunami": {
           "name": "쓰나미",
-          "description": "자신에게 15의 피해를 입힌 후 상대에게 15 피해를 입힙니다. 모두 {status:wet} 상태로 만듭니다."
+          "description": "자신에게 15의 피해를 입힌 후 상대에게 15 피해를 입힙니다. 모두 5턴 간 {status:wet} 상태로 만듭니다."
         },
         "freezing_wind": {
           "name": "냉동바람",
@@ -327,7 +327,7 @@
         },
         "ice_breaker": {
           "name": "얼음깨기",
-          "description": "{status:frozen} 상태의 적에게 적 최대 {hp}의 25%에 해당하는 고정 피해를 입히고 명중 시 {status:frozen} 상태를 없앱니다."
+          "description": "{status:frozen} 상태의 적에게 적 최대 {hp}의 25%에 해당하는 고정 피해를 입힙니다."
         },
         "thunder_strike": {
           "name": "번개일격",

@@ -315,11 +315,11 @@
         },
         "water_bomb": {
           "name": "Water Bomb",
-          "description": "Throw a water bomb at the opponent for 3 damage and a high chance to inflict {status:wet}."
+          "description": "Throw a water bomb at the opponent for 3 damage and inflicts {status:wet}."
         },
         "tsunami": {
           "name": "Tsunami",
-          "description": "Deal 15 damage to yourself, then deal 15 damage to the opponent. Both become {status:wet}."
+          "description": "Deal 15 damage to yourself, then deal 15 damage to the opponent. Both become {status:wet} for 5 turns."
         },
         "freezing_wind": {
           "name": "Freezing Wind",
@@ -327,7 +327,7 @@
         },
         "ice_breaker": {
           "name": "Ice Breaker",
-          "description": "Deal fixed damage equal to 25% of enemy's max {hp} to {status:frozen} enemies and remove {status:frozen} on hit."
+          "description": "Deal fixed damage equal to 25% of enemy's max {hp} to {status:frozen} enemies."
         },
         "thunder_strike": {
           "name": "Thunder Strike",
