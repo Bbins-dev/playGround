@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.9.25',                        // 버전 넘버
+        number: '0.9.26',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -49,7 +49,7 @@ const GameConfig = {
             buffMultiplier: 1.5,                // 강화 버프 배율 (50% 증가)
             criticalHit: 2.0,                   // 치명타 배율
             barricadeDefense: 2.0,              // 바리케이트 방어력 배수
-            barrierDefense: 5.0,                // 장벽 방어력 배수
+            barrierDefense: 3.0,                // 장벽 방어력 배수
             attackPerStrength: 1                // 힘 버프 1당 공격력 증가량
         },
 

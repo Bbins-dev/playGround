@@ -1284,11 +1284,11 @@ const CardDatabase = {
             nameKey: 'auto_battle_card_game.ui.cards.smog.name',
             type: 'attack',
             element: 'poison',
-            power: 2,
+            power: 3,
             accuracy: 80,
             activationCount: 1,
             descriptionKey: 'auto_battle_card_game.ui.cards.smog.description',
-            poisonChance: 70,
+            poisonChance: 100,
             effect: function(user, target, battleSystem) {
                 let baseDamage = this.power + (user.getStrength ? user.getStrength() * (GameConfig?.constants?.multipliers?.attackPerStrength || 1) : 0);
 
@@ -1408,7 +1408,7 @@ const CardDatabase = {
             isRandomBash: true, // 랜덤 연속 공격 카드임을 표시
             minActivation: 2, // 최소 발동 횟수
             maxActivation: 5, // 최대 발동 횟수
-            poisonChance: 10, // 각 타격마다 10% 확률로 중독
+            poisonChance: 100, // 각 타격마다 100% 확률로 중독
             getRandomActivationCount: function() {
                 return Math.floor(Math.random() * (this.maxActivation - this.minActivation + 1)) + this.minActivation;
             },

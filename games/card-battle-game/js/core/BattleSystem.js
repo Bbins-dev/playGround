@@ -541,7 +541,12 @@ class BattleSystem {
      * @param {Object} targetPosition - 타겟 위치 {x, y}
      */
     async processAttackResult(result, card, user, target, targetPosition) {
-        const damage = result.damage || 0;
+        let damage = result.damage || 0;
+
+        // 최소 데미지 보장 (공격 카드이고 명중했으나 데미지 0인 경우)
+        if (card.type === 'attack' && damage === 0 && result.success) {
+            damage = GameConfig?.constants?.limits?.minDamage || 1;
+        }
 
         if (damage > 0) {
             // 실제 대미지 적용
