@@ -551,8 +551,9 @@ class BattleSystem {
     async processAttackResult(result, card, user, target, targetPosition) {
         let damage = result.damage || 0;
 
-        // 최소 데미지 보장 (공격 카드이고 명중했으나 데미지 0인 경우)
-        if (card.type === 'attack' && damage === 0 && result.success) {
+        // 최소 데미지 보장 (약점 상성으로 인한 0만 보정, 조건부 0은 허용)
+        if (card.type === 'attack' && damage === 0 && result.success &&
+            result.effectiveness === GameConfig.typeEffectiveness.weak) {
             damage = GameConfig?.constants?.limits?.minDamage || 1;
         }
 
