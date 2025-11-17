@@ -654,20 +654,160 @@ class MainMenu {
         }
     }
 
+    /**
+     * 버전 체크 중 로딩 오버레이 표시/숨김
+     * @param {boolean} show - true: 표시, false: 숨김
+     */
+    showVersionCheckLoading(show) {
+        const overlayId = 'version-check-overlay';
+        let overlay = document.getElementById(overlayId);
+
+        if (show) {
+            // 이미 표시 중이면 중복 생성 방지
+            if (overlay) return;
+
+            // 오버레이 생성
+            overlay = document.createElement('div');
+            overlay.id = overlayId;
+
+            // GameConfig 기반 스타일 적용
+            const zIndex = GameConfig?.zIndexLayers?.versionCheckOverlay || 9999;
+            const bgColor = GameConfig?.masterColors?.background?.overlay || 'rgba(0, 0, 0, 0.7)';
+            const fadeInTime = GameConfig?.masterTiming?.ui?.fadeIn || 250;
+
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: ${bgColor};
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                z-index: ${zIndex};
+                opacity: 0;
+                transition: opacity ${fadeInTime}ms ease-in-out;
+            `;
+
+            // 스피너 컨테이너
+            const spinnerContainer = document.createElement('div');
+            spinnerContainer.style.cssText = `
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            `;
+
+            // 로딩 스피너
+            const spinner = document.createElement('div');
+            const spinnerColor = GameConfig?.masterColors?.ui?.primary || '#4CAF50';
+            spinner.style.cssText = `
+                width: 50px;
+                height: 50px;
+                border: 5px solid rgba(255, 255, 255, 0.3);
+                border-top-color: ${spinnerColor};
+                border-radius: 50%;
+                animation: version-check-spin 1s linear infinite;
+            `;
+
+            // 메시지
+            const message = document.createElement('div');
+            const i18n = window.I18n?.getInstance();
+            const messageText = i18n ?
+                i18n.getMessage('auto_battle_card_game.ui.version_check.checking') :
+                '버전 확인 중...';
+            message.textContent = messageText;
+            message.style.cssText = `
+                color: white;
+                font-size: 18px;
+                font-weight: bold;
+                font-family: ${GameConfig?.masterFonts?.primary || 'Arial, sans-serif'};
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            `;
+
+            spinnerContainer.appendChild(spinner);
+            spinnerContainer.appendChild(message);
+            overlay.appendChild(spinnerContainer);
+
+            // 스피너 애니메이션 CSS 추가 (아직 없는 경우)
+            if (!document.getElementById('version-check-spinner-style')) {
+                const style = document.createElement('style');
+                style.id = 'version-check-spinner-style';
+                style.textContent = `
+                    @keyframes version-check-spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            // DOM에 추가
+            document.body.appendChild(overlay);
+
+            // 페이드인 효과 (requestAnimationFrame으로 리플로우 보장)
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    overlay.style.opacity = '1';
+                });
+            });
+        } else {
+            // 오버레이 제거
+            if (overlay) {
+                const fadeOutTime = GameConfig?.masterTiming?.ui?.fadeOut || 200;
+                overlay.style.opacity = '0';
+
+                // 페이드아웃 후 제거
+                setTimeout(() => {
+                    if (overlay && overlay.parentNode) {
+                        overlay.parentNode.removeChild(overlay);
+                    }
+                }, fadeOutTime);
+            }
+        }
+    }
+
     // 새 게임 시작
     async startNewGame() {
         // Prevent double-click execution
         if (this._startingGame) return;
         this._startingGame = true;
 
-        // 버전 체크 (새 게임 시작 시)
-        if (GameConfig?.leaderboard?.versionCheck?.checkOnNewGame) {
-            const versionChecker = new VersionChecker(window._supabaseInstance);
-            const hasUpdate = await versionChecker.checkVersion();
-            // 업데이트 발견 시 새로고침으로 이어지므로 더 이상 진행하지 않음
-            if (hasUpdate) {
-                return;
+        try {
+            // 버전 체크 (새 게임 시작 시)
+            if (GameConfig?.leaderboard?.versionCheck?.checkOnNewGame) {
+                // 로딩 오버레이 표시
+                this.showVersionCheckLoading(true);
+
+                // 최소 표시 시간 보장 (너무 빠른 체크 시 깜빡임 방지)
+                const minDuration = GameConfig?.masterTiming?.versionCheck?.loadingMinDuration || 100;
+                const startTime = Date.now();
+
+                const versionChecker = new VersionChecker(window._supabaseInstance);
+                const hasUpdate = await versionChecker.checkVersion();
+
+                // 최소 표시 시간 보장
+                const elapsed = Date.now() - startTime;
+                if (elapsed < minDuration) {
+                    await new Promise(resolve => setTimeout(resolve, minDuration - elapsed));
+                }
+
+                // 로딩 오버레이 숨김
+                this.showVersionCheckLoading(false);
+
+                // 업데이트 발견 시 새로고침으로 이어지므로 더 이상 진행하지 않음
+                if (hasUpdate) {
+                    this._startingGame = false;
+                    return;
+                }
             }
+        } catch (error) {
+            console.error('[MainMenu] 버전 체크 중 오류:', error);
+            // 버전 체크 실패 시에도 로딩 오버레이 제거
+            this.showVersionCheckLoading(false);
+            // 게임 시작은 계속 진행
         }
 
         // 저장된 속도 설정 적용

@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.9.27',                        // 버전 넘버
+        number: '0.9.28',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -568,6 +568,12 @@ const GameConfig = {
             throttle: 16,                 // MainMenu 렌더링 체크 16ms
             frameTime: 16.67,             // 60fps 기준 (1000/60)
             dirtyCheckInterval: 100       // Dirty checking 간격
+        },
+
+        // 버전 체크 타이밍
+        versionCheck: {
+            loadingMinDuration: 100,      // 로딩 표시 최소 시간 (너무 빠른 체크 시 깜빡임 방지)
+            modalCloseDelay: 300          // 모달 닫기 후 새로고침 대기 시간
         },
 
         // UI 애니메이션
@@ -4237,7 +4243,8 @@ const GameConfig = {
         volumeControls: 1500,    // 볼륨 팝업 패널 (카드 활성화보다 위)
         modals: 1000,            // 모달들
         cardActivation: 1200,    // 카드 발동 시 확대 이미지
-        overlays: 2000           // 최상위 오버레이
+        overlays: 2000,          // 일반 오버레이
+        versionCheckOverlay: 9999  // 버전 체크 오버레이 (최상위, 로딩 화면 바로 아래)
     },
 
     // 픽셀 값 설정 - Magic Number 정리
