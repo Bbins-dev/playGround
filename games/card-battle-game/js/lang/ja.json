@@ -355,7 +355,7 @@
         },
         "smog": {
           "name": "スモッグ",
-          "description": "敵をスモッグで包み、2のダメージを与え、一定確率で{status:poisoned}状態にします。"
+          "description": "敵をスモッグで包み、3のダメージを与え、{status:poisoned}状態にします。"
         },
         "poison_throw": {
           "name": "毒物投擲",
@@ -379,7 +379,7 @@
         },
         "poison_barrage": {
           "name": "ポイズンバラージ",
-          "description": "毒針を2-5回連発で発射します。命中するたびに低確率で1ターンの間{status:poisoned}状態にします。"
+          "description": "毒針を2-5回連発で発射します。命中するたびに1ターンの間{status:poisoned}状態にします。"
         },
         "poison_mutation": {
           "name": "猛毒変異",
@@ -671,7 +671,7 @@
         },
         "barrier": {
           "name": "障壁",
-          "description": "自分の防御属性が{normal}の場合、現在の{defense}を5倍に高めます。"
+          "description": "自分の防御属性が{normal}の場合、現在の{defense}を3倍に高めます。"
         }
       },
       "buffs": {

@@ -355,7 +355,7 @@
         },
         "smog": {
           "name": "Smog",
-          "description": "Envelop the enemy in smog, dealing 2 damage with a chance to {status:poisoned}."
+          "description": "Envelop the enemy in smog, dealing 3 damage and inflicts {status:poisoned}."
         },
         "poison_throw": {
           "name": "Poison Throw",
@@ -379,7 +379,7 @@
         },
         "poison_barrage": {
           "name": "Poison Barrage",
-          "description": "Rapidly fires poison needles 2-5 times. Each hit has a low chance to inflict {status:poisoned} for 1 turn."
+          "description": "Rapidly fires poison needles 2-5 times. Each hit inflicts {status:poisoned} for 1 turn."
         },
         "poison_mutation": {
           "name": "Toxic Mutation",
@@ -671,7 +671,7 @@
         },
         "barrier": {
           "name": "Barrier",
-          "description": "If your defense element is {normal}, multiplies current {defense} by 5x."
+          "description": "If your defense element is {normal}, multiplies current {defense} by 3x."
         }
       },
       "buffs": {

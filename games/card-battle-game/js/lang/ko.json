@@ -355,7 +355,7 @@
         },
         "smog": {
           "name": "스모그",
-          "description": "적을 스모그로 감싸 2의 피해를 입히고 일정확률로 {status:poisoned}시킵니다."
+          "description": "적을 스모그로 감싸 3의 피해를 입히고 {status:poisoned}시킵니다."
         },
         "poison_throw": {
           "name": "독극물 투척",
@@ -379,7 +379,7 @@
         },
         "poison_barrage": {
           "name": "독침 연발",
-          "description": "독침을 2-5회 연발로 발사합니다. 명중 시마다 낮은 확률로 1턴 간 {status:poisoned}시킵니다."
+          "description": "독침을 2-5회 연발로 발사합니다. 명중 시마다 1턴 간 {status:poisoned}시킵니다."
         },
         "poison_mutation": {
           "name": "맹독 변성",
@@ -671,7 +671,7 @@
         },
         "barrier": {
           "name": "장벽",
-          "description": "자신의 방어속성이 {normal}일 경우 현재 {defense}을 5배로 높입니다."
+          "description": "자신의 방어속성이 {normal}일 경우 현재 {defense}을 3배로 높입니다."
         }
       },
       "buffs": {
