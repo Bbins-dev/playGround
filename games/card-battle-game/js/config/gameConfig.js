@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.9.28',                        // 버전 넘버
+        number: '0.9.29',                        // 버전 넘버
         stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
     },
 
@@ -572,7 +572,7 @@ const GameConfig = {
 
         // 버전 체크 타이밍
         versionCheck: {
-            loadingMinDuration: 100,      // 로딩 표시 최소 시간 (너무 빠른 체크 시 깜빡임 방지)
+            loadingMinDuration: 500,      // 로딩 표시 최소 시간 (사용자가 인지할 수 있는 최소 시간)
             modalCloseDelay: 300          // 모달 닫기 후 새로고침 대기 시간
         },
 

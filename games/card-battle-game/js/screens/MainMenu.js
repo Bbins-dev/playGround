@@ -672,8 +672,7 @@ class MainMenu {
 
             // GameConfig 기반 스타일 적용
             const zIndex = GameConfig?.zIndexLayers?.versionCheckOverlay || 9999;
-            const bgColor = GameConfig?.masterColors?.background?.overlay || 'rgba(0, 0, 0, 0.7)';
-            const fadeInTime = GameConfig?.masterTiming?.ui?.fadeIn || 250;
+            const bgColor = 'rgba(0, 0, 0, 1)';  // 완전 불투명 (뒤의 화면이 보이지 않도록)
 
             overlay.style.cssText = `
                 position: fixed;
@@ -687,8 +686,7 @@ class MainMenu {
                 justify-content: center;
                 align-items: center;
                 z-index: ${zIndex};
-                opacity: 0;
-                transition: opacity ${fadeInTime}ms ease-in-out;
+                opacity: 1;
             `;
 
             // 스피너 컨테이너
@@ -744,15 +742,8 @@ class MainMenu {
                 document.head.appendChild(style);
             }
 
-            // DOM에 추가
+            // DOM에 추가 (즉시 불투명하게 표시)
             document.body.appendChild(overlay);
-
-            // 페이드인 효과 (requestAnimationFrame으로 리플로우 보장)
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    overlay.style.opacity = '1';
-                });
-            });
         } else {
             // 오버레이 제거
             if (overlay) {
@@ -782,7 +773,7 @@ class MainMenu {
                 this.showVersionCheckLoading(true);
 
                 // 최소 표시 시간 보장 (너무 빠른 체크 시 깜빡임 방지)
-                const minDuration = GameConfig?.masterTiming?.versionCheck?.loadingMinDuration || 100;
+                const minDuration = GameConfig?.masterTiming?.versionCheck?.loadingMinDuration || 500;
                 const startTime = Date.now();
 
                 const versionChecker = new VersionChecker(window._supabaseInstance);
