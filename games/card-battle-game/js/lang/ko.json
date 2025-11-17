@@ -899,7 +899,7 @@
       "total_damage_dealt": "총 딜량",
       "total_damage_received": "받은 피해",
       "defense_built": "방어력 구축",
-      "critical_hits": "상태이상 피해 (받음)",
+      "card_activation_rate": "카드발동률",
       "play_style": "플레이 스타일",
       "final_hand": "최종 손패",
       "try_again": "다시 도전하기",

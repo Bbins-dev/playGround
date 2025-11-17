@@ -40,7 +40,7 @@ class VictoryDefeatModal {
         this.defeatDamageDealt = document.getElementById('defeat-damage-dealt');
         this.defeatDamageReceived = document.getElementById('defeat-damage-received');
         this.defeatDefenseBuilt = document.getElementById('defeat-defense-built');
-        this.defeatCriticalCount = document.getElementById('defeat-critical-count');
+        this.defeatCardSuccessRate = document.getElementById('defeat-card-success-rate');
         this.defeatPlayStyle = document.getElementById('defeat-play-style');
         this.defeatMvpCard = document.getElementById('defeat-mvp-card');
         this.defeatRestartBtn = document.getElementById('defeat-restart');
@@ -509,8 +509,11 @@ class VictoryDefeatModal {
             this.defeatDefenseBuilt.textContent = gameStats.totalDefenseBuilt || 0;
         }
 
-        if (this.defeatCriticalCount) {
-            this.defeatCriticalCount.textContent = gameStats.statusDamage || 0;
+        if (this.defeatCardSuccessRate) {
+            const total = gameStats.totalCardsUsed || 0;
+            const success = gameStats.successfulCards || 0;
+            const rate = total > 0 ? Math.round((success / total) * 100) : 0;
+            this.defeatCardSuccessRate.textContent = `${rate}%`;
         }
 
         // 전세계 순위 표시 (플레이 스타일 대신)

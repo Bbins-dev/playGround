@@ -899,7 +899,7 @@
       "total_damage_dealt": "与えたダメージ",
       "total_damage_received": "被ダメージ",
       "defense_built": "構築した防御力",
-      "critical_hits": "状態異常ダメージ（受けた）",
+      "card_activation_rate": "カード発動率",
       "play_style": "プレイスタイル",
       "final_hand": "最終手札",
       "try_again": "再挑戦",

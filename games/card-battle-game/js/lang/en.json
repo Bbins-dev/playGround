@@ -899,7 +899,7 @@
       "total_damage_dealt": "Total Damage Dealt",
       "total_damage_received": "Damage Received",
       "defense_built": "Defense Built",
-      "critical_hits": "Status Damage Taken",
+      "card_activation_rate": "Card Hit Rate",
       "play_style": "Play Style",
       "final_hand": "Final Hand",
       "try_again": "Try Again",
