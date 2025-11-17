@@ -88,7 +88,7 @@ class VersionChecker {
      */
     async forceUpdate() {
         // YAGNI: 간단한 메시지 직접 사용 (i18n 의존성 제거)
-        const message = '최신 버전 감지됨! 새로고침 합니다.\nNew version detected! Refreshing...';
+        const message = 'New version detected! Refreshing...';
 
         try {
             // 메시지 표시 시도 (실패해도 새로고침은 반드시 실행)
