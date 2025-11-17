@@ -134,14 +134,39 @@ class GameManager {
             // 사용자 클릭 대기 (Autoplay 차단 해결)
             await this.loadingScreen.waitForUserClick();
 
-            // 사용자 클릭 후 로딩 화면 숨김
-            await this.loadingScreen.hide();
-
-            // 버전 체크 (페이지 로드 시)
+            // 버전 체크 (페이지 로드 시) - 로딩 화면 숨기기 전에 수행
             if (GameConfig?.leaderboard?.versionCheck?.checkOnLoad) {
+                // 로딩 메시지를 "버전 확인 중..."으로 변경
+                const loadingProgressText = document.getElementById('loading-progress-text');
+                if (loadingProgressText) {
+                    const i18n = window.I18n?.getInstance();
+                    const message = i18n ?
+                        i18n.getMessage('auto_battle_card_game.ui.version_check.checking') :
+                        '버전 확인 중...';
+                    loadingProgressText.textContent = message;
+                }
+
+                // 최소 표시 시간 보장
+                const minDuration = GameConfig?.masterTiming?.versionCheck?.loadingMinDuration || 500;
+                const startTime = Date.now();
+
                 const versionChecker = new VersionChecker(window._supabaseInstance);
-                await versionChecker.checkVersion();
+                const hasUpdate = await versionChecker.checkVersion();
+
+                // 최소 표시 시간 보장
+                const elapsed = Date.now() - startTime;
+                if (elapsed < minDuration) {
+                    await new Promise(resolve => setTimeout(resolve, minDuration - elapsed));
+                }
+
+                // 업데이트 발견 시 새로고침으로 이어지므로 더 이상 진행하지 않음
+                if (hasUpdate) {
+                    return;
+                }
             }
+
+            // 버전 체크 완료 후 로딩 화면 숨김
+            await this.loadingScreen.hide();
 
             // 로딩 화면 완전히 숨긴 후 메인 메뉴 표시 (BGM은 showMainMenu에서 재생)
             this.showMainMenu();
