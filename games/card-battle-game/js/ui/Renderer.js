@@ -96,8 +96,6 @@ class Renderer {
             this.renderBattleMode(gameState);
         } else if (gameState.phase === 'menu') {
             this.renderMenuMode(gameState);
-        } else if (gameState.phase === 'cardSelection') {
-            this.renderCardSelection(gameState);
         } else if (gameState.phase === 'gameOver') {
             // gameOver일 때는 배경만 그리고 모달 렌더링은 UIManager에서 처리
             return;
@@ -468,45 +466,7 @@ class Renderer {
         this.ctx.fillText(text, x, y);
     }
 
-    // 카드 선택 화면 렌더링
-    renderCardSelection(gameState) {
-        const { availableCards = [], selectedCards = [] } = gameState;
 
-        // 제목
-        this.ctx.font = 'bold 24px Arial';
-        this.ctx.fillStyle = '#fff';
-        this.ctx.textAlign = 'center';
-        this.ctx.fillText('카드를 선택하세요', this.width / 2, 50);
-
-        // 카드 그리드
-        this.renderCardGrid(availableCards, selectedCards);
-    }
-
-    // 카드 그리드 렌더링
-    renderCardGrid(cards, selectedCards = []) {
-        // 안전한 코딩: cardSizes.preview 사용 (active는 존재하지 않음)
-        const cardSize = this.cardSizes?.preview || this.cardSizes?.hand || { width: 120, height: 168 };
-
-        const cols = 5;
-        const spacing = 20;
-        const startX = (this.width - (cols * cardSize.width + (cols - 1) * spacing)) / 2;
-        const startY = 100;
-
-        cards.forEach((card, index) => {
-            const col = index % cols;
-            const row = Math.floor(index / cols);
-            const x = startX + col * (cardSize.width + spacing);
-            const y = startY + row * (cardSize.height + spacing);
-
-            const isSelected = selectedCards.includes(card.id);
-
-            this.renderCard(card, x, y, cardSize, {
-                isPlayer: true,
-                isNextActive: isSelected,
-                context: 'default' // 카드 선택 화면은 기본값
-            });
-        });
-    }
 
     // 메뉴 모드 렌더링
     renderMenuMode(gameState) {
