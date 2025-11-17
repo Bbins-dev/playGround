@@ -78,6 +78,9 @@
       "loading_title": "⚔️ オートバトルカード対戦",
       "loading_message": "読み込み中...",
       "version_update_detected": "最新バージョンを検出！更新中...",
+      "version_check": {
+        "checking": "バージョン確認中..."
+      },
       "new_game": "新しいゲーム",
       "continue_game": "続きから",
       "no_save_data": "セーブデータがありません",

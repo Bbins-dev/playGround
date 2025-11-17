@@ -78,6 +78,9 @@
       "loading_title": "⚔️ Auto Battle Card Dual",
       "loading_message": "Loading Assets...",
       "version_update_detected": "New version detected! Refreshing...",
+      "version_check": {
+        "checking": "Checking version..."
+      },
       "new_game": "New Game",
       "continue_game": "Continue",
       "no_save_data": "No saved game",

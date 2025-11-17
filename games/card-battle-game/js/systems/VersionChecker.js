@@ -86,13 +86,38 @@ class VersionChecker {
      * 강제 새로고침 (캐시 무시)
      * 간단한 알림 표시 후 즉시 reload
      */
-    forceUpdate() {
-        // 간단한 메시지 표시 (다국어 지원)
-        const message = window.i18n?.getMessage('card-battle-game.ui.version_update_detected') ||
-                       'New version detected! Refreshing...';
-        alert(message);
+    async forceUpdate() {
+        // YAGNI: 간단한 메시지 직접 사용 (i18n 의존성 제거)
+        const message = '최신 버전 감지됨! 새로고침 합니다.\nNew version detected! Refreshing...';
 
-        // 캐시 무시하고 강제 새로고침
+        try {
+            // 메시지 표시 시도 (실패해도 새로고침은 반드시 실행)
+            alert(message);
+        } catch (err) {
+            console.warn('[VersionChecker] Alert 실패:', err.message);
+        }
+
+        // 열려있는 모든 모달 닫기 (새로고침 전 UI 정리)
+        try {
+            // 플레이어 이름 모달 닫기
+            if (window.gameManager?.playerNameModal) {
+                window.gameManager.playerNameModal.hide();
+            }
+
+            // 카드 선택 모달 닫기
+            if (window.gameManager?.cardSelectionModal) {
+                window.gameManager.cardSelectionModal.hide();
+            }
+
+            // UI 정리 시간 확보
+            const modalCloseDelay = GameConfig?.masterTiming?.versionCheck?.modalCloseDelay || 300;
+            await new Promise(resolve => setTimeout(resolve, modalCloseDelay));
+        } catch (err) {
+            console.warn('[VersionChecker] 모달 닫기 실패:', err.message);
+            // 모달 닫기 실패해도 새로고침은 진행
+        }
+
+        // 캐시 무시하고 강제 새로고침 (반드시 실행)
         window.location.reload(true);
     }
 }
