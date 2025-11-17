@@ -1746,8 +1746,10 @@ class BattleSystem {
             const actualDamage = player.takeDamage(damage);
 
             // GameManager 중앙 통계 시스템 업데이트 (원래 대미지 사용)
-            if (player === this.player && this.gameManager && this.gameManager.recordDamage) {
-                this.gameManager.recordDamage('status', 'player', damage, 'poison');
+            if (this.gameManager && this.gameManager.recordDamage) {
+                const source = player === this.player ? 'enemy' : 'player';
+                const targetType = player === this.enemy ? 'enemy' : 'player';
+                this.gameManager.recordDamage(source, targetType, damage, 'poison');
             }
 
             // HP/방어력 바 순차 업데이트 (방어력 → HP 순서 보장)
@@ -1785,8 +1787,10 @@ class BattleSystem {
             const actualDamage = player.takeDamage(damage);
 
             // GameManager 중앙 통계 시스템 업데이트 (원래 대미지 사용)
-            if (player === this.player && this.gameManager && this.gameManager.recordDamage) {
-                this.gameManager.recordDamage('status', 'player', damage, 'burn');
+            if (this.gameManager && this.gameManager.recordDamage) {
+                const source = player === this.player ? 'enemy' : 'player';
+                const targetType = player === this.enemy ? 'enemy' : 'player';
+                this.gameManager.recordDamage(source, targetType, damage, 'burn');
             }
 
             // HP/방어력 바 순차 업데이트 (방어력 → HP 순서 보장)
