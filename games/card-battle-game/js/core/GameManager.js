@@ -72,7 +72,8 @@ class GameManager {
             finalHand: [],
             // 재미있는 통계
             missCount: 0,
-            statusDamage: 0, // 화상/독으로 받은 총 피해
+            totalCardsUsed: 0,       // 총 카드 사용 시도 횟수
+            successfulCards: 0,      // 성공한 카드 횟수
             mostUsedElement: null,
             mvpCard: null,
             laziestCard: null,
@@ -1889,7 +1890,8 @@ class GameManager {
                 this.gameStats.totalDamageDealt = saveData.gameStats.totalDamageDealt || 0;
                 this.gameStats.totalDamageReceived = saveData.gameStats.totalDamageReceived || 0;
                 this.gameStats.totalDefenseBuilt = saveData.gameStats.totalDefenseBuilt || 0;
-                this.gameStats.statusDamage = saveData.gameStats.statusDamage || 0;
+                this.gameStats.totalCardsUsed = saveData.gameStats.totalCardsUsed || 0;
+                this.gameStats.successfulCards = saveData.gameStats.successfulCards || 0;
                 this.gameStats.playStyle = saveData.gameStats.playStyle || 'balanced';
                 this.gameStats.isGameComplete = saveData.gameStats.isGameComplete || false;
 
@@ -2187,7 +2189,8 @@ class GameManager {
                     totalDamageDealt: this.gameStats.totalDamageDealt || 0,
                     totalDamageReceived: this.gameStats.totalDamageReceived || 0,
                     totalDefenseBuilt: this.gameStats.totalDefenseBuilt || 0,
-                    statusDamage: this.gameStats.statusDamage || 0,
+                    totalCardsUsed: this.gameStats.totalCardsUsed || 0,
+                    successfulCards: this.gameStats.successfulCards || 0,
                     playStyle: this.gameStats.playStyle || 'balanced',
                     isGameComplete: this.gameStats.isGameComplete || false
                 } : null,
@@ -2545,7 +2548,8 @@ class GameManager {
             finalHand: [],
             // 재미있는 통계
             missCount: 0,
-            statusDamage: 0, // 화상/독으로 받은 총 피해
+            totalCardsUsed: 0,       // 총 카드 사용 시도 횟수
+            successfulCards: 0,      // 성공한 카드 횟수
             mostUsedElement: null,
             mvpCard: null,
             laziestCard: null,
@@ -2575,6 +2579,13 @@ class GameManager {
 
     updateStatsOnMiss() {
         this.gameStats.missCount++;
+    }
+
+    recordCardAttempt(isSuccess) {
+        this.gameStats.totalCardsUsed++;
+        if (isSuccess) {
+            this.gameStats.successfulCards++;
+        }
     }
 
     updateStatsOnDefense(defenseAmount) {

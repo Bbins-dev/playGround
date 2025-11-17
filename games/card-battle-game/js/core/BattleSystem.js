@@ -433,11 +433,18 @@ class BattleSystem {
 
         if (result.success) {
             // 성공 로그
+            if (isPlayerCard) {
+                this.gameManager.recordCardAttempt(true);
+            }
 
             // 효과별 후처리
             await this.processCardResult(result, card, user, target, selfDamageProcessed);
         } else if (result.conditionFailed) {
             // 조건 실패 (명중했지만 조건 미달)
+            if (isPlayerCard) {
+                this.gameManager.recordCardAttempt(false);
+            }
+
             // 위상으로 인한 타겟 변경을 반영하기 위해 실제 target 기준으로 위치 계산
             const targetPosition = target === this.player ?
                 this.effectSystem.getPlayerPosition() :
@@ -453,6 +460,7 @@ class BattleSystem {
         } else {
             // 명중률 실패 (빗나감)
             if (isPlayerCard) {
+                this.gameManager.recordCardAttempt(false);
                 this.gameManager.updateStatsOnMiss();
             }
 
