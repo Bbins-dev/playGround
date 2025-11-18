@@ -330,10 +330,10 @@ class MainMenu {
 
         // 버전 단계 문자열 가져오기 (i18n)
         const versionStage = (typeof getI18nText === 'function') ?
-            getI18nText(`auto_battle_card_game.version.${GameConfig.versionInfo.stage}`) || 'Early Access Beta' : 'Early Access Beta';
+            getI18nText(`auto_battle_card_game.version.${GameConfig.versionInfo.stage}`) || '' : '';
 
-        // 버전 텍스트: "Early Access Beta v0.1.0"
-        const versionText = `${versionStage} v${GameConfig.versionInfo.number}`;
+        // 버전 텍스트: "v1.0.0" (정식 릴리즈) 또는 "Early Access Beta v0.1.0" (개발 중)
+        const versionText = versionStage ? `${versionStage} v${GameConfig.versionInfo.number}` : `v${GameConfig.versionInfo.number}`;
 
         ctx.save();
         ctx.font = `${config.size}px ${GameConfig.fonts?.families?.main || 'Arial'}`;

@@ -60,7 +60,8 @@
     "full_title": "Auto Battle Card Dual - 5-Element Auto Battle Card Game",
     "og_description": "Clear 60 stages with strategic deck building! Browser card battle game with 5 elements: Fire, Water, Electric, Poison, and Normal.",
     "version": {
-      "early_access_beta": "Early Access Beta"
+      "early_access_beta": "Early Access Beta",
+      "release": ""
     },
     "credits": {
       "text": "© {year} {company}"

@@ -60,7 +60,8 @@
     "full_title": "オートバトルカード対戦 - 5属性オートバトルカードゲーム",
     "og_description": "戦略的なデッキ構成で60ステージをクリアしよう！火、水、電気、毒、ノーマルの5つの属性で戦うブラウザカードゲーム。",
     "version": {
-      "early_access_beta": "アーリーアクセスベータ"
+      "early_access_beta": "アーリーアクセスベータ",
+      "release": ""
     },
     "credits": {
       "text": "© {year} {company}"
