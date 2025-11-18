@@ -3,8 +3,8 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '0.9.35',                        // 버전 넘버
-        stage: 'early_access_beta'              // 개발 단계 (i18n 키로 사용)
+        number: '1.0.0',                        // 버전 넘버
+        stage: 'release'                        // 개발 단계 (i18n 키로 사용)
     },
 
     // 제작자 정보
