@@ -328,12 +328,17 @@ class MainMenu {
         const centerX = GameConfig.canvas.width / 2;
         const versionY = titleConfig.y + config.offsetY;
 
-        // 버전 단계 문자열 가져오기 (i18n)
-        const versionStage = (typeof getI18nText === 'function') ?
-            getI18nText(`auto_battle_card_game.version.${GameConfig.versionInfo.stage}`) || '' : '';
+        // 버전 텍스트 생성
+        // 정식 릴리즈(release)는 버전 단계를 표시하지 않음
+        let versionText = `v${GameConfig.versionInfo.number}`;
 
-        // 버전 텍스트: "v1.0.0" (정식 릴리즈) 또는 "Early Access Beta v0.1.0" (개발 중)
-        const versionText = versionStage ? `${versionStage} v${GameConfig.versionInfo.number}` : `v${GameConfig.versionInfo.number}`;
+        if (GameConfig.versionInfo.stage !== 'release' && typeof getI18nText === 'function') {
+            const versionStage = getI18nText(`auto_battle_card_game.version.${GameConfig.versionInfo.stage}`);
+            // i18n 키가 아닌 실제 번역된 텍스트만 사용
+            if (versionStage && !versionStage.includes('auto_battle_card_game')) {
+                versionText = `${versionStage} ${versionText}`;
+            }
+        }
 
         ctx.save();
         ctx.font = `${config.size}px ${GameConfig.fonts?.families?.main || 'Arial'}`;
