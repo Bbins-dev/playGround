@@ -94,3 +94,6 @@ test-results/
 *.jpg
 *.jpeg
 *.gif
+
+# Project rules (private, local only)
+**/CLAUDE.md
