@@ -1070,6 +1070,10 @@
     "search_button": "검색",
     "clear_search": "초기화",
     "search_results": "검색 결과: {count}건",
-    "no_search_results": "검색 결과가 없습니다"
+    "no_search_results": "검색 결과가 없습니다",
+    "browser_kakaotalk": "(카카오톡 브라우저)",
+    "browser_other": "(기타 브라우저)",
+    "debug_check_console": "자세한 내용은 콘솔을 확인하세요 (F12)",
+    "error_code": "에러 코드"
   }
 }

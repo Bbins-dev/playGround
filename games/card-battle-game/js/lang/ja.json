@@ -1071,6 +1071,10 @@
     "search_button": "検索",
     "clear_search": "クリア",
     "search_results": "検索結果: {count}件",
-    "no_search_results": "検索結果がありません"
+    "no_search_results": "検索結果がありません",
+    "browser_kakaotalk": "(カカオトークブラウザ)",
+    "browser_other": "(その他のブラウザ)",
+    "debug_check_console": "詳細はコンソールを確認してください (F12)",
+    "error_code": "エラーコード"
   }
 }

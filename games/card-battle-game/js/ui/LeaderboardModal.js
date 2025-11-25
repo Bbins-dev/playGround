@@ -485,17 +485,43 @@ class LeaderboardModal {
     }
 
     /**
-     * 에러 메시지 표시
+     * 에러 메시지 표시 (상세 정보 포함)
      * @param {string} error - 에러 메시지
      */
     showError(error) {
         const tbody = this.modal?.querySelector('.leaderboard-table tbody');
         if (!tbody) return;
 
+        // 에러 타입에 따라 다른 메시지 표시
+        let errorMessage = error;
+        let debugInfo = '';
+
+        // 디버그 모드 활성화 시 상세 정보 표시
+        const debugMode = GameConfig?.leaderboard?.debugMode?.enabled || false;
+
+        if (debugMode) {
+            // 브라우저 정보
+            const isKakaoTalk = /KAKAOTALK/i.test(navigator.userAgent);
+            const browserInfo = isKakaoTalk ?
+                I18nHelper.getText('leaderboard.browser_kakaotalk') || '(KakaoTalk Browser)' :
+                I18nHelper.getText('leaderboard.browser_other') || '(Other Browser)';
+
+            // 에러 로그 확인
+            const errorLogs = window._leaderboardErrors || [];
+            const lastError = errorLogs.length > 0 ? errorLogs[errorLogs.length - 1] : null;
+
+            debugInfo = `<br><small style="color: #888;">
+                ${browserInfo}<br>
+                ${I18nHelper.getText('leaderboard.debug_check_console') || 'Check console for details (Press F12)'}
+                ${lastError ? `<br>${I18nHelper.getText('leaderboard.error_code') || 'Error code'}: ${lastError.code}` : ''}
+            </small>`;
+        }
+
         tbody.innerHTML = `
             <tr>
                 <td colspan="8" class="error-message">
-                    ${I18nHelper.getText('leaderboard.error') || 'Error:'} ${error}
+                    ${I18nHelper.getText('leaderboard.error') || 'Error:'} ${errorMessage}
+                    ${debugInfo}
                 </td>
             </tr>
         `;

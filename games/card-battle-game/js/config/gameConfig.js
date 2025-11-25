@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '1.0.1',                        // 버전 넘버
+        number: '1.0.2',                        // 버전 넘버
         stage: 'release'                        // 개발 단계 (i18n 키로 사용)
     },
 
@@ -5941,6 +5941,18 @@ const GameConfig = {
         maxRank: 3000000,                   // 최대 순위 (300만 위까지 유지)
         autoCleanupDays: 30,                // 자동 정리 기간 (30일)
         topRecordsToKeep: 100,              // 영구 보존할 상위 기록 수
+
+        // 초기화 재시도 설정 (카카오톡 브라우저 등 SDK 로딩 지연 대응)
+        initRetries: 3,                     // 최대 재시도 횟수
+        retryDelay: 1000,                   // 재시도 간격 (밀리초)
+
+        // 디버깅 모드 (문제 발생 시 활성화)
+        debugMode: {
+            enabled: false,                 // 디버깅 로그 활성화 (배포 시 false)
+            showBrowserInfo: true,          // 브라우저 정보 표시
+            showErrorLogs: true,            // 에러 로그 표시
+            logNetworkRequests: false       // 네트워크 요청 로깅 (성능 영향)
+        },
 
         // 페이지네이션 설정
         pagination: {

@@ -6,6 +6,9 @@
 // Supabase 인스턴스 싱글톤 (중복 생성 방지)
 let _supabaseInstance = null;
 
+// localStorage 대체용 메모리 저장소 (카카오톡 브라우저 등 localStorage 차단 시)
+const _memoryStorage = new Map();
+
 /**
  * 버전 문자열을 zero-padded 형식으로 변환
  * @param {string} version - 버전 문자열 (예: '0.9.3')
@@ -47,6 +50,8 @@ class LeaderboardClient {
         this.supabase = null;
         this.initialized = false;
         this.config = GameConfig?.leaderboard;
+        this.initRetryCount = 0;
+        this.maxRetries = GameConfig?.leaderboard?.initRetries || 3;
 
         if (!this.config?.enabled) {
             console.warn('[LeaderboardClient] Leaderboard is disabled in GameConfig');
@@ -68,13 +73,36 @@ class LeaderboardClient {
     }
 
     /**
-     * Supabase 클라이언트 초기화
+     * Supabase 클라이언트 초기화 (재시도 로직 포함)
      */
     init() {
         try {
+            const debugMode = GameConfig?.leaderboard?.debugMode?.enabled || false;
+
+            // 디버깅 로그: 브라우저 정보
+            if (debugMode) {
+                console.log('[LeaderboardClient][DEBUG] Browser UA:', navigator.userAgent);
+                console.log('[LeaderboardClient][DEBUG] window.supabase:', typeof window.supabase);
+            }
+
             // Supabase JS SDK가 로드되었는지 확인
             if (typeof window.supabase === 'undefined' || !window.supabase.createClient) {
                 console.error('[LeaderboardClient] Supabase SDK not loaded');
+
+                // 재시도 로직 (카카오톡 브라우저 등에서 SDK 로딩 지연 대응)
+                if (this.initRetryCount < this.maxRetries) {
+                    this.initRetryCount++;
+                    const retryDelay = GameConfig?.leaderboard?.retryDelay || 1000;
+                    console.warn(`[LeaderboardClient] Retrying initialization (${this.initRetryCount}/${this.maxRetries}) after ${retryDelay}ms...`);
+
+                    setTimeout(() => {
+                        this.init();
+                    }, retryDelay);
+                    return;
+                } else {
+                    console.error('[LeaderboardClient] SDK load failed after max retries');
+                    this.logError('SDK_NOT_LOADED', 'Supabase SDK failed to load after retries');
+                }
                 return;
             }
 
@@ -83,18 +111,26 @@ class LeaderboardClient {
 
             if (!url || !key) {
                 console.error('[LeaderboardClient] Missing Supabase credentials');
+                this.logError('MISSING_CREDENTIALS', 'Supabase URL or API key not configured');
                 return;
+            }
+
+            if (debugMode) {
+                console.log('[LeaderboardClient][DEBUG] Creating Supabase client...');
+                console.log('[LeaderboardClient][DEBUG] URL:', url);
             }
 
             this.supabase = window.supabase.createClient(url, key);
             _supabaseInstance = this.supabase;  // 전역 저장 (싱글톤)
             window._supabaseInstance = this.supabase;  // window 객체에도 노출 (VersionChecker 접근용)
             this.initialized = true;
-            if (GameConfig?.debugMode?.showSystemInitialization) {
+
+            if (GameConfig?.debugMode?.showSystemInitialization || debugMode) {
                 console.log('[LeaderboardClient] Initialized successfully (new instance)');
             }
         } catch (error) {
             console.error('[LeaderboardClient] Initialization error:', error);
+            this.logError('INIT_EXCEPTION', error.message, error.stack);
         }
     }
 
@@ -147,6 +183,7 @@ class LeaderboardClient {
 
             if (error) {
                 console.error('[LeaderboardClient] Submit error:', error);
+                this.logError('SUBMIT_FAILED', error.message, error.stack || JSON.stringify(error));
                 return { success: false, error: error.message };
             }
 
@@ -158,6 +195,7 @@ class LeaderboardClient {
 
         } catch (error) {
             console.error('[LeaderboardClient] Submit exception:', error);
+            this.logError('SUBMIT_EXCEPTION', error.message, error.stack);
             return { success: false, error: error.message };
         }
     }
@@ -191,6 +229,7 @@ class LeaderboardClient {
 
             if (error) {
                 console.error('[LeaderboardClient] Fetch error:', error);
+                this.logError('FETCH_FAILED', error.message, error.stack || JSON.stringify(error));
                 return { success: false, error: error.message };
             }
 
@@ -204,6 +243,7 @@ class LeaderboardClient {
 
         } catch (error) {
             console.error('[LeaderboardClient] Fetch exception:', error);
+            this.logError('FETCH_EXCEPTION', error.message, error.stack);
             return { success: false, error: error.message };
         }
     }
@@ -395,12 +435,47 @@ class LeaderboardClient {
     }
 
     /**
-     * 쿨다운 체크
+     * 안전한 스토리지 접근 (localStorage 차단 시 메모리 저장소 사용)
+     * @param {string} key - 키
+     * @returns {string|null}
+     */
+    safeGetItem(key) {
+        try {
+            const value = localStorage.getItem(key);
+            return value;
+        } catch (error) {
+            // localStorage 접근 불가 (카카오톡 브라우저 등)
+            if (GameConfig?.leaderboard?.debugMode?.enabled) {
+                console.warn('[LeaderboardClient][DEBUG] localStorage access failed, using memory fallback:', error.message);
+            }
+            return _memoryStorage.get(key) || null;
+        }
+    }
+
+    /**
+     * 안전한 스토리지 쓰기 (localStorage 차단 시 메모리 저장소 사용)
+     * @param {string} key - 키
+     * @param {string} value - 값
+     */
+    safeSetItem(key, value) {
+        try {
+            localStorage.setItem(key, value);
+        } catch (error) {
+            // localStorage 접근 불가 (카카오톡 브라우저 등)
+            if (GameConfig?.leaderboard?.debugMode?.enabled) {
+                console.warn('[LeaderboardClient][DEBUG] localStorage write failed, using memory fallback:', error.message);
+            }
+            _memoryStorage.set(key, value);
+        }
+    }
+
+    /**
+     * 쿨다운 체크 (안전한 스토리지 접근)
      * @returns {{allowed: boolean, remainingSeconds?: number}}
      */
     checkCooldown() {
         const lastSubmitKey = this.config?.lastSubmitKey || 'leaderboard_last_submit_time';
-        const lastSubmit = localStorage.getItem(lastSubmitKey);
+        const lastSubmit = this.safeGetItem(lastSubmitKey);
 
         if (!lastSubmit) {
             return { allowed: true };
@@ -421,11 +496,11 @@ class LeaderboardClient {
     }
 
     /**
-     * 마지막 제출 시간 저장
+     * 마지막 제출 시간 저장 (안전한 스토리지 접근)
      */
     setLastSubmitTime() {
         const lastSubmitKey = this.config?.lastSubmitKey || 'leaderboard_last_submit_time';
-        localStorage.setItem(lastSubmitKey, Date.now().toString());
+        this.safeSetItem(lastSubmitKey, Date.now().toString());
     }
 
     /**
@@ -487,6 +562,49 @@ class LeaderboardClient {
         }
 
         return { valid: true };
+    }
+
+    /**
+     * 에러 로깅 (디버깅용 상세 정보 수집)
+     * @param {string} errorCode - 에러 코드 (예: 'SDK_NOT_LOADED', 'SUBMIT_FAILED')
+     * @param {string} message - 에러 메시지
+     * @param {string} [stack] - 스택 트레이스 (선택)
+     */
+    logError(errorCode, message, stack = null) {
+        const debugMode = GameConfig?.leaderboard?.debugMode?.enabled || false;
+
+        if (debugMode) {
+            console.group(`[LeaderboardClient][ERROR] ${errorCode}`);
+            console.error('Message:', message);
+            console.error('Browser UA:', navigator.userAgent);
+            console.error('Initialized:', this.initialized);
+            console.error('Supabase instance:', this.supabase ? 'exists' : 'null');
+            console.error('window.supabase:', typeof window.supabase);
+
+            if (stack) {
+                console.error('Stack trace:', stack);
+            }
+
+            console.groupEnd();
+        }
+
+        // 에러를 window 객체에 저장 (외부 디버깅용)
+        if (!window._leaderboardErrors) {
+            window._leaderboardErrors = [];
+        }
+
+        window._leaderboardErrors.push({
+            code: errorCode,
+            message,
+            stack,
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent
+        });
+
+        // 최대 10개까지만 저장 (메모리 절약)
+        if (window._leaderboardErrors.length > 10) {
+            window._leaderboardErrors.shift();
+        }
     }
 }
 

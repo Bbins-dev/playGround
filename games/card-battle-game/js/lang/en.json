@@ -1071,6 +1071,10 @@
     "search_button": "Search",
     "clear_search": "Clear",
     "search_results": "Search results: {count}",
-    "no_search_results": "No results found"
+    "no_search_results": "No results found",
+    "browser_kakaotalk": "(KakaoTalk Browser)",
+    "browser_other": "(Other Browser)",
+    "debug_check_console": "Check console for details (Press F12)",
+    "error_code": "Error code"
   }
 }
