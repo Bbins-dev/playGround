@@ -1,0 +1,31 @@
+name: Supabase Keep-Alive
+
+on:
+  schedule:
+    # 4일마다 09:00 UTC 실행 (Supabase 7일 비활성 pause 방지, 3일 여유)
+    - cron: '0 9 */4 * *'
+  workflow_dispatch: # 수동 실행 가능
+
+jobs:
+  ping-card-battle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Card Battle Game Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.CARD_BATTLE_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.CARD_BATTLE_SUPABASE_ANON_KEY }}
+          SUPABASE_TABLE: ${{ secrets.CARD_BATTLE_SUPABASE_TABLE }}
+        run: |
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
+            "${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?select=id&limit=1" \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}")
+
+          echo "Response code: $RESPONSE"
+
+          if [ "$RESPONSE" -ge 200 ] && [ "$RESPONSE" -lt 300 ]; then
+            echo "Card Battle Supabase is alive"
+          else
+            echo "Card Battle Supabase ping failed with status $RESPONSE"
+            exit 1
+          fi

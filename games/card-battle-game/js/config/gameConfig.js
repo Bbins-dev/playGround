@@ -3,7 +3,7 @@
 const GameConfig = {
     // 게임 버전 정보
     versionInfo: {
-        number: '1.0.2',                        // 버전 넘버
+        number: '1.0.3',                        // 버전 넘버
         stage: 'release'                        // 개발 단계 (i18n 키로 사용)
     },
 
@@ -5945,6 +5945,12 @@ const GameConfig = {
         // 초기화 재시도 설정 (카카오톡 브라우저 등 SDK 로딩 지연 대응)
         initRetries: 3,                     // 최대 재시도 횟수
         retryDelay: 1000,                   // 재시도 간격 (밀리초)
+
+        // API 호출 재시도 설정 (Supabase pause 해제 등 네트워크 실패 대응)
+        apiRetry: {
+            maxRetries: 2,                  // 최대 재시도 횟수
+            retryDelay: 2000,               // 재시도 간격 (밀리초)
+        },
 
         // 디버깅 모드 (문제 발생 시 활성화)
         debugMode: {

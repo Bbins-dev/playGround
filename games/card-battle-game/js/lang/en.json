@@ -1044,6 +1044,7 @@
     "submit_failed": "Submit failed",
     "cooldown": "Cooldown ({seconds}s)",
     "loading": "Loading...",
+    "retrying": "Retrying...",
     "calculating": "Calculating...",
     "no_data": "No records yet",
     "global_rank_label": "Global Rank:",

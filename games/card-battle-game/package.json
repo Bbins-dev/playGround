@@ -1,6 +1,6 @@
 {
   "name": "card-battle-game",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Turn-based Auto Battle Card Game with 5 elemental attributes",
   "scripts": {
     "sync-version": "node update-version.js",

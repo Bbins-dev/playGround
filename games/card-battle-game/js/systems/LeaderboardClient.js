@@ -135,6 +135,70 @@ class LeaderboardClient {
     }
 
     /**
+     * Supabase 에러가 재시도 불필요한 검증 에러인지 판별
+     * @param {Object} error - Supabase 에러 객체
+     * @returns {boolean} - 재시도 불필요 시 true
+     */
+    _isValidationError(error) {
+        if (!error) return false;
+        const code = error.code || '';
+        // PostgreSQL 제약조건 위반 (23xxx) 또는 RLS 권한 위반 (42501)
+        return code.startsWith('23') || code === '42501';
+    }
+
+    /**
+     * 재시도 가능한 쿼리 실행기
+     * 네트워크/서버 에러 시 자동 재시도, 검증 에러는 즉시 반환
+     * @param {Function} queryFn - Supabase 쿼리를 실행하는 async 함수
+     * @param {string} errorCode - 로깅용 에러 코드 (예: 'FETCH_FAILED')
+     * @returns {Promise<{data: any, error: any, count?: number}>}
+     */
+    async _retryableQuery(queryFn, errorCode) {
+        const maxRetries = GameConfig?.leaderboard?.apiRetry?.maxRetries || 2;
+        const retryDelay = GameConfig?.leaderboard?.apiRetry?.retryDelay || 2000;
+        const debugMode = GameConfig?.leaderboard?.debugMode?.enabled || false;
+
+        let lastError = null;
+
+        for (let attempt = 0; attempt <= maxRetries; attempt++) {
+            try {
+                const result = await queryFn();
+
+                if (!result.error) {
+                    return result;
+                }
+
+                // 검증 에러는 재시도 불필요
+                if (this._isValidationError(result.error)) {
+                    return result;
+                }
+
+                lastError = result.error;
+
+                if (attempt < maxRetries) {
+                    if (debugMode) {
+                        console.warn(`[LeaderboardClient] ${errorCode} - Retrying (${attempt + 1}/${maxRetries}) after ${retryDelay}ms...`);
+                    }
+                    await new Promise(resolve => setTimeout(resolve, retryDelay));
+                }
+            } catch (error) {
+                lastError = error;
+
+                if (attempt < maxRetries) {
+                    if (debugMode) {
+                        console.warn(`[LeaderboardClient] ${errorCode} exception - Retrying (${attempt + 1}/${maxRetries}) after ${retryDelay}ms...`);
+                    }
+                    await new Promise(resolve => setTimeout(resolve, retryDelay));
+                }
+            }
+        }
+
+        // 모든 재시도 실패
+        this.logError(errorCode, lastError?.message || 'Unknown error', lastError?.stack || JSON.stringify(lastError));
+        return { data: null, error: lastError, count: null };
+    }
+
+    /**
      * 리더보드에 점수 제출
      * @param {Object} gameData - 게임 데이터
      * @returns {Promise<{success: boolean, data?: any, error?: string}>}
@@ -210,13 +274,13 @@ class LeaderboardClient {
             return { success: false, error: 'Client not initialized' };
         }
 
-        try {
-            const pageSize = this.config?.pageSize || 50;
-            const from = (page - 1) * pageSize;
-            const to = from + pageSize - 1;
+        const pageSize = this.config?.pageSize || 50;
+        const from = (page - 1) * pageSize;
+        const to = from + pageSize - 1;
 
-            // 6단계 정렬로 리더보드 조회
-            const { data, error, count } = await this.supabase
+        // 6단계 정렬로 리더보드 조회 (재시도 포함)
+        const { data, error, count } = await this._retryableQuery(
+            () => this.supabase
                 .from(this.config.tableName)
                 .select('*', { count: 'exact' })
                 .order('is_game_complete', { ascending: false })  // 1순위: 게임 완료 여부
@@ -225,27 +289,21 @@ class LeaderboardClient {
                 .order('total_turns', { ascending: true })        // 4순위: 적은 턴수
                 .order('total_damage_dealt', { ascending: true }) // 5순위: 적은 딜량
                 .order('total_damage_received', { ascending: false }) // 6순위: 많은 피해
-                .range(from, to);
+                .range(from, to),
+            'FETCH_FAILED'
+        );
 
-            if (error) {
-                console.error('[LeaderboardClient] Fetch error:', error);
-                this.logError('FETCH_FAILED', error.message, error.stack || JSON.stringify(error));
-                return { success: false, error: error.message };
-            }
-
-            return {
-                success: true,
-                data: data || [],
-                totalCount: count || 0,
-                currentPage: page,
-                totalPages: Math.ceil((count || 0) / pageSize)
-            };
-
-        } catch (error) {
-            console.error('[LeaderboardClient] Fetch exception:', error);
-            this.logError('FETCH_EXCEPTION', error.message, error.stack);
+        if (error) {
             return { success: false, error: error.message };
         }
+
+        return {
+            success: true,
+            data: data || [],
+            totalCount: count || 0,
+            currentPage: page,
+            totalPages: Math.ceil((count || 0) / pageSize)
+        };
     }
 
     /**
@@ -259,13 +317,13 @@ class LeaderboardClient {
             return { success: false, error: 'Client not initialized' };
         }
 
-        try {
-            const pageSize = this.config?.pageSize || 50;
-            const from = (page - 1) * pageSize;
-            const to = from + pageSize - 1;
+        const pageSize = this.config?.pageSize || 50;
+        const from = (page - 1) * pageSize;
+        const to = from + pageSize - 1;
 
-            // ILIKE로 부분 일치 검색 + 6단계 정렬
-            const { data, error, count } = await this.supabase
+        // ILIKE로 부분 일치 검색 + 6단계 정렬 (재시도 포함)
+        const { data, error, count } = await this._retryableQuery(
+            () => this.supabase
                 .from(this.config.tableName)
                 .select('*', { count: 'exact' })
                 .ilike('player_name', `%${playerName}%`)  // 부분 일치 검색
@@ -275,36 +333,32 @@ class LeaderboardClient {
                 .order('total_turns', { ascending: true })        // 4순위: 적은 턴수
                 .order('total_damage_dealt', { ascending: true }) // 5순위: 적은 딜량
                 .order('total_damage_received', { ascending: false }) // 6순위: 많은 피해
-                .range(from, to);
+                .range(from, to),
+            'SEARCH_FAILED'
+        );
 
-            if (error) {
-                console.error('[LeaderboardClient] Search error:', error);
-                return { success: false, error: error.message };
-            }
-
-            // 각 검색 결과에 실제 글로벌 순위 추가
-            const dataWithRanks = await Promise.all(
-                (data || []).map(async (record) => {
-                    const globalRank = await this.calculateGlobalRank(record);
-                    return {
-                        ...record,
-                        globalRank
-                    };
-                })
-            );
-
-            return {
-                success: true,
-                data: dataWithRanks,
-                totalCount: count || 0,
-                currentPage: page,
-                totalPages: Math.ceil((count || 0) / pageSize)
-            };
-
-        } catch (error) {
-            console.error('[LeaderboardClient] Search exception:', error);
+        if (error) {
             return { success: false, error: error.message };
         }
+
+        // 각 검색 결과에 실제 글로벌 순위 추가
+        const dataWithRanks = await Promise.all(
+            (data || []).map(async (record) => {
+                const globalRank = await this.calculateGlobalRank(record);
+                return {
+                    ...record,
+                    globalRank
+                };
+            })
+        );
+
+        return {
+            success: true,
+            data: dataWithRanks,
+            totalCount: count || 0,
+            currentPage: page,
+            totalPages: Math.ceil((count || 0) / pageSize)
+        };
     }
 
     /**
@@ -313,58 +367,45 @@ class LeaderboardClient {
      * @returns {Promise<number|null>}
      */
     async calculateGlobalRank(record) {
-        try {
-            // 6단계 정렬 기준으로 이 레코드보다 상위인 레코드 수 계산
-            let query = this.supabase
-                .from(this.config.tableName)
-                .select('*', { count: 'exact', head: true });
+        // 6단계 정렬 기준으로 이 레코드보다 상위인 레코드 수 계산 (재시도 포함)
+        const { count, error } = await this._retryableQuery(
+            () => {
+                let query = this.supabase
+                    .from(this.config.tableName)
+                    .select('*', { count: 'exact', head: true });
 
-            // is_game_complete 기준으로 분기
-            if (record.is_game_complete) {
-                // 완료한 경우: 완료한 레코드 중에서만 비교
-                query = query.or(
-                    // 1순위: 스테이지가 더 높음
-                    `and(is_game_complete.eq.true,final_stage.gt.${record.final_stage}),` +
-                    // 2순위: 스테이지 같고, 버전이 더 높음 (zero-padded 문자열 비교)
-                    `and(is_game_complete.eq.true,final_stage.eq.${record.final_stage},game_version.gt.${record.game_version}),` +
-                    // 3순위: 스테이지, 버전 같고, 턴수가 더 적음
-                    `and(is_game_complete.eq.true,final_stage.eq.${record.final_stage},game_version.eq.${record.game_version},total_turns.lt.${record.total_turns}),` +
-                    // 4순위: 스테이지, 버전, 턴수 같고, 딜량이 더 적음
-                    `and(is_game_complete.eq.true,final_stage.eq.${record.final_stage},game_version.eq.${record.game_version},total_turns.eq.${record.total_turns},total_damage_dealt.lt.${record.total_damage_dealt}),` +
-                    // 5순위: 스테이지, 버전, 턴수, 딜량 같고, 받은피해가 더 많음
-                    `and(is_game_complete.eq.true,final_stage.eq.${record.final_stage},game_version.eq.${record.game_version},total_turns.eq.${record.total_turns},total_damage_dealt.eq.${record.total_damage_dealt},total_damage_received.gt.${record.total_damage_received})`
-                );
-            } else {
-                // 미완료한 경우: 완료한 레코드는 모두 상위 + 미완료 중 비교
-                query = query.or(
-                    // 0순위: 게임 완료한 레코드는 모두 상위
-                    `is_game_complete.eq.true,` +
-                    // 1순위: 스테이지가 더 높음
-                    `and(is_game_complete.eq.false,final_stage.gt.${record.final_stage}),` +
-                    // 2순위: 스테이지 같고, 버전이 더 높음 (zero-padded 문자열 비교)
-                    `and(is_game_complete.eq.false,final_stage.eq.${record.final_stage},game_version.gt.${record.game_version}),` +
-                    // 3순위: 스테이지, 버전 같고, 턴수가 더 적음
-                    `and(is_game_complete.eq.false,final_stage.eq.${record.final_stage},game_version.eq.${record.game_version},total_turns.lt.${record.total_turns}),` +
-                    // 4순위: 스테이지, 버전, 턴수 같고, 딜량이 더 적음
-                    `and(is_game_complete.eq.false,final_stage.eq.${record.final_stage},game_version.eq.${record.game_version},total_turns.eq.${record.total_turns},total_damage_dealt.lt.${record.total_damage_dealt}),` +
-                    // 5순위: 스테이지, 버전, 턴수, 딜량 같고, 받은피해가 더 많음
-                    `and(is_game_complete.eq.false,final_stage.eq.${record.final_stage},game_version.eq.${record.game_version},total_turns.eq.${record.total_turns},total_damage_dealt.eq.${record.total_damage_dealt},total_damage_received.gt.${record.total_damage_received})`
-                );
-            }
+                // is_game_complete 기준으로 분기
+                if (record.is_game_complete) {
+                    // 완료한 경우: 완료한 레코드 중에서만 비교
+                    query = query.or(
+                        `and(is_game_complete.eq.true,final_stage.gt.${record.final_stage}),` +
+                        `and(is_game_complete.eq.true,final_stage.eq.${record.final_stage},game_version.gt.${record.game_version}),` +
+                        `and(is_game_complete.eq.true,final_stage.eq.${record.final_stage},game_version.eq.${record.game_version},total_turns.lt.${record.total_turns}),` +
+                        `and(is_game_complete.eq.true,final_stage.eq.${record.final_stage},game_version.eq.${record.game_version},total_turns.eq.${record.total_turns},total_damage_dealt.lt.${record.total_damage_dealt}),` +
+                        `and(is_game_complete.eq.true,final_stage.eq.${record.final_stage},game_version.eq.${record.game_version},total_turns.eq.${record.total_turns},total_damage_dealt.eq.${record.total_damage_dealt},total_damage_received.gt.${record.total_damage_received})`
+                    );
+                } else {
+                    // 미완료한 경우: 완료한 레코드는 모두 상위 + 미완료 중 비교
+                    query = query.or(
+                        `is_game_complete.eq.true,` +
+                        `and(is_game_complete.eq.false,final_stage.gt.${record.final_stage}),` +
+                        `and(is_game_complete.eq.false,final_stage.eq.${record.final_stage},game_version.gt.${record.game_version}),` +
+                        `and(is_game_complete.eq.false,final_stage.eq.${record.final_stage},game_version.eq.${record.game_version},total_turns.lt.${record.total_turns}),` +
+                        `and(is_game_complete.eq.false,final_stage.eq.${record.final_stage},game_version.eq.${record.game_version},total_turns.eq.${record.total_turns},total_damage_dealt.lt.${record.total_damage_dealt}),` +
+                        `and(is_game_complete.eq.false,final_stage.eq.${record.final_stage},game_version.eq.${record.game_version},total_turns.eq.${record.total_turns},total_damage_dealt.eq.${record.total_damage_dealt},total_damage_received.gt.${record.total_damage_received})`
+                    );
+                }
 
-            const { count, error } = await query;
+                return query;
+            },
+            'RANK_CALC_FAILED'
+        );
 
-            if (error) {
-                console.error('[LeaderboardClient] Rank calculation error:', error);
-                return null;
-            }
-
-            return (count || 0) + 1;
-
-        } catch (error) {
-            console.error('[LeaderboardClient] Rank calculation exception:', error);
+        if (error) {
             return null;
         }
+
+        return (count || 0) + 1;
     }
 
     /**
@@ -377,61 +418,45 @@ class LeaderboardClient {
             return { success: false, error: 'Client not initialized' };
         }
 
-        try {
-            const { isGameComplete, finalStage, gameVersion, totalTurns, totalDamageDealt, totalDamageReceived } = playerData;
+        const { isGameComplete, finalStage, gameVersion, totalTurns, totalDamageDealt, totalDamageReceived } = playerData;
 
-            // 6단계 정렬 기준으로 상위 레코드 카운트
-            let query = this.supabase
-                .from(this.config.tableName)
-                .select('*', { count: 'exact', head: true });
+        // 6단계 정렬 기준으로 상위 레코드 카운트 (재시도 포함)
+        const { count, error } = await this._retryableQuery(
+            () => {
+                let query = this.supabase
+                    .from(this.config.tableName)
+                    .select('*', { count: 'exact', head: true });
 
-            // is_game_complete 기준으로 분기
-            if (isGameComplete) {
-                // 완료한 경우: 완료한 레코드 중에서만 비교
-                query = query.or(
-                    // 1순위: 스테이지가 더 높음
-                    `and(is_game_complete.eq.true,final_stage.gt.${finalStage}),` +
-                    // 2순위: 스테이지 같고, 버전이 더 높음 (zero-padded 문자열 비교)
-                    `and(is_game_complete.eq.true,final_stage.eq.${finalStage},game_version.gt.${gameVersion}),` +
-                    // 3순위: 스테이지, 버전 같고, 턴수가 더 적음
-                    `and(is_game_complete.eq.true,final_stage.eq.${finalStage},game_version.eq.${gameVersion},total_turns.lt.${totalTurns}),` +
-                    // 4순위: 스테이지, 버전, 턴수 같고, 딜량이 더 적음
-                    `and(is_game_complete.eq.true,final_stage.eq.${finalStage},game_version.eq.${gameVersion},total_turns.eq.${totalTurns},total_damage_dealt.lt.${totalDamageDealt}),` +
-                    // 5순위: 스테이지, 버전, 턴수, 딜량 같고, 받은피해가 더 많음
-                    `and(is_game_complete.eq.true,final_stage.eq.${finalStage},game_version.eq.${gameVersion},total_turns.eq.${totalTurns},total_damage_dealt.eq.${totalDamageDealt},total_damage_received.gt.${totalDamageReceived})`
-                );
-            } else {
-                // 미완료한 경우: 완료한 레코드는 모두 상위 + 미완료 중 비교
-                query = query.or(
-                    // 0순위: 게임 완료한 레코드는 모두 상위
-                    `is_game_complete.eq.true,` +
-                    // 1순위: 스테이지가 더 높음
-                    `and(is_game_complete.eq.false,final_stage.gt.${finalStage}),` +
-                    // 2순위: 스테이지 같고, 버전이 더 높음 (zero-padded 문자열 비교)
-                    `and(is_game_complete.eq.false,final_stage.eq.${finalStage},game_version.gt.${gameVersion}),` +
-                    // 3순위: 스테이지, 버전 같고, 턴수가 더 적음
-                    `and(is_game_complete.eq.false,final_stage.eq.${finalStage},game_version.eq.${gameVersion},total_turns.lt.${totalTurns}),` +
-                    // 4순위: 스테이지, 버전, 턴수 같고, 딜량이 더 적음
-                    `and(is_game_complete.eq.false,final_stage.eq.${finalStage},game_version.eq.${gameVersion},total_turns.eq.${totalTurns},total_damage_dealt.lt.${totalDamageDealt}),` +
-                    // 5순위: 스테이지, 버전, 턴수, 딜량 같고, 받은피해가 더 많음
-                    `and(is_game_complete.eq.false,final_stage.eq.${finalStage},game_version.eq.${gameVersion},total_turns.eq.${totalTurns},total_damage_dealt.eq.${totalDamageDealt},total_damage_received.gt.${totalDamageReceived})`
-                );
-            }
+                if (isGameComplete) {
+                    query = query.or(
+                        `and(is_game_complete.eq.true,final_stage.gt.${finalStage}),` +
+                        `and(is_game_complete.eq.true,final_stage.eq.${finalStage},game_version.gt.${gameVersion}),` +
+                        `and(is_game_complete.eq.true,final_stage.eq.${finalStage},game_version.eq.${gameVersion},total_turns.lt.${totalTurns}),` +
+                        `and(is_game_complete.eq.true,final_stage.eq.${finalStage},game_version.eq.${gameVersion},total_turns.eq.${totalTurns},total_damage_dealt.lt.${totalDamageDealt}),` +
+                        `and(is_game_complete.eq.true,final_stage.eq.${finalStage},game_version.eq.${gameVersion},total_turns.eq.${totalTurns},total_damage_dealt.eq.${totalDamageDealt},total_damage_received.gt.${totalDamageReceived})`
+                    );
+                } else {
+                    query = query.or(
+                        `is_game_complete.eq.true,` +
+                        `and(is_game_complete.eq.false,final_stage.gt.${finalStage}),` +
+                        `and(is_game_complete.eq.false,final_stage.eq.${finalStage},game_version.gt.${gameVersion}),` +
+                        `and(is_game_complete.eq.false,final_stage.eq.${finalStage},game_version.eq.${gameVersion},total_turns.lt.${totalTurns}),` +
+                        `and(is_game_complete.eq.false,final_stage.eq.${finalStage},game_version.eq.${gameVersion},total_turns.eq.${totalTurns},total_damage_dealt.lt.${totalDamageDealt}),` +
+                        `and(is_game_complete.eq.false,final_stage.eq.${finalStage},game_version.eq.${gameVersion},total_turns.eq.${totalTurns},total_damage_dealt.eq.${totalDamageDealt},total_damage_received.gt.${totalDamageReceived})`
+                    );
+                }
 
-            const { count, error } = await query;
+                return query;
+            },
+            'RANK_CHECK_FAILED'
+        );
 
-            if (error) {
-                console.error('[LeaderboardClient] Rank check error:', error);
-                return { success: false, error: error.message };
-            }
-
-            const rank = (count || 0) + 1;
-            return { success: true, rank };
-
-        } catch (error) {
-            console.error('[LeaderboardClient] Rank check exception:', error);
+        if (error) {
             return { success: false, error: error.message };
         }
+
+        const rank = (count || 0) + 1;
+        return { success: true, rank };
     }
 
     /**
