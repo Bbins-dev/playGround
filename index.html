@@ -1,30 +1,30 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="{{LANG}}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎮 BinBox Games - 하이퍼캐주얼 미니 게임</title>
-    <meta name="description" content="다양한 하이퍼캐주얼 미니 웹게임들을 즐겨보세요!">
+    <title>{{PAGE_TITLE}}</title>
+    <meta name="description" content="{{DESCRIPTION}}">
 
     <!-- Canonical & Language Alternate URLs (hreflang) -->
-    <link rel="canonical" href="https://binboxgames.com/">
+    <link rel="canonical" href="{{CANONICAL_URL}}">
     <link rel="alternate" hreflang="ko" href="https://binboxgames.com/?lang=ko">
     <link rel="alternate" hreflang="en" href="https://binboxgames.com/?lang=en">
     <link rel="alternate" hreflang="ja" href="https://binboxgames.com/?lang=ja">
     <link rel="alternate" hreflang="x-default" href="https://binboxgames.com/">
 
-    <!-- Open Graph -->
-    <meta property="og:title" content="BinBox Games - 하이퍼캐주얼 미니 게임">
-    <meta property="og:description" content="다양한 하이퍼캐주얼 미니 웹게임들을 즐겨보세요!">
+    <!-- Open Graph (Dynamically replaced by Cloudflare Workers) -->
+    <meta property="og:title" content="{{OG_TITLE}}">
+    <meta property="og:description" content="{{OG_DESCRIPTION}}">
     <meta property="og:image" content="https://binboxgames.com/images/og-image.png">
-    <meta property="og:url" content="https://binboxgames.com/">
+    <meta property="og:url" content="{{CANONICAL_URL}}">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="BinBox Games">
 
-    <!-- Twitter Card -->
+    <!-- Twitter Card (Dynamically replaced by Cloudflare Workers) -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="BinBox Games - 하이퍼캐주얼 미니 게임">
-    <meta name="twitter:description" content="다양한 하이퍼캐주얼 미니 웹게임들을 즐겨보세요!">
+    <meta name="twitter:title" content="{{TWITTER_TITLE}}">
+    <meta name="twitter:description" content="{{TWITTER_DESCRIPTION}}">
     <meta name="twitter:image" content="https://binboxgames.com/images/og-image.png">
 
     <link rel="stylesheet" href="css/style.css">
@@ -97,7 +97,7 @@
         "@type": "WebSite",
         "name": "BinBox Games",
         "url": "https://binboxgames.com/",
-        "description": "다양한 하이퍼캐주얼 미니 웹게임들을 즐겨보세요!",
+        "description": "{{DESCRIPTION}}",
         "inLanguage": ["ko", "en", "ja"]
     }
     </script>
