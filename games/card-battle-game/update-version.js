@@ -157,9 +157,9 @@ async function updateSupabaseVersion(version) {
     const supabaseUrl = env.SUPABASE_URL;
 
     if (!serviceKey || !supabaseUrl) {
-        console.log('\n⚠️  Supabase 자동 업데이트 스킵 (.env 파일 설정 필요)');
-        console.log('   .env.example 파일을 참고하여 .env 파일을 생성하세요.');
-        console.log(`   수동 업데이트: UPDATE app_version SET version = '${version}';`);
+        console.error('\n❌ Supabase 환경변수 누락 (.env 파일에 SUPABASE_URL, SUPABASE_SERVICE_KEY 필수)');
+        console.error('   .env.example 파일을 참고하여 .env 파일을 생성하세요.');
+        console.error(`   수동 업데이트: UPDATE app_version SET version = '${version}';`);
         return false;
     }
 
@@ -215,7 +215,15 @@ async function main() {
     // 4. Supabase app_version 테이블 자동 업데이트
     const supabaseUpdated = await updateSupabaseVersion(version);
 
-    console.log('\n✨ 버전 동기화 완료!');
+    // SSOT 파이프라인: Supabase 실패 시 전체 중단 (DB 불일치 방지)
+    if (!supabaseUpdated) {
+        console.error('\n🚨 버전 동기화 실패: Supabase DB 업데이트가 완료되지 않았습니다.');
+        console.error('   코드와 DB 버전 불일치 시 VersionChecker가 무한 새로고침을 유발합니다.');
+        console.error('   .env 설정 확인 후 다시 시도하세요.');
+        process.exit(1);
+    }
+
+    console.log('\n✨ 버전 동기화 완료! (package.json → gameConfig.js → index.html → Supabase DB)');
 
     if (configUpdated || indexUpdated) {
         console.log('\n💡 Git에 커밋하는 것을 잊지 마세요:');

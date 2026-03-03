@@ -2,7 +2,7 @@
  * VersionChecker - 자동 버전 업데이트 체크 시스템
  *
  * Supabase에서 최신 버전을 조회하여 현재 버전과 비교
- * 불일치 시 강제 새로고침 (사용자 선택권 없음, YAGNI 원칙)
+ * 서버 버전이 더 높을 때만 강제 새로고침 (YAGNI 원칙)
  *
  * @class VersionChecker
  * @description Configuration-Driven, 최소한의 코드로 최대 효과
@@ -25,8 +25,26 @@ class VersionChecker {
     }
 
     /**
+     * Semver 비교: a > b이면 1, a < b이면 -1, 같으면 0
+     * @param {string} a - 버전 문자열 (예: '1.0.3')
+     * @param {string} b - 버전 문자열 (예: '1.0.2')
+     * @returns {number} 비교 결과
+     */
+    compareSemver(a, b) {
+        const pa = a.split('.').map(Number);
+        const pb = b.split('.').map(Number);
+        for (let i = 0; i < 3; i++) {
+            const na = pa[i] || 0;
+            const nb = pb[i] || 0;
+            if (na > nb) return 1;
+            if (na < nb) return -1;
+        }
+        return 0;
+    }
+
+    /**
      * 버전 체크 실행 (비동기)
-     * Supabase에서 최신 버전 조회 → 비교 → 불일치 시 강제 새로고침
+     * Supabase에서 최신 버전 조회 → semver 비교 → 서버가 더 높을 때만 강제 새로고침
      *
      * @returns {Promise<boolean>} true: 업데이트 발견 (새로고침 예정), false: 최신 버전
      */
@@ -64,15 +82,19 @@ class VersionChecker {
                 return false;
             }
 
-            // 버전 비교
-            if (latestVersion !== this.currentVersion) {
+            // Semver 비교: 서버 버전이 더 높을 때만 업데이트
+            const cmp = this.compareSemver(latestVersion, this.currentVersion);
+            if (cmp > 0) {
                 console.log(`[VersionChecker] 새 버전 발견! 현재: ${this.currentVersion}, 최신: ${latestVersion}`);
                 this.forceUpdate();
                 return true;
             }
 
-            // 최신 버전 사용 중
-            console.log(`[VersionChecker] 최신 버전 사용 중: ${this.currentVersion}`);
+            if (cmp < 0) {
+                console.log(`[VersionChecker] 클라이언트가 서버보다 앞섬 (현재: ${this.currentVersion}, 서버: ${latestVersion}) - DB 업데이트 필요`);
+            } else {
+                console.log(`[VersionChecker] 최신 버전 사용 중: ${this.currentVersion}`);
+            }
             return false;
 
         } catch (err) {
