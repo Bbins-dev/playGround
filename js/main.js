@@ -18,12 +18,9 @@ async function initializeApp() {
     _appInitialized = true;
     // i18n 시스템 먼저 초기화 (번역이 gameRegistry보다 우선)
     if (window.i18n) {
-        const storageKey = window.PlayGroundConfig?.site.languageStorageKey || 'selectedLanguage';
-        const defaultLang = window.PlayGroundConfig?.site.defaultLanguage || 'ko';
-        const savedLang = localStorage.getItem(storageKey) || defaultLang;
-        await window.i18n.init(savedLang, 'js/lang/');
-        // 언어 선택기 UI를 현재 언어로 업데이트
-        window.i18n.updateLanguageSelectors(savedLang);
+        const initialLang = window.i18n.resolveLanguage();
+        await window.i18n.init(initialLang, 'js/lang/');
+        window.i18n.updateLanguageSelectors(initialLang);
     }
 
     // 게임 레지스트리 초기화

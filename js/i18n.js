@@ -9,21 +9,69 @@ class I18n {
         // Don't auto-initialize, let manual init() calls control this
     }
 
+    /**
+     * Resolve language with priority: URL ?lang= > localStorage > navigator.language > config default
+     * @returns {string} Resolved language code
+     */
+    resolveLanguage() {
+        const supported = window.PlayGroundConfig?.site.supportedLanguages || ['ko', 'en', 'ja'];
+        const defaultLang = window.PlayGroundConfig?.site.defaultLanguage || 'ko';
+
+        // 1. URL ?lang= parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const langParam = urlParams.get('lang');
+        if (langParam && supported.includes(langParam)) {
+            localStorage.setItem(this.storageKey, langParam);
+            return langParam;
+        }
+
+        // 2. localStorage saved preference
+        const savedLang = localStorage.getItem(this.storageKey);
+        if (savedLang && supported.includes(savedLang)) {
+            return savedLang;
+        }
+
+        // 3. Browser language (en-US → en)
+        const browserLang = (navigator.language || '').split('-')[0];
+        if (browserLang && supported.includes(browserLang)) {
+            return browserLang;
+        }
+
+        // 4. Config default fallback
+        return defaultLang;
+    }
+
+    /**
+     * Update canonical <link> tag to match current language
+     * @param {string} lang - Current language code
+     */
+    updateCanonical(lang) {
+        const canonical = document.querySelector('link[rel="canonical"]');
+        if (!canonical) return;
+
+        const defaultLang = window.PlayGroundConfig?.site.defaultLanguage || 'ko';
+        const baseUrl = canonical.href.split('?')[0];
+
+        canonical.href = (lang === defaultLang) ? baseUrl : `${baseUrl}?lang=${lang}`;
+    }
+
     async init(initialLang, basePath = 'js/lang/') {
         this.basePath = basePath;
-        
-        // Use config default if no initial language provided
-        const defaultLang = window.PlayGroundConfig?.site.defaultLanguage || 'ko';
-        this.currentLanguage = initialLang || defaultLang;
-        
+
+        this.currentLanguage = initialLang || this.resolveLanguage();
+
         // Load default language
         await this.loadLanguage(this.currentLanguage);
-        
+
         // Set up language selector
         this.setupLanguageSelector();
-        
+
         // Apply translations
         this.applyTranslations();
+
+        // Set HTML lang attribute and update canonical
+        document.documentElement.lang = this.currentLanguage;
+        this.updateCanonical(this.currentLanguage);
     }
 
     async loadLanguage(lang) {
@@ -70,8 +118,9 @@ class I18n {
             // Save language preference (use config key)
             localStorage.setItem(this.storageKey, lang);
             
-            // Update all language selectors
+            // Update all language selectors and canonical
             this.updateLanguageSelectors(lang);
+            this.updateCanonical(lang);
         }
     }
     
@@ -162,14 +211,12 @@ if (!window.i18n) {
 // Auto-initialize for games only (main page is handled by main.js)
 if (window.location.pathname.includes('/games/')) {
     document.addEventListener('DOMContentLoaded', async () => {
-        const storageKey = window.PlayGroundConfig?.site.languageStorageKey || 'selectedLanguage';
-        const defaultLang = window.PlayGroundConfig?.site.defaultLanguage || 'ko';
-        const savedLang = localStorage.getItem(storageKey) || defaultLang;
+        const initialLang = window.i18n.resolveLanguage();
 
         // For games, use relative path for language files
         const basePath = '../../js/lang/';
-        await window.i18n.init(savedLang, basePath);
-        // Update language selectors to match saved language
-        window.i18n.updateLanguageSelectors(savedLang);
+        await window.i18n.init(initialLang, basePath);
+        // Update language selectors to match resolved language
+        window.i18n.updateLanguageSelectors(initialLang);
     });
 }
