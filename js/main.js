@@ -12,7 +12,10 @@ document.addEventListener('DOMContentLoaded', function() {
 /**
  * 앱 초기화
  */
+let _appInitialized = false;
 async function initializeApp() {
+    if (_appInitialized) return;
+    _appInitialized = true;
     // i18n 시스템 먼저 초기화 (번역이 gameRegistry보다 우선)
     if (window.i18n) {
         const storageKey = window.PlayGroundConfig?.site.languageStorageKey || 'selectedLanguage';
@@ -39,8 +42,6 @@ async function initializeApp() {
     // 광고 영역 설정
     setupAds();
 
-    // 스크롤 효과
-    setupScrollEffects();
 }
 
 /**
@@ -48,7 +49,7 @@ async function initializeApp() {
  */
 function addAnimationEffects() {
     // 페이지 로드 시 페이드인 효과
-    const elements = document.querySelectorAll('.game-card, .info-item');
+    const elements = document.querySelectorAll('.game-card');
     
     elements.forEach((element, index) => {
         element.style.opacity = '0';
@@ -98,38 +99,6 @@ function insertRandomAds() {
             `;
         }
     });
-}
-
-
-
-
-/**
- * 스크롤 효과 설정
- */
-function setupScrollEffects() {
-    let ticking = false;
-    
-    function updateScrollEffects() {
-        const scrolled = window.pageYOffset;
-        const parallaxElements = document.querySelectorAll('.info-item');
-        
-        parallaxElements.forEach(element => {
-            const speed = 0.5;
-            const yPos = -(scrolled * speed);
-            element.style.transform = `translateY(${yPos}px)`;
-        });
-        
-        ticking = false;
-    }
-    
-    function requestTick() {
-        if (!ticking) {
-            requestAnimationFrame(updateScrollEffects);
-            ticking = true;
-        }
-    }
-    
-    window.addEventListener('scroll', requestTick);
 }
 
 

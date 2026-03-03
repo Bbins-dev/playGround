@@ -86,17 +86,22 @@ class GameRegistry {
                     <span data-i18n="genre_names.${gameData.genre}">${this.getGenreName(gameData.genre)}</span>
                 </div>
             </div>
-            <button class="btn ${gameData.status === 'coming-soon' ? 'btn-disabled' : ''}" 
-                    ${gameData.status === 'coming-soon' ? 'disabled' : ''} 
-                    onclick="gameRegistry.launchGame('${gameData.id}')"
+            <button class="btn ${gameData.status === 'coming-soon' ? 'btn-disabled' : ''}"
+                    ${gameData.status === 'coming-soon' ? 'disabled' : ''}
                     data-i18n="games.play_button">
                 ${gameData.status === 'coming-soon' ? '곧 추가될 예정입니다!' : '게임 시작'}
             </button>
         `;
 
+        // 클릭 이벤트 바인딩 (inline onclick 대체)
+        if (gameData.status !== 'coming-soon') {
+            const btn = card.querySelector('.btn');
+            btn.addEventListener('click', () => this.launchGame(gameData.id));
+        }
+
         // 애니메이션 효과 추가
         this.addCardAnimation(card, index);
-        
+
         this.gamesContainer.appendChild(card);
     }
 

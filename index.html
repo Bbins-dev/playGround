@@ -5,20 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎮 BinBox Games - 하이퍼캐주얼 미니 게임</title>
     <meta name="description" content="다양한 하이퍼캐주얼 미니 웹게임들을 즐겨보세요!">
+
+    <!-- Canonical & Language Alternate URLs (hreflang) -->
+    <link rel="canonical" href="https://binboxgames.com/">
+    <link rel="alternate" hreflang="ko" href="https://binboxgames.com/?lang=ko">
+    <link rel="alternate" hreflang="en" href="https://binboxgames.com/?lang=en">
+    <link rel="alternate" hreflang="ja" href="https://binboxgames.com/?lang=ja">
+    <link rel="alternate" hreflang="x-default" href="https://binboxgames.com/">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="BinBox Games - 하이퍼캐주얼 미니 게임">
+    <meta property="og:description" content="다양한 하이퍼캐주얼 미니 웹게임들을 즐겨보세요!">
+    <meta property="og:image" content="https://binboxgames.com/images/og-image.png">
+    <meta property="og:url" content="https://binboxgames.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="BinBox Games">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="BinBox Games - 하이퍼캐주얼 미니 게임">
+    <meta name="twitter:description" content="다양한 하이퍼캐주얼 미니 웹게임들을 즐겨보세요!">
+    <meta name="twitter:image" content="https://binboxgames.com/images/og-image.png">
+
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
-    <!-- Google Fonts -->
+    <!-- Google Fonts (async, non-render-blocking) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"></noscript>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1398958608599791"
      crossorigin="anonymous"></script>
 </head>
 <body>
+    <!-- Skip Navigation -->
+    <a href="#main-content" class="skip-link">메인 콘텐츠로 건너뛰기</a>
+
     <!-- Language Selector -->
     <div class="language-selector">
-        <select id="languageSelect">
+        <select id="languageSelect" aria-label="언어 선택">
             <option value="ko">🇰🇷</option>
             <option value="en">🇺🇸</option>
             <option value="ja">🇯🇵</option>
@@ -32,7 +58,7 @@
         </div>
     </header>
 
-    <main class="main">
+    <main class="main" id="main-content">
         <div class="container">
             <section class="hero">
                 <h2 data-i18n="hero.title">게임을 선택하고 즐겨보세요!</h2>
@@ -42,7 +68,7 @@
             <!-- Search Section -->
             <section class="search-section">
                 <div class="search-container">
-                    <input type="text" id="gameSearch" class="search-input" placeholder="게임 검색..." data-i18n-placeholder="games.search_placeholder">
+                    <input type="text" id="gameSearch" class="search-input" placeholder="게임 검색..." data-i18n-placeholder="games.search_placeholder" aria-label="게임 검색">
                     <div class="search-icon">🔍</div>
                 </div>
             </section>
@@ -66,6 +92,23 @@
             <p data-i18n="footer.copyright">&copy; 2025 PlayGround. 하이퍼캐주얼 미니 게임의 세계를 만들어갑니다.</p>
         </div>
     </footer>
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "BinBox Games",
+        "url": "https://binboxgames.com/",
+        "description": "다양한 하이퍼캐주얼 미니 웹게임들을 즐겨보세요!",
+        "inLanguage": ["ko", "en", "ja"],
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://binboxgames.com/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
 
     <!-- Scripts -->
     <script src="js/config.js"></script>
