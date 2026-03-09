@@ -220,6 +220,21 @@ body {
     font-size: 14px;
 }
 
+.footer-links {
+    margin-top: 0.5rem;
+}
+
+.footer-links a {
+    color: var(--text-muted);
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.footer-links a:hover {
+    color: var(--accent-primary);
+    text-decoration: underline;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
     /* Language selector responsive styles in components.css */
