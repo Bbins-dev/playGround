@@ -2,8 +2,8 @@ name: Supabase Keep-Alive
 
 on:
   schedule:
-    # 4일마다 09:00 UTC 실행 (Supabase 7일 비활성 pause 방지, 3일 여유)
-    - cron: '0 9 */4 * *'
+    # 매일 09:00 UTC 실행 (Supabase 7일 비활성 pause 방지, 6일 여유)
+    - cron: '0 9 * * *'
   workflow_dispatch: # 수동 실행 가능
 
 jobs:
